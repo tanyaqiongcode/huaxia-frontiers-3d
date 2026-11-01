@@ -151,10 +151,10 @@ station((g,mats)=>{
         transparent:true, opacity:0, side:THREE.DoubleSide}));
     m.position.set(rnd(-.9,.9), -5.0 + i*1.5, rnd(-.6,.6));
     m.rotation.x = -Math.PI/2*.72; m.rotation.z = rnd(-.09,.09);
-    m.material.userData = {base:.40}; mats.push(m.material); g.add(m);
+    m.material.userData = {base:.52}; mats.push(m.material); g.add(m);
     const el = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),
       new THREE.LineBasicMaterial({color:0xc9a45c, transparent:true, opacity:0}));
-    el.material.userData={base:.35}; mats.push(el.material); m.add(el);
+    el.material.userData={base:.45}; mats.push(el.material); m.add(el);
   }
   const curve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-5,-6.2,2), new THREE.Vector3(-1.6,-3.4,-.5), new THREE.Vector3(1.2,-1,1),
@@ -472,6 +472,14 @@ if(qaStill){
   stillP = (k-1)/(ST.length-1);
   prog = target = stillP;
   document.getElementById('loader').classList.add('done');
+  /* 立即定位相机并满显材质，渲染第一帧（不依赖rAF） */
+  tmpP.copy(path.getPointAt(prog)); tmpT.copy(path.getPointAt(Math.min(1, prog+.012)));
+  C.position.set(tmpP.x - tmpT.x*8.2, tmpP.y + 5.4, tmpP.z - tmpT.z*8.2);
+  look.copy(tmpP).addScaledVector(tmpT, 5); C.lookAt(look); follow.position.copy(C.position);
+  ST.forEach(st=>{ const d = C.position.distanceTo(st.pos);
+    const vis = Math.max(0, Math.min(1, 1.5 - Math.abs(d-9)/10));
+    st.mats.forEach(m=>{ m.opacity = m.userData.base*vis; }); });
+  R.render(S, C);
 }
 tick();
 </script>
