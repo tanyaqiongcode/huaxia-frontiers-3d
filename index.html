@@ -472,6 +472,8 @@ if(qaStill){
   stillP = (k-1)/(ST.length-1);
   prog = target = stillP;
   document.getElementById('loader').classList.add('done');
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('numeral').textContent = NUMS[k-1];
   /* 立即定位相机并满显材质，渲染第一帧（不依赖rAF） */
   tmpP.copy(path.getPointAt(prog)); tmpT.copy(path.getPointAt(Math.min(1, prog+.012)));
   C.position.set(tmpP.x - tmpT.x*8.2, tmpP.y + 5.4, tmpP.z - tmpT.z*8.2);
