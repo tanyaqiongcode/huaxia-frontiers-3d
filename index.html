@@ -404,8 +404,8 @@ function tick(){
   try{
   requestAnimationFrame(tick);
   const t = clock.getElapsedTime();
-  target = Math.min(1, Math.max(0, scrollY / maxScroll()));
-  prog += (target - prog)*.045;
+  if(!stillMode) target = Math.min(1, Math.max(0, scrollY / maxScroll()));
+  if(stillMode) prog = stillP; else prog += (target - prog)*.045;
   const p = Math.min(.9999, Math.max(0, prog));
   tmpP.copy(path.getPointAt(p)); tmpT.copy(path.getPointAt(Math.min(1, p+.012)));
   C.position.set(
@@ -462,6 +462,16 @@ function tick(){
     }
   }
   }catch(e){ document.title='TICKERR:'+e.message+' @'+e.lineno+':'+e.colno; };
+}
+/* QA定格模式：?still=N 直达第N幕（满显、跳过加载） */
+const qaStill = new URLSearchParams(location.search).get('still');
+let stillMode = false, stillP = 0;
+if(qaStill){
+  stillMode = true; loaded = true;
+  const k = Math.max(1, Math.min(7, parseInt(qaStill)||1));
+  stillP = (k-1)/(ST.length-1);
+  prog = target = stillP;
+  document.getElementById('loader').classList.add('done');
 }
 tick();
 </script>
