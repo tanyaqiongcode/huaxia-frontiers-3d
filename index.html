@@ -210,13 +210,6 @@
   footer .zh{color:var(--dim);font-size:14px;margin-top:14px;letter-spacing:.12em;line-height:2}
   footer .springer{margin-top:26px;color:var(--dim);font-size:12px;letter-spacing:.24em}
 
-  #loader{position:fixed;inset:0;z-index:20;background:var(--bg);display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:24px;transition:opacity 1s}
-  #loader.done{opacity:0;pointer-events:none}
-  #loader .txt{font-size:13px;letter-spacing:.34em;color:var(--dim)}
-  #loader .bar{width:180px;height:1px;background:var(--line);position:relative;overflow:hidden}
-  #loader .bar i{position:absolute;left:0;top:0;height:100%;background:var(--gold-hi);width:0;transition:width .2s}
-  #loader .pct2{color:var(--gold-hi);font-size:14px;letter-spacing:.3em}
 </style>
 </head>
 <body>
@@ -380,7 +373,6 @@
   </footer>
 </main>
 
-<div id="loader"><div class="txt" data-i18n="ldTxt">正在绘制边缘</div><div class="bar"><i id="lbar"></i></div><div class="pct2" id="lpct">0</div></div>
 
 <script src="assets/three.min.js"></script>
 <script>
