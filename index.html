@@ -230,26 +230,6 @@
   #story.p2 .c2{opacity:1}
   #story.p3 .c3{opacity:1}
   #story.p3 .sBtn{opacity:1}
-  @media (prefers-reduced-motion: reduce){
-    #story{height:auto;padding:12vh 0}
-    .sstk{position:static;height:auto}
-    .valley{transition:none}
-    .scap{position:static;transform:none;opacity:1;margin-top:26px}
-    .sBtn{position:static;transform:none;opacity:1;margin-top:22px}
-    .sMeta{position:static;transform:none;margin-bottom:12px}
-    #lscroll{height:auto;padding:9vh 0}
-    #lscroll .lstick{position:static;height:auto;padding:0 6vw;flex-direction:column}
-    #lscroll .ltrack{transform:none!important;flex-direction:column;align-items:center;gap:7vh;padding-left:0}
-    #lscroll .lsvg{height:auto;width:min(56vw,360px);box-shadow:0 14px 44px rgba(0,0,0,.4)}
-    #lscroll .lcap span{font-size:clamp(24px,3.2vw,38px)}
-    #lscroll .lnavs{position:static;transform:none;justify-content:center;flex-wrap:wrap;margin-top:5vh}
-    #lscroll .lorb{display:none}
-    #story .sstk{position:static;height:auto;padding:8vh 6vw}
-    #story .scap{position:static;transform:none;opacity:1;margin-top:26px;width:auto;max-width:640px}
-    #story .sMeta{position:static;transform:none;margin-bottom:14px;white-space:normal;width:auto;text-align:center}
-    #story .sBtn{position:static;transform:none;opacity:1;margin-top:22px}
-    #story .valley{transition:none}
-  }
 
   #lscroll{height:460vh;padding:0;max-width:none}
   .lstick{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center}
@@ -485,14 +465,14 @@
       <div class="lorb" id="lorb"></div>
       <div class="ltrack" id="ltrack">
         <div class="lcap"><span data-i18n="ls1a">4000 BP</span><i data-i18n="ls1b">气候变动 · 农业边缘化</i></div>
-        <img class="lsvg" src="assets/book/fig-104.png" alt="p.104" loading="lazy">
+        <img class="lsvg" src="assets/book/fig-104.png" alt="p.104"">
         <div class="lcap"><span data-i18n="ls2a">1046 BC</span><i data-i18n="ls2b">周人族源 · 西周记忆</i></div>
-        <img class="lsvg" src="assets/book/fig-099.png" alt="p.99" loading="lazy">
+        <img class="lsvg" src="assets/book/fig-099.png" alt="p.99"">
         <div class="lcap"><span data-i18n="ls3a">221 BC — 1840</span><i data-i18n="ls3b">汉代凝练 · 长城资源界线</i></div>
-        <img class="lsvg" src="assets/book/fig-113.png" alt="p.113" loading="lazy">
+        <img class="lsvg" src="assets/book/fig-113.png" alt="p.113"">
         <div class="lcap"><span data-i18n="ls4a">1950s</span><i data-i18n="ls4b">民族识别 · 学术知识建构</i></div>
-        <img class="lsvg" src="assets/book/fig-127.png" alt="p.185" loading="lazy">
-        <div class="lcap"><span data-i18n="ls5a">NOW</span><i data-i18n="ls5b">边缘重构 · 正在翻译</i></div>
+        <img class="lsvg" src="assets/book/fig-127.png" alt="p.185"">
+        <div class="lcap"><span data-i18n="ls5a">NOW</span><i data-i18n="ls5b">边缘重构</i></div>
       </div>
       <div class="lnavs"><a data-p="0.1" data-i18n="ln1">生计边界</a><a data-p="0.4" data-i18n="ln2">历史书写</a><a data-p="0.72" data-i18n="ln3">认同变迁</a></div>
     </div>
@@ -674,7 +654,7 @@ const T = { lang:'zh', dict:{
  ls2b:{zh:'周人族源 · 西周记忆',en:'Zhou origins · Western Zhou memory'},
  ls3b:{zh:'汉代凝练 · 长城资源界线',en:'Han consolidation · the Great Wall line'},
  ls4b:{zh:'民族识别 · 学术知识建构',en:'Ethnic classification · the making of knowledge'},
- ls5b:{zh:'边缘重构 · 正在翻译',en:'The edge remade · translation in progress'},
+ ls5b:{zh:'边缘重构',en:'The edge remade'},
  apT:{zh:'氛围 · ATMOSPHERE',en:'ATMOSPHERE'},
  pScene:{zh:'场景',en:'SCENE'}, pMist:{zh:'雾',en:'MIST'}, pDen:{zh:'粒子',en:'PARTICLES'},
  stMo:{zh:'晨光漂流 · 清透大气',en:'Morning drift · clear air'},
@@ -1222,7 +1202,7 @@ const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main
 
 applyLang();
 setScene('morning');
-console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v15');
+console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v16');
 document.documentElement.setAttribute('data-scene','morning');
 </script>
 </body>
