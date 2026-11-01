@@ -121,18 +121,7 @@
     animation:hfloat 6s ease-in-out infinite;display:none}
   @media(min-width:1100px){.heroBook{display:block}#hero{padding-right:310px;padding-left:24px}}
   .heroBook img{display:block;width:100%}
-  .bpage.zoomable{cursor:zoom-in}
-  .bpage.zoomable img{transition:filter .3s}
-  .bpage.zoomable:hover img{filter:brightness(1.08)}
-  .zhint{display:block;font-style:normal;font-size:10.5px;letter-spacing:.16em;color:var(--gold);margin-top:5px}
-  #knifeView .kwrap{position:relative;max-width:min(86vw,560px)}
-  #knifeImg{display:block;width:100%;max-height:80vh;object-fit:contain;border-radius:8px;cursor:zoom-in;transition:transform .35s ease;transform-origin:center}
-  #knifeImg.zoomed{transform:scale(2.4);cursor:zoom-out}
-  .kcap{margin-top:12px;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;color:var(--ink)}
-  .kcap b{color:var(--gold-hi)}
-  .kcap i{font-style:normal;color:var(--dim);font-size:11px;letter-spacing:.14em}
-  .kx{position:absolute;top:-16px;right:-16px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:rgba(10,12,18,.9);color:var(--dim);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px}
-  .hbCue{position:absolute;top:10px;right:10px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+    .hbCue{position:absolute;top:10px;right:10px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
   .hbPing{width:32px;height:32px;border-radius:50%;border:1px solid var(--gold);background:rgba(8,9,14,.66);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;position:relative;color:#f0d9a6;font-size:12.5px;font-weight:600}
   .hbPing::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:1px solid var(--gold);animation:hbpulse 2.4s ease-out infinite}
   @keyframes hbpulse{0%{transform:scale(1);opacity:.95}75%{transform:scale(2);opacity:0}100%{transform:scale(2);opacity:0}}
@@ -213,20 +202,9 @@
   .plate figcaption b{color:var(--gold);font-weight:600;margin-right:8px}
 
   /* 书影 */
-  .bookrow{display:grid;grid-template-columns:1fr 2fr;gap:18px;margin-top:40px}
-  @media(max-width:760px){.bookrow{grid-template-columns:1fr}}
-  .bcover{perspective:900px}
-  .bcover img{width:100%;display:block;border-radius:6px;box-shadow:14px 22px 50px rgba(0,0,0,.55);
-    transform:rotateY(-7deg) rotateZ(-1.2deg);transition:transform .8s cubic-bezier(.2,1,.3,1);
-    background:#fff;border:1px solid var(--line)}
-  .bcover:hover img{transform:rotateY(0) rotateZ(0)}
-  figure figcaption{font-size:12px;color:var(--dim);margin-top:9px;letter-spacing:.1em}
+    figure figcaption{font-size:12px;color:var(--dim);margin-top:9px;letter-spacing:.1em}
   figcaption b{color:var(--gold);font-weight:600;margin-right:8px}
-  .bpages{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .bpage img{width:100%;display:block;border:1px solid var(--line);border-radius:6px;transition:.5s;opacity:.9;
-    aspect-ratio:3/4;object-fit:cover;object-position:left top}
-  .bpage:hover img{opacity:1;transform:translateY(-4px)}
-
+  
   /* 边缘长卷（滚轮驱动） */
   /* 三寨子 · 社会记忆 */
   #story{height:320vh;padding:0;max-width:none;position:relative}
@@ -358,7 +336,6 @@
   <a href="#media" data-i18n="nMedia">影像与访谈</a>
   <a href="#concepts" data-i18n="nConcepts">概念八章</a>
   <a href="#plates" data-i18n="nPlates">信息图</a>
-  <a href="#book" data-i18n="nBook">书影</a>
   <a href="#lscroll" data-i18n="nScroll">边缘长卷</a>
   <a href="#mmap" data-i18n="nMap">全书导图</a>
   <a href="#maker" data-i18n="nMaker">3D 造物记</a>
@@ -461,21 +438,7 @@
     </div>
   </section>
 
-  <section id="book">
-    <div class="reveal"><span class="num" data-i18n="bdBook">Ⅴ · FROM THE BOOK</span>
-      <h2 data-i18n-html="bTitle">书影 · <em>纸上的边缘</em></h2>
-      <div class="rule"></div>
-      <p class="lead" data-i18n="bLead">从原书电子版中提取的矢量书影——封面与内页图版，无限放大而不失真。悬停卡片，让书页立起来。</p></div>
-    <div class="bookrow reveal">
-      <figure class="bcover"><img src="assets/book/cover.jpg" alt="封面"><figcaption><b data-i18n="bcap1">封面</b><span data-i18n="bcap1b">世纪文景 · 2020年版</span></figcaption></figure>
-      <div class="bpages">
-        <figure class="bpage"><img src="assets/book/fig-099.png" alt="p.99 湟水流域" loading="lazy"><figcaption><b data-i18n="bF1a">图一</b><span data-i18n="bF1b">青海河湟地区新石器时代晚期至铜石并用时期重要考古遗址</span></figcaption></figure>
-        <figure class="bpage zoomable" id="figKnife"><img src="assets/book/fig-104.png" alt="p.104" loading="lazy"><figcaption><b data-i18n="bF2a">图二</b><span data-i18n="bF2b">细石叶刀与双孔石刀</span><i class="zhint" data-i18n="knHint">点击放大细看</i></figcaption></figure>
-        <figure class="bpage"><img src="assets/book/fig-113.png" alt="p.113" loading="lazy"><figcaption><b data-i18n="bF4a">图四</b><span data-i18n="bF4b">鄂尔多斯及其邻近地区新石器时代晚期重要考古遗址</span></figcaption></figure>
-        <figure class="bpage"><img src="assets/book/fig-127.png" alt="p.127" loading="lazy"><figcaption><b data-i18n="bF5a">图五</b><span data-i18n="bF5b">鄂尔多斯及其邻近地区春秋末至汉代重要考古遗址</span></figcaption></figure>
-      </div>
-    </div>
-  </section>
+  
 
   <section id="lscroll">
     <div class="lstick">
@@ -496,7 +459,7 @@
   </section>
 
   <section id="mmap">
-    <div class="reveal"><span class="num" data-i18n="bdMap">Ⅵ · MIND MAP</span>
+    <div class="reveal"><span class="num" data-i18n="bdMap">Ⅴ · MIND MAP</span>
       <h2 data-i18n-html="mTitle">全书<em>思维导图</em></h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="mLead">全书结构化作一张活的地图：理论框架、生态边界、历史形成、现代变迁、研究方法——悬停任意节点，追溯它通向“华夏边缘”的路径。中英双语随语言切换。</p></div>
@@ -504,7 +467,7 @@
   </section>
 
   <section id="maker" class="maker">
-    <div class="reveal"><span class="num" data-i18n="bdMaking">Ⅶ · THE MAKING</span>
+    <div class="reveal"><span class="num" data-i18n="bdMaking">Ⅵ · THE MAKING</span>
       <h2 data-i18n-html="mkTitle">3D 造物记：<em>从 0 到边缘</em></h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="mkLead">与本书同构的 3D 隐喻——发光的内核是“华夏”，青铜巨环是“边缘”，环绕的碎片是被记起与被遗忘的记忆，双碉楼矗立在羌族田野的边缘。以下工程从空场景开始逐块搭建，全程可复现。</p></div>
@@ -528,7 +491,7 @@
   </section>
 
   <section id="praise">
-    <div class="reveal"><span class="num" data-i18n="bdPraise">Ⅷ · PRAISE</span>
+    <div class="reveal"><span class="num" data-i18n="bdPraise">Ⅶ · PRAISE</span>
       <h2 data-i18n="prTitle">他们如何谈论边缘</h2>
       <div class="rule"></div></div>
     <p class="prLead" data-i18n="prLead">当代华语世界最具范式意义的历史人类学经典之一</p>
@@ -542,7 +505,7 @@
   </section>
 
   <section id="author">
-    <div class="reveal"><span class="num" data-i18n="bdAuthor">Ⅸ · AUTHOR &amp; EDITIONS</span>
+    <div class="reveal"><span class="num" data-i18n="bdAuthor">Ⅷ · AUTHOR &amp; EDITIONS</span>
       <h2 data-i18n="auTitle">作者与版本谱系</h2>
       <div class="rule"></div></div>
     <div class="duo">
@@ -555,7 +518,7 @@
   </section>
 
   <section id="translation">
-    <div class="reveal"><span class="num" data-i18n="bdTranslation">Ⅺ · TRANSLATION</span>
+    <div class="reveal"><span class="num" data-i18n="bdTranslation">Ⅸ · TRANSLATION</span>
       <h2 data-i18n-html="trTitle">边缘之外</h2>
       <div class="rule"></div>
       <p class="lead" style="color:var(--dim)" data-i18n="trLead">《华夏边缘》至今没有任何官方外译本。一项面向英语世界的首次全文翻译工程正在进行——让“边缘”的方法，抵达汉语之外。</p></div>
@@ -570,17 +533,7 @@
     </div>
   </footer>
 
-<div id="knifeView" style="display:none;position:fixed;inset:0;z-index:16;background:rgba(4,5,9,.9);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px" onclick="closeKnife()">
-  <div class="kwrap" onclick="event.stopPropagation()">
-    <img id="knifeImg" src="assets/book/fig-104.png" alt="图二">
-    <div class="kcap"><b data-i18n="bF2a">图二</b><span data-i18n="bF2b">细石叶刀与双孔石刀</span><i data-i18n="knPage">原书页一〇四 · 点击画面放大细看</i></div>
-    <div class="kx" onclick="closeKnife()">⊗</div>
-  </div>
-</div>
-<script>
-function openKnife(){ var v=document.getElementById('knifeView'); v.style.display='flex'; var im=document.getElementById('knifeImg'); if(im){ im.classList.remove('zoomed'); } }
-function closeKnife(){ document.getElementById('knifeView').style.display='none'; }
-</script>
+
 
 <div id="bookOverlay" style="display:none;position:fixed;inset:0;z-index:15;background:rgba(4,5,9,.82);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:24px" onclick="closeBookOverlay()">
   <div class="glass" style="max-width:860px;width:100%;max-height:86vh;overflow:auto;padding:38px 40px;display:flex;gap:34px;flex-wrap:wrap" onclick="event.stopPropagation()">
@@ -664,10 +617,11 @@ const T = { lang:'zh', dict:{
  story2:{zh:'若把来往密切的四条山沟一起算进来，故事又可以从四个弟兄讲起。',en:'Count the four valleys whose people visit one another, and the story begins instead with four brothers.'},
  story3:{zh:'人们今天同谁来往，也影响他们怎样讲述共同的过去。',en:'Whom people visit today shapes how they tell their common past.'},
  storyCta:{zh:'带着这个问题 · 读概念八章',en:'Carry the question into the eight concepts'},
- knHint:{zh:'点击放大细看',en:'Tap to zoom in'},
- knPage:{zh:'原书页一〇四 · 点击画面放大细看',en:'Book page 104 · tap the image to zoom'},
+
+
  ln1:{zh:'生计边界',en:'LIVELIHOOD'}, ln2:{zh:'历史书写',en:'RECORDS'}, ln3:{zh:'认同变迁',en:'IDENTITY'},
- nMedia:{zh:'影像与访谈',en:'Film & talks'}, nConcepts:{zh:'概念八章',en:'Eight concepts'}, nPlates:{zh:'信息图',en:'Infographic'}, nBook:{zh:'书影',en:'Book pages'}, nScroll:{zh:'边缘长卷',en:'The long scroll'}, nMap:{zh:'全书导图',en:'Mind map'}, nMaker:{zh:'3D 造物记',en:'Making-of'}, nPraise:{zh:'读者回响',en:'Praise'}, nTr:{zh:'译程',en:'Translation'},
+ nMedia:{zh:'影像与访谈',en:'Film & talks'}, nConcepts:{zh:'概念八章',en:'Eight concepts'}, nPlates:{zh:'信息图',en:'Infographic'},
+ nScroll:{zh:'边缘长卷',en:'The long scroll'}, nMap:{zh:'全书导图',en:'Mind map'}, nMaker:{zh:'3D 造物记',en:'Making-of'}, nPraise:{zh:'读者回响',en:'Praise'}, nTr:{zh:'译程',en:'Translation'},
  ls1b:{zh:'气候变动 · 农业边缘化',en:'Climate change · agriculture recedes'},
  ls2b:{zh:'周人族源 · 西周记忆',en:'Zhou origins · Western Zhou memory'},
  ls3b:{zh:'汉代凝练 · 长城资源界线',en:'Han consolidation · the Great Wall line'},
@@ -681,11 +635,11 @@ const T = { lang:'zh', dict:{
  bdConcepts:{zh:'Ⅲ · CONCEPTS',en:'Ⅲ · CONCEPTS'},
  bdPlates:{zh:'Ⅳ · PLATES',en:'Ⅳ · PLATES'},
  bdBook:{zh:'Ⅴ · FROM THE BOOK',en:'Ⅴ · FROM THE BOOK'},
- bdMap:{zh:'Ⅵ · MIND MAP',en:'Ⅵ · MIND MAP'},
- bdMaking:{zh:'Ⅶ · THE MAKING',en:'Ⅶ · THE MAKING'},
- bdPraise:{zh:'Ⅷ · PRAISE',en:'Ⅷ · PRAISE'},
- bdAuthor:{zh:'Ⅸ · AUTHOR &amp; EDITIONS',en:'Ⅸ · AUTHOR &amp; EDITIONS'},
- bdTranslation:{zh:'Ⅺ · TRANSLATION',en:'Ⅺ · TRANSLATION'},
+ bdMap:{zh:'Ⅴ · MIND MAP',en:'Ⅴ · MIND MAP'},
+ bdMaking:{zh:'Ⅵ · THE MAKING',en:'Ⅵ · THE MAKING'},
+ bdPraise:{zh:'Ⅶ · PRAISE',en:'Ⅶ · PRAISE'},
+ bdAuthor:{zh:'Ⅷ · AUTHOR &amp; EDITIONS',en:'Ⅷ · AUTHOR &amp; EDITIONS'},
+ bdTranslation:{zh:'Ⅸ · TRANSLATION',en:'Ⅸ · TRANSLATION'},
  spLo:{zh:'疏',en:'Sparse'}, spMid:{zh:'常',en:'Normal'}, spFull:{zh:'繁',en:'Dense'},
  sidesign:{zh:'华夏边缘 · 历史记忆与族群认同',en:'HUAXIA FRONTIER · Historical Memory & Ethnic Identity'},
  metaline:{zh:'田野坐标 北纬31°06′ 东经103°51′ · 岷江上游 · 田野期一九九〇至二〇〇〇年代 · 研究编号 01',en:'FIELD SITE 31°06′N 103°51′E · UPPER MINJIANG · FIELDWORK 1990s—2000s · STUDY No.01'},
@@ -708,9 +662,11 @@ const T = { lang:'zh', dict:{
  pLead:{zh:'一张图解：范式如何转换、边界如何形成、认同如何变迁——全书的提问与回答，收进一方画面。',en:'One infographic: how paradigms shift, how boundaries form, how identity changes — the book'+String.fromCharCode(39)+'s questions and answers in a single frame.'},
  pl1a:{zh:'图版',en:'PLATE'}, pl1b:{zh:'《华夏边缘》族群认同图解 · 全书核心逻辑一图读懂',en:'The Margins of Huaxia — how boundaries shape identity'},
  pl2a:{zh:'图版贰',en:'PLATE Ⅱ'}, pl2b:{zh:'从客观特征到主观认同 · 范式之变',en:'From objective traits to subjective identity — a paradigm shift'},
- bTitle:{zh:'书影 · <em>纸上的边缘</em>',en:'Inside <em>the book</em>'},
- bLead:{zh:'从原书电子版中提取的矢量书影——封面与内页图版，无限放大而不失真。悬停卡片，让书页立起来。',en:'Two stone knives lie side by side on page 104. On maps of Hehuang and Ordos, small marks locate the sites where people once farmed or tended their herds.'},
- bcap1:{zh:'封面',en:'COVER'}, bcap1b:{zh:'世纪文景 · 2020年版',en:'Century Wenjing · 2020'}, bcap2:{zh:'内页图版',en:'INNER PLATE'},
+
+
+
+
+ bcap2:{zh:'内页图版',en:'INNER PLATE'},
  mTitle:{zh:'全书<em>思维导图</em>',en:'A guide to <em>the argument</em>'},
  mLead:{zh:'全书结构化作一张活的地图：理论框架、生态边界、历史形成、现代变迁、研究方法——悬停任意节点，追溯它通向“华夏边缘”的路径。中英双语随语言切换。',en:'Begin with social memory, or follow the argument through ecology, historical writing and village life. Select a branch to read further.'},
  ml1:{zh:'点击节点 · 逐级展开',en:'Click nodes · expand level by level'}, ml2:{zh:'横向滚动查看全图',en:'Scroll sideways for the full map'}, ml3:{zh:'双语切换 · L 键',en:'Bilingual · press L'},
@@ -1134,7 +1090,6 @@ document.getElementById('navpop').addEventListener('click', function(e){ if(e.ta
 document.getElementById('btnMenu').onclick = toggleNavPop;
 document.getElementById('btnTray').onclick = function(){ document.body.classList.toggle('tray-open'); };
 if(innerWidth<760){ const ap=document.getElementById('apanel'); if(ap) ap.classList.add('closed'); }
-const fk=document.getElementById('figKnife'); if(fk) fk.onclick=openKnife;
 /* 三寨子故事：滚动驱动 三沟→四沟 拉远 */
 (function(){
   const sec=document.getElementById('story'); if(!sec) return;
@@ -1152,7 +1107,6 @@ const fk=document.getElementById('figKnife'); if(fk) fk.onclick=openKnife;
   }
   addEventListener('scroll',updStory,{passive:true}); addEventListener('resize',updStory); updStory();
 })();
-document.getElementById('knifeImg').onclick=function(e){ const r=this.getBoundingClientRect(); const ox=((e.clientX-r.left)/r.width*100).toFixed(1), oy=((e.clientY-r.top)/r.height*100).toFixed(1); if(this.classList.contains('zoomed')){ this.classList.remove('zoomed'); } else { this.style.transformOrigin=ox+'% '+oy+'%'; this.classList.add('zoomed'); } };
 document.querySelectorAll('#segDen span').forEach(function(s){ s.onclick=function(){density=s.dataset.v;document.querySelectorAll('#segDen span').forEach(function(x){ x.classList.toggle('on',x===s); });applyDensity(); }; });
 [["btnSound",toggleSound],["btnPause",togglePause],["btnTheme",toggleTheme],["btnHide",toggleHide],["btnRestore",toggleHide],["apHead",()=>document.getElementById('apanel').classList.toggle('closed')]].forEach(([id,fn])=>{
   const el = document.getElementById(id); if(el) el.onclick = fn;
@@ -1220,7 +1174,7 @@ const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main
 
 applyLang();
 setScene('morning');
-console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v18');
+console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v19');
 document.documentElement.setAttribute('data-scene','morning');
 </script>
 </body>
