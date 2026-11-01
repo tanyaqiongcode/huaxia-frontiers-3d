@@ -105,6 +105,17 @@
     animation:hfloat 6s ease-in-out infinite;display:none}
   @media(min-width:1100px){.heroBook{display:block}#hero{padding-right:310px;padding-left:24px}}
   .heroBook img{display:block;width:100%}
+  .bpage.zoomable{cursor:zoom-in}
+  .bpage.zoomable img{transition:filter .3s}
+  .bpage.zoomable:hover img{filter:brightness(1.08)}
+  .zhint{display:block;font-style:normal;font-size:10.5px;letter-spacing:.16em;color:var(--gold);margin-top:5px}
+  #knifeView .kwrap{position:relative;max-width:min(86vw,560px)}
+  #knifeImg{display:block;width:100%;max-height:80vh;object-fit:contain;border-radius:8px;cursor:zoom-in;transition:transform .35s ease;transform-origin:center}
+  #knifeImg.zoomed{transform:scale(2.4);cursor:zoom-out}
+  .kcap{margin-top:12px;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;color:var(--ink)}
+  .kcap b{color:var(--gold-hi)}
+  .kcap i{font-style:normal;color:var(--dim);font-size:11px;letter-spacing:.14em}
+  .kx{position:absolute;top:-16px;right:-16px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:rgba(10,12,18,.9);color:var(--dim);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px}
   .hbCue{position:absolute;top:10px;right:10px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
   .hbPing{width:32px;height:32px;border-radius:50%;border:1px solid var(--gold);background:rgba(8,9,14,.66);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;position:relative;color:#f0d9a6;font-size:12.5px;font-weight:600}
   .hbPing::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:1px solid var(--gold);animation:hbpulse 2.4s ease-out infinite}
@@ -131,6 +142,26 @@
   .apanel .hd i{font-style:normal;font-size:10px;letter-spacing:.2em}
   .apanel .bd{margin-top:12px;display:flex;flex-direction:column;gap:11px}
   .apanel.closed .bd{display:none}
+  #tooltray{display:contents}
+  .trayToggle{display:none}
+  .navpop{position:fixed;top:54px;right:14px;z-index:9;display:none;flex-direction:column;min-width:150px;padding:10px;border-radius:14px;background:rgba(10,12,18,.9);backdrop-filter:blur(10px);border:1px solid var(--line)}
+  .navpop a{color:var(--ink);text-decoration:none;font-size:12.5px;letter-spacing:.14em;padding:8px 12px;border-radius:8px}
+  .navpop a:hover{background:rgba(201,164,92,.14);color:var(--gold-hi)}
+  @media(max-width:760px){
+    .trayToggle{display:flex}
+    #tooltray{display:none;position:fixed;top:54px;right:12px;flex-direction:column;gap:8px;z-index:9;padding:12px;border-radius:14px;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border:1px solid var(--line)}
+    body.tray-open #tooltray{display:flex}
+    .apanel{right:10px;bottom:10px;width:210px}
+  }
+  #hero>*:not(.heroBook){position:relative;z-index:1}
+  #hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 64% 58% at 50% 52%,rgba(4,5,10,.6),transparent 72%);pointer-events:none;z-index:0}
+  [data-theme="light"] #hero::before{background:radial-gradient(ellipse 64% 58% at 50% 52%,rgba(240,232,214,.72),transparent 72%)}
+  .prLead{text-align:center;color:var(--dim);font-size:13px;letter-spacing:.22em;margin:2px auto 22px}
+  .pstats{display:flex;gap:clamp(20px,4vw,44px);justify-content:center;flex-wrap:wrap;margin:4px 0 34px}
+  .pstats .ps{text-align:center}
+  .pstats .ps b{font-size:clamp(22px,2.6vw,30px);color:var(--gold-hi);font-weight:600;letter-spacing:.04em}
+  .pstats .ps span{display:block;margin-top:7px;font-size:10.5px;letter-spacing:.16em;color:var(--dim)}
+  #hero .en{max-width:680px;line-height:1.9}
   .apanel label{display:flex;align-items:center;justify-content:space-between;letter-spacing:.14em}
   .seg{display:flex;gap:4px;flex-wrap:wrap}
   .seg span{padding:3px 10px;border:1px solid var(--line);border-radius:99px;cursor:pointer;transition:.25s;font-size:11px;display:flex;align-items:center;gap:5px}
@@ -176,6 +207,38 @@
   .bpage:hover img{opacity:1;transform:translateY(-4px)}
 
   /* 边缘长卷（滚轮驱动） */
+  /* 三寨子 · 社会记忆 */
+  #story{height:320vh;padding:0;max-width:none;position:relative}
+  .sstk{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+  .sMeta{position:absolute;top:5.5vh;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:10.5px}
+  .valley{width:min(88vw,920px);max-height:60vh;transition:transform .18s linear;will-change:transform}
+  .river{fill:none;stroke:#5b7fd9;stroke-width:2.2;opacity:.5;stroke-linecap:round}
+  .hamlet .hs{fill:rgba(8,9,14,.4);stroke:var(--gold);stroke-width:1.5;stroke-linejoin:round}
+  .hamlet .hw{fill:var(--gold);opacity:.75}
+  .vOuter{opacity:0}
+  .vOuter .hs{stroke:#8fa3c7}
+  .vOuter .hw{fill:#8fa3c7}
+  .vOuter .ring{fill:none;stroke:rgba(143,163,199,.45);stroke-dasharray:5 11;stroke-width:1.2}
+  .scap{position:absolute;bottom:12vh;left:50%;transform:translateX(-50%);width:min(88vw,640px);text-align:center;font-size:clamp(15px,2vw,19px);line-height:2.15;color:var(--ink);opacity:0;transition:opacity .5s;text-wrap:balance}
+  .sBtn{position:absolute;bottom:3.2vh;left:50%;transform:translateX(-50%);opacity:0;transition:opacity .5s;white-space:nowrap}
+  #story.p1 .c1{opacity:1}
+  #story.p2 .c2{opacity:1}
+  #story.p3 .c3{opacity:1}
+  #story.p3 .sBtn{opacity:1}
+  @media (prefers-reduced-motion: reduce){
+    #story{height:auto;padding:12vh 0}
+    .sstk{position:static;height:auto}
+    .valley{transition:none}
+    .scap{position:static;transform:none;opacity:1;margin-top:26px}
+    .sBtn{position:static;transform:none;opacity:1;margin-top:22px}
+    .sMeta{position:static;transform:none;margin-bottom:12px}
+    #lscroll{height:auto;padding:10vh 0}
+    .lstick{position:static;height:auto}
+    .ltrack{transform:none!important;flex-direction:column;padding-left:0}
+    .lsvg{height:auto;width:min(82vw,540px)}
+    .lorb{display:none}
+  }
+
   #lscroll{height:460vh;padding:0;max-width:none}
   .lstick{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center}
   .ltrack{display:flex;gap:7vw;align-items:center;will-change:transform;padding-left:10vw}
@@ -184,6 +247,9 @@
   .lcap i{display:block;font-style:normal;font-size:13px;letter-spacing:.3em;color:var(--dim);margin-top:14px}
   .lsvg{height:62vh;flex:0 0 auto;border:1px solid var(--line);border-radius:10px;background:#fff;
     box-shadow:0 26px 70px rgba(0,0,0,.5)}
+.lnavs{position:absolute;bottom:4.5vh;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:3}
+  .lnavs a{font-size:11.5px;letter-spacing:.16em;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:6px 16px;cursor:pointer;background:rgba(8,9,14,.5);transition:color .3s,border-color .3s}
+  .lnavs a:hover{color:var(--gold-hi);border-color:var(--gold)}
   .lorb{position:absolute;top:50%;left:0;width:14px;height:14px;border-radius:50%;background:var(--gold-hi);
     box-shadow:0 0 24px rgba(232,207,150,.95),0 0 70px rgba(201,164,92,.5);transform:translate(-50%,-50%)}
 
@@ -270,10 +336,25 @@
 
 <div class="cmdbar">
   <div class="pill" id="btnLang">A/文 <kbd>L</kbd></div>
-  <div class="pill" id="btnSound">♪ <kbd>S</kbd></div>
-  <div class="pill" id="btnPause">⏸ <kbd>P</kbd></div>
-  <div class="pill" id="btnTheme">◐ <kbd>T</kbd></div>
-  <div class="pill" id="btnHide">⊘ <kbd>H</kbd></div>
+  <div class="pill" id="btnMenu"><span data-i18n="mMenu">目录</span></div>
+  <div id="tooltray">
+    <div class="pill" id="btnSound">♪ <kbd>S</kbd></div>
+    <div class="pill" id="btnPause">⏸ <kbd>P</kbd></div>
+    <div class="pill" id="btnTheme">◐ <kbd>T</kbd></div>
+    <div class="pill" id="btnHide">⊘ <kbd>H</kbd></div>
+  </div>
+  <div class="pill trayToggle" id="btnTray">⚙ <span data-i18n="mTray">设置</span></div>
+</div>
+<div class="navpop" id="navpop" style="display:none">
+  <a href="#media" data-i18n="nMedia">影像与访谈</a>
+  <a href="#concepts" data-i18n="nConcepts">概念八章</a>
+  <a href="#plates" data-i18n="nPlates">信息图</a>
+  <a href="#book" data-i18n="nBook">书影</a>
+  <a href="#lscroll" data-i18n="nScroll">边缘长卷</a>
+  <a href="#mmap" data-i18n="nMap">全书导图</a>
+  <a href="#maker" data-i18n="nMaker">3D 造物记</a>
+  <a href="#praise" data-i18n="nPraise">读者回响</a>
+  <a href="#translation" data-i18n="nTr">译程</a>
 </div>
 <div class="restore" id="btnRestore" title="恢复界面 (H)">◎</div>
 <div class="mark" title="The Frontiers of Huaxia"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="currentColor"/></svg></div>
@@ -296,20 +377,12 @@
 
 <main>
   <section id="hero">
-    <div class="metaline" data-i18n="metaline">田野坐标 31°06′N 103°51′E · 岷江上游 · 田野期 1990s—2000s · STUDY No.01</div>
     <div class="zh" data-i18n="heroZh">华夏边缘</div>
     <div class="en" data-i18n="ensub">THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity</div>
-    <div class="quote" data-i18n-html="quote">“当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b>让它看起来像个圆形。”<br><span style="font-size:12.5px;color:var(--dim)">—— 王明珂 · 当代华语世界最具范式意义的历史人类学经典之一</span></div>
-    <div class="stats">
-      <div class="stat"><div class="v"><span class="livedot"></span>7,319</div><div class="k" data-i18n="st1">LIVE · 人在读</div></div>
-      <div class="stat"><div class="v">9.1</div><div class="k" data-i18n="st2">豆瓣评分</div></div>
-      <div class="stat"><div class="v">91.9%</div><div class="k" data-i18n="st3">微信读书推荐值</div></div>
-      <div class="stat"><div class="v">113</div><div class="k" data-i18n="st4">豆瓣书评</div></div>
-    </div>
+    <div class="quote" data-i18n-html="quote">“当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b><br>让它看起来像个圆形。”<br><span style="font-size:12.5px;color:var(--dim)">—— 王明珂</span></div>
     <div class="cta">
-      <a class="btn" href="#media" data-i18n="cta0">影像里的边缘</a>
-      <a class="btn" href="#concepts" data-i18n="cta1">进入边缘 · 概念八章</a>
-      <a class="btn ghost" href="#maker" data-i18n="cta2">观看 3D 造物记</a>
+      <a class="btn" href="#story" data-i18n="ctaMain">从岷江上游读起</a>
+      <a class="btn ghost" href="#media" data-i18n="ctaMedia">影像与访谈</a>
     </div>
     <div class="scrollhint" data-i18n="hint">SCROLL · 向下进入边缘</div>
     <div class="heroBook"><img src="assets/book/cover.jpg" alt="华夏边缘 · 世纪文景2020"><div class="hbCue"><span class="hbPing"><b data-i18n="hbIc">读</b></span><span class="hbTxt" data-i18n="hbCue">点击读简介</span></div></div>
@@ -320,6 +393,31 @@
     <div class="dcap" data-p="0.5"><span data-i18n="dCap2a">Ⅱ · 越过边界</span><i data-i18n="dCap2b">CROSSING THE LINE</i></div>
     <div class="dcap" data-p="0.86"><span data-i18n="dCap3a">Ⅲ · 华夏</span><i data-i18n="dCap3b">HUAXIA</i></div>
   </div>
+
+  <section id="story">
+    <div class="sstk">
+      <div class="metaline sMeta" data-i18n="metaline">田野坐标 北纬31°06′ 东经103°51′ · 岷江上游 · 田野期一九九〇至二〇〇〇年代 · 研究编号 01</div>
+      <svg class="valley" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+        <g class="vInner">
+          <path class="river" d="M500,26 C436,150 544,300 478,430 C452,492 492,540 474,578"/>
+          <g class="hamlet" transform="translate(398,196)"><path class="hs" d="M-30,12 L0,-16 L30,12 M-20,12 L-20,34 L20,34 L20,12"/><rect class="hw" x="-5" y="16" width="10" height="10"/></g>
+          <g class="hamlet" transform="translate(578,306)"><path class="hs" d="M-30,12 L0,-16 L30,12 M-20,12 L-20,34 L20,34 L20,12"/><rect class="hw" x="-5" y="16" width="10" height="10"/></g>
+          <g class="hamlet" transform="translate(446,438)"><path class="hs" d="M-30,12 L0,-16 L30,12 M-20,12 L-20,34 L20,34 L20,12"/><rect class="hw" x="-5" y="16" width="10" height="10"/></g>
+        </g>
+        <g class="vOuter">
+          <ellipse class="ring" cx="500" cy="300" rx="438" ry="256"/>
+          <g class="hamlet" transform="translate(148,128)"><path class="hs" d="M-30,12 L0,-16 L30,12 M-20,12 L-20,34 L20,34 L20,12"/><rect class="hw" x="-5" y="16" width="10" height="10"/></g>
+          <g class="hamlet" transform="translate(846,182)"><path class="hs" d="M-30,12 L0,-16 L30,12 M-20,12 L-20,34 L20,34 L20,12"/><rect class="hw" x="-5" y="16" width="10" height="10"/></g>
+          <g class="hamlet" transform="translate(206,478)"><path class="hs" d="M-30,12 L0,-16 L30,12 M-20,12 L-20,34 L20,34 L20,12"/><rect class="hw" x="-5" y="16" width="10" height="10"/></g>
+          <g class="hamlet" transform="translate(798,486)"><path class="hs" d="M-30,12 L0,-16 L30,12 M-20,12 L-20,34 L20,34 L20,12"/><rect class="hw" x="-5" y="16" width="10" height="10"/></g>
+        </g>
+      </svg>
+      <div class="scap c1" data-i18n="story1">一条山沟里有三个寨子。问起祖先，人们说：从前有三个弟兄来到这里，各自建了一个寨子。</div>
+      <div class="scap c2" data-i18n="story2">若把来往密切的四条山沟一起算进来，故事又可以从四个弟兄讲起。</div>
+      <div class="scap c3" data-i18n="story3">人们今天同谁来往，也影响他们怎样讲述共同的过去。</div>
+      <a class="btn sBtn" href="#concepts" data-i18n="storyCta">带着这个问题 · 读概念八章</a>
+    </div>
+  </section>
 
   <section id="media">
     <div class="reveal"><span class="num" data-i18n="bdMedia">Ⅱ · MEDIA</span>
@@ -363,7 +461,7 @@
       <figure class="bcover"><img src="assets/book/cover.jpg" alt="封面"><figcaption><b data-i18n="bcap1">封面</b><span data-i18n="bcap1b">世纪文景 · 2020年版</span></figcaption></figure>
       <div class="bpages">
         <figure class="bpage"><img src="assets/book/fig-099.png" alt="p.99 湟水流域" loading="lazy"><figcaption><b data-i18n="bF1a">图一</b><span data-i18n="bF1b">青海河湟地区新石器时代晚期至铜石并用时期重要考古遗址</span></figcaption></figure>
-        <figure class="bpage"><img src="assets/book/fig-104.png" alt="p.104" loading="lazy"><figcaption><b data-i18n="bF2a">图二</b><span data-i18n="bF2b">细石叶刀与双孔石刀</span></figcaption></figure>
+        <figure class="bpage zoomable" id="figKnife"><img src="assets/book/fig-104.png" alt="p.104" loading="lazy"><figcaption><b data-i18n="bF2a">图二</b><span data-i18n="bF2b">细石叶刀与双孔石刀</span><i class="zhint" data-i18n="knHint">点击放大细看</i></figcaption></figure>
         <figure class="bpage"><img src="assets/book/fig-113.png" alt="p.113" loading="lazy"><figcaption><b data-i18n="bF4a">图四</b><span data-i18n="bF4b">鄂尔多斯及其邻近地区新石器时代晚期重要考古遗址</span></figcaption></figure>
         <figure class="bpage"><img src="assets/book/fig-127.png" alt="p.127" loading="lazy"><figcaption><b data-i18n="bF5a">图五</b><span data-i18n="bF5b">鄂尔多斯及其邻近地区春秋末至汉代重要考古遗址</span></figcaption></figure>
       </div>
@@ -384,7 +482,7 @@
         <img class="lsvg" src="assets/book/fig-127.png" alt="p.185" loading="lazy">
         <div class="lcap"><span data-i18n="ls5a">NOW</span><i data-i18n="ls5b">边缘重构 · 正在翻译</i></div>
       </div>
-      <div class="lorb" id="lorb"></div>
+      <div class="lnavs"><a data-p="0.1" data-i18n="ln1">生计边界</a><a data-p="0.4" data-i18n="ln2">历史书写</a><a data-p="0.72" data-i18n="ln3">认同变迁</a></div>
     </div>
   </section>
 
@@ -424,6 +522,13 @@
     <div class="reveal"><span class="num" data-i18n="bdPraise">Ⅷ · PRAISE</span>
       <h2 data-i18n="prTitle">他们如何谈论边缘</h2>
       <div class="rule"></div></div>
+    <p class="prLead" data-i18n="prLead">当代华语世界最具范式意义的历史人类学经典之一</p>
+    <div class="pstats">
+      <div class="ps"><b>7,319</b><span data-i18n="ps1">微信读书 · 人在读（2026-11-02 记录）</span></div>
+      <div class="ps"><b>9.1</b><span data-i18n="st2">豆瓣评分</span></div>
+      <div class="ps"><b>91.9%</b><span data-i18n="st3">微信读书推荐值</span></div>
+      <div class="ps"><b>113</b><span data-i18n="st4">豆瓣书评</span></div>
+    </div>
     <div class="quotes" id="quotes"></div>
   </section>
 
@@ -454,6 +559,18 @@
       <div class="springer">SPRINGER · TRANSLATION PROJECT IN PROGRESS</div>
     </div>
   </footer>
+
+<div id="knifeView" style="display:none;position:fixed;inset:0;z-index:16;background:rgba(4,5,9,.9);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px" onclick="closeKnife()">
+  <div class="kwrap" onclick="event.stopPropagation()">
+    <img id="knifeImg" src="assets/book/fig-104.png" alt="图二">
+    <div class="kcap"><b data-i18n="bF2a">图二</b><span data-i18n="bF2b">细石叶刀与双孔石刀</span><i data-i18n="knPage">原书页一〇四 · 点击画面放大细看</i></div>
+    <div class="kx" onclick="closeKnife()">⊗</div>
+  </div>
+</div>
+<script>
+function openKnife(){ var v=document.getElementById('knifeView'); v.style.display='flex'; var im=document.getElementById('knifeImg'); if(im){ im.classList.remove('zoomed'); } }
+function closeKnife(){ document.getElementById('knifeView').style.display='none'; }
+</script>
 
 <div id="bookOverlay" style="display:none;position:fixed;inset:0;z-index:15;background:rgba(4,5,9,.82);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:24px" onclick="closeBookOverlay()">
   <div class="glass" style="max-width:860px;width:100%;max-height:86vh;overflow:auto;padding:38px 40px;display:flex;gap:34px;flex-wrap:wrap" onclick="event.stopPropagation()">
@@ -528,6 +645,19 @@ const SOC = [
  {n:'中研院史语所',u:'https://www1.ihp.sinica.edu.tw/Fellows/Ming-ke_Wang',d:{zh:'王明珂研究员页面 · 官方',en:'Official fellow page, IHP'}}
 ];
 const T = { lang:'zh', dict:{
+ prLead:{zh:'当代华语世界最具范式意义的历史人类学经典之一',en:'One of the most paradigm-shifting works of historical anthropology in the Chinese-speaking world'},
+ ps1:{zh:'微信读书 · 人在读（2026-11-02 记录）',en:'WeRead readers on record · Nov 2, 2026'},
+ ctaMain:{zh:'从岷江上游读起',en:'Begin upstream, in the Minjiang valley'},
+ ctaMedia:{zh:'影像与访谈',en:'Film & talks'},
+ mMenu:{zh:'目录',en:'Menu'}, mTray:{zh:'设置',en:'Settings'},
+ story1:{zh:'一条山沟里有三个寨子。问起祖先，人们说：从前有三个弟兄来到这里，各自建了一个寨子。',en:'Three villages share one mountain valley. Ask about the ancestors, and people say: three brothers came here long ago, and each founded a village.'},
+ story2:{zh:'若把来往密切的四条山沟一起算进来，故事又可以从四个弟兄讲起。',en:'Count the four valleys whose people visit one another, and the story begins instead with four brothers.'},
+ story3:{zh:'人们今天同谁来往，也影响他们怎样讲述共同的过去。',en:'Whom people visit today shapes how they tell their common past.'},
+ storyCta:{zh:'带着这个问题 · 读概念八章',en:'Carry the question into the eight concepts'},
+ knHint:{zh:'点击放大细看',en:'Tap to zoom in'},
+ knPage:{zh:'原书页一〇四 · 点击画面放大细看',en:'Book page 104 · tap the image to zoom'},
+ ln1:{zh:'生计边界',en:'LIVELIHOOD'}, ln2:{zh:'历史书写',en:'RECORDS'}, ln3:{zh:'认同变迁',en:'IDENTITY'},
+ nMedia:{zh:'影像与访谈',en:'Film & talks'}, nConcepts:{zh:'概念八章',en:'Eight concepts'}, nPlates:{zh:'信息图',en:'Infographic'}, nBook:{zh:'书影',en:'Book pages'}, nScroll:{zh:'边缘长卷',en:'The long scroll'}, nMap:{zh:'全书导图',en:'Mind map'}, nMaker:{zh:'3D 造物记',en:'Making-of'}, nPraise:{zh:'读者回响',en:'Praise'}, nTr:{zh:'译程',en:'Translation'},
  apT:{zh:'氛围 · ATMOSPHERE',en:'ATMOSPHERE'},
  pScene:{zh:'场景',en:'SCENE'}, pMist:{zh:'雾',en:'MIST'}, pDen:{zh:'粒子',en:'PARTICLES'},
  stMo:{zh:'晨光漂流 · 清透大气',en:'Morning drift · clear air'},
@@ -546,8 +676,7 @@ const T = { lang:'zh', dict:{
  metaline:{zh:'田野坐标 北纬31°06′ 东经103°51′ · 岷江上游 · 田野期一九九〇至二〇〇〇年代 · 研究编号 01',en:'FIELD SITE 31°06′N 103°51′E · UPPER MINJIANG · FIELDWORK 1990s—2000s · STUDY No.01'},
  ensub:{zh:'',en:'THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity'},
  heroZh:{zh:'华夏边缘',en:'Huaxia Frontier'},
- quote:{zh:'“当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b>让它看起来像个圆形。”<br><span style=“font-size:12.5px;color:var(--dim)”>—— 王明珂 · 当代华语世界最具范式意义的历史人类学经典之一</span>',
-  en:'"When we draw a circle on paper, it is in fact its <b>edge</b> that makes it look like a circle."<br><span style="font-size:12.5px;color:var(--dim)">— Wang Ming-ke · A paradigm-defining classic of historical anthropology</span>'},
+ quote:{zh:'“当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b><br>让它看起来像个圆形。”<br><span style="font-size:12.5px;color:var(--dim)">—— 王明珂</span>',en:'"Draw a circle on a sheet of paper: it is its <b>edge</b><br>that makes it a circle."<br><span style="font-size:12.5px;color:var(--dim)">—— Wang Ming-ke</span>'},
  st1:{zh:'LIVE · 人在读',en:'LIVE · READING'}, st2:{zh:'豆瓣评分',en:'Douban'}, st3:{zh:'微信读书推荐值',en:'WeRead Score'}, st4:{zh:'豆瓣书评',en:'Reviews'},
  cta0:{zh:'影像里的边缘',en:'The Edge on Screen'}, cta1:{zh:'进入边缘 · 概念八章',en:'ENTER THE EDGE'}, cta2:{zh:'观看 3D 造物记',en:'WATCH THE MAKING'},
  hint:{zh:'SCROLL · 向下进入边缘',en:'SCROLL · INTO THE EDGE'},
@@ -985,11 +1114,36 @@ function togglePause(){ paused = !paused; btnPause.classList.toggle('on', paused
 function toggleTheme(){ applyTheme(theme==='dark'?'light':'dark'); btnTheme.classList.toggle('on', theme==='light'); }
 function toggleHide(){ document.body.classList.toggle('ui-hidden'); }
 const hb=document.querySelector('.heroBook'); if(hb) hb.onclick=function(){ if(window.openBookOverlay) openBookOverlay(); };
+function toggleNavPop(){ const n=document.getElementById('navpop'); if(n) n.style.display = (n.style.display==='none'?'flex':'none'); }
+document.getElementById('navpop').addEventListener('click', function(e){ if(e.target.tagName==='A') this.style.display='none'; });
+document.getElementById('btnMenu').onclick = toggleNavPop;
+document.getElementById('btnTray').onclick = function(){ document.body.classList.toggle('tray-open'); };
+if(innerWidth<760){ const ap=document.getElementById('apanel'); if(ap) ap.classList.add('closed'); }
+const fk=document.getElementById('figKnife'); if(fk) fk.onclick=openKnife;
+/* 三寨子故事：滚动驱动 三沟→四沟 拉远 */
+(function(){
+  const sec=document.getElementById('story'); if(!sec) return;
+  const svg=sec.querySelector('.valley'), vOut=sec.querySelector('.vOuter'); if(!svg||!vOut) return;
+  function updStory(){
+    const r=sec.getBoundingClientRect(), total=r.height-innerHeight;
+    if(total<=0) return;
+    const p=Math.min(1,Math.max(0,-r.top/total));
+    sec.classList.toggle('p1', p<.38);
+    sec.classList.toggle('p2', p>=.38 && p<.72);
+    sec.classList.toggle('p3', p>=.72);
+    const sc = p<.38 ? 1 : (p<.72 ? 1-(p-.38)/.34*.42 : .58);
+    svg.style.transform='scale('+sc+')';
+    vOut.style.opacity = p<.38 ? 0 : Math.min(1,(p-.38)/.15);
+  }
+  addEventListener('scroll',updStory,{passive:true}); addEventListener('resize',updStory); updStory();
+})();
+document.getElementById('knifeImg').onclick=function(e){ const r=this.getBoundingClientRect(); const ox=((e.clientX-r.left)/r.width*100).toFixed(1), oy=((e.clientY-r.top)/r.height*100).toFixed(1); if(this.classList.contains('zoomed')){ this.classList.remove('zoomed'); } else { this.style.transformOrigin=ox+'% '+oy+'%'; this.classList.add('zoomed'); } };
 document.querySelectorAll('#segDen span').forEach(function(s){ s.onclick=function(){density=s.dataset.v;document.querySelectorAll('#segDen span').forEach(function(x){ x.classList.toggle('on',x===s); });applyDensity(); }; });
 [["btnSound",toggleSound],["btnPause",togglePause],["btnTheme",toggleTheme],["btnHide",toggleHide],["btnRestore",toggleHide],["apHead",()=>document.getElementById('apanel').classList.toggle('closed')]].forEach(([id,fn])=>{
   const el = document.getElementById(id); if(el) el.onclick = fn;
 });
 addEventListener('keydown', e=>{
+  if(e.key==='Escape'){ if(window.closeKnife) closeKnife(); if(window.closeBookOverlay) closeBookOverlay(); const np=document.getElementById('navpop'); if(np) np.style.display='none'; document.body.classList.remove('tray-open'); }
   if(e.target.tagName==='INPUT') return;
   const k = e.key.toLowerCase();
   if(k==='l') toggleLang(); else if(k==='s') toggleSound(); else if(k==='p') togglePause();
@@ -1017,6 +1171,16 @@ const fogSlider = document.getElementById('fogR');
 fogSlider.oninput = ()=>{ scene.fog.density = .018+(+fogSlider.value/100)*.05; };
 
 /* ================= 边缘长卷（滚轮驱动） ================= */
+(function(){
+  const navs=document.querySelector('.lnavs'); if(!navs) return;
+  navs.addEventListener('click', function(e){
+    const a=e.target.closest('a'); if(!a) return;
+    const ls=document.getElementById('lscroll'); if(!ls) return;
+    const top=ls.getBoundingClientRect().top+scrollY;
+    const p=parseFloat(a.dataset.p)||0;
+    window.scrollTo({top: top + p*(ls.offsetHeight-innerHeight), behavior:'smooth'});
+  });
+})();
 function updateScroll(){
   const sec = document.getElementById('lscroll');
   if(!sec) return;
@@ -1041,7 +1205,7 @@ const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main
 
 applyLang();
 setScene('morning');
-console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v13');
+console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v14');
 document.documentElement.setAttribute('data-scene','morning');
 </script>
 </body>
