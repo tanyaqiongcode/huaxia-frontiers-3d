@@ -144,21 +144,21 @@ function reg(g, mats, mesh, base){ mesh.material.transparent = true; mesh.materi
 
 /* Ⅰ 知识地层 */
 station((g,mats)=>{
-  for(let i=0;i<9;i++){
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(15,9.5),
+  for(let i=0;i<8;i++){
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(12,7.5),
       new THREE.MeshStandardMaterial({color:0x2a2417+((i*37)<<8), metalness:.55, roughness:.62,
         transparent:true, opacity:0, side:THREE.DoubleSide}));
-    m.position.set(rnd(-.9,.9), -5.6 + i*1.42, rnd(-.6,.6));
-    m.rotation.x = -Math.PI/2*.94; m.rotation.z = rnd(-.09,.09);
+    m.position.set(rnd(-1.1,1.1), -5.2 + i*1.55, rnd(-.7,.7));
+    m.rotation.x = -Math.PI/2*.80; m.rotation.z = rnd(-.09,.09);
     m.material.userData = {base:.30}; mats.push(m.material); g.add(m);
   }
   const curve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-5,-6.2,2), new THREE.Vector3(-1.6,-3.4,-.5), new THREE.Vector3(1.2,-1,1),
     new THREE.Vector3(-1,1.8,-.8), new THREE.Vector3(2.4,4.2,.6), new THREE.Vector3(1,6.4,0)]);
-  const vein = new THREE.Mesh(new THREE.TubeGeometry(curve, 60, .045, 8),
+  const vein = new THREE.Mesh(new THREE.TubeGeometry(curve, 60, .032, 8),
     new THREE.MeshBasicMaterial({color:0xffd98a, transparent:true, opacity:0,
       blending:THREE.AdditiveBlending, depthWrite:false}));
-  vein.material.userData = {base:.95}; mats.push(vein.material); g.add(vein);
+  vein.material.userData = {base:.6}; mats.push(vein.material); g.add(vein);
   {const _d = pts(220, ()=>({x:rnd(-7,7), y:rnd(-6,6.8), z:rnd(-4,4)}), .05, 0xc9a45c, 0); _d.material.userData={base:.55}; mats.push(_d.material); g.add(_d);}
 });
 
@@ -334,7 +334,8 @@ const P = [new THREE.Vector3(0,0,0), new THREE.Vector3(0,1.2,-15), new THREE.Vec
   new THREE.Vector3(-2,1,-45), new THREE.Vector3(1,0,-60), new THREE.Vector3(-1.5,1.4,-75),
   new THREE.Vector3(0,.8,-92), new THREE.Vector3(0,.6,-108)];
 const path = new THREE.CatmullRomCurve3(P);
-ST.forEach((st,i)=>{ const p = path.getPointAt(i/(ST.length-1)); st.g.position.copy(p); st.pos = p.clone(); S.add(st.g); });
+ST.forEach((st,i)=>{ const p = path.getPointAt(i/(ST.length-1)); st.g.position.copy(p); st.pos = p.clone(); S.add(st.g);
+  st.mats.forEach(m=>{ m.opacity = m.userData.base*.45; }); });
 /* 谱系之脉：全程微光管 */
 const veinTube = new THREE.Mesh(new THREE.TubeGeometry(path, 220, .035, 8),
   new THREE.MeshBasicMaterial({color:0xc9a45c, transparent:true, opacity:.14,
@@ -399,9 +400,9 @@ function tick(){
   const p = Math.min(.9999, Math.max(0, prog));
   tmpP.copy(path.getPointAt(p)); tmpT.copy(path.getPointAt(Math.min(1, p+.012)));
   C.position.set(
-    tmpP.x - tmpT.x*7.5 + mx*2.2 + Math.sin(t*.24)*.5,
-    tmpP.y + 2.6 - my*1.6 + Math.sin(t*.31)*.35,
-    tmpP.z - tmpT.z*7.5);
+    tmpP.x - tmpT.x*6.2 + mx*2.2 + Math.sin(t*.24)*.5,
+    tmpP.y + 4.2 - my*1.6 + Math.sin(t*.31)*.35,
+    tmpP.z - tmpT.z*6.2);
   look.copy(tmpP).addScaledVector(tmpT, 5); C.lookAt(look);
   follow.position.copy(C.position);
 
@@ -409,7 +410,7 @@ function tick(){
   ST.forEach((st,i)=>{
     const d = C.position.distanceTo(st.pos);
     const vis = Math.max(0, Math.min(1, 1.5 - Math.abs(d-9)/10));
-    st.mats.forEach(m=>{ m.opacity += ((m.userData.base*vis) - m.opacity)*.08; });
+    st.mats.forEach(m=>{ m.opacity += ((m.userData.base*vis) - m.opacity)*.12; });
     if(st.userData) for(const k in st.userData){
       const o = st.userData[k];
       if(o.isMesh && o.geometry && o.geometry.type==='TorusGeometry') o.rotation.z = t*.02;
