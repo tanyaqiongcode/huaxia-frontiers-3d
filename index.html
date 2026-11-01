@@ -110,13 +110,14 @@
 
 <div id="loader"><div class="ring"></div><div class="pct2" id="lpct">0</div></div>
 
+<script>window.addEventListener('error',e=>{document.title='ERR:'+e.message+' @'+e.lineno;});</script>
 <script src="assets/three.min.js"></script>
 <script>
 /* ================= 无文字谱系之旅 =================
    Ⅰ地层(福柯·考古) Ⅱ环塔(福柯·规训) Ⅲ同心环(哈布瓦赫·记忆)
    Ⅳ双群光缝(巴特·边界) Ⅴ星群(安德森·想象) Ⅵ雾墙(拉铁摩尔·边疆) Ⅶ华夏边缘(王明珂) */
 const R = new THREE.WebGLRenderer({canvas:document.getElementById('gl'), antialias:true});
-R.setPixelRatio(Math.min(devicePixelRatio,2)); R.setSize(innerWidth,innerHeight);
+R.setPixelRatio(Math.min(devicePixelRatio,1.5)); R.setSize(innerWidth,innerHeight);
 R.setClearColor(0x06070d);
 const S = new THREE.Scene(); S.fog = new THREE.FogExp2(0x06070d, 0.030);
 const C = new THREE.PerspectiveCamera(46, innerWidth/innerHeight, .1, 260);
@@ -399,6 +400,7 @@ const clock = new THREE.Clock();
 const tmpP = new THREE.Vector3(), tmpT = new THREE.Vector3(), look = new THREE.Vector3();
 let li = -1;
 function tick(){
+  try{
   requestAnimationFrame(tick);
   const t = clock.getElapsedTime();
   target = Math.min(1, Math.max(0, scrollY / maxScroll()));
@@ -448,6 +450,7 @@ function tick(){
   if(!loaded){ lp = Math.min(100, lp + rnd(1.6,4.2)); lpct.textContent = Math.floor(lp);
     if(lp>=100){ loaded=true; loader.classList.add('done'); } }
   R.render(S, C);
+  }catch(e){ document.title='TICKERR:'+e.message; };
 }
 tick();
 </script>
