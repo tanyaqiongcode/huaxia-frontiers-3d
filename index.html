@@ -92,10 +92,16 @@
   .btn:hover{background:var(--gold);color:#100c04;box-shadow:0 8px 40px rgba(201,164,92,.35)}
   .btn.ghost{border-color:rgba(139,132,116,.4);color:var(--dim);background:none}
   .btn.ghost:hover{border-color:var(--gold);color:var(--gold-hi);background:rgba(201,164,92,.06);box-shadow:none}
+  .heroBook{position:absolute;right:7%;top:50%;transform:translateY(-50%);width:148px;border-radius:5px;
+    overflow:hidden;box-shadow:16px 24px 60px rgba(0,0,0,.6),0 0 0 1px var(--line);
+    animation:hfloat 6s ease-in-out infinite;display:none}
+  @media(min-width:1100px){.heroBook{display:block}}
+  .heroBook img{display:block;width:100%}
+  @keyframes hfloat{0%,100%{transform:translateY(-52%)}50%{transform:translateY(-48%)}}
   .scrollhint{position:absolute;bottom:34px;color:var(--dim);font-size:11px;letter-spacing:.4em;animation:bob 2.4s ease-in-out infinite}
   @keyframes bob{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(8px);opacity:1}}
 
-  #descend{height:230vh;position:relative}
+  #descend{height:150vh;position:relative}
   .dcap{position:fixed;top:46%;left:50%;transform:translate(-50%,-50%);z-index:2;text-align:center;
     font-size:clamp(19px,2.6vw,27px);letter-spacing:.34em;color:var(--ink);opacity:0;pointer-events:none;
     text-shadow:0 2px 34px rgba(0,0,0,.65);transition:opacity .5s}
@@ -285,6 +291,7 @@
       <a class="btn ghost" href="#maker" data-i18n="cta2">观看 3D 造物记</a>
     </div>
     <div class="scrollhint" data-i18n="hint">SCROLL · 向下进入边缘</div>
+    <div class="heroBook"><img src="assets/book/cover.jpg" alt="华夏边缘 · 世纪文景2020"></div>
   </section>
 
   <div id="descend">
@@ -332,12 +339,12 @@
       <div class="rule"></div>
       <p class="lead" data-i18n="bLead">从原书电子版中提取的矢量书影——封面与内页图版，无限放大而不失真。悬停卡片，让书页立起来。</p></div>
     <div class="bookrow reveal">
-      <figure class="bcover"><img src="assets/book/cover.svg" alt="封面"><figcaption><b data-i18n="bcap1">封面</b><span data-i18n="bcap1b">世纪文景 · 2020年版</span></figcaption></figure>
+      <figure class="bcover"><img src="assets/book/cover.jpg" alt="封面"><figcaption><b data-i18n="bcap1">封面</b><span data-i18n="bcap1b">世纪文景 · 2020年版</span></figcaption></figure>
       <div class="bpages">
-        <figure class="bpage"><img src="assets/book/p099.svg" alt="内页图版 p.99" loading="lazy"><figcaption><b data-i18n="bcap2">内页图版</b><span>p.99</span></figcaption></figure>
-        <figure class="bpage"><img src="assets/book/p104.svg" alt="内页图版 p.104" loading="lazy"><figcaption><b data-i18n="bcap2">内页图版</b><span>p.104</span></figcaption></figure>
-        <figure class="bpage"><img src="assets/book/p113.svg" alt="内页图版 p.113" loading="lazy"><figcaption><b data-i18n="bcap2">内页图版</b><span>p.113</span></figcaption></figure>
-        <figure class="bpage"><img src="assets/book/p185.svg" alt="内页图版 p.185" loading="lazy"><figcaption><b data-i18n="bcap2">内页图版</b><span>p.185</span></figcaption></figure>
+        <figure class="bpage"><img src="assets/book/fig-099.png" alt="p.99 湟水流域" loading="lazy"><figcaption><b data-i18n="bY1">遗址分布</b><span>p.99</span></figcaption></figure>
+        <figure class="bpage"><img src="assets/book/fig-104.png" alt="p.104" loading="lazy"><figcaption><b data-i18n="bY2">图版</b><span>p.104</span></figcaption></figure>
+        <figure class="bpage"><img src="assets/book/fig-113.png" alt="p.113" loading="lazy"><figcaption><b data-i18n="bY1">遗址分布</b><span>p.113</span></figcaption></figure>
+        <figure class="bpage"><img src="assets/book/fig-127.png" alt="p.127" loading="lazy"><figcaption><b data-i18n="bY1">遗址分布</b><span>p.127</span></figcaption></figure>
       </div>
     </div>
   </section>
@@ -608,6 +615,16 @@ const PAL = {
     band:[[.42,.33,.2],[.55,.44,.26],[.36,.28,.16],[.6,.48,.3]], frag:0x6b5124, dust:0x6b5c3a, key:0xfff1d6 }
 };
 let theme = 'dark';
+const SCENES = {
+ morning:{bg:0x0e1119, fog:0x0e1119, fd:.042, key:0xfff1d6, ki:2.6, rim:0x7fa0ff, ri:.5, core:0xffe2a8, ring:0xd8b878,
+   st:{zh:'晨光漂流 · 清透大气',en:'Morning drift · clear air'}, bgc:'#0e1119'},
+ dusk:{bg:0x150d09, fog:0x150d09, fd:.054, key:0xff9a5c, ki:2.1, rim:0xd96c4a, ri:.95, core:0xffb37a, ring:0xc98a4e,
+   st:{zh:'暮色低垂 · 青铜余温',en:'Dusk settles · bronze afterglow'}, bgc:'#150d09'},
+ moonlit:{bg:0x070a14, fog:0x070a14, fd:.05, key:0xbfd4ff, ki:1.5, rim:0x9fb8ff, ri:.85, core:0xcfe4ff, ring:0x9fb8ff,
+   st:{zh:'月夜无风 · 环体静默',en:'Moonlit still · the silent ring'}, bgc:'#070a14'},
+ neon:{bg:0x0c0716, fog:0x0c0716, fd:.046, key:0xff7ad9, ki:1.9, rim:0x7a5cff, ri:1.15, core:0x7affd4, ring:0x8a7cff,
+   st:{zh:'霓虹幻彩 · 边缘发光',en:'Neon glow · the luminous edge'}, bgc:'#0c0716'}
+};
 scene.fog = new THREE.FogExp2(PAL.dark.bg,.052);
 renderer.setClearColor(PAL.dark.bg);
 scene.add(new THREE.AmbientLight(0x1a1826,.9));
@@ -702,7 +719,7 @@ const look = new THREE.Vector3(0,.4,0);
     if(bLife[j]<=0) bpos[j*3+1]=-999; } }
   bGeo.attributes.position.needsUpdate = true;
   /* 从远及近穿越 → 之后回到中景，动态背景陪伴全站 */
-  const vh = innerHeight, d0 = vh*.8, d1 = vh*2.95;
+  const vh = innerHeight, d0 = vh*.75, d1 = vh*2.15;
   const dp = Math.max(0, Math.min(1, (scrollY-d0)/(d1-d0)));
   const ez = dp*dp*(3-2*dp);
   let tpx, tpy, tpz, lx, ly, lz, op;
@@ -798,16 +815,6 @@ addEventListener('keydown', e=>{
 });
 
 /* ================= 氛围面板（极简：场景×4 + 雾） ================= */
-const SCENES = {
- morning:{bg:0x0e1119, fog:0x0e1119, fd:.042, key:0xfff1d6, ki:2.6, rim:0x7fa0ff, ri:.5, core:0xffe2a8, ring:0xd8b878,
-   st:{zh:'晨光漂流 · 清透大气',en:'Morning drift · clear air'}, bgc:'#0e1119'},
- dusk:{bg:0x150d09, fog:0x150d09, fd:.054, key:0xff9a5c, ki:2.1, rim:0xd96c4a, ri:.95, core:0xffb37a, ring:0xc98a4e,
-   st:{zh:'暮色低垂 · 青铜余温',en:'Dusk settles · bronze afterglow'}, bgc:'#150d09'},
- moonlit:{bg:0x070a14, fog:0x070a14, fd:.05, key:0xbfd4ff, ki:1.5, rim:0x9fb8ff, ri:.85, core:0xcfe4ff, ring:0x9fb8ff,
-   st:{zh:'月夜无风 · 环体静默',en:'Moonlit still · the silent ring'}, bgc:'#070a14'},
- neon:{bg:0x0c0716, fog:0x0c0716, fd:.046, key:0xff7ad9, ki:1.9, rim:0x7a5cff, ri:1.15, core:0x7affd4, ring:0x8a7cff,
-   st:{zh:'霓虹幻彩 · 边缘发光',en:'Neon glow · the luminous edge'}, bgc:'#0c0716'}
-};
 let sceneK = 'morning';
 function setScene(k){ sceneK = k; const s = SCENES[k];
   key.color.set(s.key); key.intensity = s.ki;
