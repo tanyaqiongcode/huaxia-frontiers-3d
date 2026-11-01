@@ -103,8 +103,16 @@
   .heroBook{position:absolute;right:2.5%;top:50%;transform:translateY(-50%);width:176px;cursor:pointer;border-radius:5px;
     overflow:hidden;box-shadow:16px 24px 60px rgba(0,0,0,.6),0 0 0 1px var(--line);
     animation:hfloat 6s ease-in-out infinite;display:none}
-  @media(min-width:1100px){.heroBook{display:block}#hero{padding-right:230px;padding-left:60px}}
+  @media(min-width:1100px){.heroBook{display:block}#hero{padding-right:310px;padding-left:24px}}
   .heroBook img{display:block;width:100%}
+  .hbCue{position:absolute;top:10px;right:10px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+  .hbPing{width:32px;height:32px;border-radius:50%;border:1px solid var(--gold);background:rgba(8,9,14,.66);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;position:relative;color:#f0d9a6;font-size:12.5px;font-weight:600}
+  .hbPing::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:1px solid var(--gold);animation:hbpulse 2.4s ease-out infinite}
+  @keyframes hbpulse{0%{transform:scale(1);opacity:.95}75%{transform:scale(2);opacity:0}100%{transform:scale(2);opacity:0}}
+  .hbTxt{font-size:10px;letter-spacing:.16em;color:#f0d9a6;background:rgba(8,9,14,.66);border:1px solid var(--line);border-radius:99px;padding:3px 9px;white-space:nowrap;backdrop-filter:blur(4px)}
+  [data-theme="light"] .hbPing{color:#4a3a1c;background:rgba(250,247,237,.85);border-color:#8a6c33}
+  [data-theme="light"] .hbPing::after{border-color:#8a6c33}
+  [data-theme="light"] .hbTxt{color:#4a3a1c;background:rgba(250,247,237,.88)}
   #bookOverlay .glass{position:relative}
   @keyframes hfloat{0%,100%{transform:translateY(-52%)}50%{transform:translateY(-48%)}}
   .scrollhint{position:absolute;bottom:34px;color:var(--dim);font-size:11px;letter-spacing:.4em;animation:bob 2.4s ease-in-out infinite}
@@ -304,7 +312,7 @@
       <a class="btn ghost" href="#maker" data-i18n="cta2">观看 3D 造物记</a>
     </div>
     <div class="scrollhint" data-i18n="hint">SCROLL · 向下进入边缘</div>
-    <div class="heroBook"><img src="assets/book/cover.jpg" alt="华夏边缘 · 世纪文景2020"></div>
+    <div class="heroBook"><img src="assets/book/cover.jpg" alt="华夏边缘 · 世纪文景2020"><div class="hbCue"><span class="hbPing"><b data-i18n="hbIc">读</b></span><span class="hbTxt" data-i18n="hbCue">点击读简介</span></div></div>
   </section>
 
   <div id="descend">
@@ -341,8 +349,8 @@
       <div class="rule"></div>
       <p class="lead" data-i18n="pLead">两张主题图，把书中的范式之争与认同之变收进一方画面。</p></div>
     <div class="plates">
-      <figure class="plate reveal" data-lang="zh"><img src="assets/plates/plate-1.png" alt="《华夏边缘》族群认同图解" loading="lazy"><figcaption><b data-i18n="pl1a">图版一</b><span data-i18n="pl1b">何为华夏边缘 · 身份认同如何形成</span></figcaption></figure>
-      <figure class="plate reveal" data-lang="en"><img src="assets/plates/margins-en.png" alt="The Margins of Huaxia" loading="lazy"><figcaption><b>PLATE 3</b><span>The Margins of Huaxia — how boundaries shape identity</span></figcaption></figure>
+      <figure class="plate reveal" data-lang="zh"><img src="assets/plates/huaxia-identity-zh.svg" alt="《华夏边缘》族群认同图解" loading="lazy"><figcaption><b data-i18n="pl1a">图版一</b><span data-i18n="pl1b">何为华夏边缘 · 身份认同如何形成</span></figcaption></figure>
+      <figure class="plate reveal" data-lang="en"><img src="assets/plates/huaxia-identity-en.svg" alt="The Margins of Huaxia" loading="lazy"><figcaption><b>PLATE 3</b><span>The Margins of Huaxia — how boundaries shape identity</span></figcaption></figure>
     </div>
   </section>
 
@@ -570,6 +578,7 @@ const T = { lang:'zh', dict:{
  ovEn:{zh:'Huaxia Frontiers: Historical Memory and Ethnic Identity',en:'by Wang Ming-ke'},
  ovBody:{zh:'为什么我们自称“中国人”？华夏从何处来，边界又在哪里？王明珂以考古、文献与多年羌族田野，画出一条随资源竞争与历史记忆不断移动的边界——华夏因边缘而凝聚，也因边缘而改变。读懂边缘，才读懂“什么是中国人”。',en:'Why do we call ourselves "Chinese"? Where did Huaxia come from — and where does its boundary lie? Drawing on archaeology, texts and years of Qiang fieldwork, Wang Ming-ke traces a boundary that keeps moving with resource competition and historical memory. To read the edge is to read "what is Chinese."'},
  ovM1:{zh:'豆瓣 9.1',en:'Douban 9.1'}, ovM2:{zh:'微信读书推荐值 91.9%',en:'WeRead 91.9%'}, ovM3:{zh:'王明珂 · 历史人类学',en:'Wang Ming-ke · Historical Anthropology'},
+ hbCue:{zh:'点击读简介',en:'Click to read'}, hbIc:{zh:'读',en:'Read'},
  playHint:{zh:'点击画面 · 迸发记忆碎片 / ←→ 旋转 / 空格 迸发',en:'Click to burst memory shards / ←→ orbit / Space to burst'},
  prTitle:{zh:'他们如何谈论边缘',en:'On the Edge, in Their Words'},
  auTitle:{zh:'作者与版本谱系',en:'The Author & the Editions'}, auName:{zh:'王明珂',en:'Wang Ming-ke'},
@@ -1032,7 +1041,7 @@ const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main
 
 applyLang();
 setScene('morning');
-console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v12');
+console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v13');
 document.documentElement.setAttribute('data-scene','morning');
 </script>
 </body>
