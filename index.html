@@ -776,13 +776,6 @@ const io = new IntersectionObserver(es=>es.forEach(e=>{
   if(e.isIntersecting) e.target.classList.add('on');
 }),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-let lp = 0;
-const loader = document.getElementById('loader'), lbar = document.getElementById('lbar'), lpct = document.getElementById('lpct');
-const ltimer = setInterval(()=>{
-  lp = Math.min(100, lp+3+Math.random()*4);
-  lbar.style.width = lp+'%'; lpct.textContent = Math.floor(lp);
-  if(lp>=100){ clearInterval(ltimer); setTimeout(()=>loader.classList.add('done'), 350); }
-}, 55);
 applyLang();
 setScene('morning');
 </script>
