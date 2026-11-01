@@ -145,11 +145,11 @@ function reg(g, mats, mesh, base){ mesh.material.transparent = true; mesh.materi
 /* Ⅰ 知识地层 */
 station((g,mats)=>{
   for(let i=0;i<8;i++){
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(12,7.5),
-      new THREE.MeshStandardMaterial({color:0x2a2417+((i*37)<<8), metalness:.55, roughness:.62,
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(9.5,6.2),
+      new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(0.10, 0.28, 0.085 + i*0.021), metalness:.5, roughness:.6,
         transparent:true, opacity:0, side:THREE.DoubleSide}));
-    m.position.set(rnd(-1.1,1.1), -5.2 + i*1.55, rnd(-.7,.7));
-    m.rotation.x = -Math.PI/2*.80; m.rotation.z = rnd(-.09,.09);
+    m.position.set(rnd(-.9,.9), -5.0 + i*1.5, rnd(-.6,.6));
+    m.rotation.x = -Math.PI/2*.72; m.rotation.z = rnd(-.09,.09);
     m.material.userData = {base:.30}; mats.push(m.material); g.add(m);
   }
   const curve = new THREE.CatmullRomCurve3([
@@ -353,7 +353,8 @@ addEventListener('resize', ()=>{
 /* 深链 #1..#7 */
 if(/^#[1-7]$/.test(location.hash)){
   const k = +location.hash[1];
-  scrollTo(0, ((k-1)/(ST.length-1)) * maxScroll());
+  target = prog = (k-1)/(ST.length-1);
+  scrollTo(0, target * maxScroll());
 }
 
 /* ---------- HUD ---------- */
@@ -400,9 +401,9 @@ function tick(){
   const p = Math.min(.9999, Math.max(0, prog));
   tmpP.copy(path.getPointAt(p)); tmpT.copy(path.getPointAt(Math.min(1, p+.012)));
   C.position.set(
-    tmpP.x - tmpT.x*6.2 + mx*2.2 + Math.sin(t*.24)*.5,
-    tmpP.y + 4.2 - my*1.6 + Math.sin(t*.31)*.35,
-    tmpP.z - tmpT.z*6.2);
+    tmpP.x - tmpT.x*8.2 + mx*2.2 + Math.sin(t*.24)*.5,
+    tmpP.y + 5.4 - my*1.6 + Math.sin(t*.31)*.35,
+    tmpP.z - tmpT.z*8.2);
   look.copy(tmpP).addScaledVector(tmpT, 5); C.lookAt(look);
   follow.position.copy(C.position);
 
