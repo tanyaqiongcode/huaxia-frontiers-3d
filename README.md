@@ -40,3 +40,6 @@ blender --background --factory-startup --python build_scene.py
 ## 版权
 
 站点为图书介绍与学术推广用途；推荐语版权归原作者；Blender 工程、渲染图、延时视频与主题图为本项目原创。
+
+## Credits
+Planet textures: [Solar System Scope](https://www.solarsystemscope.com/textures/) (CC BY 4.0) · Earth & Moon imagery: NASA (via three.js examples) · Built on [three.js](https://threejs.org) (MIT) · Infographics & SVG figures: the editorial team.
