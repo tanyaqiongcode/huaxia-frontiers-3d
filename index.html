@@ -11,7 +11,7 @@
     --dim:#8b8474; --line:rgba(201,164,92,.22); --seal:#a33b2e;
     --vig-in:transparent; --vig-mid:rgba(6,7,13,.45); --vig-out:rgba(6,7,13,.88);
     --glass:rgba(20,22,34,.78); --glass2:rgba(10,12,20,.6);
-    --fserif:"Times New Roman","Songti SC","STSong","Noto Serif SC","SimSun",serif;
+    --fserif:"ZhPunct","Times New Roman","Songti SC","STSong","Noto Serif SC","SimSun",serif;
   }
   html[data-scene="dusk"]:not([data-theme="light"]){--bg:#150d09;--bg2:#120b08;--vig-mid:rgba(21,13,9,.55);--vig-out:rgba(21,13,9,.94);--glass:rgba(34,22,16,.78);--glass2:rgba(24,15,10,.6)}
   html[data-scene="moonlit"]:not([data-theme="light"]){--bg:#070a14;--bg2:#060910;--vig-mid:rgba(7,10,20,.55);--vig-out:rgba(7,10,20,.94);--glass:rgba(16,22,38,.78);--glass2:rgba(10,14,26,.6)}
@@ -21,6 +21,8 @@
     --dim:#7a6f58; --line:rgba(107,81,36,.3); --vig-mid:rgba(236,227,210,.4); --vig-out:rgba(228,217,196,.85);
     --glass:rgba(255,250,240,.8); --glass2:rgba(246,238,222,.62);
   }
+  @font-face{font-family:"ZhPunct";src:local("Songti SC"),local("STSong"),local("Noto Serif SC"),local("SimSun");
+    unicode-range:U+2018-201D,U+2026,U+00B7,U+3001,U+3002,U+FF0C,U+FF1A,U+FF1B,U+FF1F,U+FF01,U+FF08,U+FF09,U+2014,U+300A,U+300B;}
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth;scroll-snap-type:y proximity}
   body{background:var(--bg);color:var(--ink);font-family:var(--fserif);overflow-x:hidden;transition:background .8s,color .8s}
@@ -331,8 +333,8 @@
       <div class="rule"></div>
       <p class="lead" data-i18n="pLead">两张主题图，把书中的范式之争与认同之变收进一方画面。</p></div>
     <div class="plates">
-      <figure class="plate reveal"><img src="assets/plates/plate-1.png" alt="华夏边缘：身份认同是如何形成的" loading="lazy"><figcaption><b data-i18n="pl1a">图版壹</b><span data-i18n="pl1b">何为华夏边缘 · 身份认同如何形成</span></figcaption></figure>
-      <figure class="plate reveal"><img src="assets/plates/plate-2.png" alt="族群理论的演进：从客观特征到主观认同" loading="lazy"><figcaption><b data-i18n="pl2a">图版贰</b><span data-i18n="pl2b">从客观特征到主观认同 · 范式之变</span></figcaption></figure>
+      <figure class="plate reveal"><img src="assets/plates/plate-1.png" alt="华夏边缘：身份认同是如何形成的" loading="lazy"><figcaption><b data-i18n="pl1a">图版一</b><span data-i18n="pl1b">何为华夏边缘 · 身份认同如何形成</span></figcaption></figure>
+      <figure class="plate reveal"><img src="assets/plates/plate-2.png" alt="族群理论的演进：从客观特征到主观认同" loading="lazy"><figcaption><b data-i18n="pl2a">图版二</b><span data-i18n="pl2b">从客观特征到主观认同 · 范式之变</span></figcaption></figure>
     </div>
   </section>
 
@@ -344,10 +346,10 @@
     <div class="bookrow reveal">
       <figure class="bcover"><img src="assets/book/cover.jpg" alt="封面"><figcaption><b data-i18n="bcap1">封面</b><span data-i18n="bcap1b">世纪文景 · 2020年版</span></figcaption></figure>
       <div class="bpages">
-        <figure class="bpage"><img src="assets/book/fig-099.png" alt="p.99 湟水流域" loading="lazy"><figcaption><b data-i18n="bY1">遗址分布</b><span>p.99</span></figcaption></figure>
-        <figure class="bpage"><img src="assets/book/fig-104.png" alt="p.104" loading="lazy"><figcaption><b data-i18n="bY2">图版</b><span>p.104</span></figcaption></figure>
-        <figure class="bpage"><img src="assets/book/fig-113.png" alt="p.113" loading="lazy"><figcaption><b data-i18n="bY1">遗址分布</b><span>p.113</span></figcaption></figure>
-        <figure class="bpage"><img src="assets/book/fig-127.png" alt="p.127" loading="lazy"><figcaption><b data-i18n="bY1">遗址分布</b><span>p.127</span></figcaption></figure>
+        <figure class="bpage"><img src="assets/book/fig-099.png" alt="p.99 湟水流域" loading="lazy"><figcaption><b data-i18n="bF1a">图一</b><span data-i18n="bF1b">青海河湟地区新石器时代晚期至铜石并用时期重要考古遗址</span></figcaption></figure>
+        <figure class="bpage"><img src="assets/book/fig-104.png" alt="p.104" loading="lazy"><figcaption><b data-i18n="bF2a">图二</b><span data-i18n="bF2b">细石叶刀与双孔石刀</span></figcaption></figure>
+        <figure class="bpage"><img src="assets/book/fig-113.png" alt="p.113" loading="lazy"><figcaption><b data-i18n="bF4a">图四</b><span data-i18n="bF4b">鄂尔多斯及其邻近地区新石器时代晚期重要考古遗址</span></figcaption></figure>
+        <figure class="bpage"><img src="assets/book/fig-127.png" alt="p.127" loading="lazy"><figcaption><b data-i18n="bF5a">图五</b><span data-i18n="bF5b">鄂尔多斯及其邻近地区春秋末至汉代重要考古遗址</span></figcaption></figure>
       </div>
     </div>
   </section>
@@ -356,9 +358,9 @@
     <div class="lstick">
       <div class="ltrack" id="ltrack">
         <div class="lcap"><span data-i18n="ls1a">4000 BP</span><i data-i18n="ls1b">气候变动 · 农业边缘化</i></div>
-        <img class="lsvg" src="assets/book/p104.svg" alt="p.104" loading="lazy">
+        <img class="lsvg" src="assets/book/fig-104.png" alt="p.104" loading="lazy">
         <div class="lcap"><span data-i18n="ls2a">1046 BC</span><i data-i18n="ls2b">周人族源 · 西周记忆</i></div>
-        <img class="lsvg" src="assets/book/p099.svg" alt="p.99" loading="lazy">
+        <img class="lsvg" src="assets/book/fig-099.png" alt="p.99" loading="lazy">
         <div class="lcap"><span data-i18n="ls3a">221 BC — 1840</span><i data-i18n="ls3b">汉代凝练 · 长城资源界线</i></div>
         <img class="lsvg" src="assets/book/fig-113.png" alt="p.113" loading="lazy">
         <div class="lcap"><span data-i18n="ls4a">1950s</span><i data-i18n="ls4b">民族识别 · 学术知识建构</i></div>
@@ -612,9 +614,9 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 200);
 camera.position.set(0,-16,6.2); camera.lookAt(0,0,0.4);
 const PAL = {
-  dark:{ bg:0x06070d, ring:0xc9a45c, core:0xffca7a, glow:0xffca7a,
+  dark:{ bg:0x06070d, ring:0xc9a45c, core:0xffca7a, glow:0xffca7a, coreC:[1,.86,.55], edgeC:[.45,.6,.98],
     band:[[1,.82,.5],[.85,.65,.32],[1,.9,.62],[.78,.55,.25]], frag:0xe8cf96, dust:0x8fa3c8, key:0xffd9a0 },
-  light:{ bg:0xece3d2, ring:0x8a6c33, core:0xb9853a, glow:0xb9853a,
+  light:{ bg:0xece3d2, ring:0x8a6c33, core:0xb9853a, glow:0xb9853a, coreC:[.55,.42,.2], edgeC:[.3,.44,.52],
     band:[[.42,.33,.2],[.55,.44,.26],[.36,.28,.16],[.6,.48,.3]], frag:0x6b5124, dust:0x6b5c3a, key:0xfff1d6 }
 };
 let theme = 'dark';
@@ -647,9 +649,43 @@ function ringCloud(n,rMin,rMax,zG,size,pal){
   g.setAttribute('color',new THREE.BufferAttribute(col,3));
   return new THREE.Points(g,new THREE.PointsMaterial({size,vertexColors:true,transparent:true,opacity:.92,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true}));
 }
-const core = ringCloud(1400,.1,1.5,1.4,.045,PAL.dark.band); scene.add(core);
-const band = ringCloud(4600,4.9,7.1,.75,.05,PAL.dark.band); scene.add(band);
-const dust = ringCloud(700,2.6,4.6,1.1,.032,PAL.dark.band); scene.add(dust);
+function galaxyDisc(n,pal){
+  const pos=new Float32Array(n*3), col=new Float32Array(n*3), rad=new Float32Array(n);
+  for(let i=0;i<n;i++){
+    const t=Math.pow(Math.random(),.6), r=.35+t*5.9;
+    const th=(i%3)*Math.PI*2/3 + t*4.4 + (Math.random()-.5)*(0.25+t*.85);
+    const yy=(Math.random()+Math.random()+Math.random()-1.5)*(.35+t*.5);
+    pos.set([r*Math.cos(th), r*Math.sin(th), yy], i*3);
+    rad[i]=t;
+    const c1=pal.coreC, c2=pal.edgeC, mx=Math.min(1,t*.85+Math.random()*.3);
+    col.set([c1[0]+(c2[0]-c1[0])*mx, c1[1]+(c2[1]-c1[1])*mx, c1[2]+(c2[2]-c1[2])*mx], i*3);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  g.userData.radii=rad;
+  return new THREE.Points(g,new THREE.PointsMaterial({size:.05,vertexColors:true,transparent:true,opacity:.92,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true}));
+}
+const core = ringCloud(1200,.1,1.0,1.15,.05,PAL.dark.band); scene.add(core);
+const band = galaxyDisc(4600,PAL.dark); scene.add(band);
+const dust = ringCloud(700,5.9,7.6,1.5,.03,PAL.dark.band); scene.add(dust);
+/* 太阳系彩蛋（NASA地球贴图，公域） */
+const texLoader = new THREE.TextureLoader();
+const earth = new THREE.Mesh(new THREE.SphereGeometry(.5,32,24),
+  new THREE.MeshStandardMaterial({map:texLoader.load('assets/book/earth.jpg'),roughness:.55}));
+scene.add(earth);
+const moon = new THREE.Mesh(new THREE.SphereGeometry(.13,20,14),
+  new THREE.MeshStandardMaterial({color:0xd8d8d8,roughness:.95}));
+scene.add(moon);
+const mars = new THREE.Mesh(new THREE.SphereGeometry(.24,24,16),
+  new THREE.MeshStandardMaterial({color:0xc1592f,roughness:.8}));
+scene.add(mars);
+const saturn = new THREE.Mesh(new THREE.SphereGeometry(.3,24,16),
+  new THREE.MeshStandardMaterial({color:0xd8b878,roughness:.6,metalness:.3}));
+scene.add(saturn);
+const sring = new THREE.Mesh(new THREE.RingGeometry(.42,.62,48),
+  new THREE.MeshBasicMaterial({color:0xd8b878,transparent:true,opacity:.4,side:THREE.DoubleSide}));
+saturn.add(sring); sring.rotation.x = Math.PI/2*.72;
 const glow = new THREE.Mesh(new THREE.SphereGeometry(1.15,32,24),
   new THREE.MeshBasicMaterial({color:PAL.dark.glow,transparent:true,opacity:.16}));
 scene.add(glow);
@@ -669,9 +705,13 @@ function applyTheme(t){ theme=t; document.documentElement.setAttribute('data-the
   renderer.setClearColor(s.bg); scene.fog.color.set(s.fog);
   edge.material.color.set(s.ring); core.material.color.set(s.core); glow.material.color.set(s.core);
   frags.material.color.set(p.frag); dust.material.color.set(p.dust);
-  [core,band,dust].forEach(cl=>{ const a=cl.geometry.attributes.color;
+  [core,dust].forEach(cl=>{ const a=cl.geometry.attributes.color;
     for(let i=0;i<a.count;i++){ const c=p.band[Math.floor(Math.random()*p.band.length)]; a.setXYZ(i,c[0],c[1],c[2]); }
     a.needsUpdate=true; });
+  { const a=band.geometry.attributes.color, rads=band.geometry.userData.radii, c1=p.coreC, c2=p.edgeC;
+    for(let i=0;i<a.count;i++){ const t=rads[i], mx=Math.min(1,t*.85+Math.random()*.3);
+      a.setXYZ(i, c1[0]+(c2[0]-c1[0])*mx, c1[1]+(c2[1]-c1[1])*mx, c1[2]+(c2[2]-c1[2])*mx); }
+    a.needsUpdate=true; }
   key.color.set(s.key);
 }
 
@@ -714,6 +754,11 @@ const look = new THREE.Vector3(0,.4,0);
   const t = simT;
   if(!dragging){ edge.rotation.z += dragVel; dragVel *= .96; }
   band.rotation.z = t*.03; dust.rotation.z = -t*.018; frags.rotation.z = t*.045;
+  earth.position.set(Math.cos(t*.1)*2.75, Math.sin(t*.16)*.4, Math.sin(t*.1)*2.75);
+  earth.rotation.y = t*.2;
+  moon.position.set(earth.position.x+Math.cos(t*.6)*.95, earth.position.y+.15*Math.sin(t*.4), earth.position.z+Math.sin(t*.6)*.95);
+  mars.position.set(Math.cos(t*.07+2.2)*3.7, Math.sin(t*.12+1)*.5, Math.sin(t*.07+2.2)*3.7);
+  saturn.position.set(Math.cos(t*.05+4.4)*4.6, Math.sin(t*.1+3)*.35, Math.sin(t*.05+4.4)*4.6);
   core.rotation.y = t*.05; glow.scale.setScalar(1 + Math.sin(t*1.4)*.05);
   inner.intensity = 1.5 + Math.sin(t*1.4)*.35;
   for(let j=0;j<BN;j++){ if(bLife[j]>0){ bLife[j]-=.011;
