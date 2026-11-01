@@ -100,11 +100,12 @@
   .btn:hover{background:var(--gold);color:#100c04;box-shadow:0 8px 40px rgba(201,164,92,.35)}
   .btn.ghost{border-color:rgba(139,132,116,.4);color:var(--dim);background:none}
   .btn.ghost:hover{border-color:var(--gold);color:var(--gold-hi);background:rgba(201,164,92,.06);box-shadow:none}
-  .heroBook{position:absolute;right:3%;top:50%;transform:translateY(-50%);width:132px;border-radius:5px;
+  .heroBook{position:absolute;right:2.5%;top:50%;transform:translateY(-50%);width:176px;cursor:pointer;border-radius:5px;
     overflow:hidden;box-shadow:16px 24px 60px rgba(0,0,0,.6),0 0 0 1px var(--line);
     animation:hfloat 6s ease-in-out infinite;display:none}
   @media(min-width:1100px){.heroBook{display:block}#hero{padding-right:230px;padding-left:60px}}
   .heroBook img{display:block;width:100%}
+  #bookOverlay .glass{position:relative}
   @keyframes hfloat{0%,100%{transform:translateY(-52%)}50%{transform:translateY(-48%)}}
   .scrollhint{position:absolute;bottom:34px;color:var(--dim);font-size:11px;letter-spacing:.4em;animation:bob 2.4s ease-in-out infinite}
   @keyframes bob{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(8px);opacity:1}}
@@ -340,7 +341,7 @@
       <div class="rule"></div>
       <p class="lead" data-i18n="pLead">两张主题图，把书中的范式之争与认同之变收进一方画面。</p></div>
     <div class="plates">
-      <figure class="plate reveal"><img src="assets/plates/plate-1.png" alt="华夏边缘：身份认同是如何形成的" loading="lazy"><figcaption><b data-i18n="pl1a">图版一</b><span data-i18n="pl1b">何为华夏边缘 · 身份认同如何形成</span></figcaption></figure>
+      <figure class="plate reveal" data-lang="zh"><img src="assets/plates/plate-1.png" alt="《华夏边缘》族群认同图解" loading="lazy"><figcaption><b data-i18n="pl1a">图版一</b><span data-i18n="pl1b">何为华夏边缘 · 身份认同如何形成</span></figcaption></figure>
       <figure class="plate reveal" data-lang="en"><img src="assets/plates/margins-en.png" alt="The Margins of Huaxia" loading="lazy"><figcaption><b>PLATE 3</b><span>The Margins of Huaxia — how boundaries shape identity</span></figcaption></figure>
     </div>
   </section>
@@ -436,7 +437,6 @@
       <h2 data-i18n-html="trTitle">边缘，正被<em>译向边缘之外</em></h2>
       <div class="rule"></div>
       <p class="lead" style="color:var(--dim)" data-i18n="trLead">《华夏边缘》至今没有任何官方外译本。一项面向英语世界的首次全文翻译工程正在进行——让"边缘"的方法，抵达汉语之外。</p></div>
-    <div class="glass" style="margin-top:26px;padding:24px 26px;font-size:13.5px;line-height:2.05;color:var(--ink);opacity:.88" data-i18n-html="trProj"></div>
   </section>
 
   <footer>
@@ -446,6 +446,28 @@
       <div class="springer">SPRINGER · TRANSLATION PROJECT IN PROGRESS</div>
     </div>
   </footer>
+
+<div id="bookOverlay" style="display:none;position:fixed;inset:0;z-index:15;background:rgba(4,5,9,.82);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:24px" onclick="closeBookOverlay()">
+  <div class="glass" style="max-width:860px;width:100%;max-height:86vh;overflow:auto;padding:38px 40px;display:flex;gap:34px;flex-wrap:wrap" onclick="event.stopPropagation()">
+    <img src="assets/book/cover.jpg" alt="cover" style="width:210px;flex:0 0 auto;border-radius:6px;box-shadow:0 18px 60px rgba(0,0,0,.6)">
+    <div style="flex:1;min-width:260px">
+      <div style="font-size:11px;letter-spacing:.3em;color:var(--gold);margin-bottom:12px" data-i18n="ovKick">BOOK · 世纪文景 2020</div>
+      <div style="font-size:30px;letter-spacing:.12em;color:var(--ink);margin-bottom:8px" data-i18n="ovTitle">华夏边缘：历史记忆与族群认同</div>
+      <div style="font-family:var(--fserif);font-style:italic;color:var(--dim);font-size:13.5px;margin-bottom:18px" data-i18n="ovEn">Huaxia Frontiers: Historical Memory and Ethnic Identity</div>
+      <div style="font-size:14.5px;line-height:2.1;color:var(--ink);opacity:.88" data-i18n="ovBody">为什么我们自称"中国人"？华夏从何处来，边界又在哪里？王明珂以考古、文献与多年羌族田野，画出一条随资源竞争与历史记忆不断移动的边界——华夏因边缘而凝聚，也因边缘而改变。读懂边缘，才读懂"什么是中国人"。</div>
+      <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;font-size:11.5px;color:var(--dim);letter-spacing:.1em">
+        <span style="border:1px solid var(--line);border-radius:99px;padding:5px 14px" data-i18n="ovM1">豆瓣 9.1</span>
+        <span style="border:1px solid var(--line);border-radius:99px;padding:5px 14px" data-i18n="ovM2">微信读书推荐值 91.9%</span>
+        <span style="border:1px solid var(--line);border-radius:99px;padding:5px 14px" data-i18n="ovM3">王明珂 · 历史人类学</span>
+      </div>
+    </div>
+    <div onclick="closeBookOverlay()" style="position:absolute;top:14px;right:20px;color:var(--dim);cursor:pointer;font-size:22px">⊗</div>
+  </div>
+</div>
+<script>
+function openBookOverlay(){ document.getElementById('bookOverlay').style.display = 'flex'; }
+function closeBookOverlay(){ document.getElementById('bookOverlay').style.display = 'none'; }
+</script>
 </main>
 
 <script>window.addEventListener("error",e=>{document.title="ERR:"+e.message+" @"+e.lineno;});</script>
@@ -531,9 +553,9 @@ const T = { lang:'zh', dict:{
  cTitle:{zh:'八个概念，一次<em>边缘</em>之旅',en:'Eight Concepts, One Journey to <em>the Edge</em>'},
  cLead:{zh:'这条思想的谱系上，考古学教我们追问知识如何成形，边界理论把认同安放在"线"上，集体记忆说记忆活在社会的框架里——华夏不是一份固定的名单，而是一道随资源竞争、记忆与失忆不断移动的边界。读懂边缘，才读懂"什么是中国人"。',
   en:'On this genealogy of ideas, archaeology asks how knowledge takes form, boundary theory places identity on the line, and collective memory lives within social frames — Huaxia is not a fixed roster but a boundary that moves with resource competition, memory and forgetting. To read the edge is to read "what is Chinese."'},
- pTitle:{zh:'图录 · <em>边缘如何定义中心</em>',en:'Plates · <em>How the Margin Defines the Center</em>'},
- pLead:{zh:'一张解密图：从范式转换、形成机制到历史演进——这本书的核心逻辑，尽在一图。',en:'One infographic: paradigm shift, formation mechanisms, and the drifting of the edge — the logic of the book in a single frame.'},
- pl1a:{zh:'图版',en:'PLATE'}, pl1b:{zh:'边缘如何定义中心 · 族群认同解密',en:'How the margin defines the center — decoding ethnic identity'},
+ pTitle:{zh:'信息图 · <em>族群认同图解</em>',en:'Infographic · <em>The Margins of Huaxia</em>'},
+ pLead:{zh:'一张图解：范式如何转换、边界如何形成、认同如何变迁——全书的提问与回答，收进一方画面。',en:'One infographic: how paradigms shift, how boundaries form, how identity changes — the book'+String.fromCharCode(39)+'s questions and answers in a single frame.'},
+ pl1a:{zh:'图版',en:'PLATE'}, pl1b:{zh:'《华夏边缘》族群认同图解 · 全书核心逻辑一图读懂',en:'The Margins of Huaxia — how boundaries shape identity'},
  pl2a:{zh:'图版贰',en:'PLATE Ⅱ'}, pl2b:{zh:'从客观特征到主观认同 · 范式之变',en:'From objective traits to subjective identity — a paradigm shift'},
  bTitle:{zh:'书影 · <em>纸上的边缘</em>',en:'From the Book · <em>the edge on paper</em>'},
  bLead:{zh:'从原书电子版中提取的矢量书影——封面与内页图版，无限放大而不失真。悬停卡片，让书页立起来。',en:'Vector plates lifted from the original e-book — cover and inner figures, crisp at any magnification. Hover a card to stand the book up.'},
@@ -544,13 +566,17 @@ const T = { lang:'zh', dict:{
  mkTitle:{zh:'3D 造物记：<em>从 0 到边缘</em>',en:'The 3D Making: <em>from 0 to the Edge</em>'},
  mkLead:{zh:'与本书同构的 3D 隐喻——发光的内核是"华夏"，青铜巨环是"边缘"，环绕的碎片是被记起与被遗忘的记忆，双碉楼矗立在羌族田野的边缘。以下工程从空场景开始逐块搭建，全程可复现。',en:'A 3D metaphor built from the book itself — the glowing core is Huaxia, the bronze ring is its edge, the orbiting shards are memories remembered and forgotten, and two Qiang watchtowers stand at the margin. Assembled block by block from an empty file.'},
  mkChip1:{zh:'⬇ 下载 Blender 工程文件',en:'⬇ Download the Blender file'},
+ ovKick:{zh:'BOOK · 世纪文景 2020',en:'BOOK · CENTURY WENJING 2020'},
+ ovTitle:{zh:'华夏边缘：历史记忆与族群认同',en:'Huaxia Frontiers: Historical Memory and Ethnic Identity'},
+ ovEn:{zh:'Huaxia Frontiers: Historical Memory and Ethnic Identity',en:'by Wang Ming-ke'},
+ ovBody:{zh:'为什么我们自称“中国人”？华夏从何处来，边界又在哪里？王明珂以考古、文献与多年羌族田野，画出一条随资源竞争与历史记忆不断移动的边界——华夏因边缘而凝聚，也因边缘而改变。读懂边缘，才读懂“什么是中国人”。',en:'Why do we call ourselves "Chinese"? Where did Huaxia come from — and where does its boundary lie? Drawing on archaeology, texts and years of Qiang fieldwork, Wang Ming-ke traces a boundary that keeps moving with resource competition and historical memory. To read the edge is to read "what is Chinese."'},
+ ovM1:{zh:'豆瓣 9.1',en:'Douban 9.1'}, ovM2:{zh:'微信读书推荐值 91.9%',en:'WeRead 91.9%'}, ovM3:{zh:'王明珂 · 历史人类学',en:'Wang Ming-ke · Historical Anthropology'},
  playHint:{zh:'点击画面 · 迸发记忆碎片 / ←→ 旋转 / 空格 迸发',en:'Click to burst memory shards / ←→ orbit / Space to burst'},
  prTitle:{zh:'他们如何谈论边缘',en:'On the Edge, in Their Words'},
  auTitle:{zh:'作者与版本谱系',en:'The Author & the Editions'}, auName:{zh:'王明珂',en:'Wang Ming-ke'},
- trTitle:{zh:'边缘，正被<em>译向边缘之外</em>',en:'The edge is being <em>translated beyond itself</em>'},
-  trProj:{zh:'本页所述英文版，系<b>国家社科基金中华学术外译项目</b>（学术著作类 · 英语）成果。原著名《华夏边缘：历史记忆与族群认同》，王明珂 著；项目主持人朱莉雅（上海海事大学），出版单位上海人民出版社，国外出版机构施普林格·自然集团（Springer Nature）；2025年入选中华学术外译项目推荐书目。',en:'The English edition presented here is a project of the <b>National Social Science Fund of China — Chinese Academic Translation Program</b> (monographs, English). Original work: <i>Huaxia Frontiers: Historical Memory and Ethnic Identity</i> by Wang Ming-ke. Principal investigator: Zhu Liya (Shanghai Maritime University). Publisher: Shanghai People'+String.fromCharCode(39)+'s Publishing House. International publisher: Springer Nature. Selected for the program'+String.fromCharCode(39)+'s 2025 recommendation list.'},
- trLead:{zh:'边缘，是华夏最早的记忆，也是它最新的提问。三千年间，这条线在草原、雪山与河谷之间移动；今天，它移到了一种语言的边界上——而这部书的英译，刚刚启程。',
- en:'The edge is Huaxia'+String.fromCharCode(39)+'s oldest memory — and its newest question. For three thousand years it has drifted across steppe, snowline and river valley; today it arrives at the border of a language. No translation of Huaxia Frontiers has ever left Chinese. We translate it into English not to answer the question, but to let it begin again, softly, in another tongue.'},
+ trTitle:{zh:'边缘，正被<em>译向边缘之外</em>',en:'Huaxia Frontier is being <em>translated beyond itself</em>'},
+ trLead:{zh:'边缘，是华夏最早的记忆，也是它最新的提问。三千年间，这条线在草原、雪山与河谷之间移动；今天，它移到了一种语言的边界上——而这部书的英译，已经在路上，即将抵达。',
+ en:'The edge is Huaxia'+String.fromCharCode(39)+'s oldest memory — and its newest question. For three thousand years it has drifted across steppe, snowline and river valley; today it arrives at the border of a language — and the first English translation of this book is already on its way.'},
  ftZh:{zh:'华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）',en:'Huaxia Frontiers · Historical Memory and Ethnic Identity<br>by Wang Ming-ke · Shanghai People'+String.fromCharCode(39)+'s Publishing House / Century Wenjing'}
 }};
 function tx(o){ return o ? (o[T.lang] || o.zh || '') : ''; }
@@ -767,7 +793,10 @@ const neb3 = nebulaSprite('255,140,90', 10); neb3.position.set(.6,2.8,-4);
 const DENS={lo:.4,mid:.75,full:1}; let density='mid';
 function applyDensity(){ const f=DENS[density];
   core.geometry.setDrawRange(0,Math.floor(1400*f)); band.geometry.setDrawRange(0,Math.floor(4600*f));
-  dust.geometry.setDrawRange(0,Math.floor(700*f)); frags.geometry.setDrawRange(0,Math.floor(260*f)); }
+  dust.geometry.setDrawRange(0,Math.floor(700*f)); frags.geometry.setDrawRange(0,Math.floor(260*f));
+  const OP={lo:.5,mid:.78,full:.95};
+  core.material.opacity=.92*OP[density]; band.material.opacity=.92*OP[density];
+  dust.material.opacity=.92*OP[density]; frags.material.opacity=.75*OP[density]; }
 applyDensity();
 function applyTheme(t){ theme=t; document.documentElement.setAttribute('data-theme',t); const p=PAL[t];
   const s=SCENES[sceneK];
@@ -908,22 +937,35 @@ function toggleSound(){
         [['sine',0],['triangle',2.5]].forEach(([type,det])=>{
           const o = ctx.createOscillator(); o.type = type; o.frequency.value = f; o.detune.value = det*(i%2?1:-1);
           const g = ctx.createGain(); g.gain.setValueAtTime(0,t0);
-          g.gain.linearRampToValueAtTime(.028,t0+3.2);
-          g.gain.linearRampToValueAtTime(0,t0+9.6);
-          o.connect(g); g.connect(mf); o.start(t0); o.stop(t0+10);
+          g.gain.linearRampToValueAtTime(.034,t0+3.2);
+          g.gain.linearRampToValueAtTime(0,t0+12.5);
+          o.connect(g); g.connect(mf); o.start(t0); o.stop(t0+13);
         });
       });
     }
-    playChord(); setInterval(playChord, 8600);
+    playChord();
+    /* 琶音：每2.15s一枚软音，取当前和弦音上行 */
+    setInterval(()=>{
+      if(audio.master.gain.value<=0) return;
+      const t0=ctx.currentTime+.02, notes=CH[(ci-1+CH.length)%CH.length];
+      const m=notes[(Math.floor(ctx.currentTime/2.15))%notes.length]+12;
+      const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=440*Math.pow(2,(m-69)/12);
+      const g=ctx.createGain(); g.gain.setValueAtTime(0,t0);
+      g.gain.linearRampToValueAtTime(.02,t0+.05); g.gain.exponentialRampToValueAtTime(.0001,t0+1.9);
+      o.connect(g); g.connect(mf); o.start(t0); o.stop(t0+2);
+    }, 2150);
+    setInterval(playChord, 8600);
     audio = {ctx, master};
   }
   const on = audio.master.gain.value > 0;
-  audio.master.gain.linearRampToValueAtTime(on?0:.12, audio.ctx.currentTime+1.6);
+  audio.master.gain.linearRampToValueAtTime(on?0:.16, audio.ctx.currentTime+1.6);
   btnSound.classList.toggle('on', !on);
 }
 function togglePause(){ paused = !paused; btnPause.classList.toggle('on', paused); }
 function toggleTheme(){ applyTheme(theme==='dark'?'light':'dark'); btnTheme.classList.toggle('on', theme==='light'); }
 function toggleHide(){ document.body.classList.toggle('ui-hidden'); }
+const hb=document.querySelector('.heroBook'); if(hb) hb.onclick=function(){ if(window.openBookOverlay) openBookOverlay(); };
+document.querySelectorAll('#segDen span').forEach(function(s){ s.onclick=function(){density=s.dataset.v;document.querySelectorAll('#segDen span').forEach(function(x){ x.classList.toggle('on',x===s); });applyDensity(); }; });
 [["btnSound",toggleSound],["btnPause",togglePause],["btnTheme",toggleTheme],["btnHide",toggleHide],["btnRestore",toggleHide],["apHead",()=>document.getElementById('apanel').classList.toggle('closed')]].forEach(([id,fn])=>{
   const el = document.getElementById(id); if(el) el.onclick = fn;
 });
@@ -979,7 +1021,7 @@ const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main
 
 applyLang();
 setScene('morning');
-console.info('Huaxia Frontiers site — v7.2 (2026-11-02)');
+console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v9');
 document.documentElement.setAttribute('data-scene','morning');
 </script>
 </body>
