@@ -208,24 +208,24 @@
     padding:8px 18px;border-radius:99px;text-decoration:none;transition:.3s}
   .chip:hover{color:var(--gold-hi);border-color:var(--gold)}
 
-  .quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:40px}
+  .quotes{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:40px}
+  @media(max-width:820px){.quotes{grid-template-columns:1fr}}
   .q{padding:26px 28px}
-  .q::before{content:"「";display:block;font-size:28px;line-height:1;color:var(--gold);opacity:.5;margin:0 0 10px}
-  .q p{font-size:14.5px;line-height:2.05;color:var(--ink);opacity:.85}
+  .q p{font-size:16px;line-height:2.05;color:var(--ink);opacity:.85}
   .q .who{margin-top:16px;color:var(--gold);font-size:13px;letter-spacing:.1em}
   .q .who span{color:var(--dim);font-size:11.5px}
 
   .duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
   @media(max-width:760px){.duo{grid-template-columns:1fr}}
   .panel{padding:34px 30px}
-  .panel .name{font-size:34px;letter-spacing:.2em;color:var(--ink)}
+  .panel .name{font-size:38px;letter-spacing:.2em;color:var(--ink)}
   .panel .nm{color:var(--dim);font-size:13px;letter-spacing:.18em;margin-top:6px}
   .panel ul{list-style:none;margin-top:22px}
-  .panel li{font-size:14px;color:var(--dim);line-height:2.15;padding-left:18px;position:relative}
+  .panel li{font-size:15.5px;color:var(--dim);line-height:2.15;padding-left:18px;position:relative}
   .panel li::before{content:"·";position:absolute;left:0;color:var(--gold)}
   .tl .row{display:flex;gap:20px;padding:16px 0;border-bottom:1px dashed rgba(201,164,92,.18)}
   .tl .yr{font-size:22px;color:var(--gold);min-width:64px}
-  .tl .ds b{display:block;font-size:15px;letter-spacing:.08em;color:var(--ink)}
+  .tl .ds b{display:block;font-size:16.5px;letter-spacing:.08em;color:var(--ink)}
   .tl .ds span{font-size:12.5px;color:var(--dim)}
 
   table.links{width:100%;border-collapse:collapse;margin-top:36px;font-size:13.5px}
@@ -502,6 +502,16 @@ const T = { lang:'zh', dict:{
  pScene:{zh:'场景',en:'SCENE'}, pMist:{zh:'雾',en:'MIST'}, pDen:{zh:'粒子',en:'PARTICLES'},
  stMo:{zh:'晨光漂流 · 清透大气',en:'Morning drift · clear air'},
  scMo:{zh:'晨光',en:'Morning'}, scDu:{zh:'暮色',en:'Dusk'}, scMo2:{zh:'月夜',en:'Moonlit'}, scNe:{zh:'霓虹',en:'Neon'},
+ bdMedia:{zh:'Ⅱ · MEDIA',en:'Ⅱ · MEDIA'},
+ bdConcepts:{zh:'Ⅲ · CONCEPTS',en:'Ⅲ · CONCEPTS'},
+ bdPlates:{zh:'Ⅳ · PLATES',en:'Ⅳ · PLATES'},
+ bdBook:{zh:'Ⅴ · FROM THE BOOK',en:'Ⅴ · FROM THE BOOK'},
+ bdMap:{zh:'Ⅵ · MIND MAP',en:'Ⅵ · MIND MAP'},
+ bdMaking:{zh:'Ⅶ · THE MAKING',en:'Ⅶ · THE MAKING'},
+ bdPraise:{zh:'Ⅷ · PRAISE',en:'Ⅷ · PRAISE'},
+ bdAuthor:{zh:'Ⅸ · AUTHOR &amp; EDITIONS',en:'Ⅸ · AUTHOR &amp; EDITIONS'},
+ bdTranslation:{zh:'Ⅺ · TRANSLATION',en:'Ⅺ · TRANSLATION'},
+ spLo:{zh:'疏',en:'Sparse'}, spMid:{zh:'常',en:'Normal'}, spFull:{zh:'繁',en:'Dense'},
  sidesign:{zh:'华夏边缘 · 历史记忆与族群认同',en:'HUAXIA FRONTIERS · Historical Memory & Ethnic Identity'},
  metaline:{zh:'田野坐标 北纬31°06′ 东经103°51′ · 岷江上游 · 田野期一九九〇至二〇〇〇年代 · 研究编号 01',en:'FIELD SITE 31°06′N 103°51′E · UPPER MINJIANG · FIELDWORK 1990s—2000s · STUDY No.01'},
  ensub:{zh:'',en:'THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity'},
@@ -537,7 +547,7 @@ const T = { lang:'zh', dict:{
  prTitle:{zh:'他们如何谈论边缘',en:'On the Edge, in Their Words'},
  auTitle:{zh:'作者与版本谱系',en:'The Author & the Editions'}, auName:{zh:'王明珂',en:'Wang Ming-ke'},
  trTitle:{zh:'边缘，正被<em>译向边缘之外</em>',en:'The edge is being <em>translated beyond itself</em>'},
- trLead:{zh:'边缘，是华夏最早的记忆，也是它最新的提问。三千年间，这条线在草原、雪山与河谷之间移动；今天，它移到了一种语言的边界上——《华夏边缘》尚无译本越出汉语。我们把它译成英文，不为给出答案，只为让"什么是中国人"的追问，在另一种语言里重新开始。',
+ trLead:{zh:'边缘，是华夏最早的记忆，也是它最新的提问。三千年间，这条线在草原、雪山与河谷之间移动；今天，它移到了一种语言的边界上——而这部书的英译，刚刚启程。',
  en:'The edge is Huaxia'+String.fromCharCode(39)+'s oldest memory — and its newest question. For three thousand years it has drifted across steppe, snowline and river valley; today it arrives at the border of a language. No translation of Huaxia Frontiers has ever left Chinese. We translate it into English not to answer the question, but to let it begin again, softly, in another tongue.'},
  ftZh:{zh:'华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）',en:'Huaxia Frontiers · Historical Memory and Ethnic Identity<br>by Wang Ming-ke · Shanghai People'+String.fromCharCode(39)+'s Publishing House / Century Wenjing'}
 }};
