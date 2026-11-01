@@ -521,9 +521,9 @@ const T = { lang:'zh', dict:{
  cTitle:{zh:'八个概念，一次<em>边缘</em>之旅',en:'Eight Concepts, One Journey to <em>the Edge</em>'},
  cLead:{zh:'这条思想的谱系上，考古学教我们追问知识如何成形，边界理论把认同安放在"线"上，集体记忆说记忆活在社会的框架里——华夏不是一份固定的名单，而是一道随资源竞争、记忆与失忆不断移动的边界。读懂边缘，才读懂"什么是中国人"。',
   en:'On this genealogy of ideas, archaeology asks how knowledge takes form, boundary theory places identity on the line, and collective memory lives within social frames — Huaxia is not a fixed roster but a boundary that moves with resource competition, memory and forgetting. To read the edge is to read "what is Chinese."'},
- pTitle:{zh:'图录 · <em>边缘的两种观看</em>',en:'Plates · <em>Two Ways of Seeing the Edge</em>'},
- pLead:{zh:'两张主题图，把书中的范式之争与认同之变收进一方画面。',en:'Two plates gather the paradigm shift and the making of identity into single frames.'},
- pl1a:{zh:'图版壹',en:'PLATE Ⅰ'}, pl1b:{zh:'何为华夏边缘 · 身份认同如何形成',en:'What is the Huaxia Edge — how identity forms'},
+ pTitle:{zh:'图录 · <em>边缘如何定义中心</em>',en:'Plates · <em>How the Margin Defines the Center</em>'},
+ pLead:{zh:'一张解密图：从范式转换、形成机制到历史演进——这本书的核心逻辑，尽在一图。',en:'One infographic: paradigm shift, formation mechanisms, and the drifting of the edge — the logic of the book in a single frame.'},
+ pl1a:{zh:'图版',en:'PLATE'}, pl1b:{zh:'边缘如何定义中心 · 族群认同解密',en:'How the margin defines the center — decoding ethnic identity'},
  pl2a:{zh:'图版贰',en:'PLATE Ⅱ'}, pl2b:{zh:'从客观特征到主观认同 · 范式之变',en:'From objective traits to subjective identity — a paradigm shift'},
  bTitle:{zh:'书影 · <em>纸上的边缘</em>',en:'From the Book · <em>the edge on paper</em>'},
  bLead:{zh:'从原书电子版中提取的矢量书影——封面与内页图版，无限放大而不失真。悬停卡片，让书页立起来。',en:'Vector plates lifted from the original e-book — cover and inner figures, crisp at any magnification. Hover a card to stand the book up.'},
@@ -538,7 +538,8 @@ const T = { lang:'zh', dict:{
  prTitle:{zh:'他们如何谈论边缘',en:'On the Edge, in Their Words'},
  auTitle:{zh:'作者与版本谱系',en:'The Author & the Editions'}, auName:{zh:'王明珂',en:'Wang Ming-ke'},
  trTitle:{zh:'边缘，正被<em>译向边缘之外</em>',en:'The edge is being <em>translated beyond itself</em>'},
- trLead:{zh:'《华夏边缘》至今没有任何官方外译本。一项面向英语世界的首次全文翻译工程正在进行——让"边缘"的方法，抵达汉语之外。',en:'No official translation of Huaxia Frontiers exists in any language. A first full English translation is now underway — carrying "the edge" beyond Chinese.'},
+ trLead:{zh:'边缘，是华夏最早的记忆，也是它最新的提问。三千年间，这条线在草原、雪山与河谷之间移动；今天，它移到了一种语言的边界上——《华夏边缘》尚无译本越出汉语。我们把它译成英文，不为给出答案，只为让"什么是中国人"的追问，在另一种语言里重新开始。',
+ en:'The edge is Huaxia'+String.fromCharCode(39)+'s oldest memory — and its newest question. For three thousand years it has drifted across steppe, snowline and river valley; today it arrives at the border of a language. No translation of Huaxia Frontiers has ever left Chinese. We translate it into English not to answer the question, but to let it begin again, softly, in another tongue.'},
  ftZh:{zh:'华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）',en:'Huaxia Frontiers · Historical Memory and Ethnic Identity<br>by Wang Ming-ke · Shanghai People'+String.fromCharCode(39)+'s Publishing House / Century Wenjing'}
 }};
 function tx(o){ return o ? (o[T.lang] || o.zh || '') : ''; }
@@ -547,7 +548,7 @@ function applyLang(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const v = T.dict[el.dataset.i18n]; if(v) el.innerHTML = tx(v); });
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const v = T.dict[el.dataset.i18nHtml]; if(v) el.innerHTML = tx(v); });
   document.getElementById('cards').innerHTML = CARDS.map((c,i)=>
-   `<div class="glass card"><div class="cn">${T.lang==='zh'?'概念':'CONCEPT '+c.k}${T.lang==='en'?' · A Study in '+['the Edge','Membership','Forgetting','Origins','the Valley','Light','Ecology','Method'][i]:''}</div>${T.lang==='en'?'<div class="lat">'+tx(c.lat)+'</div>':''}<h3>${tx(c.h)}</h3><p>${tx(c.p)}</p></div>`).join('');
+   `<div class="glass card"><div class="cn">${T.lang==='zh'?['一','二','三','四','五','六','七','八'][i]:('0'+(i+1))}</div>${T.lang==='en'?'<div class="lat">'+tx(c.lat)+'</div>':''}<h3>${tx(c.h)}</h3><p>${tx(c.p)}</p></div>`).join('');
   document.getElementById('quotes').innerHTML = QUOTES.map(q=>
    `<div class="glass q"><p>${tx(q.p)}</p><div class="who">${tx(q.w)} <span>${tx(q.s)}</span></div></div>`).join('');
   document.getElementById('auList').innerHTML = AULIST.map(a=>`<li>${tx(a)}</li>`).join('');
@@ -695,23 +696,41 @@ function galaxyDisc(n,pal){
 const core = ringCloud(1200,.1,1.0,1.15,.05,PAL.dark.band); scene.add(core);
 const band = galaxyDisc(4600,PAL.dark); scene.add(band);
 const dust = ringCloud(700,5.9,7.6,1.5,.03,PAL.dark.band); scene.add(dust);
-/* 太阳系彩蛋（NASA地球贴图，公域） */
+/* 太阳系（贴图：Solar System Scope CC-BY 4.0；地球：NASA via three.js） */
 const texLoader = new THREE.TextureLoader();
-const earth = new THREE.Mesh(new THREE.SphereGeometry(.5,32,24),
-  new THREE.MeshStandardMaterial({map:texLoader.load('assets/book/earth.jpg'),roughness:.55}));
-scene.add(earth);
-const moon = new THREE.Mesh(new THREE.SphereGeometry(.13,24,16),
+const sunMesh = new THREE.Mesh(new THREE.SphereGeometry(.85,48,32),
+  new THREE.MeshBasicMaterial({map:texLoader.load('assets/planets/2k_sun.jpg')}));
+scene.add(sunMesh);
+const corona = (()=>{ const c=document.createElement('canvas'); c.width=c.height=256;
+  const x=c.getContext('2d'); const g=x.createRadialGradient(128,128,20,128,128,128);
+  g.addColorStop(0,'rgba(255,190,90,.9)'); g.addColorStop(.4,'rgba(255,140,50,.32)'); g.addColorStop(1,'rgba(255,120,40,0)');
+  x.fillStyle=g; x.fillRect(0,0,256,256);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,opacity:.8,blending:THREE.AdditiveBlending,depthWrite:false}));
+  sp.scale.set(4.8,4.8,1); scene.add(sp); return sp; })();
+const PLANETS = [];
+function planet(r, d, sp, path, opts={}){
+  const mesh = new THREE.Mesh(new THREE.SphereGeometry(r,40,24),
+    new THREE.MeshStandardMaterial(Object.assign({map:texLoader.load(path)}, opts)));
+  scene.add(mesh);
+  const o = {mesh, d, sp, ph: Math.random()*Math.PI*2};
+  if(opts.ring){
+    const rg = new THREE.Mesh(new THREE.RingGeometry(r*1.4, r*2.2, 64),
+      new THREE.MeshBasicMaterial({map:texLoader.load('assets/planets/saturn_ring.png'), transparent:true, side:THREE.DoubleSide, depthWrite:false, opacity:.95}));
+    rg.rotation.x = Math.PI/2*.55; mesh.add(rg);
+  }
+  PLANETS.push(o); return o;
+}
+const earthObj = planet(.2, 2.55, .31, 'assets/book/earth.jpg');
+const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(.055,24,16),
   new THREE.MeshStandardMaterial({map:texLoader.load('assets/book/moon.jpg'),roughness:.95}));
-scene.add(moon);
-const mars = new THREE.Mesh(new THREE.SphereGeometry(.24,24,16),
-  new THREE.MeshStandardMaterial({color:0xc1592f,roughness:.8}));
-scene.add(mars);
-const saturn = new THREE.Mesh(new THREE.SphereGeometry(.3,24,16),
-  new THREE.MeshStandardMaterial({color:0xd8b878,roughness:.6,metalness:.3}));
-scene.add(saturn);
-const sring = new THREE.Mesh(new THREE.RingGeometry(.42,.62,48),
-  new THREE.MeshBasicMaterial({color:0xd8b878,transparent:true,opacity:.4,side:THREE.DoubleSide}));
-saturn.add(sring); sring.rotation.x = Math.PI/2*.72;
+scene.add(moonMesh);
+planet(.09, 1.55, .52, 'assets/planets/2k_mercury.jpg');
+planet(.16, 2.05, .40, 'assets/planets/2k_venus_atmosphere.jpg');
+planet(.14, 3.05, .24, 'assets/planets/2k_mars.jpg');
+planet(.44, 3.65, .17, 'assets/planets/2k_jupiter.jpg');
+planet(.36, 4.25, .13, 'assets/planets/2k_saturn.jpg', {ring:true});
+planet(.26, 4.8,  .10, 'assets/planets/2k_uranus.jpg');
+planet(.25, 5.3,  .08, 'assets/planets/2k_neptune.jpg');
 const glow = new THREE.Mesh(new THREE.SphereGeometry(1.15,32,24),
   new THREE.MeshBasicMaterial({color:PAL.dark.glow,transparent:true,opacity:.16}));
 scene.add(glow);
@@ -794,11 +813,14 @@ const look = new THREE.Vector3(0,.4,0);
   const t = simT;
   if(!dragging){ edge.rotation.z += dragVel; dragVel *= .96; }
   band.rotation.z = t*.03; dust.rotation.z = -t*.018; frags.rotation.z = t*.045;
-  earth.position.set(Math.cos(t*.1)*2.75, Math.sin(t*.16)*.4, Math.sin(t*.1)*2.75);
-  earth.rotation.y = t*.2;
-  moon.position.set(earth.position.x+Math.cos(t*.6)*.95, earth.position.y+.15*Math.sin(t*.4), earth.position.z+Math.sin(t*.6)*.95);
-  mars.position.set(Math.cos(t*.07+2.2)*3.7, Math.sin(t*.12+1)*.5, Math.sin(t*.07+2.2)*3.7);
-  saturn.position.set(Math.cos(t*.05+4.4)*4.6, Math.sin(t*.1+3)*.35, Math.sin(t*.05+4.4)*4.6);
+  PLANETS.forEach(p=>{
+    const a = t*p.sp + p.ph;
+    p.mesh.position.set(Math.cos(a)*p.d, Math.sin(a*.9)*.3, Math.sin(a)*p.d);
+    p.mesh.rotation.y = t*.3 + p.ph;
+  });
+  sunMesh.rotation.y = t*.02;
+  corona.scale.setScalar(4.8 + Math.sin(t*.8)*.18);
+  moonMesh.position.set(earthObj.mesh.position.x+Math.cos(t*.9)*.42, earthObj.mesh.position.y+.1*Math.sin(t*.7), earthObj.mesh.position.z+Math.sin(t*.9)*.42);
   core.rotation.y = t*.05; glow.scale.setScalar(1 + Math.sin(t*1.4)*.05);
   neb1.material.rotation = t*.012; neb2.material.rotation = -t*.009;
   inner.intensity = 1.5 + Math.sin(t*1.4)*.35;
@@ -851,7 +873,7 @@ function toggleSound(){
     const irLen = ctx.sampleRate*3.2, ir = ctx.createBuffer(2,irLen,ctx.sampleRate);
     for(let ch=0;ch<2;ch++){ const d = ir.getChannelData(ch);
       for(let i=0;i<irLen;i++) d[i] = (Math.random()*2-1)*Math.pow(1-i/irLen,2.6); }
-    conv.buffer = ir; const wet = ctx.createGain(); wet.gain.value = .5;
+    conv.buffer = ir; const wet = ctx.createGain(); wet.gain.value = .62;
     conv.connect(wet); wet.connect(master);
     const bus = ctx.createGain(); bus.gain.value = .9; bus.connect(conv); bus.connect(master);
     const mf = ctx.createBiquadFilter(); mf.type='lowpass'; mf.frequency.value = 980; mf.connect(bus);
@@ -859,13 +881,13 @@ function toggleSound(){
     for(let i=0;i<nd.length;i++) nd[i] = Math.random()*2-1;
     const ns = ctx.createBufferSource(); ns.buffer = nb; ns.loop = true;
     const nf = ctx.createBiquadFilter(); nf.type='bandpass'; nf.frequency.value = 320; nf.Q.value = .6;
-    const ng = ctx.createGain(); ng.gain.value = .012;
+    const ng = ctx.createGain(); ng.gain.value = .02;
     const nl = ctx.createOscillator(); nl.frequency.value = .07;
     const nlg = ctx.createGain(); nlg.gain.value = .007;
     nl.connect(nlg); nlg.connect(ng.gain); nl.start();
     ns.connect(nf); nf.connect(ng); ng.connect(bus); ns.start();
     const sub = ctx.createOscillator(); sub.type='sine'; sub.frequency.value = 55;
-    const sg = ctx.createGain(); sg.gain.value = .02; sub.connect(sg); sg.connect(bus); sub.start();
+    const sg = ctx.createGain(); sg.gain.value = .034; sub.connect(sg); sg.connect(bus); sub.start();
     const CH = [[57,60,64,71],[53,57,60,64],[48,55,62,64],[55,59,62,64]];
     let ci = 0;
     function playChord(){
@@ -875,7 +897,7 @@ function toggleSound(){
         [['sine',0],['triangle',2.5]].forEach(([type,det])=>{
           const o = ctx.createOscillator(); o.type = type; o.frequency.value = f; o.detune.value = det*(i%2?1:-1);
           const g = ctx.createGain(); g.gain.setValueAtTime(0,t0);
-          g.gain.linearRampToValueAtTime(.014,t0+3.2);
+          g.gain.linearRampToValueAtTime(.028,t0+3.2);
           g.gain.linearRampToValueAtTime(0,t0+9.6);
           o.connect(g); g.connect(mf); o.start(t0); o.stop(t0+10);
         });
@@ -885,7 +907,7 @@ function toggleSound(){
     audio = {ctx, master};
   }
   const on = audio.master.gain.value > 0;
-  audio.master.gain.linearRampToValueAtTime(on?0:.055, audio.ctx.currentTime+1.6);
+  audio.master.gain.linearRampToValueAtTime(on?0:.12, audio.ctx.currentTime+1.6);
   btnSound.classList.toggle('on', !on);
 }
 function togglePause(){ paused = !paused; btnPause.classList.toggle('on', paused); }
