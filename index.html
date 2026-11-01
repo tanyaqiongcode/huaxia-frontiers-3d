@@ -464,7 +464,7 @@ function tick(){
   }catch(e){ document.title='TICKERR:'+e.message+' @'+e.lineno+':'+e.colno; };
 }
 /* QA定格模式：?still=N 直达第N幕（满显、跳过加载） */
-const qaStill = new URLSearchParams(location.search).get('still');
+const qaStill = new URLSearchParams(location.search).get('still') || (location.hash.match(/still=([1-7])/)||[])[1];
 let stillMode = false, stillP = 0;
 if(qaStill){
   stillMode = true; loaded = true;
