@@ -11,6 +11,7 @@
     --dim:#8b8474; --line:rgba(201,164,92,.22); --seal:#a33b2e;
     --vig-in:transparent; --vig-mid:rgba(6,7,13,.5); --vig-out:rgba(6,7,13,.92);
     --glass:rgba(20,22,34,.72); --glass2:rgba(10,12,20,.55);
+    --fserif:"Times New Roman","Songti SC","STSong","Noto Serif SC","SimSun",serif;
   }
   [data-theme="light"]{
     --bg:#ece3d2; --bg2:#e4d9c4; --gold:#8a6c33; --gold-hi:#6b5124; --ink:#2b2419;
@@ -19,7 +20,7 @@
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth;scroll-snap-type:y proximity}
-  body{background:var(--bg);color:var(--ink);font-family:"Songti SC","STSong","Noto Serif SC","SimSun",serif;overflow-x:hidden;transition:background .8s,color .8s}
+  body{background:var(--bg);color:var(--ink);font-family:var(--fserif);overflow-x:hidden;transition:background .8s,color .8s}
   #bg{position:fixed;inset:0;z-index:0;transition:opacity .4s}
   .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
     background:radial-gradient(ellipse at 50% 42%,var(--vig-in) 30%,var(--vig-mid) 78%,var(--vig-out) 100%)}
@@ -48,14 +49,13 @@
     letter-spacing:.08em;border:1px solid var(--line);color:var(--dim);cursor:pointer;user-select:none;
     background:linear-gradient(160deg,var(--glass),var(--glass2));backdrop-filter:blur(8px);transition:.3s}
   .pill:hover{color:var(--gold-hi);border-color:var(--gold)}
-  .pill kbd{font-family:Georgia,serif;font-size:10px;border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--dim)}
+  .pill kbd{font-family:var(--fserif);font-size:10px;border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--dim)}
   .pill.on{color:var(--gold-hi);border-color:var(--gold);background:rgba(201,164,92,.12)}
 
-  /* 朱印（右上，装饰） */
-  .seal{position:fixed;top:22px;right:22px;z-index:6;width:52px;height:52px;background:var(--seal);border-radius:6px;
-    display:flex;align-items:center;justify-content:center;user-select:none;
-    box-shadow:0 4px 26px rgba(163,59,46,.4),inset 0 0 0 2px rgba(232,223,200,.85),inset 0 0 0 5px var(--seal)}
-  .seal span{color:#f0e6d0;font-size:24px;font-weight:700}
+  /* 标志（右上）：缺口之圆，缘外一点 */
+  .mark{position:fixed;top:22px;right:22px;z-index:6;color:var(--gold-hi);opacity:.92;transition:.4s}
+  .mark:hover{opacity:1;transform:rotate(6deg)}
+  .mark svg{display:block;width:46px;height:46px}
 
   /* 竖排题签（右侧） */
   .side-sign{position:fixed;right:26px;top:50%;transform:translateY(-50%);z-index:5;writing-mode:vertical-rl;
@@ -63,17 +63,22 @@
 
   /* 隐UI */
   body.ui-hidden main, body.ui-hidden .cmdbar, body.ui-hidden .apanel, body.ui-hidden .side-sign{opacity:0;pointer-events:none}
+  .restore{position:fixed;left:22px;bottom:22px;z-index:6;display:none;width:40px;height:40px;border-radius:50%;
+    border:1px solid var(--line);color:var(--dim);align-items:center;justify-content:center;cursor:pointer;
+    background:linear-gradient(160deg,var(--glass),var(--glass2));backdrop-filter:blur(8px);font-size:15px;transition:.3s}
+  .restore:hover{color:var(--gold-hi);border-color:var(--gold)}
+  body.ui-hidden .restore{display:flex}
 
   /* HERO */
   #hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;
     text-align:center;padding:0 24px;position:relative}
-  .metaline{font-family:Menlo,Consolas,monospace;font-size:11px;letter-spacing:.24em;color:var(--dim);
+  .metaline{font-family:var(--fserif);font-size:11px;letter-spacing:.24em;color:var(--dim);
     border:1px solid var(--line);border-radius:99px;padding:7px 20px;margin-bottom:34px}
   #hero .zh{font-size:clamp(52px,10vw,118px);letter-spacing:.22em;text-indent:.22em;font-weight:700;
     background:linear-gradient(180deg,#f3e6c4 20%,var(--gold) 60%,#8a6c33);-webkit-background-clip:text;background-clip:text;color:transparent;
     text-shadow:0 0 80px rgba(201,164,92,.25)}
   [data-theme="light"] #hero .zh{background:linear-gradient(180deg,#5c4720 10%,var(--gold) 55%,#4a3a1c);-webkit-background-clip:text;background-clip:text;text-shadow:none}
-  #hero .en{margin-top:16px;color:var(--dim);letter-spacing:.34em;font-size:clamp(11px,1.6vw,15px);font-family:Georgia,serif}
+  #hero .en{margin-top:16px;color:var(--dim);letter-spacing:.34em;font-size:clamp(11px,1.6vw,15px);font-family:var(--fserif)}
   #hero .quote{margin-top:44px;max-width:560px;color:var(--ink);opacity:.85;font-size:15.5px;line-height:2.1;
     border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 30px}
   #hero .quote b{color:var(--gold-hi);font-weight:600}
@@ -81,7 +86,7 @@
   .stats{display:flex;gap:0;margin-top:46px;flex-wrap:wrap;justify-content:center}
   .stat{padding:6px 34px;border-right:1px solid var(--line)}
   .stat:last-child{border-right:none}
-  .stat .v{font-size:30px;color:var(--gold-hi);font-family:Georgia,serif;display:flex;align-items:center;justify-content:center;gap:9px}
+  .stat .v{font-size:30px;color:var(--gold-hi);font-family:var(--fserif);display:flex;align-items:center;justify-content:center;gap:9px}
   [data-theme="light"] .stat .v{color:#6b5124}
   .stat .k{font-size:11px;color:var(--dim);letter-spacing:.28em;margin-top:4px}
   .livedot{width:9px;height:9px;border-radius:50%;background:#4faf6e;box-shadow:0 0 12px rgba(79,175,110,.9);animation:pulse 2s ease-in-out infinite}
@@ -102,7 +107,7 @@
     font-size:12px;color:var(--dim)}
   .apanel .hd{display:flex;justify-content:space-between;align-items:baseline;cursor:pointer}
   .apanel .hd b{color:var(--gold-hi);letter-spacing:.16em;font-weight:600;font-size:12.5px}
-  .apanel .hd i{font-style:normal;font-family:Georgia,serif;font-size:10px;letter-spacing:.2em}
+  .apanel .hd i{font-style:normal;font-family:var(--fserif);font-size:10px;letter-spacing:.2em}
   .apanel .bd{margin-top:12px;display:flex;flex-direction:column;gap:11px}
   .apanel.closed .bd{display:none}
   .apanel label{display:flex;align-items:center;justify-content:space-between;letter-spacing:.14em}
@@ -116,8 +121,8 @@
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:40px}
   .card{padding:26px 24px;transition:.4s;position:relative;overflow:hidden}
   .card:hover{transform:translateY(-6px);border-color:var(--gold)}
-  .card .cn{font-family:Georgia,serif;color:var(--gold);font-size:13px;letter-spacing:.2em}
-  .card .lat{font-family:Georgia,serif;font-style:italic;color:var(--dim);font-size:11.5px;margin-top:2px;letter-spacing:.06em}
+  .card .cn{font-family:var(--fserif);color:var(--gold);font-size:13px;letter-spacing:.2em}
+  .card .lat{font-family:var(--fserif);font-style:italic;color:var(--dim);font-size:11.5px;margin-top:2px;letter-spacing:.06em}
   .card h3{font-size:19px;margin:10px 0 10px;letter-spacing:.06em;color:var(--ink)}
   .card p{font-size:13.5px;color:var(--dim);line-height:1.9}
 
@@ -154,12 +159,12 @@
   @media(max-width:760px){.duo{grid-template-columns:1fr}}
   .panel{padding:34px 30px}
   .panel .name{font-size:34px;letter-spacing:.2em;color:var(--ink)}
-  .panel .nm{font-family:Georgia,serif;color:var(--dim);font-size:13px;letter-spacing:.18em;margin-top:6px}
+  .panel .nm{font-family:var(--fserif);color:var(--dim);font-size:13px;letter-spacing:.18em;margin-top:6px}
   .panel ul{list-style:none;margin-top:22px}
   .panel li{font-size:14px;color:var(--dim);line-height:2.15;padding-left:18px;position:relative}
   .panel li::before{content:"·";position:absolute;left:0;color:var(--gold)}
   .tl .row{display:flex;gap:20px;padding:16px 0;border-bottom:1px dashed rgba(201,164,92,.18)}
-  .tl .yr{font-family:Georgia,serif;font-size:22px;color:var(--gold);min-width:64px}
+  .tl .yr{font-family:var(--fserif);font-size:22px;color:var(--gold);min-width:64px}
   .tl .ds b{display:block;font-size:15px;letter-spacing:.08em;color:var(--ink)}
   .tl .ds span{font-size:12.5px;color:var(--dim)}
 
@@ -170,11 +175,11 @@
   table.links a{color:var(--gold-hi);text-decoration:none;border-bottom:1px dotted var(--line)}
   [data-theme="light"] table.links a{color:#6b5124}
   table.links a:hover{color:var(--gold)}
-  table.links .n{font-family:Georgia,serif;color:var(--dim);font-size:12px;white-space:nowrap}
+  table.links .n{font-family:var(--fserif);color:var(--dim);font-size:12px;white-space:nowrap}
 
   footer{border-top:1px solid var(--line);margin-top:60px;background:linear-gradient(180deg,transparent,rgba(201,164,92,.05))}
   footer .inner{max-width:1060px;margin:0 auto;padding:70px 28px 60px;text-align:center}
-  footer .en{font-family:Georgia,serif;color:var(--gold-hi);font-size:clamp(17px,2.6vw,24px);letter-spacing:.06em;line-height:1.7}
+  footer .en{font-family:var(--fserif);color:var(--gold-hi);font-size:clamp(17px,2.6vw,24px);letter-spacing:.06em;line-height:1.7}
   [data-theme="light"] footer .en{color:#6b5124}
   footer .zh{color:var(--dim);font-size:14px;margin-top:14px;letter-spacing:.12em;line-height:2}
   footer .springer{margin-top:26px;color:var(--dim);font-size:12px;letter-spacing:.24em}
@@ -187,7 +192,7 @@
   #loader .txt{font-size:13px;letter-spacing:.34em;color:var(--dim)}
   #loader .bar{width:180px;height:1px;background:var(--line);position:relative;overflow:hidden}
   #loader .bar i{position:absolute;left:0;top:0;height:100%;background:var(--gold-hi);width:0;transition:width .2s}
-  #loader .pct2{font-family:Georgia,serif;color:var(--gold-hi);font-size:14px;letter-spacing:.3em}
+  #loader .pct2{font-family:var(--fserif);color:var(--gold-hi);font-size:14px;letter-spacing:.3em}
 </style>
 </head>
 <body>
@@ -202,8 +207,9 @@
   <div class="pill" id="btnTheme">◐ 绢本 <kbd>T</kbd></div>
   <div class="pill" id="btnHide">⊘ 隐去 <kbd>H</kbd></div>
 </div>
-<div class="seal"><span>邊</span></div>
+<div class="mark" title="华夏边缘"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="currentColor"/></svg></div>
 <div class="side-sign">华夏边缘 · 历史记忆与族群认同</div>
+<div class="restore" id="btnRestore" title="恢复界面 (H)">◎</div>
 
 <div class="apanel" id="apanel">
   <div class="hd" id="apHead"><b>氛围 · ATMOSPHERE</b><i>NO.01</i></div>
@@ -255,14 +261,12 @@
   <!-- 图录 -->
   <section id="plates">
     <div class="reveal"><span class="num">叁 · PLATES</span>
-      <h2>图录 · <em>边缘的四种观看</em></h2>
+      <h2>图录 · <em>边缘的两种观看</em></h2>
       <div class="rule"></div>
-      <p class="lead">四张主题图，把书中的范式之争与认同之变收进一方画面。</p></div>
+      <p class="lead">两张主题图，把书中的范式之争与认同之变收进一方画面。</p></div>
     <div class="plates">
-      <figure class="plate reveal"><img src="assets/plates/plate-1.png" alt="华夏边缘核心概念信息图" loading="lazy"><figcaption><b>图版壹</b>何为华夏边缘 · 核心概念一图流</figcaption></figure>
-      <figure class="plate reveal"><img src="assets/plates/plate-2.png" alt="客观特征论信息图" loading="lazy"><figcaption><b>图版贰</b>为什么"客观特征"定义不了民族</figcaption></figure>
-      <figure class="plate reveal"><img src="assets/plates/plate-3.png" alt="族群理论思维变革" loading="lazy"><figcaption><b>图版叁</b>从实体到边界 · 范式之变</figcaption></figure>
-      <figure class="plate reveal"><img src="assets/plates/plate-4.png" alt="身份认同的形成" loading="lazy"><figcaption><b>图版肆</b>身份认同的形成</figcaption></figure>
+      <figure class="plate reveal"><img src="assets/plates/plate-1.png" alt="华夏边缘：身份认同是如何形成的" loading="lazy"><figcaption><b>图版壹</b>何为华夏边缘 · 身份认同如何形成</figcaption></figure>
+      <figure class="plate reveal"><img src="assets/plates/plate-2.png" alt="族群理论的演进：从客观特征到主观认同" loading="lazy"><figcaption><b>图版贰</b>从客观特征到主观认同 · 范式之变</figcaption></figure>
     </div>
   </section>
 
@@ -337,13 +341,13 @@
       <p class="lead">全网经核验的讲座与解读（2026-11 数据）。</p></div>
     <table class="links reveal">
       <tr><th>平台</th><th>内容</th><th>频道</th><th>热度</th><th>直达</th></tr>
-      <tr><td class="n">Bilibili</td><td>王明珂：三星堆的启示（北大文研院官方）</td><td>北大文研院</td><td class="n">32,860 播放</td><td><a href="https://www.bilibili.com/video/BV1zM4we8ERe" target="_blank" rel="noopener">观看 ↗</a></td></tr>
-      <tr><td class="n">Bilibili</td><td>【一席】王明珂：毒药猫与代罪羊</td><td>一席</td><td class="n">15,009 播放</td><td><a href="https://www.bilibili.com/video/BV11z4y1f7xG" target="_blank" rel="noopener">观看 ↗</a></td></tr>
-      <tr><td class="n">Bilibili</td><td>《北方边缘——秦汉帝国的边疆扩展与边缘反噬》</td><td>i 讲座</td><td class="n">10,665 播放</td><td><a href="https://www.bilibili.com/video/BV1cM411575Z" target="_blank" rel="noopener">观看 ↗</a></td></tr>
-      <tr><td class="n">Bilibili</td><td>王明珂 × 罗新对谈：从边缘看文明</td><td>key-lv</td><td class="n">7,248 播放</td><td><a href="https://www.bilibili.com/video/BV16x4y147DM" target="_blank" rel="noopener">观看 ↗</a></td></tr>
-      <tr><td class="n">Bilibili</td><td>《月明星稀——中原与其边缘的形成》</td><td>i 讲座</td><td class="n">5,433 播放</td><td><a href="https://www.bilibili.com/video/BV1xv4y1E7Sm" target="_blank" rel="noopener">观看 ↗</a></td></tr>
-      <tr><td class="n">YouTube</td><td>第十六届余英时先生历史讲座（王明珂教授）</td><td>中大新亚书院</td><td class="n">官方录像</td><td><a href="https://www.youtube.com/watch?v=GDL2BfBySjk" target="_blank" rel="noopener">观看 ↗</a></td></tr>
-      <tr><td class="n">凤凰卫视</td><td>《开卷八分钟》梁文道整期推介本书（2008）</td><td>凤凰网</td><td class="n">文字实录</td><td><a href="http://phtv.ifeng.com/program/kjbfz/200807/0729_1699_682542.shtml" target="_blank" rel="noopener">阅读 ↗</a></td></tr>
+      <tr><td class="n">Bilibili</td><td>王明珂：三星堆的启示（北大文研院官方）</td><td>北大文研院</td><td class="n">32,860 播放</td><td><a href="https://www.bilibili.com/video/BV1zM4we8ERe" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">观看 ↗</a></td></tr>
+      <tr><td class="n">Bilibili</td><td>【一席】王明珂：毒药猫与代罪羊</td><td>一席</td><td class="n">15,009 播放</td><td><a href="https://www.bilibili.com/video/BV11z4y1f7xG" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">观看 ↗</a></td></tr>
+      <tr><td class="n">Bilibili</td><td>《北方边缘——秦汉帝国的边疆扩展与边缘反噬》</td><td>i 讲座</td><td class="n">10,665 播放</td><td><a href="https://www.bilibili.com/video/BV1cM411575Z" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">观看 ↗</a></td></tr>
+      <tr><td class="n">Bilibili</td><td>王明珂 × 罗新对谈：从边缘看文明</td><td>key-lv</td><td class="n">7,248 播放</td><td><a href="https://www.bilibili.com/video/BV16x4y147DM" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">观看 ↗</a></td></tr>
+      <tr><td class="n">Bilibili</td><td>《月明星稀——中原与其边缘的形成》</td><td>i 讲座</td><td class="n">5,433 播放</td><td><a href="https://www.bilibili.com/video/BV1xv4y1E7Sm" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">观看 ↗</a></td></tr>
+      <tr><td class="n">YouTube</td><td>第十六届余英时先生历史讲座（王明珂教授）</td><td>中大新亚书院</td><td class="n">官方录像</td><td><a href="https://www.youtube.com/watch?v=GDL2BfBySjk" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">观看 ↗</a></td></tr>
+      <tr><td class="n">凤凰卫视</td><td>《开卷八分钟》梁文道整期推介本书（2008）</td><td>凤凰网</td><td class="n">文字实录</td><td><a href="http://phtv.ifeng.com/program/kjbfz/200807/0729_1699_682542.shtml" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">阅读 ↗</a></td></tr>
     </table>
   </section>
 
@@ -360,7 +364,7 @@
       <div class="en">Translating Wang Ming-ke's <i>Huaxia Frontiers</i><br>into English — for the first time.</div>
       <div class="zh">华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）</div>
       <div class="springer">SPRINGER · TRANSLATION PROJECT IN PROGRESS</div>
-      <a class="btn ghost repo" href="https://github.com/tanyaqiongcode/huaxia-frontiers-3d" target="_blank" rel="noopener">GitHub 仓库 ↗</a>
+      <a class="btn ghost repo" href="https://github.com/tanyaqiongcode/huaxia-frontiers-3d" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">GitHub 仓库 ↗</a>
     </div>
   </footer>
 </main>
@@ -485,7 +489,7 @@ let simT = 0;
   camera.position.x += (px - camera.position.x)*.03;
   camera.position.y += ((-16 + py*1.4 + scrolly*5.5) - camera.position.y)*.04;
   camera.lookAt(0,0,0.4);
-  canvas.style.opacity = Math.max(.12, 1 - scrolly*.55);
+  canvas.style.opacity = Math.max(0, 1 - scrolly*.9);
   renderer.render(scene, camera);
 })();
 
@@ -510,6 +514,7 @@ function toggleTheme(){ applyTheme(theme==='dark'?'light':'dark'); btnTheme.clas
 function toggleHide(){ document.body.classList.toggle('ui-hidden'); }
 btnSound.onclick = toggleSound; btnPause.onclick = togglePause;
 btnTheme.onclick = toggleTheme; btnHide.onclick = toggleHide;
+document.getElementById('btnRestore').onclick = toggleHide;
 addEventListener('keydown', e=>{
   if(e.target.tagName==='INPUT') return;
   const k = e.key.toLowerCase();
