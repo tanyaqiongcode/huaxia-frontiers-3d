@@ -116,7 +116,7 @@
 /* ================= 无文字谱系之旅 =================
    Ⅰ地层(福柯·考古) Ⅱ环塔(福柯·规训) Ⅲ同心环(哈布瓦赫·记忆)
    Ⅳ双群光缝(巴特·边界) Ⅴ星群(安德森·想象) Ⅵ雾墙(拉铁摩尔·边疆) Ⅶ华夏边缘(王明珂) */
-const R = new THREE.WebGLRenderer({canvas:document.getElementById('gl'), antialias:true});
+const R = new THREE.WebGLRenderer({canvas:document.getElementById('gl'), antialias:true, preserveDrawingBuffer:true});
 R.setPixelRatio(Math.min(devicePixelRatio,1.5)); R.setSize(innerWidth,innerHeight);
 R.setClearColor(0x06070d);
 const S = new THREE.Scene(); S.fog = new THREE.FogExp2(0x06070d, 0.030);
@@ -472,6 +472,7 @@ if(qaStill){
   stillP = (k-1)/(ST.length-1);
   prog = target = stillP;
   document.getElementById('loader').classList.add('done');
+  document.title = 'STILL k='+k+' p='+stillP;
   document.getElementById('loader').style.display = 'none';
   document.getElementById('numeral').textContent = NUMS[k-1];
   /* 立即定位相机并满显材质，渲染第一帧（不依赖rAF） */
