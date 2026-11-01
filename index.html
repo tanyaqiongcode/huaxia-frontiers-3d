@@ -472,7 +472,6 @@ if(qaStill){
   stillP = (k-1)/(ST.length-1);
   prog = target = stillP;
   document.getElementById('loader').classList.add('done');
-  document.title = 'STILL k='+k+' p='+stillP;
   document.getElementById('loader').style.display = 'none';
   document.getElementById('numeral').textContent = NUMS[k-1];
   /* 立即定位相机并满显材质，渲染第一帧（不依赖rAF） */
