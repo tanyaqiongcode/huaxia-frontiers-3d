@@ -616,6 +616,7 @@ const MAP = { r:{zh:'华夏边缘',en:'Huaxia Frontier'}, br:[
  {zh:'研究方法',en:'Research Methodology', ch:[
    {zh:'反思史学',en:'Reflexive History'},{zh:'边缘视角',en:'Marginal Perspective'},{zh:'批评中心主义',en:'Critique of Core-centrism'},{zh:'文本与情境分析',en:'Text and Context Analysis'},{zh:'英雄与弟兄历史心性',en:'Hero vs Brother Historical Mentality'}]}
 ]};
+MAP.r.ch = MAP.br; /* 归一化：五大分支挂到根节点ch上——此前数据在MAP.br而渲染只认r.ch，导图永远是孤点 */
 const MAPR = {};
 (function indexMap(n){ MAPR[n.zh] = n; (n.ch||[]).forEach(indexMap); })(MAP.r);
 const mapExp = { '华夏边缘': true };
@@ -1024,7 +1025,7 @@ const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main
 
 applyLang();
 setScene('morning');
-console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v10');
+console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v11');
 document.documentElement.setAttribute('data-scene','morning');
 </script>
 </body>
