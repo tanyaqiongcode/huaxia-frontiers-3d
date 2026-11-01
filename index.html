@@ -426,7 +426,7 @@ function tick(){
       if(k==='eye'||k==='cone'){ o.rotation.y = Math.sin(t*.5)*1.2; }
       if(k==='core'){ o.scale.setScalar(1 + Math.sin(t*1.5)*.045); }
       if(k==='cloudA'||k==='cloudB'){
-        const pos = o.geometry.attributes.position, vel = st.userData['vel_'+(k==='cloudA'?-6.5:6.5)];
+        const pos = o.geometry.attributes.position, vel = st.g.userData['vel_'+(k==='cloudA'?-6.5:6.5)];
         for(let j=0;j<pos.count;j++){
           let x = pos.getX(j) + vel[j];
           if(k==='cloudA' && x>-.45) x=-8.5; if(k==='cloudB' && x<.45) x=8.5;
