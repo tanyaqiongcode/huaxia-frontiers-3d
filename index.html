@@ -399,6 +399,7 @@ const loader = document.getElementById('loader'), lpct = document.getElementById
 const clock = new THREE.Clock();
 const tmpP = new THREE.Vector3(), tmpT = new THREE.Vector3(), look = new THREE.Vector3();
 let li = -1;
+let fpsSamples = [], fpsChecked = false;
 function tick(){
   try{
   requestAnimationFrame(tick);
@@ -451,6 +452,14 @@ function tick(){
   if(!loaded){ lp = Math.min(100, lp + rnd(1.6,4.2)); lpct.textContent = Math.floor(lp);
     if(lp>=100){ loaded=true; loader.classList.add('done'); } }
   R.render(S, C);
+  if(!fpsChecked){
+    fpsSamples.push(clock.getDelta());
+    if(fpsSamples.length >= 30){
+      const avg = fpsSamples.reduce((a,b)=>a+b,0)/fpsSamples.length;
+      if(avg > 0.04) R.setPixelRatio(1);
+      fpsChecked = true;
+    }
+  }
   }catch(e){ document.title='TICKERR:'+e.message; };
 }
 tick();
