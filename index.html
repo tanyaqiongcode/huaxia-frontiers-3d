@@ -3,358 +3,445 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>华夏边缘 · The Frontiers of Huaxia</title>
-<meta name="description" content="王明珂《华夏边缘：历史记忆与族群认同》3D沉浸式主题站——边缘如何造就华夏。">
+<title>邊 · The Frontiers of Huaxia — A Silent Genealogy</title>
+<meta name="description" content="华夏边缘·无文字谱系之旅——七个纯画面场景，七位理论源头。思想内核：福柯、巴特、哈布瓦赫、安德森、拉铁摩尔。">
 <style>
   :root{
-    --bg:#06070d; --bg2:#0a0c14; --gold:#c9a45c; --gold-hi:#e8cf96; --ink:#e8dfc8;
-    --dim:#8b8474; --line:rgba(201,164,92,.22); --red:#a33b2e;
+    --bg:#06070d; --gold:#c9a45c; --gold-hi:#e8cf96; --ink:#e8dfc8; --dim:#7d7663;
+    --line:rgba(201,164,92,.25); --seal:#a33b2e;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{background:var(--bg);color:var(--ink);font-family:"Songti SC","STSong","Noto Serif SC","SimSun",serif;overflow-x:hidden}
-  #bg{position:fixed;inset:0;z-index:0;transition:opacity .4s}
-  .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
-    background:radial-gradient(ellipse at 50% 42%,transparent 30%,rgba(6,7,13,.55) 78%,rgba(6,7,13,.92) 100%)}
-  main{position:relative;z-index:2}
-  section{max-width:1060px;margin:0 auto;padding:110px 28px}
-  .kicker{color:var(--gold);font-size:12px;letter-spacing:.5em;margin-bottom:18px}
-  .num{display:inline-block;font-size:11px;color:var(--dim);letter-spacing:.3em;border:1px solid var(--line);
-    padding:4px 12px;border-radius:99px;margin-bottom:26px}
-  h2{font-size:clamp(26px,4vw,40px);font-weight:600;letter-spacing:.14em;margin-bottom:14px}
-  h2 em{font-style:normal;color:var(--gold)}
-  .lead{color:#c9c0a8;font-size:16px;line-height:2;max-width:640px}
-  .rule{width:56px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin:26px 0}
-  .glass{background:linear-gradient(160deg,rgba(20,22,34,.72),rgba(10,12,20,.55));
-    border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(10px)}
-  .reveal{opacity:0;transform:translateY(26px);transition:all 1s cubic-bezier(.16,1,.3,1)}
-  .reveal.on{opacity:1;transform:none}
+  html,body{background:var(--bg)}
+  body{color:var(--ink);font-family:"Songti SC","STSong","Noto Serif SC",serif;overflow-x:hidden}
+  #space{height:760vh}
+  canvas#gl{position:fixed;inset:0;z-index:0;display:block}
+  .vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
+    background:radial-gradient(ellipse at 50% 46%,transparent 34%,rgba(6,7,13,.5) 76%,rgba(6,7,13,.9) 100%)}
+  .grain{position:fixed;inset:-40px;z-index:3;pointer-events:none;opacity:.055;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='260' height='260' filter='url(%23n)'/></svg>");
+    animation:grain 1.1s steps(3) infinite}
+  @keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-14px,9px)}66%{transform:translate(10px,-12px)}100%{transform:translate(0,0)}}
 
-  /* HERO */
-  #hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;
-    text-align:center;padding:0 24px;position:relative}
-  #hero .zh{font-size:clamp(52px,10vw,118px);letter-spacing:.22em;text-indent:.22em;font-weight:700;
-    background:linear-gradient(180deg,#f3e6c4 20%,var(--gold) 60%,#8a6c33);-webkit-background-clip:text;background-clip:text;color:transparent;
-    text-shadow:0 0 80px rgba(201,164,92,.25)}
-  #hero .en{margin-top:16px;color:var(--dim);letter-spacing:.34em;font-size:clamp(11px,1.6vw,15px);font-family:Georgia,serif}
-  #hero .quote{margin-top:44px;max-width:560px;color:#cfc6ad;font-size:15.5px;line-height:2.1;
-    border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 30px}
-  #hero .quote b{color:var(--gold-hi);font-weight:600}
-  .stats{display:flex;gap:0;margin-top:46px;flex-wrap:wrap;justify-content:center}
-  .stat{padding:6px 34px;border-right:1px solid var(--line)}
-  .stat:last-child{border-right:none}
-  .stat .v{font-size:30px;color:var(--gold-hi);font-family:Georgia,serif}
-  .stat .k{font-size:11px;color:var(--dim);letter-spacing:.28em;margin-top:4px}
-  .cta{margin-top:48px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
-  .btn{padding:13px 34px;border-radius:99px;font-size:14px;letter-spacing:.2em;text-decoration:none;
-    border:1px solid var(--gold);color:var(--gold-hi);transition:.35s;background:rgba(201,164,92,.06)}
-  .btn:hover{background:var(--gold);color:#100c04;box-shadow:0 8px 40px rgba(201,164,92,.35)}
-  .btn.ghost{border-color:rgba(139,132,116,.4);color:#b7ae94;background:none}
-  .btn.ghost:hover{border-color:var(--gold);color:var(--gold-hi);background:rgba(201,164,92,.06);box-shadow:none}
-  .scrollhint{position:absolute;bottom:34px;color:var(--dim);font-size:11px;letter-spacing:.4em;
-    animation:bob 2.4s ease-in-out infinite}
-  @keyframes bob{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(8px);opacity:1}}
+  /* HUD：只允许数字符号与印章 */
+  .hud{position:fixed;z-index:5;font-family:Georgia,"Songti SC",serif}
+  .dots{left:50%;bottom:30px;transform:translateX(-50%);display:flex;gap:14px;align-items:center}
+  .dots i{width:7px;height:7px;border-radius:50%;border:1px solid var(--line);display:block;transition:.5s;cursor:pointer}
+  .dots i.on{background:var(--gold-hi);border-color:var(--gold-hi);box-shadow:0 0 14px rgba(232,207,150,.8)}
+  .numeral{left:50%;bottom:58px;transform:translateX(-50%);font-size:30px;color:var(--gold-hi);
+    letter-spacing:.1em;text-shadow:0 0 30px rgba(201,164,92,.55);transition:opacity .5s}
+  .pct{right:26px;bottom:26px;font-size:11px;color:var(--dim);letter-spacing:.3em;font-family:Georgia,serif}
 
-  /* 概念卡 */
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:40px}
-  .card{padding:26px 24px;transition:.4s;position:relative;overflow:hidden}
-  .card:hover{transform:translateY(-6px);border-color:var(--gold)}
-  .card .cn{font-family:Georgia,serif;color:var(--gold);font-size:13px;letter-spacing:.2em}
-  .card h3{font-size:19px;margin:10px 0 10px;letter-spacing:.06em;color:#efe7cf}
-  .card p{font-size:13.5px;color:#9d957f;line-height:1.9}
+  /* 朱印（唯一可点开的文字入口） */
+  .seal{top:24px;right:24px;width:52px;height:52px;background:var(--seal);border-radius:6px;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;
+    box-shadow:0 4px 26px rgba(163,59,46,.45),inset 0 0 0 2px rgba(232,223,200,.85),inset 0 0 0 5px var(--seal);
+    transition:.4s}
+  .seal:hover{transform:rotate(-4deg) scale(1.06)}
+  .seal span{color:#f0e6d0;font-size:24px;font-weight:700;transform:rotate(0.001deg)}
+  .tools{top:24px;left:24px;display:flex;gap:10px}
+  .tool{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;
+    justify-content:center;color:var(--dim);cursor:pointer;font-size:15px;background:rgba(10,12,20,.4);
+    backdrop-filter:blur(6px);transition:.3s}
+  .tool:hover{color:var(--gold-hi);border-color:var(--gold)}
 
-  /* 造物记 */
-  .maker video{width:100%;border-radius:14px;border:1px solid var(--line);display:block;background:#000}
-  .maker .row{display:grid;grid-template-columns:1.55fr 1fr;gap:18px;margin-top:20px}
-  @media(max-width:760px){.maker .row{grid-template-columns:1fr}}
-  .renders{display:grid;grid-template-rows:repeat(3,1fr);gap:14px}
-  .renders img{width:100%;border-radius:10px;border:1px solid var(--line);display:block;transition:.4s;opacity:.92}
-  .renders img:hover{opacity:1;transform:scale(1.02)}
-  .maker .meta{margin-top:20px;display:flex;gap:14px;flex-wrap:wrap}
-  .chip{font-size:12px;letter-spacing:.14em;color:#b7ae94;border:1px solid var(--line);
-    padding:8px 18px;border-radius:99px;text-decoration:none;transition:.3s}
-  .chip:hover{color:var(--gold-hi);border-color:var(--gold)}
+  /* 注释面板：全站唯一文字 */
+  .veil{position:fixed;inset:0;z-index:8;background:rgba(4,5,9,.72);backdrop-filter:blur(10px);
+    display:none;align-items:center;justify-content:center;padding:20px}
+  .veil.on{display:flex}
+  .panel{max-width:680px;width:100%;max-height:82vh;overflow:auto;border:1px solid var(--line);
+    border-radius:14px;background:linear-gradient(165deg,rgba(18,20,32,.96),rgba(8,10,18,.96));
+    padding:34px 34px 26px;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+  .panel h2{font-size:16px;letter-spacing:.34em;color:var(--gold-hi);font-weight:600;margin-bottom:4px}
+  .panel .sub{font-family:Georgia,serif;font-size:11px;color:var(--dim);letter-spacing:.14em;margin-bottom:20px}
+  .panel table{width:100%;border-collapse:collapse;font-size:12.5px}
+  .panel td{padding:10px 8px;border-top:1px solid rgba(201,164,92,.14);vertical-align:top;color:#c9c0a8;line-height:1.75}
+  .panel td.n{font-family:Georgia,serif;color:var(--gold);width:34px;font-size:14px}
+  .panel td.w{color:#efe7cf}
+  .panel td.w i{color:#a49b83;font-style:italic}
+  .panel td.p{color:var(--dim);font-size:11px;font-family:Menlo,monospace}
+  .panel .fine{margin-top:18px;font-size:11px;color:var(--dim);line-height:1.9;border-top:1px solid var(--line);padding-top:14px}
+  .panel .close{margin-top:20px;text-align:center}
+  .panel .close a{color:var(--gold);text-decoration:none;letter-spacing:.3em;font-size:12px;cursor:pointer}
 
-  /* 推荐语 */
-  .quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:40px}
-  .q{padding:30px 28px;position:relative}
-  .q::before{content:"「";position:absolute;top:8px;left:16px;font-size:44px;color:rgba(201,164,92,.28)}
-  .q p{font-size:14.5px;line-height:2.05;color:#cfc6ad}
-  .q .who{margin-top:16px;color:var(--gold);font-size:13px;letter-spacing:.1em}
-  .q .who span{color:var(--dim);font-size:11.5px}
-
-  /* 作者 / 时间线 */
-  .duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
-  @media(max-width:760px){.duo{grid-template-columns:1fr}}
-  .panel{padding:34px 30px}
-  .panel .name{font-size:34px;letter-spacing:.2em;color:#f0e8d0}
-  .panel .nm{font-family:Georgia,serif;color:var(--dim);font-size:13px;letter-spacing:.18em;margin-top:6px}
-  .panel ul{list-style:none;margin-top:22px}
-  .panel li{font-size:14px;color:#b9b098;line-height:2.15;padding-left:18px;position:relative}
-  .panel li::before{content:"·";position:absolute;left:0;color:var(--gold)}
-  .tl{margin-top:8px}
-  .tl .row{display:flex;gap:20px;padding:16px 0;border-bottom:1px dashed rgba(201,164,92,.18)}
-  .tl .yr{font-family:Georgia,serif;font-size:22px;color:var(--gold);min-width:64px}
-  .tl .ds b{display:block;font-size:15px;letter-spacing:.08em;color:#e6dcbf}
-  .tl .ds span{font-size:12.5px;color:#948c76}
-
-  /* 影像表 */
-  table.links{width:100%;border-collapse:collapse;margin-top:36px;font-size:13.5px}
-  table.links td,table.links th{padding:13px 14px;border-bottom:1px solid rgba(201,164,92,.14);text-align:left;vertical-align:top}
-  table.links th{color:var(--gold);letter-spacing:.16em;font-weight:600;font-size:12px}
-  table.links td{color:#b9b098}
-  table.links a{color:#d8c9a0;text-decoration:none;border-bottom:1px dotted rgba(201,164,92,.5)}
-  table.links a:hover{color:var(--gold-hi)}
-  table.links .n{font-family:Georgia,serif;color:#8f8770;font-size:12px;white-space:nowrap}
-
-  footer{border-top:1px solid var(--line);margin-top:60px;background:linear-gradient(180deg,transparent,rgba(201,164,92,.05))}
-  footer .inner{max-width:1060px;margin:0 auto;padding:70px 28px 60px;text-align:center}
-  footer .en{font-family:Georgia,serif;color:var(--gold-hi);font-size:clamp(17px,2.6vw,24px);letter-spacing:.06em;line-height:1.7}
-  footer .zh{color:#b7ae94;font-size:14px;margin-top:14px;letter-spacing:.12em;line-height:2}
-  footer .springer{margin-top:26px;color:var(--dim);font-size:12px;letter-spacing:.24em}
-  footer .repo{display:inline-block;margin-top:30px}
+  /* 加载：纯符号 */
+  #loader{position:fixed;inset:0;z-index:20;background:var(--bg);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:26px;transition:opacity 1.1s}
+  #loader .ring{width:74px;height:74px;border-radius:50%;border:1px solid rgba(201,164,92,.18);
+    border-top-color:var(--gold-hi);animation:spin 1.15s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  #loader .pct2{font-family:Georgia,serif;color:var(--gold-hi);font-size:15px;letter-spacing:.34em}
+  #loader.done{opacity:0;pointer-events:none}
 </style>
 </head>
 <body>
-<canvas id="bg"></canvas>
+<canvas id="gl"></canvas>
 <div class="vignette"></div>
-<main>
+<div class="grain"></div>
+<div id="space"></div>
 
-  <!-- 壹 · HERO -->
-  <section id="hero">
-    <div class="zh">华夏边缘</div>
-    <div class="en">THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity</div>
-    <div class="quote">"当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b>让它看起来像个圆形。"<br><span style="font-size:12.5px;color:#8b8474">—— 王明珂《华夏边缘》官方简介 · 当代华语世界最具范式意义的历史人类学经典之一</span></div>
-    <div class="stats">
-      <div class="stat"><div class="v">9.1</div><div class="k">豆瓣评分</div></div>
-      <div class="stat"><div class="v">91.9%</div><div class="k">微信读书推荐值</div></div>
-      <div class="stat"><div class="v">7,319</div><div class="k">微信读书在读</div></div>
-      <div class="stat"><div class="v">113</div><div class="k">豆瓣书评</div></div>
-    </div>
-    <div class="cta">
-      <a class="btn" href="#maker">观看 3D 造物记</a>
-      <a class="btn ghost" href="#concepts">进入边缘 · 概念八章</a>
-    </div>
-    <div class="scrollhint">SCROLL · 向下进入边缘</div>
-  </section>
+<div class="hud numeral" id="numeral">Ⅰ</div>
+<div class="hud dots" id="dots"></div>
+<div class="hud pct" id="pct">Ⅰ / Ⅶ</div>
+<div class="hud tools">
+  <div class="tool" id="sound" title="◎">◎</div>
+</div>
+<div class="hud seal" id="seal" title="譜系"><span>邊</span></div>
 
-  <!-- 贰 · 概念 -->
-  <section id="concepts">
-    <div class="reveal"><span class="num">贰 · CONCEPTS</span>
-      <h2>八个概念，一次<em>边缘</em>之旅</h2>
-      <div class="rule"></div>
-      <p class="lead">华夏不是一份固定的名单，而是一道随资源竞争、记忆与失忆不断移动的边界。读懂边缘，才读懂"什么是中国人"。</p></div>
-    <div class="grid">
-      <div class="glass card reveal"><div class="cn">壹</div><h3>什么是中国人</h3><p>不问"华夏有什么"，而问"华夏的边界在哪里"。边缘视角取代定义式民族研究。</p></div>
-      <div class="glass card reveal"><div class="cn">贰</div><h3>族群像高尔夫俱乐部</h3><p>族群认同如俱乐部会员制：入会资格由边界决定，而非由成员的内在特征决定。</p></div>
-      <div class="glass card reveal"><div class="cn">叁</div><h3>结构性失忆</h3><p>族群靠"记得什么、忘记什么"维系自身——失忆与记忆同样是建构边界的工程。</p></div>
-      <div class="glass card reveal"><div class="cn">肆</div><h3>英雄祖先与弟兄祖先</h3><p>两种历史心性：阶序化的英雄叙事，与对等合作的弟兄叙事，对应两种社会形态。</p></div>
-      <div class="glass card reveal"><div class="cn">伍</div><h3>一截骂一截</h3><p>岷江上游的人群按河谷上下"一截骂一截"——认同在边缘处逐级滑动，没有铁板一块。</p></div>
-      <div class="glass card reveal"><div class="cn">陆</div><h3>燃烧的木棍</h3><p>火把照亮的只是木棍一端：典范历史照亮中心，边缘沉在黑暗里——研究就是把火把转向边缘。</p></div>
-      <div class="glass card reveal"><div class="cn">柒</div><h3>人类生态</h3><p>华夏是长程历史中的人类生态：资源竞争与分配环境，塑造了边界的形成与变迁。</p></div>
-      <div class="glass card reveal"><div class="cn">捌</div><h3>边缘研究法</h3><p>从周人族源、羌人身份到太伯奔吴——用边缘人群的史料，重写中心的历史。</p></div>
-    </div>
-  </section>
-
-  <!-- 叁 · 3D造物记 -->
-  <section id="maker" class="maker">
-    <div class="reveal"><span class="num">叁 · THE MAKING</span>
-      <h2>3D 造物记：<em>从 0 到边缘</em></h2>
-      <div class="rule"></div>
-      <p class="lead">与本书同构的 3D 隐喻——发光的内核是"华夏"，青铜巨环是"边缘"，环绕的碎片是被记起与被遗忘的记忆，双碉楼矗立在羌族田野的边缘。以下工程从空场景开始逐块搭建，全程可复现。</p></div>
-    <div class="row reveal">
-      <div>
-        <video controls muted loop playsinline preload="metadata" poster="assets/render_01.png">
-          <source src="assets/build.mp4" type="video/mp4">
-        </video>
-        <div class="meta">
-          <a class="chip" href="blender/build_complete.blend" download>⬇ 下载 Blender 工程文件</a>
-          <span class="chip">8 阶段 · 96 帧 · 12fps 延时</span>
-          <span class="chip">Cycles 96spp 渲染</span>
-        </div>
-      </div>
-      <div class="renders">
-        <img src="assets/render_01.png" alt="渲染图一：边缘全景">
-        <img src="assets/render_02.png" alt="渲染图二：内核特写">
-        <img src="assets/render_03.png" alt="渲染图三：碉楼视角">
-      </div>
-    </div>
-  </section>
-
-  <!-- 肆 · 推荐语 -->
-  <section id="praise">
-    <div class="reveal"><span class="num">肆 · PRAISE</span>
-      <h2>他们如何谈论<em>边缘</em></h2>
-      <div class="rule"></div></div>
-    <div class="quotes">
-      <div class="glass q reveal"><p>我们要探讨什么叫中华民族，最好的方法，不是正面地去对"中国人"下一个定义，而是想办法透过"中国人"这个族群的边界，来找它大概的意思。</p><div class="who">梁文道 <span>· 凤凰卫视《开卷八分钟》整期推介</span></div></div>
-      <div class="glass q reveal"><p>这是一部对中文世界的人类学、民族学和历史学研究都产生了重要影响的著作……以十分新鲜并充满魅力的论证，为推进中国史的研究提供了新的范例。</p><div class="who">罗新 <span>· 北京大学中国古代史研究中心教授</span></div></div>
-      <div class="glass q reveal"><p>本书为华夏一族通向自我认知的道路打开了一扇大门，远非就事论事者所能比拟。我由衷地向作者致敬！</p><div class="who">刘苏里 <span>· 万圣书园创始人</span></div></div>
-      <div class="glass q reveal"><p>他被称为学界的"毒药猫"，在打通历史、人类学、人文地理的扞格，在传授知识的同时，更重要的是让人开阔视野。</p><div class="who">岱峻 <span>· 民国学术史研究者</span></div></div>
-    </div>
-  </section>
-
-  <!-- 伍 · 作者与版本 -->
-  <section id="author">
-    <div class="reveal"><span class="num">伍 · AUTHOR &amp; EDITIONS</span>
-      <h2>作者与<em>版本谱系</em></h2>
-      <div class="rule"></div></div>
-    <div class="duo">
-      <div class="glass panel reveal">
-        <div class="name">王明珂</div><div class="nm">WANG MING-KE</div>
-        <ul>
-          <li>"中研院"院士，历史语言研究所前任所长</li>
-          <li>哈佛大学东亚系博士（1992）</li>
-          <li>北京大学历史学系客座讲席教授</li>
-          <li>长期在川西羌族地区进行历史人类学田野</li>
-          <li>代表作：《华夏边缘》《羌在汉藏之间》《游牧者的抉择》《毒药猫理论》</li>
-        </ul>
-      </div>
-      <div class="glass panel reveal tl">
-        <div class="tl"><div class="row"><div class="yr">1997</div><div class="ds"><b>台北允晨文化 · 繁体初版</b><span>作者成名作，震动台湾学界</span></div></div>
-        <div class="row"><div class="yr">2006</div><div class="ds"><b>社会科学文献出版社 · 大陆初版</b><span>"像飓风一般横扫大陆学术界"（凤凰网文化）</span></div></div>
-        <div class="row"><div class="yr">2013</div><div class="ds"><b>浙江人民出版社 · 增订本</b><span>豆瓣 9.0 · 收录代序《如何观看与了解边疆》前身的增补内容</span></div></div>
-        <div class="row" style="border:none"><div class="yr">2020</div><div class="ds"><b>上海人民出版社 · 世纪文景</b><span>豆瓣 9.1 · 微信读书 91.9% · 现行通行版</span></div></div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 陆 · 影像 -->
-  <section id="media">
-    <div class="reveal"><span class="num">陆 · MEDIA</span>
-      <h2>影像里的<em>边缘</em></h2>
-      <div class="rule"></div>
-      <p class="lead">全网经核验的讲座与解读（2026-11 数据），以及一条 27 分钟的大众解读参照。</p></div>
-    <table class="links reveal">
-      <tr><th>平台</th><th>内容</th><th>频道</th><th>热度</th><th>直达</th></tr>
-      <tr><td class="n">Bilibili</td><td>王明珂：三星堆的启示（北大文研院官方）</td><td>北大文研院</td><td class="n">32,860 播放</td><td><a href="https://www.bilibili.com/video/BV1zM4we8ERe" target="_blank" rel="noopener">观看 ↗</a></td></tr>
-      <tr><td class="n">Bilibili</td><td>【一席】王明珂：毒药猫与代罪羊</td><td>一席</td><td class="n">15,009 播放</td><td><a href="https://www.bilibili.com/video/BV11z4y1f7xG" target="_blank" rel="noopener">观看 ↗</a></td></tr>
-      <tr><td class="n">Bilibili</td><td>《北方边缘——秦汉帝国的边疆扩展与边缘反噬》</td><td>i 讲座</td><td class="n">10,665 播放</td><td><a href="https://www.bilibili.com/video/BV1cM411575Z" target="_blank" rel="noopener">观看 ↗</a></td></tr>
-      <tr><td class="n">Bilibili</td><td>王明珂 × 罗新对谈：从边缘看文明</td><td>key-lv</td><td class="n">7,248 播放</td><td><a href="https://www.bilibili.com/video/BV16x4y147DM" target="_blank" rel="noopener">观看 ↗</a></td></tr>
-      <tr><td class="n">Bilibili</td><td>《月明星稀——中原与其边缘的形成》</td><td>i 讲座</td><td class="n">5,433 播放</td><td><a href="https://www.bilibili.com/video/BV1xv4y1E7Sm" target="_blank" rel="noopener">观看 ↗</a></td></tr>
-      <tr><td class="n">YouTube</td><td>第十六届余英时先生历史讲座（王明珂教授，2025/26）</td><td>中大新亚书院</td><td class="n">官方录像</td><td><a href="https://www.youtube.com/watch?v=GDL2BfBySjk" target="_blank" rel="noopener">观看 ↗</a></td></tr>
-      <tr><td class="n">凤凰卫视</td><td>《开卷八分钟》梁文道整期推介本书（2008）</td><td>凤凰网</td><td class="n">文字实录</td><td><a href="http://phtv.ifeng.com/program/kjbfz/200807/0729_1699_682542.shtml" target="_blank" rel="noopener">阅读 ↗</a></td></tr>
+<div class="veil" id="veil">
+  <div class="panel">
+    <h2>譜 系 註</h2>
+    <div class="sub">SILENT GENEALOGY — SCENES &amp; SOURCES · 本站无文字，七幕皆有所本</div>
+    <table>
+      <tr><td class="n">Ⅰ</td><td class="w">知识之<b>地层</b>，光脉贯穿其间——考古学与话语<br><i>Michel Foucault, L'archéologie du savoir (1969)《知识考古学》</i></td><td class="p">参考文献/福柯/<br>知识考古学.pdf</td></tr>
+      <tr><td class="n">Ⅱ</td><td class="w"><b>环列之塔</b>，光锥扫过——规训的目光与知识—权力<br><i>Michel Foucault, Surveiller et punir (1975)《规训与惩罚》</i></td><td class="p">参考文献/福柯/<br>规训与惩罚.pdf</td></tr>
+      <tr><td class="n">Ⅲ</td><td class="w"><b>同心之环</b>，呼吸开合——集体记忆的社会框架<br><i>Maurice Halbwachs, The Collective Memory (1980)《论集体记忆》</i></td><td class="p">参考文献/B_族群认同…/<br>Halbwachs…pdf</td></tr>
+      <tr><td class="n">Ⅳ</td><td class="w"><b>双色之群</b>，一线光缝，穿越者换色——族群边界即认同之所依<br><i>Fredrik Barth (ed.), Ethnic Groups and Boundaries (1969)</i></td><td class="p">参考文献/B_族群认同…/<br>Barth…1969…pdf</td></tr>
+      <tr><td class="n">Ⅴ</td><td class="w"><b>连线之星群</b>，圆若共同体——被想象的边界<br><i>Benedict Anderson, Imagined Communities (1991)《想象的共同体》</i></td><td class="p">参考文献/B_族群认同…/<br>Anderson…pdf</td></tr>
+      <tr><td class="n">Ⅵ</td><td class="w"><b>雾中之墙</b>，墙外散落的自由粒子——边疆生态与"不被统治"<br><i>Owen Lattimore (1940)；James C. Scott (2009)</i></td><td class="p">参考文献/B_族群认同…/<br>Lattimore…/斯科特…</td></tr>
+      <tr><td class="n">Ⅶ</td><td class="w"><b>内核与青铜环</b>——前六幕尽数沉淀于此：地层为基、环为边界、碎片为记忆<br><i>王明珂《华夏边缘：历史记忆与族群认同》(1997/2020)</i></td><td class="p">参考文献/A_王明珂著作/<br>王明珂_2020_华夏边缘…pdf</td></tr>
     </table>
-  </section>
-
-  <!-- 柒 · 中译英 -->
-  <section id="translation">
-    <div class="reveal"><span class="num">柒 · TRANSLATION</span>
-      <h2>边缘，正被<em>译向边缘之外</em></h2>
-      <div class="rule"></div>
-      <p class="lead" style="color:#c9c0a8">经全网核查，《华夏边缘》至今没有任何官方外译本。一项面向英语世界的首次全文翻译工程正在进行——让"边缘"的方法，抵达汉语之外。</p></div>
-  </section>
-
-  <footer>
-    <div class="inner">
-      <div class="en">Translating Wang Ming-ke's <i>Huaxia Frontiers</i><br>into English — for the first time.</div>
-      <div class="zh">华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）</div>
-      <div class="springer">SPRINGER · TRANSLATION PROJECT IN PROGRESS</div>
-      <a class="btn ghost repo" id="repoLink" href="https://github.com/tanyaqiongcode/huaxia-frontiers-3d" target="_blank" rel="noopener">GitHub 仓库 ↗</a>
+    <div class="fine">
+      方法之师：福柯（考古学／谱系学——王明珂《反思史学与史学反思》直接师承）；概念内核：巴特（族群边界）；记忆之源：哈布瓦赫（＋康纳顿、扬·阿斯曼）；国族之思：安德森；边疆之眼：拉铁摩尔；中国对话：费孝通《中华民族多元一体格局》。<br>
+      本页为视觉转译，无文字叙述；文献实体均藏于项目「参考文献／」库（含福柯专柜：《知识考古学》《规训与惩罚》《疯癫与文明》《福柯读本》、古廷《牛津通识读本》、刘北成《福柯思想肖像》）。
     </div>
-  </footer>
-</main>
+    <div class="close"><a id="closeVeil">回 到 画 面 ⊙</a></div>
+  </div>
+</div>
+
+<div id="loader"><div class="ring"></div><div class="pct2" id="lpct">0</div></div>
 
 <script src="assets/three.min.js"></script>
 <script>
-/* ============ THREE.JS HERO：与Blender场景同构 ============ */
-const canvas = document.getElementById('bg');
-const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:false});
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.setSize(innerWidth, innerHeight);
-renderer.setClearColor(0x06070d);
+/* ================= 无文字谱系之旅 =================
+   Ⅰ地层(福柯·考古) Ⅱ环塔(福柯·规训) Ⅲ同心环(哈布瓦赫·记忆)
+   Ⅳ双群光缝(巴特·边界) Ⅴ星群(安德森·想象) Ⅵ雾墙(拉铁摩尔·边疆) Ⅶ华夏边缘(王明珂) */
+const R = new THREE.WebGLRenderer({canvas:document.getElementById('gl'), antialias:true});
+R.setPixelRatio(Math.min(devicePixelRatio,2)); R.setSize(innerWidth,innerHeight);
+R.setClearColor(0x06070d);
+const S = new THREE.Scene(); S.fog = new THREE.FogExp2(0x06070d, 0.030);
+const C = new THREE.PerspectiveCamera(46, innerWidth/innerHeight, .1, 260);
 
-const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x06070d, 0.052);
-const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 200);
-camera.position.set(0, -16, 6.2);
-camera.lookAt(0, 0, 0.4);
+/* 全局光：跟随相机的暖光 + 冷补 */
+const hemi = new THREE.HemisphereLight(0x28242f, 0x05060c, .8); S.add(hemi);
+const follow = new THREE.PointLight(0xffd9a0, .75, 90); S.add(follow);
 
-/* 光 */
-scene.add(new THREE.AmbientLight(0x1a1826, 0.9));
-const key = new THREE.PointLight(0xffd9a0, 2.4, 60); key.position.set(-9, 5, 10); scene.add(key);
-const rim = new THREE.DirectionalLight(0x7fa0ff, 0.7); rim.position.set(10, -4, 4); scene.add(rim);
-const inner = new THREE.PointLight(0xffb865, 1.6, 18); scene.add(inner);
-
-/* 青铜巨环（边缘） */
-const edge = new THREE.Mesh(
-  new THREE.TorusGeometry(6, 0.15, 40, 220),
-  new THREE.MeshStandardMaterial({color:0xc9a45c, metalness:1, roughness:0.28})
-);
-edge.rotation.x = Math.PI/2*0.94; edge.rotation.z = 0.35; scene.add(edge);
-
-/* 内核粒子球（华夏） */
-function ringCloud(n, rMin, rMax, zGauss, size, palette){
-  const pos = new Float32Array(n*3), col = new Float32Array(n*3);
-  for(let i=0;i<n;i++){
-    const th = Math.random()*Math.PI*2, r = rMin + Math.random()*(rMax-rMin);
-    const x = r*Math.cos(th), y = r*Math.sin(th), z = (Math.random()+Math.random()+Math.random()-1.5)*zGauss;
-    pos.set([x, y, z], i*3);
-    const c = palette[Math.floor(Math.random()*palette.length)];
-    col.set(c, i*3);
-  }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  const m = new THREE.PointsMaterial({size, vertexColors:true, transparent:true, opacity:0.92,
-    blending:THREE.AdditiveBlending, depthWrite:false, sizeAttenuation:true});
-  return new THREE.Points(g, m);
+/* ---------- 工具 ---------- */
+const M = (c,o=1,e=0,ec=0xffca7a)=> new e? new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:o,blending:THREE.AdditiveBlending,depthWrite:false})
+      : new THREE.MeshStandardMaterial({color:c,metalness:.92,roughness:.3,transparent:true,opacity:o});
+function pts(n, gen, size, color, op){
+  const p = new Float32Array(n*3);
+  for(let i=0;i<n;i++){ const v=gen(); p.set([v.x,v.y,v.z], i*3); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p,3));
+  return new THREE.Points(g, new THREE.PointsMaterial({color, size, transparent:true, opacity:op,
+    blending:THREE.AdditiveBlending, depthWrite:false}));
 }
-const golds = [[1,.82,.5],[.85,.65,.32],[1,.9,.62],[.78,.55,.25]];
-const core = ringCloud(1400, 0.1, 1.5, 1.4, 0.045, golds); scene.add(core);
-const band = ringCloud(4600, 4.9, 7.1, 0.75, 0.05, golds); scene.add(band);
-const dust = ringCloud(700, 2.6, 4.6, 1.1, 0.032, [[.6,.5,.32],[.45,.4,.3]]); scene.add(dust);
+const TAU = Math.PI*2, rnd=(a,b)=>a+Math.random()*(b-a);
 
-/* 内核发光球体 */
-const glow = new THREE.Mesh(new THREE.SphereGeometry(1.15, 32, 24),
-  new THREE.MeshBasicMaterial({color:0xffca7a, transparent:true, opacity:0.16}));
-scene.add(glow);
+/* ---------- 七站 ---------- */
+const ST = [];
+function station(build){ ST.push({g:new THREE.Group(), mats:[]}); build(ST[ST.length-1].g, ST[ST.length-1].mats); return ST[ST.length-1]; }
+function reg(g, mats, mesh, base){ mesh.material.transparent = true; mesh.material.userData = {base}; mats.push(mesh.material); g.add(mesh); }
 
-/* 记忆碎片（微光方块） */
-const fragGeo = new THREE.BufferGeometry();
-{
-  const N=260, pos=new Float32Array(N*3);
-  for(let i=0;i<N;i++){
-    const th=Math.random()*Math.PI*2, r=2.4+Math.random()*3.6;
-    pos.set([r*Math.cos(th), r*Math.sin(th), (Math.random()-0.5)*2.2], i*3);
+/* Ⅰ 知识地层 */
+station((g,mats)=>{
+  for(let i=0;i<9;i++){
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(15,9.5),
+      new THREE.MeshStandardMaterial({color:0x2a2417+((i*37)<<8), metalness:.55, roughness:.62,
+        transparent:true, opacity:0, side:THREE.DoubleSide}));
+    m.position.set(rnd(-.9,.9), -5.6 + i*1.42, rnd(-.6,.6));
+    m.rotation.x = -Math.PI/2*.94; m.rotation.z = rnd(-.09,.09);
+    m.material.userData = {base:.30}; mats.push(m.material); g.add(m);
   }
-  fragGeo.setAttribute('position', new THREE.BufferAttribute(pos,3));
-}
-const frags = new THREE.Points(fragGeo, new THREE.PointsMaterial({color:0xe8cf96, size:0.09,
-  transparent:true, opacity:0.75, blending:THREE.AdditiveBlending, depthWrite:false}));
-scene.add(frags);
-
-/* 交互 */
-let mx=0, my=0, scrolly=0;
-addEventListener('pointermove', e=>{ mx=(e.clientX/innerWidth-0.5); my=(e.clientY/innerHeight-0.5); });
-addEventListener('scroll', ()=>{ scrolly = scrollY/innerHeight; });
-
-const clock = new THREE.Clock();
-(function tick(){
-  requestAnimationFrame(tick);
-  const t = clock.getElapsedTime();
-  edge.rotation.z = 0.35 + t*0.02;
-  band.rotation.z = t*0.03; dust.rotation.z = -t*0.018; frags.rotation.z = t*0.045;
-  core.rotation.y = t*0.05;
-  glow.scale.setScalar(1 + Math.sin(t*1.4)*0.05);
-  inner.intensity = 1.5 + Math.sin(t*1.4)*0.35;
-  const px = mx*1.6, py = my*0.9;
-  camera.position.x += (px - camera.position.x)*0.03;
-  camera.position.y += ((-16 + py*1.4 + scrolly*5.5) - camera.position.y)*0.04;
-  camera.lookAt(0,0,0.4);
-  canvas.style.opacity = Math.max(0.12, 1 - scrolly*0.55);
-  renderer.render(scene, camera);
-})();
-addEventListener('resize', ()=>{
-  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
+  const curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-5,-6.2,2), new THREE.Vector3(-1.6,-3.4,-.5), new THREE.Vector3(1.2,-1,1),
+    new THREE.Vector3(-1,1.8,-.8), new THREE.Vector3(2.4,4.2,.6), new THREE.Vector3(1,6.4,0)]);
+  const vein = new THREE.Mesh(new THREE.TubeGeometry(curve, 60, .045, 8),
+    new THREE.MeshBasicMaterial({color:0xffd98a, transparent:true, opacity:0,
+      blending:THREE.AdditiveBlending, depthWrite:false}));
+  vein.material.userData = {base:.95}; mats.push(vein.material); g.add(vein);
+  {const _d = pts(220, ()=>({x:rnd(-7,7), y:rnd(-6,6.8), z:rnd(-4,4)}), .05, 0xc9a45c, 0); _d.material.userData={base:.55}; mats.push(_d.material); g.add(_d);}
 });
 
-/* 滚动浮现 */
-const io = new IntersectionObserver(es=>es.forEach(e=>{
-  if(e.isIntersecting) e.target.classList.add('on');
-}), {threshold:0.12});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+/* Ⅱ 环列之塔 */
+station((g,mats)=>{
+  for(let i=0;i<14;i++){
+    const a = i/14*TAU;
+    const p = new THREE.Mesh(new THREE.BoxGeometry(.6,7.4,.6),
+      new THREE.MeshStandardMaterial({color:0x14161f, metalness:.75, roughness:.5, transparent:true, opacity:0}));
+    p.position.set(7*Math.cos(a), 0, 7*Math.sin(a)); p.lookAt(0,0,0);
+    p.material.userData = {base:.9}; mats.push(p.material); g.add(p);
+  }
+  const tower = new THREE.Mesh(new THREE.CylinderGeometry(1.05,1.35,10.5,10),
+    new THREE.MeshStandardMaterial({color:0x1c1f2b, metalness:.6, roughness:.5, transparent:true, opacity:0}));
+  tower.material.userData = {base:.95}; mats.push(tower.material); g.add(tower);
+  const eye = new THREE.Mesh(new THREE.SphereGeometry(.5,20,14),
+    new THREE.MeshBasicMaterial({color:0xfff2cf, transparent:true, opacity:0,
+      blending:THREE.AdditiveBlending, depthWrite:false}));
+  eye.position.y = 4.2; eye.material.userData={base:1}; mats.push(eye.material); g.add(eye);
+  const cone = new THREE.Mesh(new THREE.ConeGeometry(6.4, 11.5, 32, 1, true),
+    new THREE.MeshBasicMaterial({color:0xfff2cf, transparent:true, opacity:0,
+      blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide}));
+  cone.position.y = -1.4; cone.material.userData={base:.05}; mats.push(cone.material); g.add(cone);
+  g.userData.eye = eye; g.userData.cone = cone;
+  {const _d = pts(160, ()=>({x:rnd(-9,9), y:rnd(-5,6), z:rnd(-9,9)}), .05, 0x8fa3c8, 0); _d.material.userData={base:.55}; mats.push(_d.material); g.add(_d);}
+});
+
+/* Ⅲ 记忆同心环 */
+station((g,mats)=>{
+  for(let i=0;i<5;i++){
+    const r = 1.6 + i*1.15;
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(r, .028, 8, 120),
+      new THREE.MeshBasicMaterial({color:0xe8cf96, transparent:true, opacity:0,
+        blending:THREE.AdditiveBlending, depthWrite:false}));
+    ring.rotation.x = rnd(-.7,.7); ring.rotation.y = rnd(-.5,.5);
+    ring.material.userData = {base:.5 - i*.06}; mats.push(ring.material); g.add(ring);
+    g.userData['ring'+i] = ring;
+  }
+  const seed = new THREE.Mesh(new THREE.SphereGeometry(.42,20,14),
+    new THREE.MeshBasicMaterial({color:0xffd98a, transparent:true, opacity:0,
+      blending:THREE.AdditiveBlending, depthWrite:false}));
+  seed.material.userData={base:1}; mats.push(seed.material); g.add(seed);
+  {const _d = pts(300, ()=>{const a=rnd(0,TAU), r=rnd(1.4,6.6);
+    return {x:r*Math.cos(a), y:rnd(-1.6,1.6), z:r*Math.sin(a)};}, .05, 0xc9a45c, 0); _d.material.userData={base:.55}; mats.push(_d.material); g.add(_d);}
+});
+
+/* Ⅳ 双群光缝（巴特） */
+station((g,mats)=>{
+  function cloud(n, x0, color, spread){
+    const p = new Float32Array(n*3), vel = new Float32Array(n);
+    for(let i=0;i<n;i++){
+      p.set([x0 + rnd(-spread,spread)*.4, rnd(-4.5,4.5), rnd(-5,5)], i*3);
+      vel[i] = x0<0 ? rnd(.008,.02) : -rnd(.008,.02);
+    }
+    const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(p,3));
+    const pt = new THREE.Points(geo, new THREE.PointsMaterial({color, size:.075, transparent:true,
+      opacity:0, blending:THREE.AdditiveBlending, depthWrite:false}));
+    pt.material.userData={base:.85}; mats.push(pt.material);
+    g.userData['vel_'+x0] = vel; g.add(pt); return pt;
+  }
+  g.userData.cloudA = cloud(520, -6.5, 0xd8b06a, 3.4);
+  g.userData.cloudB = cloud(520,  6.5, 0x7f93b8, 3.4);
+  const seam = new THREE.Mesh(new THREE.PlaneGeometry(.1, 13),
+    new THREE.MeshBasicMaterial({color:0xfff2cf, transparent:true, opacity:0,
+      blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide}));
+  seam.material.userData={base:.85}; mats.push(seam.material); g.add(seam); g.userData.seam = seam;
+  const halo = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 13),
+    new THREE.MeshBasicMaterial({color:0xc9a45c, transparent:true, opacity:0,
+      blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide}));
+  halo.material.userData={base:.08}; mats.push(halo.material); g.add(halo);
+});
+
+/* Ⅴ 想象星群 */
+station((g,mats)=>{
+  const N=110, P=[];
+  for(let i=0;i<N;i++){ const a=rnd(0,TAU), r=4.6+rnd(-.5,.5);
+    P.push(new THREE.Vector3(r*Math.cos(a), rnd(-3.4,3.4), r*Math.sin(a))); }
+  const pos = new Float32Array(N*3); P.forEach((v,i)=>pos.set([v.x,v.y,v.z], i*3));
+  const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  const stars = new THREE.Points(geo, new THREE.PointsMaterial({color:0xfff2cf, size:.11, transparent:true,
+    opacity:0, blending:THREE.AdditiveBlending, depthWrite:false}));
+  stars.material.userData={base:1}; mats.push(stars.material); g.add(stars);
+  const lp=[];
+  for(let i=0;i<N;i++)for(let j=i+1;j<N;j++){ if(P[i].distanceTo(P[j])<2.35){ lp.push(P[i],P[j]); } }
+  const lg = new THREE.BufferGeometry().setFromPoints(lp);
+  const lines = new THREE.LineSegments(lg, new THREE.LineBasicMaterial({color:0xc9a45c, transparent:true,
+    opacity:0, blending:THREE.AdditiveBlending, depthWrite:false}));
+  lines.material.userData={base:.16}; mats.push(lines.material); g.add(lines);
+  const ringPts=[]; for(let k=0;k<=128;k++){const a=k/128*TAU; ringPts.push(new THREE.Vector3(5.4*Math.cos(a),0,5.4*Math.sin(a)));}
+  const loop = new THREE.Line(new THREE.BufferGeometry().setFromPoints(ringPts),
+    new THREE.LineBasicMaterial({color:0xe8cf96, transparent:true, opacity:0}));
+  loop.material.userData={base:.4}; mats.push(loop.material); g.add(loop);
+});
+
+/* Ⅵ 雾中之墙 */
+station((g,mats)=>{
+  let x = -13;
+  for(let i=0;i<42;i++){
+    const h = .5 + Math.abs(Math.sin(i*1.7)) * 1.9 + rnd(0,.4);
+    const b = new THREE.Mesh(new THREE.BoxGeometry(rnd(1.4,2.2), h, 1),
+      new THREE.MeshStandardMaterial({color:0x2b241a, metalness:.5, roughness:.66, transparent:true, opacity:0}));
+    b.position.set(x, h/2 - 1.2, Math.sin(i*.55)*1.4);
+    b.material.userData={base:.92}; mats.push(b.material); g.add(b);
+    x += rnd(1.1, 1.6);
+  }
+  {const _d = pts(380, ()=>({x:rnd(6,22), y:rnd(-3,7), z:rnd(-8,8)}), .06, 0x8fa3c8, 0); _d.material.userData={base:.55}; mats.push(_d.material); g.add(_d);}
+  const beacons=[];
+  for(let i=0;i<5;i++){
+    const t = new THREE.Mesh(new THREE.BoxGeometry(.5,2.6,.5),
+      new THREE.MeshStandardMaterial({color:0x241f16, metalness:.6, roughness:.55, transparent:true, opacity:0}));
+    t.position.set(-11 + i*5.4, 1.8, Math.sin(i*1.3)*1.2);
+    t.material.userData={base:.9}; mats.push(t.material); g.add(t); beacons.push(t);
+  }
+  const fire = new THREE.Mesh(new THREE.SphereGeometry(.09,10,8),
+    new THREE.MeshBasicMaterial({color:0xffb865, transparent:true, opacity:0,
+      blending:THREE.AdditiveBlending, depthWrite:false}));
+  fire.position.set(-.2, 3.1, .1); fire.material.userData={base:.9}; mats.push(fire.material); g.add(fire);
+});
+
+/* Ⅶ 华夏边缘（合成） */
+station((g,mats)=>{
+  /* 地层基座（呼应Ⅰ） */
+  for(let i=0;i<4;i++){
+    const d = new THREE.Mesh(new THREE.CylinderGeometry(7.6-i*.7, 8.2-i*.7, .28, 64),
+      new THREE.MeshStandardMaterial({color:0x1b1712, metalness:.5, roughness:.6, transparent:true, opacity:0}));
+    d.position.y = -4.6 + i*.3; d.material.userData={base:.85}; mats.push(d.material); g.add(d);
+  }
+  /* 青铜环（边缘） */
+  const edge = new THREE.Mesh(new THREE.TorusGeometry(5.6, .14, 40, 220),
+    new THREE.MeshStandardMaterial({color:0xc9a45c, metalness:1, roughness:.28, transparent:true, opacity:0}));
+  edge.rotation.x = Math.PI/2*.94; edge.rotation.z=.35;
+  edge.material.userData={base:1}; mats.push(edge.material); g.add(edge); g.userData.edge = edge;
+  /* 内核 */
+  const core = new THREE.Mesh(new THREE.SphereGeometry(1.42, 40, 28),
+    new THREE.MeshBasicMaterial({color:0xffca7a, transparent:true, opacity:0,
+      blending:THREE.AdditiveBlending, depthWrite:false}));
+  core.material.userData={base:.95}; mats.push(core.material); g.add(core);
+  /* 记忆之膜（线框） */
+  const wf = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.SphereGeometry(2.0, 26, 16)),
+    new THREE.LineBasicMaterial({color:0xc9a45c, transparent:true, opacity:0}));
+  wf.material.userData={base:.3}; mats.push(wf.material); g.add(wf);
+  /* 记忆碎片带（呼应Ⅲ） */
+  const band = pts(1500, ()=>{const a=rnd(0,TAU), r=4.5+rnd(0,2.2);
+    return {x:r*Math.cos(a), y:rnd(-1.5,1.5), z:r*Math.sin(a)};}, .05, 0xd8b06a, 0);
+  band.material.userData={base:.8}; mats.push(band.material); g.add(band);
+  /* 碉楼双塔（羌族田野） */
+  function tower(angle, s){
+    const root = new THREE.Group(); const widths=[1.05,.88,.72,.58]; let z=0;
+    for(let i=0;i<4;i++){
+      const c = new THREE.Mesh(new THREE.BoxGeometry(1,.42,1),
+        new THREE.MeshStandardMaterial({color: i%2?0x2b241a:0x6b5124, metalness:.75, roughness:.42,
+          transparent:true, opacity:0}));
+      c.position.y = z+.21; c.scale.set(widths[i]*s,1,widths[i]*s);
+      c.material.userData={base:.95}; mats.push(c.material); root.add(c); z+=.42;
+    }
+    const rad = angle*Math.PI/180;
+    root.position.set(5.6*Math.cos(rad), -1.2, 5.6*Math.sin(rad));
+    root.rotation.y = -rad; root.scale.setScalar(.001); g.userData['tw'+angle]=root; g.add(root);
+    return root;
+  }
+  const t1 = tower(205,1), t2 = tower(335,.8);
+  g.userData.towers=[t1,t2];
+  /* 光缝一瞥（呼应Ⅳ） */
+  const seam = new THREE.Mesh(new THREE.PlaneGeometry(.08, 7),
+    new THREE.MeshBasicMaterial({color:0xfff2cf, transparent:true, opacity:0,
+      blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide}));
+  seam.position.set(0,0,5.59); seam.rotation.x=-Math.PI/2*.94; seam.rotation.z=.35;
+  seam.material.userData={base:.4}; mats.push(seam.material); g.add(seam);
+});
+
+/* ---------- 谱系曲线（贯穿之脉） ---------- */
+const P = [new THREE.Vector3(0,0,0), new THREE.Vector3(0,1.2,-15), new THREE.Vector3(2,0,-30),
+  new THREE.Vector3(-2,1,-45), new THREE.Vector3(1,0,-60), new THREE.Vector3(-1.5,1.4,-75),
+  new THREE.Vector3(0,.8,-92), new THREE.Vector3(0,.6,-108)];
+const path = new THREE.CatmullRomCurve3(P);
+ST.forEach((st,i)=>{ const p = path.getPointAt(i/(ST.length-1)); st.g.position.copy(p); st.pos = p.clone(); S.add(st.g); });
+/* 谱系之脉：全程微光管 */
+const veinTube = new THREE.Mesh(new THREE.TubeGeometry(path, 220, .035, 8),
+  new THREE.MeshBasicMaterial({color:0xc9a45c, transparent:true, opacity:.14,
+    blending:THREE.AdditiveBlending, depthWrite:false}));
+S.add(veinTube);
+
+/* ---------- 滚动 = 穿行谱系 ---------- */
+let target = 0, prog = 0, mx=0, my=0;
+addEventListener('pointermove', e=>{ mx=e.clientX/innerWidth-.5; my=e.clientY/innerHeight-.5; });
+const maxScroll = ()=> document.body.scrollHeight - innerHeight;
+addEventListener('scroll', ()=>{ target = Math.min(1, Math.max(0, scrollY / maxScroll())); });
+addEventListener('resize', ()=>{
+  C.aspect = innerWidth/innerHeight; C.updateProjectionMatrix(); R.setSize(innerWidth,innerHeight);
+});
+/* 深链 #1..#7 */
+if(/^#[1-7]$/.test(location.hash)){
+  const k = +location.hash[1];
+  scrollTo(0, ((k-1)/(ST.length-1)) * maxScroll());
+}
+
+/* ---------- HUD ---------- */
+const NUMS = ['Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ','Ⅵ','Ⅶ'];
+const dotsEl = document.getElementById('dots');
+ST.forEach((_,i)=>{ const d=document.createElement('i');
+  d.onclick = ()=> scrollTo({top:(i/(ST.length-1))*maxScroll(), behavior:'smooth'});
+  dotsEl.appendChild(d); });
+const numEl = document.getElementById('numeral'), pctEl = document.getElementById('pct');
+
+/* ---------- 声音（默认静默） ---------- */
+let audio = null;
+document.getElementById('sound').onclick = function(){
+  if(!audio){
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const g = ctx.createGain(); g.gain.value = .016;
+    const f = ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value = 420;
+    [55, 82.4, 110].forEach(fr=>{ const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=fr; o.connect(f); o.start(); });
+    f.connect(g); g.connect(ctx.destination); audio = {ctx, g};
+  }
+  const on = audio.g.gain.value > 0;
+  audio.g.gain.linearRampToValueAtTime(on?0:.016, audio.ctx.currentTime+1.2);
+  this.style.color = on? '' : '#e8cf96'; this.style.borderColor = on? '': 'var(--gold)';
+};
+
+/* ---------- 朱印：注释 ---------- */
+const veil = document.getElementById('veil');
+document.getElementById('seal').onclick = ()=> veil.classList.add('on');
+document.getElementById('closeVeil').onclick = ()=> veil.classList.remove('on');
+veil.onclick = e=>{ if(e.target===veil) veil.classList.remove('on'); };
+
+/* ---------- 加载 ---------- */
+let loaded = false, lp = 0;
+const loader = document.getElementById('loader'), lpct = document.getElementById('lpct');
+
+/* ---------- 主循环 ---------- */
+const clock = new THREE.Clock();
+const tmpP = new THREE.Vector3(), tmpT = new THREE.Vector3(), look = new THREE.Vector3();
+let li = -1;
+function tick(){
+  requestAnimationFrame(tick);
+  const t = clock.getElapsedTime();
+  prog += (target - prog)*.045;
+  const p = Math.min(.9999, Math.max(0, prog));
+  tmpP.copy(path.getPointAt(p)); tmpT.copy(path.getPointAt(Math.min(1, p+.012)));
+  C.position.set(
+    tmpP.x - tmpT.x*7.5 + mx*2.2 + Math.sin(t*.24)*.5,
+    tmpP.y + 2.6 - my*1.6 + Math.sin(t*.31)*.35,
+    tmpP.z - tmpT.z*7.5);
+  look.copy(tmpP).addScaledVector(tmpT, 5); C.lookAt(look);
+  follow.position.copy(C.position);
+
+  /* 每站：按距离渐显 + 自转 */
+  ST.forEach((st,i)=>{
+    const d = C.position.distanceTo(st.pos);
+    const vis = Math.max(0, Math.min(1, 1.5 - Math.abs(d-9)/10));
+    st.mats.forEach(m=>{ m.opacity += ((m.userData.base*vis) - m.opacity)*.08; });
+    if(st.userData) for(const k in st.userData){
+      const o = st.userData[k];
+      if(o.isMesh && o.geometry && o.geometry.type==='TorusGeometry') o.rotation.z = t*.02;
+      if(k==='ring0'||k==='ring1'||k==='ring2'||k==='ring3'||k==='ring4'){
+        o.rotation.x += .0016; o.rotation.y += .0011;
+      }
+      if(k==='eye'||k==='cone'){ o.rotation.y = Math.sin(t*.5)*1.2; }
+      if(k==='cloudA'||k==='cloudB'){
+        const pos = o.geometry.attributes.position, vel = st.userData['vel_'+(k==='cloudA'?-6.5:6.5)];
+        for(let j=0;j<pos.count;j++){
+          let x = pos.getX(j) + vel[j];
+          if(k==='cloudA' && x>-.45) x=-8.5; if(k==='cloudB' && x<.45) x=8.5;
+          pos.setX(j, x);
+        }
+        pos.needsUpdate = true;
+      }
+      if(k==='tw205'||k==='tw335'){ const base = (k==='tw205')?1:.8;
+        const targetS = vis * base; o.scale.lerp(new THREE.Vector3(targetS,targetS,targetS), .06); }
+    }
+  });
+  /* HUD */
+  let ni = 0, nd = 1e9;
+  ST.forEach((st,i)=>{ const d = C.position.distanceTo(st.pos); if(d<nd){nd=d; ni=i;} });
+  if(ni!==li){ li=ni;
+    numEl.textContent = NUMS[ni]; pctEl.textContent = NUMS[ni]+' / Ⅶ';
+    [...dotsEl.children].forEach((d,j)=>d.classList.toggle('on', j===ni));
+  }
+  if(!loaded){ lp = Math.min(100, lp + rnd(1.6,4.2)); lpct.textContent = Math.floor(lp);
+    if(lp>=100){ loaded=true; loader.classList.add('done'); } }
+  R.render(S, C);
+}
+tick();
 </script>
 </body>
 </html>
