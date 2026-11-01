@@ -711,29 +711,60 @@ function applyLang(){
 }
 
 /* ================= 思维导图（中英） ================= */
-const MAP = { r:{zh:'华夏边缘',en:'Huaxia Frontier'}, br:[
- {zh:'理论框架',en:'Theoretical Framework', ch:[
-   {zh:'族群理论',en:'Ethnicity Theory', ch:[{zh:'主观认同',en:'Subjective Identification'},{zh:'工具论与原基论',en:'Instrumentalism vs Primordialism'},{zh:'文化裙带',en:'Cultural Nepotism'}]},
-   {zh:'社会记忆',en:'Social Memory', ch:[{zh:'集体记忆',en:'Collective Memory'},{zh:'结构性失忆',en:'Structural amnesia'},{zh:'历史重构',en:'Historical Reconstruction'}]},
-   {zh:'人类生态',en:'Human Ecology', ch:[{zh:'环境约束',en:'Environmental Constraints'},{zh:'经济生业',en:'Economic Production'},{zh:'社会结群',en:'Social Organization'}]}]},
- {zh:'生态边界',en:'Ecological Boundary', ch:[
-   {zh:'四千年前气候变化',en:'4000BP Climate Change'},{zh:'农业边缘化',en:'Agricultural Marginalization'},{zh:'游牧化兴起',en:'Rise of Pastoralism'},{zh:'河湟与鄂尔多斯案例',en:'Hehuang & Ordos Cases'}]},
- {zh:'历史形成',en:'Historical Formation', ch:[
-   {zh:'华夏扩张',en:'Huaxia Expansion', ch:[{zh:'周人族源与神话',en:'Zhou Origins and Myths'},{zh:'西周记忆',en:'Western Zhou Memory'},{zh:'吴太伯的华夏化',en:'Sinicization of Wu Taibo'},{zh:'羌人的西迁漂移',en:'Westward Drift of Qiang'}]},
-   {zh:'汉代凝练',en:'Han Consolidation', ch:[{zh:'汉认同的形成',en:'Formation of Han Identity'},{zh:'四方异族的多元意象',en:'How Han writers portrayed neighbouring peoples'},{zh:'长城资源界线',en:'Resources on either side of the Great Wall'}]}]},
- {zh:'现代变迁',en:'Modern Change', ch:[
-   {zh:'国族再造',en:'Nation-State Reconstruction', ch:[{zh:'近代中国认同',en:'Modern Chinese Identity'},{zh:'少数民族识别',en:'Minority Identification'},{zh:'学术知识建构',en:'Scholarly Knowledge Construction'}]},
-   {zh:'微观过程',en:'Micro-processes', ch:[{zh:'人际互动',en:'Interpersonal Interactions'},{zh:'个人行动与选择',en:'Personal Action and Choice'},{zh:'污名与涵化',en:'Stigma and Assimilation'}]}]},
- {zh:'研究方法',en:'Research Methodology', ch:[
-   {zh:'反思史学',en:'Reflexive History'},{zh:'边缘视角',en:'Marginal Perspective'},{zh:'批评中心主义',en:'Critique of Core-centrism'},{zh:'文本与情境分析',en:'Text and Context Analysis'},{zh:'英雄与弟兄历史心性',en:'Hero vs Brother Historical Mentality'}]}
+const MAP = { r:{zh:'华夏边缘：历史记忆与族群认同',en:'Huaxia Frontier'}, br:[
+ {zh:'边缘与内涵',en:'Edge and Essence', ch:[
+   {zh:'当代社会人类学族群理论',en:'Ethnicity theory', ch:[
+     {zh:'客观特征论的困境',en:'The objective-traits dilemma'},
+     {zh:'主观认同下的族群与边界',en:'Subjective ethnic boundaries'},
+     {zh:'工具论与根基论之争',en:'Instrumentalism vs primordialism'}]},
+   {zh:'记忆、历史与族群本质',en:'Memory, history, essence', ch:[
+     {zh:'结构性失忆与集体记忆',en:'Amnesia and collective memory'},
+     {zh:'文化亲近性与家族记忆',en:'Kinship and family memory'},
+     {zh:'族群本质与历史记忆选择',en:'Essence and chosen memory'}]},
+   {zh:'民族史研究的边缘理论',en:'A margin approach to history', ch:[
+     {zh:'民族溯源研究的限制',en:'The limits of origin-tracing'},
+     {zh:'民族史边缘研究取向',en:'Ethnic history from the margin'},
+     {zh:'生态考古与文献社会记忆',en:'Ecological archaeology and texts'}]}]},
+ {zh:'华夏生态边界的形成',en:'The ecological boundary', ch:[
+   {zh:'气候变迁与人类生态',en:'Climate and human ecology', ch:[
+     {zh:'距今4000年前后干冷化',en:'The cold-dry shift at 4000 BP'},
+     {zh:'满天星斗到月明星稀',en:'From many stars to one moon'}]},
+   {zh:'区域游牧社会的形成',en:'Pastoral societies form', ch:[
+     {zh:'青海河湟地区游牧社会',en:'Hehuang pastoral society'},
+     {zh:'鄂尔多斯及邻近地区',en:'Ordos and neighbours'},
+     {zh:'西辽河地区夏家店上层文化',en:'Upper Xiajiadian culture'}]},
+   {zh:'华夏与周边资源的竞争',en:'Competing for resources', ch:[
+     {zh:'农牧资源争夺与戎狄排除',en:'Rivalry with the Rong and Di'},
+     {zh:'秦汉中央帝国建立与长城界线',en:'The Great Wall resource line'}]}]},
+ {zh:'华夏族群边缘的形成与扩张',en:'Forming and expanding the edge', ch:[
+   {zh:'周人族源传说与边缘形成',en:'Zhou origins and the edge', ch:[
+     {zh:'渭水流域先周时期遗址',en:'Pre-Zhou sites on the Wei'},
+     {zh:'周人与戎人的互动与认同',en:'Zhou and Rong interactions'}]},
+   {zh:'华夏的记忆与失忆',en:'Memory and forgetting', ch:[
+     {zh:'西周金文与战国文献差异',en:'Bronze inscriptions vs texts'},
+     {zh:'华夏认同形成后的历史重整',en:'Re-ordering the past'}]},
+   {zh:'边缘人群华夏化与边缘漂移',en:'Sinicization and drift', ch:[
+     {zh:'吴太伯故事与边缘华夏化',en:'The Wu Taibo legend'},
+     {zh:'羌人概念的西移与演变',en:'The westward drift of Qiang'},
+     {zh:'汉代华夏对四方异族的多元意象',en:'How Han writers portrayed others'}]}]},
+ {zh:'华夏边缘的延续与变迁',en:'Continuity and change', ch:[
+   {zh:'近代华夏边缘再造',en:'The modern re-making', ch:[
+     {zh:'传统帝国到国族国家转变',en:'From empire to nation-state'},
+     {zh:'近代华夏边缘再造的微观过程',en:'Micro-processes of re-making'}]},
+   {zh:'边缘延续与变迁的案例',en:'Cases of change', ch:[
+     {zh:'湘西革屯运动与土著民族',en:'Xiangxi anti-garrison movement'},
+     {zh:'北川羌族的尔玛认同变迁',en:'Beichuan Qiang identity'}]},
+   {zh:'结语与反思性国族认同',en:'Conclusion: reflexive identity', ch:[
+     {zh:'资源竞争、历史记忆与族群认同',en:'Competition, memory, identity'},
+     {zh:'反思性国族认同与多元一体格局',en:'Reflexive nationhood'}]}]}
 ]};
 MAP.r.ch = MAP.br; /* 归一化：五大分支挂到根节点ch上——此前数据在MAP.br而渲染只认r.ch，导图永远是孤点 */
 const MAPR = {};
 (function indexMap(n){ MAPR[n.zh] = n; (n.ch||[]).forEach(indexMap); })(MAP.r);
-const mapExp = { '华夏边缘': true };
+const mapExp = { '华夏边缘：历史记忆与族群认同': true };
 function renderMap(){
   const wrap = document.getElementById('mapwrap');
-  const L = T.lang, ROW = 38, W = 1560, NODEW = [176, 200, 210, 240];
+  const L = T.lang, ROW = 38, W = 1560, NODEW = [260, 200, 210, 252];
   const mapX = [30, 330, 640, 990];
   let y = 40; const nodes = [], edges = [];
   function walk(n, depth, py){
@@ -754,7 +785,7 @@ function renderMap(){
   nodes.forEach(nd=>{
     const w = NODEW[Math.min(nd.depth,3)], h = 30;
     const cls = nd.depth===0?'root':(nd.depth<=1?'mid':'');
-    s += `<g class="node ${cls}" data-key="${nd.n.zh}"><rect x="${nd.x}" y="${nd.y-h/2}" width="${w}" height="${h}" rx="9"/><text x="${nd.x+14}" y="${nd.y+4.5}">${label(nd.n).slice(0,26)}</text>`;
+    s += `<g class="node ${cls}" data-key="${nd.n.zh}"><rect x="${nd.x}" y="${nd.y-h/2}" width="${w}" height="${h}" rx="9"/><text x="${nd.x+14}" y="${nd.y+4.5}">${label(nd.n).slice(0,32)}</text>`;
     if(nd.n.ch){
       const open = mapExp[nd.n.zh];
       s += `<g class="plus" transform="translate(${nd.x+w-20},${nd.y})"><circle r="8.5" class="pc"/><text y="3.5" class="pt">${open?'−':'+'+nd.n.ch.length}</text></g>`;
@@ -1176,7 +1207,7 @@ const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main
 
 applyLang();
 setScene('morning');
-console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v19.1');
+console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v20');
 document.documentElement.setAttribute('data-scene','morning');
 </script>
 </body>
