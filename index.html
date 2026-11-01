@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>华夏边缘 · The Frontiers of Huaxia</title>
-<meta name="description" content="王明珂《华夏边缘：历史记忆与族群认同》3D沉浸式主题站——边缘如何造就华夏。">
+<meta name="description" content="王明珂《华夏边缘：历史记忆与族群认同》3D沉浸式主题站——边缘如何造就华夏。Bilingual 中文/English.">
 <style>
   :root{
     --bg:#06070d; --bg2:#0a0c14; --gold:#c9a45c; --gold-hi:#e8cf96; --ink:#e8dfc8;
@@ -31,7 +31,6 @@
   @keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-14px,9px)}66%{transform:translate(10px,-12px)}100%{transform:translate(0,0)}}
   main{position:relative;z-index:2;transition:opacity .6s}
   section{max-width:1060px;margin:0 auto;padding:110px 28px;scroll-snap-align:start}
-  .kicker{color:var(--gold);font-size:12px;letter-spacing:.5em;margin-bottom:18px}
   .num{display:inline-block;font-size:11px;color:var(--dim);letter-spacing:.3em;border:1px solid var(--line);
     padding:4px 12px;border-radius:99px;margin-bottom:26px}
   h2{font-size:clamp(26px,4vw,40px);font-weight:600;letter-spacing:.14em;margin-bottom:14px}
@@ -43,25 +42,19 @@
   .reveal{opacity:0;transform:translateY(26px);transition:all 1s cubic-bezier(.16,1,.3,1)}
   .reveal.on{opacity:1;transform:none}
 
-  /* 命令条（左上） */
-  .cmdbar{position:fixed;top:22px;left:22px;z-index:6;display:flex;gap:8px}
+  .cmdbar{position:fixed;top:22px;left:22px;z-index:6;display:flex;gap:8px;flex-wrap:wrap}
   .pill{display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:99px;font-size:12.5px;
     letter-spacing:.08em;border:1px solid var(--line);color:var(--dim);cursor:pointer;user-select:none;
     background:linear-gradient(160deg,var(--glass),var(--glass2));backdrop-filter:blur(8px);transition:.3s}
   .pill:hover{color:var(--gold-hi);border-color:var(--gold)}
-  .pill kbd{font-family:var(--fserif);font-size:10px;border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--dim)}
+  .pill kbd{font-size:10px;border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--dim)}
   .pill.on{color:var(--gold-hi);border-color:var(--gold);background:rgba(201,164,92,.12)}
 
-  /* 标志（右上）：缺口之圆，缘外一点 */
   .mark{position:fixed;top:22px;right:22px;z-index:6;color:var(--gold-hi);opacity:.92;transition:.4s}
   .mark:hover{opacity:1;transform:rotate(6deg)}
   .mark svg{display:block;width:46px;height:46px}
-
-  /* 竖排题签（右侧） */
   .side-sign{position:fixed;right:26px;top:50%;transform:translateY(-50%);z-index:5;writing-mode:vertical-rl;
     font-size:13px;letter-spacing:.5em;color:var(--dim);border-right:1px solid var(--line);padding-right:12px;height:300px}
-
-  /* 隐UI */
   body.ui-hidden main, body.ui-hidden .cmdbar, body.ui-hidden .apanel, body.ui-hidden .side-sign{opacity:0;pointer-events:none}
   .restore{position:fixed;left:22px;bottom:22px;z-index:6;display:none;width:40px;height:40px;border-radius:50%;
     border:1px solid var(--line);color:var(--dim);align-items:center;justify-content:center;cursor:pointer;
@@ -69,16 +62,15 @@
   .restore:hover{color:var(--gold-hi);border-color:var(--gold)}
   body.ui-hidden .restore{display:flex}
 
-  /* HERO */
   #hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;
     text-align:center;padding:0 24px;position:relative}
-  .metaline{font-family:var(--fserif);font-size:11px;letter-spacing:.24em;color:var(--dim);
+  .metaline{font-size:11px;letter-spacing:.24em;color:var(--dim);
     border:1px solid var(--line);border-radius:99px;padding:7px 20px;margin-bottom:34px}
   #hero .zh{font-size:clamp(52px,10vw,118px);letter-spacing:.22em;text-indent:.22em;font-weight:700;
     background:linear-gradient(180deg,#f3e6c4 20%,var(--gold) 60%,#8a6c33);-webkit-background-clip:text;background-clip:text;color:transparent;
     text-shadow:0 0 80px rgba(201,164,92,.25)}
   [data-theme="light"] #hero .zh{background:linear-gradient(180deg,#5c4720 10%,var(--gold) 55%,#4a3a1c);-webkit-background-clip:text;background-clip:text;text-shadow:none}
-  #hero .en{margin-top:16px;color:var(--dim);letter-spacing:.34em;font-size:clamp(11px,1.6vw,15px);font-family:var(--fserif)}
+  #hero .en{margin-top:16px;color:var(--dim);letter-spacing:.34em;font-size:clamp(11px,1.6vw,15px)}
   #hero .quote{margin-top:44px;max-width:560px;color:var(--ink);opacity:.85;font-size:15.5px;line-height:2.1;
     border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 30px}
   #hero .quote b{color:var(--gold-hi);font-weight:600}
@@ -86,7 +78,7 @@
   .stats{display:flex;gap:0;margin-top:46px;flex-wrap:wrap;justify-content:center}
   .stat{padding:6px 34px;border-right:1px solid var(--line)}
   .stat:last-child{border-right:none}
-  .stat .v{font-size:30px;color:var(--gold-hi);font-family:var(--fserif);display:flex;align-items:center;justify-content:center;gap:9px}
+  .stat .v{font-size:30px;color:var(--gold-hi);display:flex;align-items:center;justify-content:center;gap:9px}
   [data-theme="light"] .stat .v{color:#6b5124}
   .stat .k{font-size:11px;color:var(--dim);letter-spacing:.28em;margin-top:4px}
   .livedot{width:9px;height:9px;border-radius:50%;background:#4faf6e;box-shadow:0 0 12px rgba(79,175,110,.9);animation:pulse 2s ease-in-out infinite}
@@ -98,35 +90,45 @@
   .btn:hover{background:var(--gold);color:#100c04;box-shadow:0 8px 40px rgba(201,164,92,.35)}
   .btn.ghost{border-color:rgba(139,132,116,.4);color:var(--dim);background:none}
   .btn.ghost:hover{border-color:var(--gold);color:var(--gold-hi);background:rgba(201,164,92,.06);box-shadow:none}
-  .scrollhint{position:absolute;bottom:34px;color:var(--dim);font-size:11px;letter-spacing:.4em;
-    animation:bob 2.4s ease-in-out infinite}
+  .scrollhint{position:absolute;bottom:34px;color:var(--dim);font-size:11px;letter-spacing:.4em;animation:bob 2.4s ease-in-out infinite}
   @keyframes bob{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(8px);opacity:1}}
 
-  /* 氛围面板（右下） */
-  .apanel{position:fixed;right:22px;bottom:22px;z-index:6;width:250px;padding:16px 18px;
-    font-size:12px;color:var(--dim)}
+  #descend{height:230vh;position:relative}
+  .dcap{position:fixed;top:46%;left:50%;transform:translate(-50%,-50%);z-index:2;text-align:center;
+    font-size:clamp(19px,2.6vw,27px);letter-spacing:.34em;color:var(--ink);opacity:0;pointer-events:none;
+    text-shadow:0 2px 34px rgba(0,0,0,.65);transition:opacity .5s}
+  .dcap i{display:block;font-style:normal;font-size:11px;color:var(--dim);margin-top:12px;letter-spacing:.42em}
+
+  .apanel{position:fixed;right:22px;bottom:22px;z-index:6;width:262px;padding:16px 18px;font-size:12px;color:var(--dim)}
   .apanel .hd{display:flex;justify-content:space-between;align-items:baseline;cursor:pointer}
   .apanel .hd b{color:var(--gold-hi);letter-spacing:.16em;font-weight:600;font-size:12.5px}
-  .apanel .hd i{font-style:normal;font-family:var(--fserif);font-size:10px;letter-spacing:.2em}
+  .apanel .hd i{font-style:normal;font-size:10px;letter-spacing:.2em}
   .apanel .bd{margin-top:12px;display:flex;flex-direction:column;gap:11px}
   .apanel.closed .bd{display:none}
   .apanel label{display:flex;align-items:center;justify-content:space-between;letter-spacing:.14em}
-  .seg{display:flex;gap:4px}
-  .seg span{padding:3px 10px;border:1px solid var(--line);border-radius:99px;cursor:pointer;transition:.25s;font-size:11px}
+  .seg{display:flex;gap:4px;flex-wrap:wrap}
+  .seg span{padding:3px 10px;border:1px solid var(--line);border-radius:99px;cursor:pointer;transition:.25s;font-size:11px;display:flex;align-items:center;gap:5px}
   .seg span.on{background:var(--gold);color:#100c04;border-color:var(--gold)}
-  input[type=range]{-webkit-appearance:none;width:120px;height:2px;background:var(--line);border-radius:2px;outline:none}
+  .seg span.on .dot{box-shadow:0 0 6px rgba(0,0,0,.4)}
+  .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+  .rd{font-style:normal;color:var(--gold-hi)}
+  .bigrow{display:flex;gap:26px}
+  .bigrow em{font-style:normal;font-size:11px;letter-spacing:.18em;display:block;color:var(--dim)}
+  .bigrow b{font-size:26px;font-weight:600;color:var(--ink)}
+  .bigrow b small{font-size:12px;color:var(--dim);margin-left:2px}
+  .status{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:10px;letter-spacing:.1em}
+  .sdot{width:6px;height:6px;border-radius:50%;background:#4faf6e;box-shadow:0 0 10px rgba(79,175,110,.9);animation:pulse 2s infinite}
+  input[type=range]{-webkit-appearance:none;width:130px;height:2px;background:var(--line);border-radius:2px;outline:none}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--gold-hi);cursor:pointer;box-shadow:0 0 8px rgba(201,164,92,.8)}
 
-  /* 概念卡 */
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:40px}
   .card{padding:26px 24px;transition:.4s;position:relative;overflow:hidden}
   .card:hover{transform:translateY(-6px);border-color:var(--gold)}
-  .card .cn{font-family:var(--fserif);color:var(--gold);font-size:13px;letter-spacing:.2em}
-  .card .lat{font-family:var(--fserif);font-style:italic;color:var(--dim);font-size:11.5px;margin-top:2px;letter-spacing:.06em}
+  .card .cn{color:var(--gold);font-size:13px;letter-spacing:.2em}
+  .card .lat{font-style:italic;color:var(--dim);font-size:11.5px;margin-top:2px;letter-spacing:.06em}
   .card h3{font-size:19px;margin:10px 0 10px;letter-spacing:.06em;color:var(--ink)}
   .card p{font-size:13.5px;color:var(--dim);line-height:1.9}
 
-  /* 图录 */
   .plates{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:40px}
   .plate{overflow:hidden;border-radius:12px;border:1px solid var(--line);transition:.4s}
   .plate:hover{transform:translateY(-5px);border-color:var(--gold)}
@@ -134,7 +136,24 @@
   .plate figcaption{padding:13px 16px;font-size:12.5px;color:var(--dim);letter-spacing:.1em}
   .plate figcaption b{color:var(--gold);font-weight:600;margin-right:8px}
 
-  /* 造物记 */
+  .mapwrap{margin-top:40px;border:1px solid var(--line);border-radius:14px;overflow:auto;
+    background:linear-gradient(160deg,var(--glass),var(--glass2));backdrop-filter:blur(8px)}
+  .mapwrap svg{display:block;min-width:1180px;width:100%;height:auto}
+  .mapwrap .edge{fill:none;stroke:url(#mapgrad);stroke-width:1.3;opacity:.85}
+  .mapwrap .node rect{fill:rgba(52,211,153,.10);stroke:rgba(52,211,153,.55);stroke-width:1}
+  .mapwrap .node.mid rect{fill:rgba(94,183,205,.12);stroke:rgba(94,183,205,.6)}
+  .mapwrap .node.root rect{fill:rgba(201,164,92,.16);stroke:var(--gold);stroke-width:1.4}
+  .mapwrap .node text{fill:#d9fef0;font-family:var(--fserif);font-size:13px}
+  [data-theme="light"] .mapwrap .node text{fill:#1e4636}
+  [data-theme="light"] .mapwrap .node rect{fill:rgba(52,211,153,.14);stroke:rgba(52,150,110,.7)}
+  [data-theme="light"] .mapwrap .node.mid rect{fill:rgba(94,140,205,.14);stroke:rgba(80,120,180,.7)}
+  .mapwrap .node{cursor:pointer}
+  .mapwrap .node.hi rect{stroke:var(--gold-hi);fill:rgba(201,164,92,.18)}
+  .mapwrap .node.hi text{fill:var(--gold-hi)}
+  .mapwrap .edge.hi{stroke:var(--gold-hi);stroke-width:2}
+  .maplegend{margin-top:14px;font-size:11.5px;color:var(--dim);letter-spacing:.12em;display:flex;gap:22px;flex-wrap:wrap}
+  .maplegend b{color:var(--gold);font-weight:600}
+
   .maker video{width:100%;border-radius:14px;border:1px solid var(--line);display:block;background:#000}
   .maker .row{display:grid;grid-template-columns:1.55fr 1fr;gap:18px;margin-top:20px}
   @media(max-width:760px){.maker .row{grid-template-columns:1fr}}
@@ -146,25 +165,23 @@
     padding:8px 18px;border-radius:99px;text-decoration:none;transition:.3s}
   .chip:hover{color:var(--gold-hi);border-color:var(--gold)}
 
-  /* 推荐语 */
   .quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:40px}
-  .q{padding:30px 28px;position:relative}
-  .q::before{content:"「";position:absolute;top:8px;left:16px;font-size:44px;color:rgba(201,164,92,.28)}
+  .q{padding:26px 28px}
+  .q::before{content:"「";display:block;font-size:28px;line-height:1;color:var(--gold);opacity:.5;margin:0 0 10px}
   .q p{font-size:14.5px;line-height:2.05;color:var(--ink);opacity:.85}
   .q .who{margin-top:16px;color:var(--gold);font-size:13px;letter-spacing:.1em}
   .q .who span{color:var(--dim);font-size:11.5px}
 
-  /* 作者 / 时间线 */
   .duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
   @media(max-width:760px){.duo{grid-template-columns:1fr}}
   .panel{padding:34px 30px}
   .panel .name{font-size:34px;letter-spacing:.2em;color:var(--ink)}
-  .panel .nm{font-family:var(--fserif);color:var(--dim);font-size:13px;letter-spacing:.18em;margin-top:6px}
+  .panel .nm{color:var(--dim);font-size:13px;letter-spacing:.18em;margin-top:6px}
   .panel ul{list-style:none;margin-top:22px}
   .panel li{font-size:14px;color:var(--dim);line-height:2.15;padding-left:18px;position:relative}
   .panel li::before{content:"·";position:absolute;left:0;color:var(--gold)}
   .tl .row{display:flex;gap:20px;padding:16px 0;border-bottom:1px dashed rgba(201,164,92,.18)}
-  .tl .yr{font-family:var(--fserif);font-size:22px;color:var(--gold);min-width:64px}
+  .tl .yr{font-size:22px;color:var(--gold);min-width:64px}
   .tl .ds b{display:block;font-size:15px;letter-spacing:.08em;color:var(--ink)}
   .tl .ds span{font-size:12.5px;color:var(--dim)}
 
@@ -175,341 +192,519 @@
   table.links a{color:var(--gold-hi);text-decoration:none;border-bottom:1px dotted var(--line)}
   [data-theme="light"] table.links a{color:#6b5124}
   table.links a:hover{color:var(--gold)}
-  table.links .n{font-family:var(--fserif);color:var(--dim);font-size:12px;white-space:nowrap}
+  table.links .n{color:var(--dim);font-size:12px;white-space:nowrap}
+
+  .soc{margin-top:26px}
+  .soc-t{font-size:12px;letter-spacing:.3em;color:var(--gold);margin-bottom:14px}
+  .soc-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+  .soc-g a{display:block;padding:13px 15px;border:1px solid var(--line);border-radius:10px;text-decoration:none;
+    color:var(--ink);font-size:12.5px;letter-spacing:.06em;transition:.3s;background:linear-gradient(160deg,var(--glass),var(--glass2))}
+  .soc-g a:hover{border-color:var(--gold);transform:translateY(-3px)}
+  .soc-g a b{display:block;color:var(--gold-hi);letter-spacing:.12em;margin-bottom:3px}
+  .soc-g a span{color:var(--dim);font-size:11px}
 
   footer{border-top:1px solid var(--line);margin-top:60px;background:linear-gradient(180deg,transparent,rgba(201,164,92,.05))}
   footer .inner{max-width:1060px;margin:0 auto;padding:70px 28px 60px;text-align:center}
-  footer .en{font-family:var(--fserif);color:var(--gold-hi);font-size:clamp(17px,2.6vw,24px);letter-spacing:.06em;line-height:1.7}
+  footer .en{color:var(--gold-hi);font-size:clamp(17px,2.6vw,24px);letter-spacing:.06em;line-height:1.7}
   [data-theme="light"] footer .en{color:#6b5124}
   footer .zh{color:var(--dim);font-size:14px;margin-top:14px;letter-spacing:.12em;line-height:2}
   footer .springer{margin-top:26px;color:var(--dim);font-size:12px;letter-spacing:.24em}
-  footer .repo{display:inline-block;margin-top:30px}
 
-  /* 加载 */
   #loader{position:fixed;inset:0;z-index:20;background:var(--bg);display:flex;flex-direction:column;
     align-items:center;justify-content:center;gap:24px;transition:opacity 1s}
   #loader.done{opacity:0;pointer-events:none}
   #loader .txt{font-size:13px;letter-spacing:.34em;color:var(--dim)}
   #loader .bar{width:180px;height:1px;background:var(--line);position:relative;overflow:hidden}
   #loader .bar i{position:absolute;left:0;top:0;height:100%;background:var(--gold-hi);width:0;transition:width .2s}
-  #loader .pct2{font-family:var(--fserif);color:var(--gold-hi);font-size:14px;letter-spacing:.3em}
+  #loader .pct2{color:var(--gold-hi);font-size:14px;letter-spacing:.3em}
 </style>
 </head>
 <body>
 <canvas id="bg"></canvas>
 <div class="vignette"></div>
 <div class="grain"></div>
-<div id="space"></div>
 
 <div class="cmdbar">
-  <div class="pill" id="btnSound">♪ 声音 <kbd>S</kbd></div>
-  <div class="pill" id="btnPause">⏸ 暂停 <kbd>P</kbd></div>
-  <div class="pill" id="btnTheme">◐ 绢本 <kbd>T</kbd></div>
-  <div class="pill" id="btnHide">⊘ 隐去 <kbd>H</kbd></div>
+  <div class="pill" id="btnLang">A/文 <kbd>L</kbd></div>
+  <div class="pill" id="btnSound">♪ <kbd>S</kbd></div>
+  <div class="pill" id="btnPause">⏸ <kbd>P</kbd></div>
+  <div class="pill" id="btnTheme">◐ <kbd>T</kbd></div>
+  <div class="pill" id="btnHide">⊘ <kbd>H</kbd></div>
 </div>
-<div class="mark" title="华夏边缘"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="currentColor"/></svg></div>
-<div class="side-sign">华夏边缘 · 历史记忆与族群认同</div>
-<div class="restore" id="btnRestore" title="恢复界面 (H)">◎</div>
-
-<div class="apanel" id="apanel">
-  <div class="hd" id="apHead"><b>氛围 · ATMOSPHERE</b><i>NO.01</i></div>
-  <div class="bd">
-    <label>粒子 <span class="seg" id="segDen"><span data-v="lo">疏</span><span data-v="mid" class="on">常</span><span data-v="full">繁</span></span></label>
-    <label>雾 <input type="range" id="fogR" min="0" max="100" value="50"></label>
-    <label>晨昏 <span class="seg" id="segPhase"><span data-v="morning" class="on">晨</span><span data-v="dusk">暮</span></span></label>
-  </div>
-</div>
+<div class="mark" title="The Frontiers of Huaxia"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="currentColor"/></svg></div>
+<div class="side-sign" data-i18n="sidesign">华夏边缘 · 历史记忆与族群认同</div>
 
 <main>
-  <!-- HERO -->
   <section id="hero">
-    <div class="metaline">田野坐标 31°06′N 103°51′E · 岷江上游 · 田野期 1990s—2000s · STUDY No.01</div>
+    <div class="metaline" data-i18n="metaline">田野坐标 31°06′N 103°51′E · 岷江上游 · 田野期 1990s—2000s · STUDY No.01</div>
     <div class="zh">华夏边缘</div>
-    <div class="en">THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity</div>
-    <div class="quote">"当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b>让它看起来像个圆形。"<br><span style="font-size:12.5px;color:var(--dim)">—— 王明珂 · 当代华语世界最具范式意义的历史人类学经典之一</span></div>
+    <div class="en" data-i18n="ensub">THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity</div>
+    <div class="quote" data-i18n-html="quote">"当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b>让它看起来像个圆形。"<br><span style="font-size:12.5px;color:var(--dim)">—— 王明珂 · 当代华语世界最具范式意义的历史人类学经典之一</span></div>
     <div class="stats">
-      <div class="stat"><div class="v"><span class="livedot"></span>7,319</div><div class="k">LIVE · 人在读</div></div>
-      <div class="stat"><div class="v">9.1</div><div class="k">豆瓣评分</div></div>
-      <div class="stat"><div class="v">91.9%</div><div class="k">微信读书推荐值</div></div>
-      <div class="stat"><div class="v">113</div><div class="k">豆瓣书评</div></div>
+      <div class="stat"><div class="v"><span class="livedot"></span>7,319</div><div class="k" data-i18n="st1">LIVE · 人在读</div></div>
+      <div class="stat"><div class="v">9.1</div><div class="k" data-i18n="st2">豆瓣评分</div></div>
+      <div class="stat"><div class="v">91.9%</div><div class="k" data-i18n="st3">微信读书推荐值</div></div>
+      <div class="stat"><div class="v">113</div><div class="k" data-i18n="st4">豆瓣书评</div></div>
     </div>
     <div class="cta">
-      <a class="btn" href="#concepts">进入边缘 · 概念八章</a>
-      <a class="btn ghost" href="#maker">观看 3D 造物记</a>
+      <a class="btn" href="#media" data-i18n="cta0">影像里的边缘</a>
+      <a class="btn" href="#concepts" data-i18n="cta1">进入边缘 · 概念八章</a>
+      <a class="btn ghost" href="#maker" data-i18n="cta2">观看 3D 造物记</a>
     </div>
-    <div class="scrollhint">SCROLL · 向下进入边缘</div>
+    <div class="scrollhint" data-i18n="hint">SCROLL · 向下进入边缘</div>
   </section>
 
-  <!-- 概念 -->
+  <section id="media">
+    <div class="reveal"><span class="num">贰 · MEDIA</span>
+      <h2 data-i18n="mdTitle">影像里的边缘</h2>
+      <div class="rule"></div>
+      <p class="lead" data-i18n="mdLead">全网经核验的讲座与解读（2026-11 数据）。</p></div>
+    <table class="links reveal"><thead><tr>
+      <th data-i18n="mdH1">平台</th><th data-i18n="mdH2">内容</th><th data-i18n="mdH3">频道</th><th data-i18n="mdH4">热度</th><th data-i18n="mdH5">直达</th>
+    </tr></thead><tbody id="mediaRows"></tbody></table>
+    <div class="soc reveal">
+      <div class="soc-t" data-i18n="socT">全平台直达 · FIND THE EDGE EVERYWHERE</div>
+      <div class="soc-g" id="socLinks"></div>
+    </div>
+  </section>
+
   <section id="concepts">
-    <div class="reveal"><span class="num">贰 · CONCEPTS</span>
-      <h2>八个概念，一次<em>边缘</em>之旅</h2>
+    <div class="reveal"><span class="num">叁 · CONCEPTS</span>
+      <h2 data-i18n-html="cTitle">八个概念，一次<em>边缘</em>之旅</h2>
       <div class="rule"></div>
-      <p class="lead">这条思想的谱系上，考古学教我们追问知识如何成形，边界理论把认同安放在"线"上，集体记忆说记忆活在社会的框架里——华夏不是一份固定的名单，而是一道随资源竞争、记忆与失忆不断移动的边界。读懂边缘，才读懂"什么是中国人"。</p></div>
-    <div class="grid">
-      <div class="glass card reveal"><div class="cn">概念 〇一 · A Study in the Edge</div><div class="lat">De Finibus — 论边界</div><h3>什么是中国人</h3><p>不问"华夏有什么"，而问"华夏的边界在哪里"。边缘视角取代定义式民族研究。</p></div>
-      <div class="glass card reveal"><div class="cn">概念 〇二 · A Study in Membership</div><div class="lat">De Club — 论会员制</div><h3>族群像高尔夫俱乐部</h3><p>族群认同如俱乐部会员制：入会资格由边界决定，而非由成员的内在特征决定。</p></div>
-      <div class="glass card reveal"><div class="cn">概念 〇三 · A Study in Forgetting</div><div class="lat">De Oblivione — 论遗忘</div><h3>结构性失忆</h3><p>族群靠"记得什么、忘记什么"维系自身——失忆与记忆同样是建构边界的工程。</p></div>
-      <div class="glass card reveal"><div class="cn">概念 〇四 · A Study in Origins</div><div class="lat">De Primis Ancestoribus — 论祖先</div><h3>英雄祖先与弟兄祖先</h3><p>两种历史心性：阶序化的英雄叙事，与对等合作的弟兄叙事，对应两种社会形态。</p></div>
-      <div class="glass card reveal"><div class="cn">概念 〇五 · A Study in the Valley</div><div class="lat">De Vallibus — 论河谷</div><h3>一截骂一截</h3><p>岷江上游的人群按河谷上下"一截骂一截"——认同在边缘处逐级滑动，没有铁板一块。</p></div>
-      <div class="glass card reveal"><div class="cn">概念 〇六 · A Study in Light</div><div class="lat">De Faces — 论火把</div><h3>燃烧的木棍</h3><p>火把照亮的只是木棍一端：典范历史照亮中心，边缘沉在黑暗里——研究就是把火把转向边缘。</p></div>
-      <div class="glass card reveal"><div class="cn">概念 〇七 · A Study in Livelihood</div><div class="lat">De Oecologia — 论生态</div><h3>人类生态</h3><p>华夏是长程历史中的人类生态：资源竞争与分配环境，塑造了边界的形成与变迁。</p></div>
-      <div class="glass card reveal"><div class="cn">概念 〇八 · A Study in Method</div><div class="lat">De Methodo — 论方法</div><h3>边缘研究法</h3><p>从周人族源、羌人身份到太伯奔吴——用边缘人群的史料，重写中心的历史。</p></div>
-    </div>
+      <p class="lead" data-i18n="cLead">这条思想的谱系上，考古学教我们追问知识如何成形，边界理论把认同安放在"线"上，集体记忆说记忆活在社会的框架里——华夏不是一份固定的名单，而是一道随资源竞争、记忆与失忆不断移动的边界。读懂边缘，才读懂"什么是中国人"。</p></div>
+    <div class="grid" id="cards"></div>
   </section>
 
-  <!-- 图录 -->
   <section id="plates">
-    <div class="reveal"><span class="num">叁 · PLATES</span>
-      <h2>图录 · <em>边缘的两种观看</em></h2>
+    <div class="reveal"><span class="num">肆 · PLATES</span>
+      <h2 data-i18n-html="pTitle">图录 · <em>边缘的两种观看</em></h2>
       <div class="rule"></div>
-      <p class="lead">两张主题图，把书中的范式之争与认同之变收进一方画面。</p></div>
+      <p class="lead" data-i18n="pLead">两张主题图，把书中的范式之争与认同之变收进一方画面。</p></div>
     <div class="plates">
-      <figure class="plate reveal"><img src="assets/plates/plate-1.png" alt="华夏边缘：身份认同是如何形成的" loading="lazy"><figcaption><b>图版壹</b>何为华夏边缘 · 身份认同如何形成</figcaption></figure>
-      <figure class="plate reveal"><img src="assets/plates/plate-2.png" alt="族群理论的演进：从客观特征到主观认同" loading="lazy"><figcaption><b>图版贰</b>从客观特征到主观认同 · 范式之变</figcaption></figure>
+      <figure class="plate reveal"><img src="assets/plates/plate-1.png" alt="华夏边缘：身份认同是如何形成的" loading="lazy"><figcaption><b data-i18n="pl1a">图版壹</b><span data-i18n="pl1b">何为华夏边缘 · 身份认同如何形成</span></figcaption></figure>
+      <figure class="plate reveal"><img src="assets/plates/plate-2.png" alt="族群理论的演进：从客观特征到主观认同" loading="lazy"><figcaption><b data-i18n="pl2a">图版贰</b><span data-i18n="pl2b">从客观特征到主观认同 · 范式之变</span></figcaption></figure>
     </div>
   </section>
 
-  <!-- 造物记 -->
-  <section id="maker" class="maker">
-    <div class="reveal"><span class="num">肆 · THE MAKING</span>
-      <h2>3D 造物记：<em>从 0 到边缘</em></h2>
+  <section id="mmap">
+    <div class="reveal"><span class="num">伍 · MIND MAP</span>
+      <h2 data-i18n-html="mTitle">全书<em>思维导图</em></h2>
       <div class="rule"></div>
-      <p class="lead">与本书同构的 3D 隐喻——发光的内核是"华夏"，青铜巨环是"边缘"，环绕的碎片是被记起与被遗忘的记忆，双碉楼矗立在羌族田野的边缘。以下工程从空场景开始逐块搭建，全程可复现。</p></div>
+      <p class="lead" data-i18n="mLead">全书结构化作一张活的地图：理论框架、生态边界、历史形成、现代变迁、研究方法——悬停任意节点，追溯它通向"华夏边缘"的路径。中英双语随语言切换。</p></div>
+    <div class="mapwrap reveal" id="mapwrap"></div>
+    <div class="maplegend"><span data-i18n="ml1">悬停节点 · 追溯谱系</span><span data-i18n="ml2">横向滚动查看全图</span><b data-i18n="ml3">双语切换 · L 键</b></div>
+  </section>
+
+  <section id="maker" class="maker">
+    <div class="reveal"><span class="num">陆 · THE MAKING</span>
+      <h2 data-i18n-html="mkTitle">3D 造物记：<em>从 0 到边缘</em></h2>
+      <div class="rule"></div>
+      <p class="lead" data-i18n="mkLead">与本书同构的 3D 隐喻——发光的内核是"华夏"，青铜巨环是"边缘"，环绕的碎片是被记起与被遗忘的记忆，双碉楼矗立在羌族田野的边缘。以下工程从空场景开始逐块搭建，全程可复现。</p></div>
     <div class="row reveal">
       <div>
         <video controls muted loop playsinline preload="metadata" poster="assets/render_01.png">
           <source src="assets/build.mp4" type="video/mp4">
         </video>
         <div class="meta">
-          <a class="chip" href="blender/build_complete.blend" download>⬇ 下载 Blender 工程文件</a>
-          <span class="chip">8 阶段 · 96 帧 · 12fps 延时</span>
-          <span class="chip">Cycles 渲染</span>
+          <a class="chip" href="blender/build_complete.blend" download data-i18n="mkChip1">⬇ 下载 Blender 工程文件</a>
+          <span class="chip">8 · 96f · 12fps</span>
+          <span class="chip">Cycles</span>
         </div>
       </div>
       <div class="renders">
-        <img src="assets/render_01.png" alt="渲染图一：边缘全景">
-        <img src="assets/render_02.png" alt="渲染图二：内核特写">
-        <img src="assets/render_03.png" alt="渲染图三：碉楼视角">
+        <img src="assets/render_01.png" alt="Render 1">
+        <img src="assets/render_02.png" alt="Render 2">
+        <img src="assets/render_03.png" alt="Render 3">
       </div>
     </div>
   </section>
 
-  <!-- 推荐语 -->
   <section id="praise">
-    <div class="reveal"><span class="num">伍 · PRAISE</span>
-      <h2>他们如何谈论<em>边缘</em></h2>
+    <div class="reveal"><span class="num">柒 · PRAISE</span>
+      <h2 data-i18n="prTitle">他们如何谈论边缘</h2>
       <div class="rule"></div></div>
-    <div class="quotes">
-      <div class="glass q reveal"><p>我们要探讨什么叫中华民族，最好的方法，不是正面地去对"中国人"下一个定义，而是想办法透过"中国人"这个族群的边界，来找它大概的意思。</p><div class="who">梁文道 <span>· 凤凰卫视《开卷八分钟》整期推介</span></div></div>
-      <div class="glass q reveal"><p>这是一部对中文世界的人类学、民族学和历史学研究都产生了重要影响的著作……以十分新鲜并充满魅力的论证，为推进中国史的研究提供了新的范例。</p><div class="who">罗新 <span>· 北京大学中国古代史研究中心教授</span></div></div>
-      <div class="glass q reveal"><p>本书为华夏一族通向自我认知的道路打开了一扇大门，远非就事论事者所能比拟。我由衷地向作者致敬！</p><div class="who">刘苏里 <span>· 万圣书园创始人</span></div></div>
-      <div class="glass q reveal"><p>他被称为学界的"毒药猫"，在打通历史、人类学、人文地理的扞格，在传授知识的同时，更重要的是让人开阔视野。</p><div class="who">岱峻 <span>· 民国学术史研究者</span></div></div>
-    </div>
+    <div class="quotes" id="quotes"></div>
   </section>
 
-  <!-- 作者与版本 -->
   <section id="author">
-    <div class="reveal"><span class="num">陆 · AUTHOR &amp; EDITIONS</span>
-      <h2>作者与<em>版本谱系</em></h2>
+    <div class="reveal"><span class="num">捌 · AUTHOR &amp; EDITIONS</span>
+      <h2 data-i18n="auTitle">作者与版本谱系</h2>
       <div class="rule"></div></div>
     <div class="duo">
       <div class="glass panel reveal">
-        <div class="name">王明珂</div><div class="nm">WANG MING-KE</div>
-        <ul>
-          <li>"中研院"院士，历史语言研究所前任所长</li>
-          <li>哈佛大学东亚系博士（1992）</li>
-          <li>北京大学历史学系客座讲席教授</li>
-          <li>长期在川西羌族地区进行历史人类学田野</li>
-          <li>代表作：《华夏边缘》《羌在汉藏之间》《游牧者的抉择》《毒药猫理论》</li>
-        </ul>
+        <div class="name" data-i18n="auName">王明珂</div><div class="nm">WANG MING-KE</div>
+        <ul id="auList"></ul>
       </div>
-      <div class="glass panel reveal tl">
-        <div class="tl"><div class="row"><div class="yr">1997</div><div class="ds"><b>台北允晨文化 · 繁体初版</b><span>作者成名作，震动台湾学界</span></div></div>
-        <div class="row"><div class="yr">2006</div><div class="ds"><b>社会科学文献出版社 · 大陆初版</b><span>"像飓风一般横扫大陆学术界"（凤凰网文化）</span></div></div>
-        <div class="row"><div class="yr">2013</div><div class="ds"><b>浙江人民出版社 · 增订本</b><span>豆瓣 9.0</span></div></div>
-        <div class="row" style="border:none"><div class="yr">2020</div><div class="ds"><b>上海人民出版社 · 世纪文景</b><span>豆瓣 9.1 · 微信读书 91.9% · 现行通行版</span></div></div></div>
-      </div>
+      <div class="glass panel reveal"><div class="tl" id="tlList"></div></div>
     </div>
   </section>
 
-  <!-- 影像 -->
-  <section id="media">
-    <div class="reveal"><span class="num">柒 · MEDIA</span>
-      <h2>影像里的<em>边缘</em></h2>
-      <div class="rule"></div>
-      <p class="lead">全网经核验的讲座与解读（2026-11 数据）。</p></div>
-    <table class="links reveal">
-      <tr><th>平台</th><th>内容</th><th>频道</th><th>热度</th><th>直达</th></tr>
-      <tr><td class="n">Bilibili</td><td>王明珂：三星堆的启示（北大文研院官方）</td><td>北大文研院</td><td class="n">32,860 播放</td><td><a href="https://www.bilibili.com/video/BV1zM4we8ERe" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">观看 ↗</a></td></tr>
-      <tr><td class="n">Bilibili</td><td>【一席】王明珂：毒药猫与代罪羊</td><td>一席</td><td class="n">15,009 播放</td><td><a href="https://www.bilibili.com/video/BV11z4y1f7xG" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">观看 ↗</a></td></tr>
-      <tr><td class="n">Bilibili</td><td>《北方边缘——秦汉帝国的边疆扩展与边缘反噬》</td><td>i 讲座</td><td class="n">10,665 播放</td><td><a href="https://www.bilibili.com/video/BV1cM411575Z" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">观看 ↗</a></td></tr>
-      <tr><td class="n">Bilibili</td><td>王明珂 × 罗新对谈：从边缘看文明</td><td>key-lv</td><td class="n">7,248 播放</td><td><a href="https://www.bilibili.com/video/BV16x4y147DM" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">观看 ↗</a></td></tr>
-      <tr><td class="n">Bilibili</td><td>《月明星稀——中原与其边缘的形成》</td><td>i 讲座</td><td class="n">5,433 播放</td><td><a href="https://www.bilibili.com/video/BV1xv4y1E7Sm" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">观看 ↗</a></td></tr>
-      <tr><td class="n">YouTube</td><td>第十六届余英时先生历史讲座（王明珂教授）</td><td>中大新亚书院</td><td class="n">官方录像</td><td><a href="https://www.youtube.com/watch?v=GDL2BfBySjk" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">观看 ↗</a></td></tr>
-      <tr><td class="n">凤凰卫视</td><td>《开卷八分钟》梁文道整期推介本书（2008）</td><td>凤凰网</td><td class="n">文字实录</td><td><a href="http://phtv.ifeng.com/program/kjbfz/200807/0729_1699_682542.shtml" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">阅读 ↗</a></td></tr>
-    </table>
-  </section>
-
-  <!-- 首译 -->
   <section id="translation">
-    <div class="reveal"><span class="num">捌 · TRANSLATION</span>
-      <h2>边缘，正被<em>译向边缘之外</em></h2>
+    <div class="reveal"><span class="num">玖 · TRANSLATION</span>
+      <h2 data-i18n-html="trTitle">边缘，正被<em>译向边缘之外</em></h2>
       <div class="rule"></div>
-      <p class="lead" style="color:var(--dim)">《华夏边缘》至今没有任何官方外译本。一项面向英语世界的首次全文翻译工程正在进行——让"边缘"的方法，抵达汉语之外。</p></div>
+      <p class="lead" style="color:var(--dim)" data-i18n="trLead">《华夏边缘》至今没有任何官方外译本。一项面向英语世界的首次全文翻译工程正在进行——让"边缘"的方法，抵达汉语之外。</p></div>
   </section>
 
   <footer>
     <div class="inner">
       <div class="en">Translating Wang Ming-ke's <i>Huaxia Frontiers</i><br>into English — for the first time.</div>
-      <div class="zh">华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）</div>
+      <div class="zh" data-i18n="ftZh">华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）</div>
       <div class="springer">SPRINGER · TRANSLATION PROJECT IN PROGRESS</div>
-      <a class="btn ghost repo" href="https://github.com/tanyaqiongcode/huaxia-frontiers-3d" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">GitHub 仓库 ↗</a>
     </div>
   </footer>
 </main>
 
-<div id="loader"><div class="txt">正在绘制边缘</div><div class="bar"><i id="lbar"></i></div><div class="pct2" id="lpct">0</div></div>
+<div id="loader"><div class="txt" data-i18n="ldTxt">正在绘制边缘</div><div class="bar"><i id="lbar"></i></div><div class="pct2" id="lpct">0</div></div>
 
 <script src="assets/three.min.js"></script>
 <script>
-/* ================= THREE.JS HERO（主题化） ================= */
+/* ============ 数据 ============ */
+const CARDS = [
+ {k:'01',lat:'De Finibus — 论边界 · On the Boundary',h:{zh:'什么是中国人',en:'What Is Chinese'},p:{zh:'不问"华夏有什么"，而问"华夏的边界在哪里"。边缘视角取代定义式民族研究。',en:'Do not ask what Huaxia has; ask where its boundary lies. The edge replaces the definition.'}},
+ {k:'02',lat:'De Club — 论会员制 · On Membership',h:{zh:'族群像高尔夫俱乐部',en:'Ethnicity as a Golf Club'},p:{zh:'族群认同如俱乐部会员制：入会资格由边界决定，而非由成员的内在特征决定。',en:'Membership is decided by the boundary, not by the inner traits of the members.'}},
+ {k:'03',lat:'De Oblivione — 论遗忘 · On Forgetting',h:{zh:'结构性失忆',en:'Structural Amnesia'},p:{zh:'族群靠"记得什么、忘记什么"维系自身——失忆与记忆同样是建构边界的工程。',en:'A group sustains itself by what it remembers — and by what it forgets.'}},
+ {k:'04',lat:'De Primis Ancestoribus — 论祖先 · On Origins',h:{zh:'英雄祖先与弟兄祖先',en:'Hero and Brother Ancestors'},p:{zh:'两种历史心性：阶序化的英雄叙事，与对等合作的弟兄叙事，对应两种社会形态。',en:'Two historical mentalities — the stratified hero narrative and the egalitarian brother narrative.'}},
+ {k:'05',lat:'De Vallibus — 论河谷 · On the Valley',h:{zh:'一截骂一截',en:'One Segment Curses Another'},p:{zh:'岷江上游的人群按河谷上下"一截骂一截"——认同在边缘处逐级滑动，没有铁板一块。',en:'Along the upper Minjiang, people curse segment by segment up the valley: identity slides at the edge.'}},
+ {k:'06',lat:'De Faces — 论火把 · On the Torch',h:{zh:'燃烧的木棍',en:'The Burning Stick'},p:{zh:'火把照亮的只是木棍一端：典范历史照亮中心，边缘沉在黑暗里——研究就是把火把转向边缘。',en:'The torch lights one end: exemplary history lights the center while the edge stays dark.'}},
+ {k:'07',lat:'De Oecologia — 论生态 · On Ecology',h:{zh:'人类生态',en:'Human Ecology'},p:{zh:'华夏是长程历史中的人类生态：资源竞争与分配环境，塑造了边界的形成与变迁。',en:'Huaxia is a long-term human ecology: resource competition shapes how the boundary forms and shifts.'}},
+ {k:'08',lat:'De Methodo — 论方法 · On Method',h:{zh:'边缘研究法',en:'The Edge Method'},p:{zh:'从周人族源、羌人身份到太伯奔吴——用边缘人群的史料，重写中心的历史。',en:'Rewriting the history of the center from marginal voices.'}}
+];
+const QUOTES = [
+ {p:{zh:'我们要探讨什么叫中华民族，最好的方法，不是正面地去对"中国人"下一个定义，而是想办法透过"中国人"这个族群的边界，来找它大概的意思。',en:'To understand what it means to be Chinese, the best way is not to define "the Chinese" frontally, but to approach its meaning through the boundaries of this community.'},w:{zh:'梁文道',en:'Liang Wendao'},s:{zh:'· 凤凰卫视《开卷八分钟》整期推介',en:'· The Open Book, Phoenix TV'}},
+ {p:{zh:'这是一部对中文世界的人类学、民族学和历史学研究都产生了重要影响的著作……以十分新鲜并充满魅力的论证，为推进中国史的研究提供了新的范例。',en:'A work that has deeply influenced anthropology, ethnology and historical research in the Chinese-speaking world… it offers a new paradigm for Chinese historiography.'},w:{zh:'罗新',en:'Luo Xin'},s:{zh:'· 北京大学中国古代史研究中心教授',en:'· Peking University'}},
+ {p:{zh:'本书为华夏一族通向自我认知的道路打开了一扇大门，远非就事论事者所能比拟。我由衷地向作者致敬！',en:'It opens a gate toward self-knowledge for the Huaxia people — far beyond any ordinary book. My heartfelt respect to the author.'},w:{zh:'刘苏里',en:'Liu Suli'},s:{zh:'· 万圣书园创始人',en:'· Founder, All Sages Books'}},
+ {p:{zh:'他被称为学界的"毒药猫"，在打通历史、人类学、人文地理的扞格，在传授知识的同时，更重要的是让人开阔视野。',en:'Called the "poison cat" of academia, he bridges history, anthropology and human geography — teaching knowledge while widening horizons.'},w:{zh:'岱峻',en:'Dai Jun'},s:{zh:'· 民国学术史研究者',en:'· Historian of Republican-era scholarship'}}
+];
+const AULIST = [
+ {zh:'"中研院"院士，历史语言研究所前任所长',en:'Academician, Academia Sinica; former Director, IHP'},
+ {zh:'哈佛大学东亚系博士（1992）',en:'Ph.D., Harvard University (1992)'},
+ {zh:'北京大学历史学系客座讲席教授',en:'Visiting Chair Professor, Peking University'},
+ {zh:'长期在川西羌族地区进行历史人类学田野',en:'Decades of fieldwork among the Qiang'},
+ {zh:'代表作：《华夏边缘》《羌在汉藏之间》《游牧者的抉择》《毒药猫理论》',en:'Works: Huaxia Frontiers; Between Han and Tibetan; Nomads'+String.fromCharCode(39)+' Choices; The Poison Cat Theory'}
+];
+const TL = [
+ {y:'1997',b:{zh:'台北允晨文化 · 繁体初版',en:'Taipei: Yunchen Culture'},s:{zh:'作者成名作，震动台湾学界',en:'The breakthrough work'}},
+ {y:'2006',b:{zh:'社会科学文献出版社 · 大陆初版',en:'Beijing: SSAP'},s:{zh:'"像飓风一般横扫大陆学术界"（凤凰网文化）',en:'"It swept mainland academia like a hurricane"'}},
+ {y:'2013',b:{zh:'浙江人民出版社 · 增订本',en:'Zhejiang People — revised edition'},s:{zh:'豆瓣 9.0',en:'Douban 9.0'}},
+ {y:'2020',b:{zh:'上海人民出版社 · 世纪文景',en:'Shanghai People / Century Wenjing'},s:{zh:'豆瓣 9.1 · 微信读书 91.9% · 现行通行版',en:'Douban 9.1 · WeRead 91.9% · current edition'}}
+];
+const MEDIA = [
+ {p:'Bilibili',c:{zh:'王明珂：三星堆的启示（北大文研院官方）',en:'Wang Ming-ke: The Revelation of Sanxingdui (PKU official)'},ch:{zh:'北大文研院',en:'PKU IFP'},h:'32,860',u:'https://www.bilibili.com/video/BV1zM4we8ERe'},
+ {p:'Bilibili',c:{zh:'【一席】王明珂：毒药猫与代罪羊',en:'Yixi Talk: The Poison Cat and the Scapegoat'},ch:{zh:'一席',en:'Yixi'},h:'15,009',u:'https://www.bilibili.com/video/BV11z4y1f7xG'},
+ {p:'Bilibili',c:{zh:'《北方边缘——秦汉帝国的边疆扩展与边缘反噬》',en:'The Northern Frontier — Expansion and Backlash of the Qin-Han Empire'},ch:{zh:'i 讲座',en:'i Lectures'},h:'10,665',u:'https://www.bilibili.com/video/BV1cM411575Z'},
+ {p:'Bilibili',c:{zh:'王明珂 × 罗新对谈：从边缘看文明',en:'Wang × Luo: Civilization from the Edge'},ch:'key-lv',h:'7,248',u:'https://www.bilibili.com/video/BV16x4y147DM'},
+ {p:'Bilibili',c:{zh:'《月明星稀——中原与其边缘的形成》',en:"A Bright Moon, Sparse Stars — the Forming of the Central Plain's Edge"},ch:{zh:'i 讲座',en:'i Lectures'},h:'5,433',u:'https://www.bilibili.com/video/BV1xv4y1E7Sm'},
+ {p:'YouTube',c:{zh:'第十六届余英时先生历史讲座（王明珂教授）',en:'16th Yu Ying-shih Lecture in History (Prof. Wang Ming-ke)'},ch:{zh:'中大新亚书院',en:'New Asia College, CUHK'},h:{zh:'官方录像',en:'Official'},act:'watch',u:'https://www.youtube.com/watch?v=GDL2BfBySjk'},
+ {p:'凤凰卫视',c:{zh:'《开卷八分钟》梁文道整期推介本书（2008）',en:'The Open Book: full episode on this book (2008)'},ch:{zh:'凤凰网',en:'ifeng'},h:{zh:'文字实录',en:'Transcript'},act:'read',u:'http://phtv.ifeng.com/program/kjbfz/200807/0729_1699_682542.shtml'}
+];
+const SOC = [
+ {n:'Bilibili',u:'https://search.bilibili.com/all?keyword=%E5%8D%8E%E5%A4%8F%E8%BE%B9%E7%BC%98',d:{zh:'站内搜索 · 华夏边缘',en:'On-site search'}},
+ {n:'YouTube',u:'https://www.youtube.com/results?search_query=Wang+Ming-ke+Huaxia+Frontiers',d:{zh:'讲座与解读',en:'Lectures & readings'}},
+ {n:'X',u:'https://x.com/search?q=%E5%8D%8E%E5%A4%8F%E8%BE%B9%E7%BC%98&src=typed_query',d:{zh:'实时讨论',en:'Live mentions'}},
+ {n:'Reddit',u:'https://www.reddit.com/search/?q=Wang%20Ming-ke%20Huaxia',d:{zh:'学术社区讨论',en:'Academic threads'}},
+ {n:'LinkedIn',u:'https://www.linkedin.com/search/results/all/?keywords=%E7%8E%8B%E6%98%8E%E7%8F%82',d:{zh:'学者与项目动态',en:'Scholar & project'}},
+ {n:'小红书 RED',u:'https://www.xiaohongshu.com/search_result?keyword=%E5%8D%8E%E5%A4%8F%E8%BE%B9%E7%BC%98',d:{zh:'中文书评笔记',en:'Chinese book notes'}}
+];
+const T = {
+ lang:'zh',
+ dict:{
+  sidesign:{zh:'华夏边缘 · 历史记忆与族群认同',en:'HUAXIA FRONTIERS · Historical Memory & Ethnic Identity'},
+  metaline:{zh:'田野坐标 31°06′N 103°51′E · 岷江上游 · 田野期 1990s—2000s · STUDY No.01',en:'FIELD SITE 31°06′N 103°51′E · UPPER MINJIANG · FIELDWORK 1990s—2000s · STUDY No.01'},
+  ensub:{zh:'THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity',en:'THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity'},
+  quote:{zh:'"当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b>让它看起来像个圆形。"<br><span style="font-size:12.5px;color:var(--dim)">—— 王明珂 · 当代华语世界最具范式意义的历史人类学经典之一</span>',
+   en:'"When we draw a circle on paper, it is in fact its <b>edge</b> that makes it look like a circle."<br><span style="font-size:12.5px;color:var(--dim)">— Wang Ming-ke · A paradigm-defining classic of historical anthropology</span>'},
+  st1:{zh:'LIVE · 人在读',en:'LIVE · READING'}, st2:{zh:'豆瓣评分',en:'Douban'}, st3:{zh:'微信读书推荐值',en:'WeRead Score'}, st4:{zh:'豆瓣书评',en:'Reviews'},
+  cta0:{zh:'影像里的边缘',en:'The Edge on Screen'}, cta1:{zh:'进入边缘 · 概念八章',en:'ENTER THE EDGE'}, cta2:{zh:'观看 3D 造物记',en:'WATCH THE MAKING'},
+  hint:{zh:'SCROLL · 向下进入边缘',en:'SCROLL · INTO THE EDGE'},
+  mdTitle:{zh:'影像里的边缘',en:'The Edge on Screen'}, mdLead:{zh:'全网经核验的讲座与解读（2026-11 数据）。',en:'Verified lectures and readings across the web (Nov 2026).'},
+  mdH1:{zh:'平台',en:'Platform'}, mdH2:{zh:'内容',en:'Title'}, mdH3:{zh:'频道',en:'Channel'}, mdH4:{zh:'热度',en:'Stats'}, mdH5:{zh:'直达',en:'Go'},
+  socT:{zh:'全平台直达 · FIND THE EDGE EVERYWHERE',en:'FIND THE EDGE EVERYWHERE'},
+  cTitle:{zh:'八个概念，一次<em>边缘</em>之旅',en:'Eight Concepts, One Journey to <em>the Edge</em>'},
+  cLead:{zh:'这条思想的谱系上，考古学教我们追问知识如何成形，边界理论把认同安放在"线"上，集体记忆说记忆活在社会的框架里——华夏不是一份固定的名单，而是一道随资源竞争、记忆与失忆不断移动的边界。读懂边缘，才读懂"什么是中国人"。',
+   en:'On this genealogy of ideas, archaeology asks how knowledge takes form, boundary theory places identity on the line, and collective memory lives within social frames — Huaxia is not a fixed roster but a boundary that moves with resource competition, memory and forgetting. To read the edge is to read "what is Chinese."'},
+  pTitle:{zh:'图录 · <em>边缘的两种观看</em>',en:'Plates · <em>Two Ways of Seeing the Edge</em>'},
+  pLead:{zh:'两张主题图，把书中的范式之争与认同之变收进一方画面。',en:'Two plates gather the paradigm shift and the making of identity into single frames.'},
+  pl1a:{zh:'图版壹',en:'PLATE I'}, pl1b:{zh:'何为华夏边缘 · 身份认同如何形成',en:'What is the Huaxia Edge — how identity forms'},
+  pl2a:{zh:'图版贰',en:'PLATE II'}, pl2b:{zh:'从客观特征到主观认同 · 范式之变',en:'From objective traits to subjective identity — a paradigm shift'},
+  mTitle:{zh:'全书<em>思维导图</em>',en:'The Book as a <em>Mind Map</em>'},
+  mLead:{zh:'全书结构化作一张活的地图：理论框架、生态边界、历史形成、现代变迁、研究方法——悬停任意节点，追溯它通向"华夏边缘"的路径。中英双语随语言切换。',en:'The whole book drawn as a living map: theoretical framework, ecological boundary, historical formation, modern change, methodology — hover any node to trace its path back to "the Huaxia edge."'},
+  ml1:{zh:'悬停节点 · 追溯谱系',en:'Hover a node · trace the lineage'}, ml2:{zh:'横向滚动查看全图',en:'Scroll sideways for the full map'}, ml3:{zh:'双语切换 · L 键',en:'Bilingual · press L'},
+  mkTitle:{zh:'3D 造物记：<em>从 0 到边缘</em>',en:'The 3D Making: <em>from 0 to the Edge</em>'},
+  mkLead:{zh:'与本书同构的 3D 隐喻——发光的内核是"华夏"，青铜巨环是"边缘"，环绕的碎片是被记起与被遗忘的记忆，双碉楼矗立在羌族田野的边缘。以下工程从空场景开始逐块搭建，全程可复现。',en:'A 3D metaphor built from the book itself — the glowing core is Huaxia, the bronze ring is its edge, the orbiting shards are memories remembered and forgotten, and two Qiang watchtowers stand at the margin. Assembled block by block from an empty file.'},
+  mkChip1:{zh:'⬇ 下载 Blender 工程文件',en:'⬇ Download the Blender file'},
+  prTitle:{zh:'他们如何谈论边缘',en:'On the Edge, in Their Words'},
+  auTitle:{zh:'作者与版本谱系',en:'The Author & the Editions'}, auName:{zh:'王明珂',en:'王明珂'},
+  trTitle:{zh:'边缘，正被<em>译向边缘之外</em>',en:'The edge is being <em>translated beyond itself</em>'},
+  trLead:{zh:'《华夏边缘》至今没有任何官方外译本。一项面向英语世界的首次全文翻译工程正在进行——让"边缘"的方法，抵达汉语之外。',en:'No official translation of Huaxia Frontiers exists in any language. A first full English translation is now underway — carrying "the edge" beyond Chinese.'},
+  ftZh:{zh:'华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）',en:'Huaxia Frontiers · Historical Memory and Ethnic Identity<br>by Wang Ming-ke · Shanghai People' + "'" + 's Publishing House / Century Wenjing'},
+  ldTxt:{zh:'正在绘制边缘',en:'Drawing the edge'},
+  plays:{zh:'播放',en:'plays'}, watch:{zh:'观看 ↗',en:'Watch ↗'}, read:{zh:'阅读 ↗',en:'Read ↗'},
+  official:{zh:'官方录像',en:'Official'}, transcript:{zh:'文字实录',en:'Transcript'}
+ }
+};
+function tx(o){ return o ? (o[T.lang] || o.zh || '') : ''; }
+function applyLang(){
+  document.documentElement.lang = T.lang==='zh' ? 'zh-CN' : 'en';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ const v = T.dict[el.dataset.i18n]; if(v) el.innerHTML = tx(v); });
+  renderCards(); renderQuotes(); renderAuthor(); renderMedia(); renderSoc(); renderMap();
+  document.getElementById('btnLang').innerHTML = (T.lang==='zh' ? 'EN' : '中文') + ' <kbd>L</kbd>';
+}
+function renderCards(){
+  const ENN=['the Edge','Membership','Forgetting','Origins','the Valley','Light','Ecology','Method'];
+  document.getElementById('cards').innerHTML = CARDS.map((c,i)=>
+   `<div class="glass card"><div class="cn">${T.lang==='zh'?'概念 '+c.k:'CONCEPT '+c.k} · A Study in ${ENN[i]}</div><div class="lat">${c.lat}</div><h3>${tx(c.h)}</h3><p>${tx(c.p)}</p></div>`).join('');
+}
+function renderQuotes(){
+  document.getElementById('quotes').innerHTML = QUOTES.map(q=>
+   `<div class="glass q"><p>${tx(q.p)}</p><div class="who">${tx(q.w)} <span>${tx(q.s)}</span></div></div>`).join('');
+}
+function renderAuthor(){
+  document.getElementById('auList').innerHTML = AULIST.map(a=>`<li>${tx(a)}</li>`).join('');
+  document.getElementById('tlList').innerHTML = TL.map(r=>
+   `<div class="row"><div class="yr">${r.y}</div><div class="ds"><b>${tx(r.b)}</b><span>${tx(r.s)}</span></div></div>`).join('');
+}
+function renderMedia(){
+  document.getElementById('mediaRows').innerHTML = MEDIA.map(m=>
+   `<tr><td class="n">${m.p}</td><td>${tx(m.c)}</td><td>${tx(m.ch)}</td><td class="n">${typeof m.h==='string'?m.h+(T.lang==='zh'?' 播放':''):tx(m.h)}</td><td><a href="${m.u}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">${m.act==='read'?(T.lang==='zh'?'阅读 ↗':'Read ↗'):(T.lang==='zh'?'观看 ↗':'Watch ↗')}</a></td></tr>`).join('');
+}
+function renderSoc(){
+  document.getElementById('socLinks').innerHTML = SOC.map(s=>
+   `<a href="${s.u}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><b>${s.n}</b><span>${tx(s.d)}</span></a>`).join('');
+}
+
+/* ============ 思维导图（中英） ============ */
+const MAP = { r:{zh:'华夏边缘',en:'Huaxia Edge'}, br:[
+ {zh:'理论框架',en:'Theoretical Framework', ch:[
+   {zh:'族群理论',en:'Ethnicity Theory', ch:[{zh:'主观认同',en:'Subjective Identification'},{zh:'工具论与原基论',en:'Instrumentalism vs Primordialism'},{zh:'文化裙带',en:'Cultural Nepotism'}]},
+   {zh:'社会记忆',en:'Social Memory', ch:[{zh:'集体记忆',en:'Collective Memory'},{zh:'结构性失忆',en:'Structural Amnesia'},{zh:'历史重构',en:'Historical Reconstruction'}]},
+   {zh:'人类生态',en:'Human Ecology', ch:[{zh:'环境约束',en:'Environmental Constraints'},{zh:'经济生业',en:'Economic Production'},{zh:'社会结群',en:'Social Organization'}]}]},
+ {zh:'生态边界',en:'Ecological Boundary', ch:[
+   {zh:'四千年前气候变化',en:'4000BP Climate Change'},{zh:'农业边缘化',en:'Agricultural Marginalization'},{zh:'游牧化兴起',en:'Rise of Pastoralism'},{zh:'河湟与鄂尔多斯案例',en:'Hehuang & Ordos Cases'}]},
+ {zh:'历史形成',en:'Historical Formation', ch:[
+   {zh:'华夏扩张',en:'Huaxia Expansion', ch:[{zh:'周人族源与神话',en:'Zhou Origins and Myths'},{zh:'西周记忆',en:'Western Zhou Memory'},{zh:'吴太伯的华夏化',en:'Sinicization of Wu Taibo'},{zh:'羌人的西迁漂移',en:'Westward Drift of Qiang'}]},
+   {zh:'汉代凝练',en:'Han Consolidation', ch:[{zh:'汉认同的形成',en:'Formation of Han Identity'},{zh:'四方异族的多元意象',en:'Multivariate Imagery of Aliens'},{zh:'长城资源界线',en:'The Great Wall Constraint'}]}]},
+ {zh:'现代变迁',en:'Modern Change', ch:[
+   {zh:'国族再造',en:'Nation-State Reconstruction', ch:[{zh:'近代中国认同',en:'Modern Chinese Identity'},{zh:'少数民族识别',en:'Minority Identification'},{zh:'学术知识建构',en:'Scholarly Knowledge Construction'}]},
+   {zh:'微观过程',en:'Micro-processes', ch:[{zh:'人际互动',en:'Interpersonal Interactions'},{zh:'个人行动与选择',en:'Personal Action and Choice'},{zh:'污名与涵化',en:'Stigma and Assimilation'}]}]},
+ {zh:'研究方法',en:'Research Methodology', ch:[
+   {zh:'反思史学',en:'Reflexive History'},{zh:'边缘视角',en:'Marginal Perspective'},{zh:'批评中心主义',en:'Critique of Core-centrism'},{zh:'文本与情境分析',en:'Text and Context Analysis'},{zh:'英雄与弟兄历史心性',en:'Hero vs Brother Historical Mentality'}]}
+]};
+function renderMap(){
+  const wrap = document.getElementById('mapwrap');
+  const L = T.lang, ROW = 34, X = [30, 330, 640, 990];
+  let y = 60; const nodes = [], edges = [];
+  function walk(n, depth, py){
+    let my;
+    if(!n.ch){ my = y; y += ROW; }
+    else{ const ys = n.ch.map(c=>walk(c, depth+1)); my = (Math.min(...ys)+Math.max(...ys))/2; }
+    nodes.push({n, depth, x:X[Math.min(depth,3)], y:my});
+    if(py!==null) edges.push({from:py, to:my, x1:X[Math.max(0,depth-1)]+(depth===0?176:200), x2:X[Math.min(depth,3)]});
+    return my;
+  }
+  y = 40;
+  const rootY = walk(MAP.r, 0, null);
+  MAP.br.forEach(b=>{ const by = walk(b, 1, rootY); b.ch.forEach(c=>{ const cy = walk(c, 2, by); (c.ch||[]).forEach(l=>walk(l, 3, cy)); }); });
+  const H = y + 50, W = 1560, NODEW = [176, 200, 210, 240];
+  let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="mapgrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5b7fd9"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs>`;
+  edges.forEach(e=>{ const mx=(e.x1+e.x2)/2;
+    s += `<path class="edge" data-f="${e.from}" data-t="${e.to}" data-x2="${e.x2}" d="M${e.x1},${e.from} C${mx},${e.from} ${mx},${e.to} ${e.x2},${e.to}"/>`; });
+  nodes.forEach(nd=>{ const w = NODEW[Math.min(nd.depth,3)], h = 30;
+    const cls = nd.depth===0?'root':(nd.depth<=1?'mid':'');
+    s += `<g class="node ${cls}"><rect x="${nd.x}" y="${nd.y-h/2}" width="${w}" height="${h}" rx="9"/><text x="${nd.x+14}" y="${nd.y+4.5}">${(L==='zh'?nd.n.zh:nd.n.en).slice(0,26)}</text></g>`; });
+  s += '</svg>';
+  wrap.innerHTML = s;
+  wrap.querySelectorAll('.node').forEach(g=>{
+    g.addEventListener('mouseenter', ()=>{
+      wrap.querySelectorAll('.hi').forEach(x=>x.classList.remove('hi'));
+      g.classList.add('hi');
+      const gy = +g.querySelector('rect').getAttribute('y') + 15;
+      wrap.querySelectorAll('.edge').forEach(p=>{
+        if(Math.abs(+p.dataset.t - gy) < 3 && +p.dataset.x2 <= +g.querySelector('rect').getAttribute('x') + 2) p.classList.add('hi');
+      });
+    });
+    g.addEventListener('mouseleave', ()=> wrap.querySelectorAll('.hi').forEach(x=>x.classList.remove('hi')));
+  });
+}
+
+/* ============ THREE.JS HERO ============ */
 const canvas = document.getElementById('bg');
 const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));
 renderer.setSize(innerWidth, innerHeight);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 200);
-camera.position.set(0, -16, 6.2); camera.lookAt(0, 0, 0.4);
-
-/* 主题色板 */
+camera.position.set(0,-16,6.2); camera.lookAt(0,0,0.4);
 const PAL = {
   dark:{ bg:0x06070d, ring:0xc9a45c, core:0xffca7a, glow:0xffca7a,
-    band:[[1,.82,.5],[.85,.65,.32],[1,.9,.62],[.78,.55,.25]], frag:0xe8cf96, dust:0x8fa3c8,
-    key:0xffd9a0 },
+    band:[[1,.82,.5],[.85,.65,.32],[1,.9,.62],[.78,.55,.25]], frag:0xe8cf96, dust:0x8fa3c8, key:0xffd9a0 },
   light:{ bg:0xece3d2, ring:0x8a6c33, core:0xb9853a, glow:0xb9853a,
-    band:[[.42,.33,.2],[.55,.44,.26],[.36,.28,.16],[.6,.48,.3]], frag:0x6b5124, dust:0x6b5c3a,
-    key:0xfff1d6 }
+    band:[[.42,.33,.2],[.55,.44,.26],[.36,.28,.16],[.6,.48,.3]], frag:0x6b5124, dust:0x6b5c3a, key:0xfff1d6 }
 };
 let theme = 'dark';
-scene.fog = new THREE.FogExp2(PAL.dark.bg, .052);
+scene.fog = new THREE.FogExp2(PAL.dark.bg,.052);
 renderer.setClearColor(PAL.dark.bg);
-
-scene.add(new THREE.AmbientLight(0x1a1826, .9));
-const key = new THREE.PointLight(PAL.dark.key, 2.4, 60); key.position.set(-9,5,10); scene.add(key);
-const rim = new THREE.DirectionalLight(0x7fa0ff, .7); rim.position.set(10,-4,4); scene.add(rim);
-const inner = new THREE.PointLight(0xffb865, 1.6, 18); scene.add(inner);
-
+scene.add(new THREE.AmbientLight(0x1a1826,.9));
+const key = new THREE.PointLight(PAL.dark.key,2.4,60); key.position.set(-9,5,10); scene.add(key);
+const rim = new THREE.DirectionalLight(0x7fa0ff,.7); rim.position.set(10,-4,4); scene.add(rim);
+const inner = new THREE.PointLight(0xffb865,1.6,18); scene.add(inner);
 const edge = new THREE.Mesh(new THREE.TorusGeometry(6,.15,40,220),
-  new THREE.MeshStandardMaterial({color:PAL.dark.ring, metalness:1, roughness:.28}));
-edge.rotation.x = Math.PI/2*.94; edge.rotation.z = .35; scene.add(edge);
-
-function ringCloud(n, rMin, rMax, zGauss, size, palette){
-  const pos = new Float32Array(n*3), col = new Float32Array(n*3);
-  for(let i=0;i<n;i++){
-    const th = Math.random()*Math.PI*2, r = rMin + Math.random()*(rMax-rMin);
-    pos.set([r*Math.cos(th), r*Math.sin(th), (Math.random()+Math.random()+Math.random()-1.5)*zGauss], i*3);
-    const c = palette[Math.floor(Math.random()*palette.length)];
-    col.set(c, i*3);
-  }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.BufferAttribute(pos,3));
-  g.setAttribute('color', new THREE.BufferAttribute(col,3));
-  return new THREE.Points(g, new THREE.PointsMaterial({size, vertexColors:true, transparent:true,
-    opacity:.92, blending:THREE.AdditiveBlending, depthWrite:false, sizeAttenuation:true}));
+  new THREE.MeshStandardMaterial({color:PAL.dark.ring,metalness:1,roughness:.28}));
+edge.rotation.x = Math.PI/2*.94; edge.rotation.z=.35; scene.add(edge);
+function ringCloud(n,rMin,rMax,zG,size,pal){
+  const pos=new Float32Array(n*3), col=new Float32Array(n*3);
+  for(let i=0;i<n;i++){ const th=Math.random()*Math.PI*2, r=rMin+Math.random()*(rMax-rMin);
+    pos.set([r*Math.cos(th), r*Math.sin(th), (Math.random()+Math.random()+Math.random()-1.5)*zG], i*3);
+    const c=pal[Math.floor(Math.random()*pal.length)]; col.set(c,i*3); }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  return new THREE.Points(g,new THREE.PointsMaterial({size,vertexColors:true,transparent:true,opacity:.92,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true}));
 }
-const core = ringCloud(1400, .1, 1.5, 1.4, .045, PAL.dark.band); scene.add(core);
-const band = ringCloud(4600, 4.9, 7.1, .75, .05, PAL.dark.band); scene.add(band);
-const dust = ringCloud(700, 2.6, 4.6, 1.1, .032, PAL.dark.band); scene.add(dust);
+const core = ringCloud(1400,.1,1.5,1.4,.045,PAL.dark.band); scene.add(core);
+const band = ringCloud(4600,4.9,7.1,.75,.05,PAL.dark.band); scene.add(band);
+const dust = ringCloud(700,2.6,4.6,1.1,.032,PAL.dark.band); scene.add(dust);
 const glow = new THREE.Mesh(new THREE.SphereGeometry(1.15,32,24),
-  new THREE.MeshBasicMaterial({color:PAL.dark.glow, transparent:true, opacity:.16}));
+  new THREE.MeshBasicMaterial({color:PAL.dark.glow,transparent:true,opacity:.16}));
 scene.add(glow);
-const fragGeo = (()=>{ const N=260, p=new Float32Array(N*3);
-  for(let i=0;i<N;i++){ const th=Math.random()*Math.PI*2, r=2.4+Math.random()*3.6;
-    p.set([r*Math.cos(th), r*Math.sin(th), (Math.random()-.5)*2.2], i*3); }
-  const g=new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p,3)); return g; })();
-const frags = new THREE.Points(fragGeo, new THREE.PointsMaterial({color:PAL.dark.frag, size:.09,
-  transparent:true, opacity:.75, blending:THREE.AdditiveBlending, depthWrite:false}));
+const fragGeo=(()=>{const N=260,p=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const th=Math.random()*Math.PI*2,r=2.4+Math.random()*3.6;
+    p.set([r*Math.cos(th),r*Math.sin(th),(Math.random()-.5)*2.2],i*3);}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(p,3));return g;})();
+const frags=new THREE.Points(fragGeo,new THREE.PointsMaterial({color:PAL.dark.frag,size:.09,transparent:true,opacity:.75,blending:THREE.AdditiveBlending,depthWrite:false}));
 scene.add(frags);
-
-/* 密度（drawRange） */
-const DENS = {lo:.4, mid:.75, full:1};
-let density = 'mid';
-function applyDensity(){
-  const f = DENS[density];
-  core.geometry.setDrawRange(0, Math.floor(1400*f));
-  band.geometry.setDrawRange(0, Math.floor(4600*f));
-  dust.geometry.setDrawRange(0, Math.floor(700*f));
-  frags.geometry.setDrawRange(0, Math.floor(260*f));
-}
+const DENS={lo:.4,mid:.75,full:1}; let density='mid';
+function applyDensity(){ const f=DENS[density];
+  core.geometry.setDrawRange(0,Math.floor(1400*f)); band.geometry.setDrawRange(0,Math.floor(4600*f));
+  dust.geometry.setDrawRange(0,Math.floor(700*f)); frags.geometry.setDrawRange(0,Math.floor(260*f)); }
 applyDensity();
-
-/* 主题切换 */
-function applyTheme(t){
-  theme = t;
-  document.documentElement.setAttribute('data-theme', t);
-  const p = PAL[t];
-  renderer.setClearColor(p.bg); scene.fog.color.set(p.bg);
-  edge.material.color.set(p.ring);
-  core.material.color.set(p.core); glow.material.color.set(p.glow);
+function applyTheme(t){ theme=t; document.documentElement.setAttribute('data-theme',t); const p=PAL[t];
+  renderer.setClearColor(SCENES[sceneK].bg); scene.fog.color.set(SCENES[sceneK].fog);
+  edge.material.color.set(SCENES[sceneK].ring); core.material.color.set(SCENES[sceneK].core); glow.material.color.set(SCENES[sceneK].core);
   frags.material.color.set(p.frag); dust.material.color.set(p.dust);
-  [core, band, dust].forEach(cl=>{
-    const attr = cl.geometry.attributes.color, n = attr.count;
-    for(let i=0;i<n;i++){
-      const c = p.band[Math.floor(Math.random()*p.band.length)];
-      attr.setXYZ(i, c[0], c[1], c[2]);
-    }
-    attr.needsUpdate = true;
-  });
-  key.color.set(p.key);
+  [core,band,dust].forEach(cl=>{ const a=cl.geometry.attributes.color;
+    for(let i=0;i<a.count;i++){ const c=p.band[Math.floor(Math.random()*p.band.length)]; a.setXYZ(i,c[0],c[1],c[2]); }
+    a.needsUpdate=true; });
+  key.color.set(SCENES[sceneK].key);
 }
 applyTheme('dark');
 
-/* 交互 */
-let mx=0, my=0, scrolly=0, paused=false;
-addEventListener('pointermove', e=>{ mx=(e.clientX/innerWidth-.5); my=(e.clientY/innerHeight-.5); });
-addEventListener('scroll', ()=>{ scrolly = scrollY/innerHeight; });
-addEventListener('resize', ()=>{
-  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
+/* 可玩：点击迸发记忆碎片 + 拖拽旋转青铜环 */
+const raycaster = new THREE.Raycaster();
+const planeZ = new THREE.Plane(new THREE.Vector3(0,0,1), 0);
+const BN = 240, bpos = new Float32Array(BN*3), bLife = new Float32Array(BN), bvel = [];
+for(let i=0;i<BN;i++) bpos.set([0,-999,0], i*3);
+const bGeo = new THREE.BufferGeometry(); bGeo.setAttribute('position', new THREE.BufferAttribute(bpos,3));
+const bursts = new THREE.Points(bGeo, new THREE.PointsMaterial({color:0xffe2a8,size:.16,transparent:true,opacity:.95,blending:THREE.AdditiveBlending,depthWrite:false}));
+scene.add(bursts);
+let bIdx = 0;
+function burst(clientX, clientY){
+  const ndc = new THREE.Vector2((clientX/innerWidth)*2-1, -(clientY/innerHeight)*2+1);
+  raycaster.setFromCamera(ndc, camera);
+  const pt = new THREE.Vector3(); raycaster.ray.intersectPlane(planeZ, pt);
+  if(!pt) return;
+  for(let i=0;i<26;i++){ const j=(bIdx+i)%BN;
+    bpos.set([pt.x, pt.y, (Math.random()-.5)*.4], j*3);
+    bvel[j] = {x:(Math.random()-.5)*.14, y:(Math.random()-.5)*.14, z:(Math.random()-.5)*.08};
+    bLife[j] = 1; }
+  bIdx = (bIdx+26)%BN;
+}
+let dragging = false, lastX = 0, dragVel = 0;
+canvas.addEventListener('pointerdown', e=>{ dragging = true; lastX = e.clientX; });
+addEventListener('pointermove', e=>{
+  mx = (e.clientX/innerWidth)-.5; my = (e.clientY/innerHeight)-.5;
+  if(dragging){ dragVel = (e.clientX - lastX)*.0035; edge.rotation.z += dragVel; lastX = e.clientX; }
 });
+addEventListener('pointerup', ()=>{ dragging = false; });
+canvas.addEventListener('click', e=>{ if(!dragging || Math.abs(dragVel)<.001) burst(e.clientX, e.clientY); });
 
-const clock = new THREE.Clock();
-let simT = 0;
-(function tick(){
-  requestAnimationFrame(tick);
-  if(!paused) simT += Math.min(clock.getDelta(), .05); else clock.getDelta();
+let mx=0,my=0,scrolly=0,paused=false;
+addEventListener('scroll', ()=>{ scrolly = scrollY/innerHeight; });
+addEventListener('resize', ()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+const clock = new THREE.Clock(); let simT = 0;
+const look = new THREE.Vector3(0,.4,0);
+(function tick(){ requestAnimationFrame(tick);
+  if(!paused) simT += Math.min(clock.getDelta(),.05); else clock.getDelta();
   const t = simT;
-  edge.rotation.z = .35 + t*.02;
+  if(!dragging){ edge.rotation.z += dragVel; dragVel *= .96; edge.rotation.z += t*.0002; }
   band.rotation.z = t*.03; dust.rotation.z = -t*.018; frags.rotation.z = t*.045;
-  core.rotation.y = t*.05;
-  glow.scale.setScalar(1 + Math.sin(t*1.4)*.05);
+  core.rotation.y = t*.05; glow.scale.setScalar(1 + Math.sin(t*1.4)*.05);
   inner.intensity = 1.5 + Math.sin(t*1.4)*.35;
-  const px = mx*1.6, py = my*.9;
-  camera.position.x += (px - camera.position.x)*.03;
-  camera.position.y += ((-16 + py*1.4 + scrolly*5.5) - camera.position.y)*.04;
-  camera.lookAt(0,0,0.4);
-  canvas.style.opacity = Math.max(0, 1 - scrolly*.9);
+  for(let j=0;j<BN;j++){ if(bLife[j]>0){ bLife[j]-=.011;
+    bpos[j*3]+=bvel[j].x; bpos[j*3+1]+=bvel[j].y; bpos[j*3+2]+=bvel[j].z;
+    bvel[j].x*=.985; bvel[j].y*=.985;
+    if(bLife[j]<=0) bpos[j*3+1]=-999; } }
+  bGeo.attributes.position.needsUpdate = true;
+  const vh = innerHeight, d0 = vh*.8, d1 = vh*2.95;
+  const dp = Math.max(0, Math.min(1, (scrollY-d0)/(d1-d0)));
+  const ez = dp*dp*(3-2*dp);
+  const px = mx*1.6*(1-ez), py = my*.9*(1-ez);
+  camera.position.x += ((px+.85*ez)-camera.position.x)*.06;
+  camera.position.y += ((-16+py*1.4+11.6*ez)-camera.position.y)*.07;
+  camera.position.z += ((6.2-3.2*ez)-camera.position.z)*.07;
+  look.set(0,.4-.85*ez,0); camera.lookAt(look);
+  canvas.style.opacity = Math.max(0, 1-Math.max(0,(scrolly-3.2))/.85);
+  document.querySelectorAll('.dcap').forEach(d=>{
+    d.style.opacity = Math.max(0, 1-Math.abs(dp-(+d.dataset.p))*5.5); });
   renderer.render(scene, camera);
 })();
 
-/* 命令条 */
-const btnSound = document.getElementById('btnSound'), btnPause = document.getElementById('btnPause'),
-      btnTheme = document.getElementById('btnTheme'), btnHide = document.getElementById('btnHide');
+/* ============ 命令条 ============ */
+const btnLang=document.getElementById('btnLang'), btnSound=document.getElementById('btnSound'),
+      btnPause=document.getElementById('btnPause'), btnTheme=document.getElementById('btnTheme'),
+      btnHide=document.getElementById('btnHide');
+function toggleLang(){ T.lang = T.lang==='zh'?'en':'zh'; applyLang(); }
+btnLang.onclick = toggleLang;
+/* 生成式环境配乐：和声循环 Am9→Fmaj7→Cmaj9→G6 + 混响 + 风 */
 let audio = null;
 function toggleSound(){
   if(!audio){
     const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const g = ctx.createGain(); g.gain.value = .016;
-    const f = ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value = 420;
-    [55, 82.4, 110].forEach(fr=>{ const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=fr; o.connect(f); o.start(); });
-    f.connect(g); g.connect(ctx.destination); audio = {ctx, g};
+    const master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+    const conv = ctx.createConvolver();
+    const irLen = ctx.sampleRate*3.2, ir = ctx.createBuffer(2,irLen,ctx.sampleRate);
+    for(let ch=0;ch<2;ch++){ const d = ir.getChannelData(ch);
+      for(let i=0;i<irLen;i++) d[i] = (Math.random()*2-1)*Math.pow(1-i/irLen,2.6); }
+    conv.buffer = ir; const wet = ctx.createGain(); wet.gain.value = .5;
+    conv.connect(wet); wet.connect(master);
+    const bus = ctx.createGain(); bus.gain.value = .9; bus.connect(conv); bus.connect(master);
+    const mf = ctx.createBiquadFilter(); mf.type='lowpass'; mf.frequency.value = 980; mf.connect(bus);
+    const nb = ctx.createBuffer(1,ctx.sampleRate*4,ctx.sampleRate), nd = nb.getChannelData(0);
+    for(let i=0;i<nd.length;i++) nd[i] = Math.random()*2-1;
+    const ns = ctx.createBufferSource(); ns.buffer = nb; ns.loop = true;
+    const nf = ctx.createBiquadFilter(); nf.type='bandpass'; nf.frequency.value = 320; nf.Q.value = .6;
+    const ng = ctx.createGain(); ng.gain.value = .012;
+    const nl = ctx.createOscillator(); nl.frequency.value = .07;
+    const nlg = ctx.createGain(); nlg.gain.value = .007;
+    nl.connect(nlg); nlg.connect(ng.gain); nl.start();
+    ns.connect(nf); nf.connect(ng); ng.connect(bus); ns.start();
+    const sub = ctx.createOscillator(); sub.type='sine'; sub.frequency.value = 55;
+    const sg = ctx.createGain(); sg.gain.value = .02; sub.connect(sg); sg.connect(bus); sub.start();
+    const CH = [[57,60,64,71],[53,57,60,64],[48,55,62,64],[55,59,62,64]];
+    let ci = 0;
+    function playChord(){
+      const t0 = ctx.currentTime+.05, notes = CH[ci%CH.length]; ci++;
+      notes.forEach((m,i)=>{
+        const f = 440*Math.pow(2,(m-69)/12);
+        [['sine',0],['triangle',2.5]].forEach(([type,det])=>{
+          const o = ctx.createOscillator(); o.type = type; o.frequency.value = f; o.detune.value = det*(i%2?1:-1);
+          const g = ctx.createGain(); g.gain.setValueAtTime(0,t0);
+          g.gain.linearRampToValueAtTime(.014,t0+3.2);
+          g.gain.linearRampToValueAtTime(0,t0+9.6);
+          o.connect(g); g.connect(mf); o.start(t0); o.stop(t0+10);
+        });
+      });
+    }
+    playChord(); setInterval(playChord, 8600);
+    audio = {ctx, master};
   }
-  const on = audio.g.gain.value > 0;
-  audio.g.gain.linearRampToValueAtTime(on?0:.016, audio.ctx.currentTime+1.2);
+  const on = audio.master.gain.value > 0;
+  audio.master.gain.linearRampToValueAtTime(on?0:.055, audio.ctx.currentTime+1.6);
   btnSound.classList.toggle('on', !on);
 }
-function togglePause(){ paused = !paused; btnPause.classList.toggle('on', paused); }
+function togglePause(){ paused = !paused; btnPause.classList.toggle('on', paused);
+  document.getElementById('flowRead').textContent = paused ? '0.0' : '1.0'; }
 function toggleTheme(){ applyTheme(theme==='dark'?'light':'dark'); btnTheme.classList.toggle('on', theme==='light'); }
 function toggleHide(){ document.body.classList.toggle('ui-hidden'); }
 btnSound.onclick = toggleSound; btnPause.onclick = togglePause;
@@ -518,40 +713,59 @@ document.getElementById('btnRestore').onclick = toggleHide;
 addEventListener('keydown', e=>{
   if(e.target.tagName==='INPUT') return;
   const k = e.key.toLowerCase();
-  if(k==='s') toggleSound(); else if(k==='p') togglePause();
+  if(k==='l') toggleLang(); else if(k==='s') toggleSound(); else if(k==='p') togglePause();
   else if(k==='t') toggleTheme(); else if(k==='h') toggleHide();
 });
 
-/* 氛围面板 */
+/* ============ 氛围面板：四套场景全对比 ============ */
+const SCENES = {
+ morning:{bg:0x0e1119, fog:0x0e1119, fd:.042, key:0xfff1d6, ki:2.6, rim:0x7fa0ff, ri:.5, core:0xffe2a8, ring:0xd8b878,
+   st:{zh:'晨光漂流 · 清透大气',en:'Morning drift · clear air'}, bgc:'#0e1119'},
+ dusk:{bg:0x150d09, fog:0x150d09, fd:.054, key:0xff9a5c, ki:2.1, rim:0xd96c4a, ri:.95, core:0xffb37a, ring:0xc98a4e,
+   st:{zh:'暮色低垂 · 青铜余温',en:'Dusk settles · bronze afterglow'}, bgc:'#150d09'},
+ moonlit:{bg:0x070a14, fog:0x070a14, fd:.05, key:0xbfd4ff, ki:1.5, rim:0x9fb8ff, ri:.85, core:0xcfe4ff, ring:0x9fb8ff,
+   st:{zh:'月夜无风 · 环体静默',en:'Moonlit still · the silent ring'}, bgc:'#070a14'},
+ neon:{bg:0x0c0716, fog:0x0c0716, fd:.046, key:0xff7ad9, ki:1.9, rim:0x7a5cff, ri:1.15, core:0x7affd4, ring:0x8a7cff,
+   st:{zh:'霓虹幻彩 · 边缘发光',en:'Neon glow · the luminous edge'}, bgc:'#0c0716'}
+};
+let sceneK = 'morning';
+function setScene(k){ sceneK = k; const s = SCENES[k];
+  key.color.set(s.key); key.intensity = s.ki;
+  rim.color.set(s.rim); rim.intensity = s.ri;
+  scene.fog.color.set(s.fog); scene.fog.density = s.fd*(+document.getElementById('fogR').value/50||.5)+.014;
+  renderer.setClearColor(s.bg);
+  document.body.style.background = '#'+s.bg.toString(16).padStart(6,'0');
+  edge.material.color.set(s.ring); core.material.color.set(s.core); glow.material.color.set(s.core);
+  document.getElementById('apStatus').innerHTML = tx(s.st);
+}
 document.getElementById('apHead').onclick = ()=> document.getElementById('apanel').classList.toggle('closed');
+document.querySelectorAll('#segScene span').forEach(s=>{
+  s.onclick = ()=>{ document.querySelectorAll('#segScene span').forEach(x=>x.classList.toggle('on',x===s));
+    setScene(s.dataset.v); };
+});
 document.querySelectorAll('#segDen span').forEach(s=>{
   s.onclick = ()=>{ density = s.dataset.v; applyDensity();
-    document.querySelectorAll('#segDen span').forEach(x=>x.classList.toggle('on', x===s)); };
+    document.querySelectorAll('#segDen span').forEach(x=>x.classList.toggle('on',x===s));
+    document.getElementById('denRead').textContent = {lo:'疏',mid:'常',full:'繁'}[density] || {lo:'Thin',mid:'Mid',full:'Dense'}[density]; };
 });
 const fogSlider = document.getElementById('fogR');
-fogSlider.oninput = ()=>{ scene.fog.density = .028 + (+fogSlider.value/100)*.045; };
-document.querySelectorAll('#segPhase span').forEach(s=>{
-  s.onclick = ()=>{
-    document.querySelectorAll('#segPhase span').forEach(x=>x.classList.toggle('on', x===s));
-    if(s.dataset.v==='morning'){ key.color.set(theme==='dark'?0xfff1d6:0xfff6e6); key.intensity = 2.4; rim.intensity = .55; }
-    else{ key.color.set(theme==='dark'?0xff9a5c:0xe8a060); key.intensity = 2.0; rim.intensity = .9; }
-  };
-});
+fogSlider.oninput = ()=>{ scene.fog.density = .018+(+fogSlider.value/100)*.05;
+  document.getElementById('fogRead').textContent = fogSlider.value+'%'; };
 
-/* 滚动浮现 */
+/* ============ 浮现 & 加载 ============ */
 const io = new IntersectionObserver(es=>es.forEach(e=>{
   if(e.isIntersecting) e.target.classList.add('on');
-}), {threshold:.12});
+}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-/* 加载仪式 */
 let lp = 0;
 const loader = document.getElementById('loader'), lbar = document.getElementById('lbar'), lpct = document.getElementById('lpct');
 const ltimer = setInterval(()=>{
-  lp = Math.min(100, lp + 3 + Math.random()*4);
+  lp = Math.min(100, lp+3+Math.random()*4);
   lbar.style.width = lp+'%'; lpct.textContent = Math.floor(lp);
   if(lp>=100){ clearInterval(ltimer); setTimeout(()=>loader.classList.add('done'), 350); }
 }, 55);
+applyLang();
+setScene('morning');
 </script>
 </body>
 </html>
