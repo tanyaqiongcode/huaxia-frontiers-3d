@@ -124,9 +124,10 @@
   @media(min-width:1100px){.heroBook{display:block}#hero{padding-right:310px;padding-left:24px}}
   .heroBook img{display:block;width:100%}
     .hbCue{position:absolute;top:10px;right:10px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
-  .hbPing{width:32px;height:32px;border-radius:50%;border:1px solid var(--gold);background:rgba(8,9,14,.66);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;position:relative;color:#f0d9a6;font-size:12.5px;font-weight:600}
-  .hbPing::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:1px solid var(--gold);animation:hbpulse 2.4s ease-out infinite}
-  @keyframes hbpulse{0%{transform:scale(1);opacity:.95}75%{transform:scale(2);opacity:0}100%{transform:scale(2);opacity:0}}
+  .hbPing{width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(255,255,255,.9);background:transparent;position:relative;box-shadow:0 0 12px rgba(0,0,0,.28)}
+  .hbPing::before,.hbPing::after{content:'';position:absolute;inset:-1.5px;border-radius:50%;border:1.5px solid rgba(255,255,255,.85);animation:hbpulse 2.6s cubic-bezier(.2,.6,.4,1) infinite}
+  .hbPing::after{animation-delay:1.3s}
+  @keyframes hbpulse{0%{transform:scale(1);opacity:.85}80%{transform:scale(2.8);opacity:0}100%{transform:scale(2.8);opacity:0}}
   .hbTxt{font-size:10px;letter-spacing:.16em;color:#f0d9a6;background:rgba(8,9,14,.66);border:1px solid var(--line);border-radius:99px;padding:3px 9px;white-space:nowrap;backdrop-filter:blur(4px)}
   [data-theme="light"] .hbPing{color:#4a3a1c;background:rgba(250,247,237,.85);border-color:#8a6c33}
   [data-theme="light"] .hbPing::after{border-color:#8a6c33}
@@ -373,7 +374,7 @@
       <a class="btn ghost" href="#media" data-i18n="ctaMedia">影像与访谈</a>
     </div>
     <div class="scrollhint" data-i18n="hint">SCROLL · 向下进入边缘</div>
-    <div class="heroBook"><img src="assets/book/cover.jpg" alt="华夏边缘 · 世纪文景2020"><div class="hbCue"><span class="hbPing"><b data-i18n="hbIc">读</b></span><span class="hbTxt" data-i18n="hbCue">点击读简介</span></div></div>
+    <div class="heroBook"><img src="assets/book/cover.jpg" alt="华夏边缘 · 世纪文景2020"><div class="hbCue"><span class="hbPing"></span><span class="hbTxt" data-i18n="hbCue">点击读简介</span></div></div>
   </section>
 
   <div id="descend">
@@ -680,7 +681,7 @@ const T = { lang:'zh', dict:{
  ovEn:{zh:'Huaxia Frontiers: Historical Memory and Ethnic Identity',en:'by Wang Ming-ke'},
  ovBody:{zh:'为什么我们自称“中国人”？华夏从何处来，边界又在哪里？王明珂以考古、文献与多年羌族田野，画出一条随资源竞争与历史记忆不断移动的边界——华夏因边缘而凝聚，也因边缘而改变。读懂边缘，才读懂“什么是中国人”。',en:'Who counted as Huaxia, and who decided? Drawing on archaeological finds, historical texts and years of fieldwork in Qiang communities, Wang Ming-ke traces how people drew boundaries around land, ancestry and belonging.'},
  ovM1:{zh:'豆瓣 9.1',en:'Douban 9.1'}, ovM2:{zh:'微信读书推荐值 91.9%',en:'WeRead 91.9%'}, ovM3:{zh:'王明珂 · 历史人类学',en:'Wang Ming-ke · Historical Anthropology'},
- hbCue:{zh:'点击读简介',en:'Click to read'}, hbIc:{zh:'读',en:'Read'},
+ hbCue:{zh:'点击读简介',en:'Click to read'},
  playHint:{zh:'点击画面 · 迸发记忆碎片 / ←→ 旋转 / 空格 迸发',en:'Click to scatter fragments. Use the arrow keys to rotate the ring.'},
  prTitle:{zh:'他们如何谈论边缘',en:'Readers on the book'},
  auTitle:{zh:'作者与版本谱系',en:'Wang Ming-ke and the book in print'}, auName:{zh:'王明珂',en:'Wang Ming-ke'},
@@ -1207,7 +1208,7 @@ const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main
 
 applyLang();
 setScene('morning');
-console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v20');
+console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v21');
 document.documentElement.setAttribute('data-scene','morning');
 </script>
 </body>
