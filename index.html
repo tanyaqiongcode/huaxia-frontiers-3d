@@ -420,7 +420,8 @@ function tick(){
     const vis = Math.max(0, Math.min(1, 1.5 - Math.abs(d-9)/10));
     st.mats.forEach(m=>{ m.opacity += ((m.userData.base*vis) - m.opacity)*.12; });
     for(const k in st.g.userData){
-      const o = st.userData[k];
+      const o = st.g.userData[k];
+      if(!o) continue;
       if(o.isMesh && o.geometry && o.geometry.type==='TorusGeometry') o.rotation.z = t*.02;
       if(k==='ring0'||k==='ring1'||k==='ring2'||k==='ring3'||k==='ring4'){
         o.rotation.x += .0016; o.rotation.y += .0011;
