@@ -150,7 +150,10 @@ station((g,mats)=>{
         transparent:true, opacity:0, side:THREE.DoubleSide}));
     m.position.set(rnd(-.9,.9), -5.0 + i*1.5, rnd(-.6,.6));
     m.rotation.x = -Math.PI/2*.72; m.rotation.z = rnd(-.09,.09);
-    m.material.userData = {base:.30}; mats.push(m.material); g.add(m);
+    m.material.userData = {base:.40}; mats.push(m.material); g.add(m);
+    const el = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),
+      new THREE.LineBasicMaterial({color:0xc9a45c, transparent:true, opacity:0}));
+    el.material.userData={base:.35}; mats.push(el.material); m.add(el);
   }
   const curve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-5,-6.2,2), new THREE.Vector3(-1.6,-3.4,-.5), new THREE.Vector3(1.2,-1,1),
@@ -295,7 +298,7 @@ station((g,mats)=>{
   const core = new THREE.Mesh(new THREE.SphereGeometry(1.42, 40, 28),
     new THREE.MeshBasicMaterial({color:0xffca7a, transparent:true, opacity:0,
       blending:THREE.AdditiveBlending, depthWrite:false}));
-  core.material.userData={base:.95}; mats.push(core.material); g.add(core);
+  core.material.userData={base:.95}; mats.push(core.material); g.add(core); g.userData.core = core;
   /* 记忆之膜（线框） */
   const wf = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.SphereGeometry(2.0, 26, 16)),
     new THREE.LineBasicMaterial({color:0xc9a45c, transparent:true, opacity:0}));
@@ -344,6 +347,7 @@ S.add(veinTube);
 
 /* ---------- 滚动 = 穿行谱系 ---------- */
 let target = 0, prog = 0, mx=0, my=0;
+window.__hx = { get p(){return prog}, get t(){return target} };
 addEventListener('pointermove', e=>{ mx=e.clientX/innerWidth-.5; my=e.clientY/innerHeight-.5; });
 const maxScroll = ()=> document.body.scrollHeight - innerHeight;
 addEventListener('scroll', ()=>{ target = Math.min(1, Math.max(0, scrollY / maxScroll())); });
@@ -397,6 +401,7 @@ let li = -1;
 function tick(){
   requestAnimationFrame(tick);
   const t = clock.getElapsedTime();
+  target = Math.min(1, Math.max(0, scrollY / maxScroll()));
   prog += (target - prog)*.045;
   const p = Math.min(.9999, Math.max(0, prog));
   tmpP.copy(path.getPointAt(p)); tmpT.copy(path.getPointAt(Math.min(1, p+.012)));
@@ -412,13 +417,14 @@ function tick(){
     const d = C.position.distanceTo(st.pos);
     const vis = Math.max(0, Math.min(1, 1.5 - Math.abs(d-9)/10));
     st.mats.forEach(m=>{ m.opacity += ((m.userData.base*vis) - m.opacity)*.12; });
-    if(st.userData) for(const k in st.userData){
+    for(const k in st.g.userData){
       const o = st.userData[k];
       if(o.isMesh && o.geometry && o.geometry.type==='TorusGeometry') o.rotation.z = t*.02;
       if(k==='ring0'||k==='ring1'||k==='ring2'||k==='ring3'||k==='ring4'){
         o.rotation.x += .0016; o.rotation.y += .0011;
       }
       if(k==='eye'||k==='cone'){ o.rotation.y = Math.sin(t*.5)*1.2; }
+      if(k==='core'){ o.scale.setScalar(1 + Math.sin(t*1.5)*.045); }
       if(k==='cloudA'||k==='cloudB'){
         const pos = o.geometry.attributes.position, vel = st.userData['vel_'+(k==='cloudA'?-6.5:6.5)];
         for(let j=0;j<pos.count;j++){
