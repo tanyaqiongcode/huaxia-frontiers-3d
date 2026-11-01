@@ -110,7 +110,7 @@
 
 <div id="loader"><div class="ring"></div><div class="pct2" id="lpct">0</div></div>
 
-<script>window.addEventListener('error',e=>{document.title='ERR:'+e.message+' @'+e.lineno;});</script>
+<script>window.addEventListener('error',e=>{document.title='ERR:'+e.message+' @'+e.lineno+':'+e.colno;});</script>
 <script src="assets/three.min.js"></script>
 <script>
 /* ================= 无文字谱系之旅 =================
@@ -461,7 +461,7 @@ function tick(){
       fpsChecked = true;
     }
   }
-  }catch(e){ document.title='TICKERR:'+e.message; };
+  }catch(e){ document.title='TICKERR:'+e.message+' @'+e.lineno+':'+e.colno; };
 }
 tick();
 </script>
