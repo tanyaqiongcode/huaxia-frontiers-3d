@@ -243,8 +243,11 @@
       <span class="seg" id="segDen"><span data-v="lo">疏</span><span data-v="mid" class="on">常</span><span data-v="full">繁</span></span></label>
     <label><span data-i18n="pSpd">速度</span>
       <span class="seg" id="segSpd"><span data-v="slow">慢</span><span data-v="mid" class="on">中</span><span data-v="fast">快</span></span></label>
+    <label><span data-i18n="pSpd">速度</span>
+      <span class="seg" id="segSpd"><span data-v="slow">慢</span><span data-v="mid" class="on">中</span><span data-v="fast">快</span></span></label>
     <div class="bigrow">
       <div><em data-i18n="pFlow">流速</em><b><span id="flowRead">1.0</span><small>×</small></b></div>
+      <div><em data-i18n="pSpd2">当前</em><b id="spdRead">中</b></div>
       <div><em data-i18n="pRing">环</em><b data-i18n="ringName">青铜</b></div>
     </div>
     <div class="status"><span class="sdot"></span><span id="apStatus" data-i18n="stMo">晨光漂流 · 清透大气</span></div>
@@ -304,8 +307,24 @@
     </div>
   </section>
 
+  <section id="book">
+    <div class="reveal"><span class="num">伍 · FROM THE BOOK</span>
+      <h2 data-i18n-html="bTitle">书影 · <em>纸上的边缘</em></h2>
+      <div class="rule"></div>
+      <p class="lead" data-i18n="bLead">从原书电子版中提取的矢量书影——封面与内页图版，无限放大而不失真。悬停卡片，让书页立起来。</p></div>
+    <div class="bookrow reveal">
+      <figure class="bcover"><img src="assets/book/cover.svg" alt="封面"><figcaption><b data-i18n="bcap1">封面</b><span data-i18n="bcap1b">世纪文景 · 2020年版</span></figcaption></figure>
+      <div class="bpages">
+        <figure class="bpage"><img src="assets/book/p099.svg" alt="内页图版 p.99" loading="lazy"><figcaption><b data-i18n="bcap2">内页图版</b><span>p.99</span></figcaption></figure>
+        <figure class="bpage"><img src="assets/book/p104.svg" alt="内页图版 p.104" loading="lazy"><figcaption><b data-i18n="bcap2">内页图版</b><span>p.104</span></figcaption></figure>
+        <figure class="bpage"><img src="assets/book/p113.svg" alt="内页图版 p.113" loading="lazy"><figcaption><b data-i18n="bcap2">内页图版</b><span>p.113</span></figcaption></figure>
+        <figure class="bpage"><img src="assets/book/p185.svg" alt="内页图版 p.185" loading="lazy"><figcaption><b data-i18n="bcap2">内页图版</b><span>p.185</span></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
   <section id="mmap">
-    <div class="reveal"><span class="num">伍 · MIND MAP</span>
+    <div class="reveal"><span class="num">陆 · MIND MAP</span>
       <h2 data-i18n-html="mTitle">全书<em>思维导图</em></h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="mLead">全书结构化作一张活的地图：理论框架、生态边界、历史形成、现代变迁、研究方法——悬停任意节点，追溯它通向"华夏边缘"的路径。中英双语随语言切换。</p></div>
@@ -314,7 +333,7 @@
   </section>
 
   <section id="maker" class="maker">
-    <div class="reveal"><span class="num">陆 · THE MAKING</span>
+    <div class="reveal"><span class="num">柒 · THE MAKING</span>
       <h2 data-i18n-html="mkTitle">3D 造物记：<em>从 0 到边缘</em></h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="mkLead">与本书同构的 3D 隐喻——发光的内核是"华夏"，青铜巨环是"边缘"，环绕的碎片是被记起与被遗忘的记忆，双碉楼矗立在羌族田野的边缘。以下工程从空场景开始逐块搭建，全程可复现。</p></div>
@@ -338,14 +357,14 @@
   </section>
 
   <section id="praise">
-    <div class="reveal"><span class="num">柒 · PRAISE</span>
+    <div class="reveal"><span class="num">捌 · PRAISE</span>
       <h2 data-i18n="prTitle">他们如何谈论边缘</h2>
       <div class="rule"></div></div>
     <div class="quotes" id="quotes"></div>
   </section>
 
   <section id="author">
-    <div class="reveal"><span class="num">捌 · AUTHOR &amp; EDITIONS</span>
+    <div class="reveal"><span class="num">玖 · AUTHOR &amp; EDITIONS</span>
       <h2 data-i18n="auTitle">作者与版本谱系</h2>
       <div class="rule"></div></div>
     <div class="duo">
@@ -358,7 +377,7 @@
   </section>
 
   <section id="translation">
-    <div class="reveal"><span class="num">玖 · TRANSLATION</span>
+    <div class="reveal"><span class="num">拾 · TRANSLATION</span>
       <h2 data-i18n-html="trTitle">边缘，正被<em>译向边缘之外</em></h2>
       <div class="rule"></div>
       <p class="lead" style="color:var(--dim)" data-i18n="trLead">《华夏边缘》至今没有任何官方外译本。一项面向英语世界的首次全文翻译工程正在进行——让"边缘"的方法，抵达汉语之外。</p></div>
@@ -641,7 +660,7 @@ addEventListener('resize', ()=>{ camera.aspect=innerWidth/innerHeight; camera.up
 const clock = new THREE.Clock(); let simT = 0;
 const look = new THREE.Vector3(0,.4,0);
 (function tick(){ requestAnimationFrame(tick);
-  if(!paused) simT += Math.min(clock.getDelta(),.05); else clock.getDelta();
+  if(!paused) simT += Math.min(clock.getDelta(),.05)*SPD[speedK]; else clock.getDelta();
   const t = simT;
   if(!dragging){ edge.rotation.z += dragVel; dragVel *= .96; edge.rotation.z += t*.0002; }
   band.rotation.z = t*.03; dust.rotation.z = -t*.018; frags.rotation.z = t*.045;
