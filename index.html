@@ -309,7 +309,7 @@
         <div class="meta">
           <a class="chip" href="blender/build_complete.blend" download data-i18n="mkChip1">⬇ 下载 Blender 工程文件</a>
           <span class="chip">8 · 96f · 12fps</span>
-          <span class="chip">Cycles</span>
+          <span class="chip" data-i18n="playHint">点击画面 · 迸发记忆碎片 / ←→ 旋转 / 空格 迸发</span>
         </div>
       </div>
       <div class="renders">
@@ -440,7 +440,7 @@ const T = {
   trLead:{zh:'《华夏边缘》至今没有任何官方外译本。一项面向英语世界的首次全文翻译工程正在进行——让"边缘"的方法，抵达汉语之外。',en:'No official translation of Huaxia Frontiers exists in any language. A first full English translation is now underway — carrying "the edge" beyond Chinese.'},
   ftZh:{zh:'华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）',en:'Huaxia Frontiers · Historical Memory and Ethnic Identity<br>by Wang Ming-ke · Shanghai People' + "'" + 's Publishing House / Century Wenjing'},
   ldTxt:{zh:'正在绘制边缘',en:'Drawing the edge'},
-  plays:{zh:'播放',en:'plays'}, watch:{zh:'观看 ↗',en:'Watch ↗'}, read:{zh:'阅读 ↗',en:'Read ↗'},
+  plays:{zh:'播放',en:'plays'}, playHint:{zh:'点击画面 · 迸发记忆碎片 / ←→ 旋转 / 空格 迸发',en:'Click to burst memory shards / ←→ orbit / Space to burst'}, watch:{zh:'观看 ↗',en:'Watch ↗'}, read:{zh:'阅读 ↗',en:'Read ↗'},
   official:{zh:'官方录像',en:'Official'}, transcript:{zh:'文字实录',en:'Transcript'}
  }
 };
@@ -715,6 +715,9 @@ addEventListener('keydown', e=>{
   const k = e.key.toLowerCase();
   if(k==='l') toggleLang(); else if(k==='s') toggleSound(); else if(k==='p') togglePause();
   else if(k==='t') toggleTheme(); else if(k==='h') toggleHide();
+  else if(k==='arrowleft'){ edge.rotation.z -= .14; dragVel = -.012; }
+  else if(k==='arrowright'){ edge.rotation.z += .14; dragVel = .012; }
+  else if(e.code==='Space' && !paused){ burst(innerWidth/2, innerHeight/2); e.preventDefault(); }
 });
 
 /* ============ 氛围面板：四套场景全对比 ============ */
