@@ -9,19 +9,19 @@
   :root{
     --bg:#06070d; --bg2:#0a0c14; --gold:#c9a45c; --gold-hi:#e8cf96; --ink:#e8dfc8;
     --dim:#8b8474; --line:rgba(201,164,92,.22); --seal:#a33b2e;
-    --vig-in:transparent; --vig-mid:rgba(6,7,13,.5); --vig-out:rgba(6,7,13,.92);
-    --glass:rgba(20,22,34,.72); --glass2:rgba(10,12,20,.55);
+    --vig-in:transparent; --vig-mid:rgba(6,7,13,.45); --vig-out:rgba(6,7,13,.88);
+    --glass:rgba(20,22,34,.78); --glass2:rgba(10,12,20,.6);
     --fserif:"Times New Roman","Songti SC","STSong","Noto Serif SC","SimSun",serif;
   }
   [data-theme="light"]{
     --bg:#ece3d2; --bg2:#e4d9c4; --gold:#8a6c33; --gold-hi:#6b5124; --ink:#2b2419;
-    --dim:#7a6f58; --line:rgba(107,81,36,.3); --vig-mid:rgba(236,227,210,.45); --vig-out:rgba(228,217,196,.9);
-    --glass:rgba(255,250,240,.72); --glass2:rgba(246,238,222,.6);
+    --dim:#7a6f58; --line:rgba(107,81,36,.3); --vig-mid:rgba(236,227,210,.4); --vig-out:rgba(228,217,196,.85);
+    --glass:rgba(255,250,240,.8); --glass2:rgba(246,238,222,.62);
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth;scroll-snap-type:y proximity}
   body{background:var(--bg);color:var(--ink);font-family:var(--fserif);overflow-x:hidden;transition:background .8s,color .8s}
-  #bg{position:fixed;inset:0;z-index:0;transition:opacity .4s}
+  #bg{position:fixed;inset:0;z-index:0}
   .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
     background:radial-gradient(ellipse at 50% 42%,var(--vig-in) 30%,var(--vig-mid) 78%,var(--vig-out) 100%)}
   .grain{position:fixed;inset:-40px;z-index:3;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
@@ -53,9 +53,8 @@
   .mark{position:fixed;top:22px;right:22px;z-index:6;color:var(--gold-hi);opacity:.92;transition:.4s}
   .mark:hover{opacity:1;transform:rotate(6deg)}
   .mark svg{display:block;width:46px;height:46px}
-  .side-sign{position:fixed;right:26px;top:50%;transform:translateY(-50%);z-index:5;writing-mode:vertical-rl;
-    font-size:13px;letter-spacing:.5em;color:var(--dim);border-right:1px solid var(--line);padding-right:12px;height:300px}
-  body.ui-hidden main, body.ui-hidden .cmdbar, body.ui-hidden .apanel, body.ui-hidden .side-sign{opacity:0;pointer-events:none}
+
+  body.ui-hidden main, body.ui-hidden .cmdbar, body.ui-hidden .apanel{opacity:0;pointer-events:none}
   .restore{position:fixed;left:22px;bottom:22px;z-index:6;display:none;width:40px;height:40px;border-radius:50%;
     border:1px solid var(--line);color:var(--dim);align-items:center;justify-content:center;cursor:pointer;
     background:linear-gradient(160deg,var(--glass),var(--glass2));backdrop-filter:blur(8px);font-size:15px;transition:.3s}
@@ -99,9 +98,10 @@
     text-shadow:0 2px 34px rgba(0,0,0,.65);transition:opacity .5s}
   .dcap i{display:block;font-style:normal;font-size:11px;color:var(--dim);margin-top:12px;letter-spacing:.42em}
 
-  .apanel{position:fixed;right:22px;bottom:22px;z-index:6;width:262px;padding:16px 18px;font-size:12px;color:var(--dim)}
+  /* 氛围面板（极简：场景×4 + 雾） */
+  .apanel{position:fixed;right:22px;bottom:22px;z-index:6;width:232px;padding:14px 16px;font-size:12px;color:var(--dim)}
   .apanel .hd{display:flex;justify-content:space-between;align-items:baseline;cursor:pointer}
-  .apanel .hd b{color:var(--gold-hi);letter-spacing:.16em;font-weight:600;font-size:12.5px}
+  .apanel .hd b{color:var(--gold-hi);letter-spacing:.16em;font-weight:600;font-size:12px}
   .apanel .hd i{font-style:normal;font-size:10px;letter-spacing:.2em}
   .apanel .bd{margin-top:12px;display:flex;flex-direction:column;gap:11px}
   .apanel.closed .bd{display:none}
@@ -109,17 +109,12 @@
   .seg{display:flex;gap:4px;flex-wrap:wrap}
   .seg span{padding:3px 10px;border:1px solid var(--line);border-radius:99px;cursor:pointer;transition:.25s;font-size:11px;display:flex;align-items:center;gap:5px}
   .seg span.on{background:var(--gold);color:#100c04;border-color:var(--gold)}
-  .seg span.on .dot{box-shadow:0 0 6px rgba(0,0,0,.4)}
   .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
-  .rd{font-style:normal;color:var(--gold-hi)}
-  .bigrow{display:flex;gap:26px}
-  .bigrow em{font-style:normal;font-size:11px;letter-spacing:.18em;display:block;color:var(--dim)}
-  .bigrow b{font-size:26px;font-weight:600;color:var(--ink)}
-  .bigrow b small{font-size:12px;color:var(--dim);margin-left:2px}
   .status{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:10px;letter-spacing:.1em}
   .sdot{width:6px;height:6px;border-radius:50%;background:#4faf6e;box-shadow:0 0 10px rgba(79,175,110,.9);animation:pulse 2s infinite}
-  input[type=range]{-webkit-appearance:none;width:130px;height:2px;background:var(--line);border-radius:2px;outline:none}
+  input[type=range]{-webkit-appearance:none;width:126px;height:2px;background:var(--line);border-radius:2px;outline:none}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--gold-hi);cursor:pointer;box-shadow:0 0 8px rgba(201,164,92,.8)}
+  .fogrow{display:flex;align-items:center;gap:10px}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:40px}
   .card{padding:26px 24px;transition:.4s;position:relative;overflow:hidden}
@@ -136,6 +131,22 @@
   .plate figcaption{padding:13px 16px;font-size:12.5px;color:var(--dim);letter-spacing:.1em}
   .plate figcaption b{color:var(--gold);font-weight:600;margin-right:8px}
 
+  /* 书影 */
+  .bookrow{display:grid;grid-template-columns:1fr 2fr;gap:18px;margin-top:40px}
+  @media(max-width:760px){.bookrow{grid-template-columns:1fr}}
+  .bcover{perspective:900px}
+  .bcover img{width:100%;display:block;border-radius:6px;box-shadow:14px 22px 50px rgba(0,0,0,.55);
+    transform:rotateY(-7deg) rotateZ(-1.2deg);transition:transform .8s cubic-bezier(.2,1,.3,1);
+    background:#fff;border:1px solid var(--line)}
+  .bcover:hover img{transform:rotateY(0) rotateZ(0)}
+  figure figcaption{font-size:12px;color:var(--dim);margin-top:9px;letter-spacing:.1em}
+  figcaption b{color:var(--gold);font-weight:600;margin-right:8px}
+  .bpages{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .bpage img{width:100%;display:block;border:1px solid var(--line);border-radius:6px;transition:.5s;opacity:.9;
+    aspect-ratio:3/4;object-fit:cover;object-position:left top}
+  .bpage:hover img{opacity:1;transform:translateY(-4px)}
+
+  /* 思维导图 */
   .mapwrap{margin-top:40px;border:1px solid var(--line);border-radius:14px;overflow:auto;
     background:linear-gradient(160deg,var(--glass),var(--glass2));backdrop-filter:blur(8px)}
   .mapwrap svg{display:block;min-width:1180px;width:100%;height:auto}
@@ -209,7 +220,6 @@
   [data-theme="light"] footer .en{color:#6b5124}
   footer .zh{color:var(--dim);font-size:14px;margin-top:14px;letter-spacing:.12em;line-height:2}
   footer .springer{margin-top:26px;color:var(--dim);font-size:12px;letter-spacing:.24em}
-
 </style>
 </head>
 <body>
@@ -225,34 +235,6 @@
   <div class="pill" id="btnHide">⊘ <kbd>H</kbd></div>
 </div>
 <div class="mark" title="The Frontiers of Huaxia"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="currentColor"/></svg></div>
-<div class="side-sign" data-i18n="sidesign">华夏边缘 · 历史记忆与族群认同</div>
-
-<div class="apanel" id="apanel">
-  <div class="hd" id="apHead"><b data-i18n="apT">氛围 · ATMOSPHERE</b><i>NO.01</i></div>
-  <div class="bd">
-    <label><span data-i18n="pScene">场景</span></label>
-    <div class="seg" id="segScene">
-      <span data-v="morning" class="on"><i class="dot" style="background:#ffd9a0"></i><span data-i18n="scMo">晨光</span></span>
-      <span data-v="dusk"><i class="dot" style="background:#ff9a5c"></i><span data-i18n="scDu">暮色</span></span>
-      <span data-v="moonlit"><i class="dot" style="background:#9fb8ff"></i><span data-i18n="scMo2">月夜</span></span>
-      <span data-v="neon"><i class="dot" style="background:#7affd4"></i><span data-i18n="scNe">霓虹</span></span>
-    </div>
-    <label><span data-i18n="pMist">雾</span><em class="rd" id="fogRead">50%</em></label>
-    <input type="range" id="fogR" min="0" max="100" value="50">
-    <label><span data-i18n="pDen">粒子</span>
-      <span class="seg" id="segDen"><span data-v="lo">疏</span><span data-v="mid" class="on">常</span><span data-v="full">繁</span></span></label>
-    <label><span data-i18n="pSpd">速度</span>
-      <span class="seg" id="segSpd"><span data-v="slow">慢</span><span data-v="mid" class="on">中</span><span data-v="fast">快</span></span></label>
-    <label><span data-i18n="pSpd">速度</span>
-      <span class="seg" id="segSpd"><span data-v="slow">慢</span><span data-v="mid" class="on">中</span><span data-v="fast">快</span></span></label>
-    <div class="bigrow">
-      <div><em data-i18n="pFlow">流速</em><b><span id="flowRead">1.0</span><small>×</small></b></div>
-      <div><em data-i18n="pSpd2">当前</em><b id="spdRead">中</b></div>
-      <div><em data-i18n="pRing">环</em><b data-i18n="ringName">青铜</b></div>
-    </div>
-    <div class="status"><span class="sdot"></span><span id="apStatus" data-i18n="stMo">晨光漂流 · 清透大气</span></div>
-  </div>
-</div>
 
 <main>
   <section id="hero">
@@ -273,6 +255,12 @@
     </div>
     <div class="scrollhint" data-i18n="hint">SCROLL · 向下进入边缘</div>
   </section>
+
+  <div id="descend">
+    <div class="dcap" data-p="0.16"><span data-i18n="dCap1a">Ⅰ · 边缘之外</span><i data-i18n="dCap1b">BEYOND THE EDGE</i></div>
+    <div class="dcap" data-p="0.5"><span data-i18n="dCap2a">Ⅱ · 越过边界</span><i data-i18n="dCap2b">CROSSING THE LINE</i></div>
+    <div class="dcap" data-p="0.86"><span data-i18n="dCap3a">Ⅲ · 华夏</span><i data-i18n="dCap3b">HUAXIA</i></div>
+  </div>
 
   <section id="media">
     <div class="reveal"><span class="num">贰 · MEDIA</span>
@@ -344,8 +332,8 @@
         </video>
         <div class="meta">
           <a class="chip" href="blender/build_complete.blend" download data-i18n="mkChip1">⬇ 下载 Blender 工程文件</a>
-          <span class="chip">8 · 96f · 12fps</span>
           <span class="chip" data-i18n="playHint">点击画面 · 迸发记忆碎片 / ←→ 旋转 / 空格 迸发</span>
+          <span class="chip">Cycles</span>
         </div>
       </div>
       <div class="renders">
@@ -392,10 +380,9 @@
   </footer>
 </main>
 
-
 <script src="assets/three.min.js"></script>
 <script>
-/* ============ 数据 ============ */
+/* ================= i18n ================= */
 const CARDS = [
  {k:'01',lat:'De Finibus — 论边界 · On the Boundary',h:{zh:'什么是中国人',en:'What Is Chinese'},p:{zh:'不问"华夏有什么"，而问"华夏的边界在哪里"。边缘视角取代定义式民族研究。',en:'Do not ask what Huaxia has; ask where its boundary lies. The edge replaces the definition.'}},
  {k:'02',lat:'De Club — 论会员制 · On Membership',h:{zh:'族群像高尔夫俱乐部',en:'Ethnicity as a Golf Club'},p:{zh:'族群认同如俱乐部会员制：入会资格由边界决定，而非由成员的内在特征决定。',en:'Membership is decided by the boundary, not by the inner traits of the members.'}},
@@ -442,74 +429,65 @@ const SOC = [
  {n:'LinkedIn',u:'https://www.linkedin.com/search/results/all/?keywords=%E7%8E%8B%E6%98%8E%E7%8F%82',d:{zh:'学者与项目动态',en:'Scholar & project'}},
  {n:'小红书 RED',u:'https://www.xiaohongshu.com/search_result?keyword=%E5%8D%8E%E5%A4%8F%E8%BE%B9%E7%BC%98',d:{zh:'中文书评笔记',en:'Chinese book notes'}}
 ];
-const T = {
- lang:'zh',
- dict:{
-  sidesign:{zh:'华夏边缘 · 历史记忆与族群认同',en:'HUAXIA FRONTIERS · Historical Memory & Ethnic Identity'},
-  metaline:{zh:'田野坐标 31°06′N 103°51′E · 岷江上游 · 田野期 1990s—2000s · STUDY No.01',en:'FIELD SITE 31°06′N 103°51′E · UPPER MINJIANG · FIELDWORK 1990s—2000s · STUDY No.01'},
-  ensub:{zh:'THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity',en:'THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity'},
-  quote:{zh:'"当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b>让它看起来像个圆形。"<br><span style="font-size:12.5px;color:var(--dim)">—— 王明珂 · 当代华语世界最具范式意义的历史人类学经典之一</span>',
-   en:'"When we draw a circle on paper, it is in fact its <b>edge</b> that makes it look like a circle."<br><span style="font-size:12.5px;color:var(--dim)">— Wang Ming-ke · A paradigm-defining classic of historical anthropology</span>'},
-  st1:{zh:'LIVE · 人在读',en:'LIVE · READING'}, st2:{zh:'豆瓣评分',en:'Douban'}, st3:{zh:'微信读书推荐值',en:'WeRead Score'}, st4:{zh:'豆瓣书评',en:'Reviews'},
-  cta0:{zh:'影像里的边缘',en:'The Edge on Screen'}, cta1:{zh:'进入边缘 · 概念八章',en:'ENTER THE EDGE'}, cta2:{zh:'观看 3D 造物记',en:'WATCH THE MAKING'},
-  hint:{zh:'SCROLL · 向下进入边缘',en:'SCROLL · INTO THE EDGE'},
-  mdTitle:{zh:'影像里的边缘',en:'The Edge on Screen'}, mdLead:{zh:'全网经核验的讲座与解读（2026-11 数据）。',en:'Verified lectures and readings across the web (Nov 2026).'},
-  mdH1:{zh:'平台',en:'Platform'}, mdH2:{zh:'内容',en:'Title'}, mdH3:{zh:'频道',en:'Channel'}, mdH4:{zh:'热度',en:'Stats'}, mdH5:{zh:'直达',en:'Go'},
-  socT:{zh:'全平台直达 · FIND THE EDGE EVERYWHERE',en:'FIND THE EDGE EVERYWHERE'},
-  cTitle:{zh:'八个概念，一次<em>边缘</em>之旅',en:'Eight Concepts, One Journey to <em>the Edge</em>'},
-  cLead:{zh:'这条思想的谱系上，考古学教我们追问知识如何成形，边界理论把认同安放在"线"上，集体记忆说记忆活在社会的框架里——华夏不是一份固定的名单，而是一道随资源竞争、记忆与失忆不断移动的边界。读懂边缘，才读懂"什么是中国人"。',
-   en:'On this genealogy of ideas, archaeology asks how knowledge takes form, boundary theory places identity on the line, and collective memory lives within social frames — Huaxia is not a fixed roster but a boundary that moves with resource competition, memory and forgetting. To read the edge is to read "what is Chinese."'},
-  pTitle:{zh:'图录 · <em>边缘的两种观看</em>',en:'Plates · <em>Two Ways of Seeing the Edge</em>'},
-  pLead:{zh:'两张主题图，把书中的范式之争与认同之变收进一方画面。',en:'Two plates gather the paradigm shift and the making of identity into single frames.'},
-  pl1a:{zh:'图版壹',en:'PLATE I'}, pl1b:{zh:'何为华夏边缘 · 身份认同如何形成',en:'What is the Huaxia Edge — how identity forms'},
-  pl2a:{zh:'图版贰',en:'PLATE II'}, pl2b:{zh:'从客观特征到主观认同 · 范式之变',en:'From objective traits to subjective identity — a paradigm shift'},
-  mTitle:{zh:'全书<em>思维导图</em>',en:'The Book as a <em>Mind Map</em>'},
-  mLead:{zh:'全书结构化作一张活的地图：理论框架、生态边界、历史形成、现代变迁、研究方法——悬停任意节点，追溯它通向"华夏边缘"的路径。中英双语随语言切换。',en:'The whole book drawn as a living map: theoretical framework, ecological boundary, historical formation, modern change, methodology — hover any node to trace its path back to "the Huaxia edge."'},
-  ml1:{zh:'悬停节点 · 追溯谱系',en:'Hover a node · trace the lineage'}, ml2:{zh:'横向滚动查看全图',en:'Scroll sideways for the full map'}, ml3:{zh:'双语切换 · L 键',en:'Bilingual · press L'},
-  mkTitle:{zh:'3D 造物记：<em>从 0 到边缘</em>',en:'The 3D Making: <em>from 0 to the Edge</em>'},
-  mkLead:{zh:'与本书同构的 3D 隐喻——发光的内核是"华夏"，青铜巨环是"边缘"，环绕的碎片是被记起与被遗忘的记忆，双碉楼矗立在羌族田野的边缘。以下工程从空场景开始逐块搭建，全程可复现。',en:'A 3D metaphor built from the book itself — the glowing core is Huaxia, the bronze ring is its edge, the orbiting shards are memories remembered and forgotten, and two Qiang watchtowers stand at the margin. Assembled block by block from an empty file.'},
-  mkChip1:{zh:'⬇ 下载 Blender 工程文件',en:'⬇ Download the Blender file'},
-  prTitle:{zh:'他们如何谈论边缘',en:'On the Edge, in Their Words'},
-  auTitle:{zh:'作者与版本谱系',en:'The Author & the Editions'}, auName:{zh:'王明珂',en:'王明珂'},
-  trTitle:{zh:'边缘，正被<em>译向边缘之外</em>',en:'The edge is being <em>translated beyond itself</em>'},
-  trLead:{zh:'《华夏边缘》至今没有任何官方外译本。一项面向英语世界的首次全文翻译工程正在进行——让"边缘"的方法，抵达汉语之外。',en:'No official translation of Huaxia Frontiers exists in any language. A first full English translation is now underway — carrying "the edge" beyond Chinese.'},
-  ftZh:{zh:'华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）',en:'Huaxia Frontiers · Historical Memory and Ethnic Identity<br>by Wang Ming-ke · Shanghai People' + "'" + 's Publishing House / Century Wenjing'},
-  ldTxt:{zh:'正在绘制边缘',en:'Drawing the edge'},
-  plays:{zh:'播放',en:'plays'}, playHint:{zh:'点击画面 · 迸发记忆碎片 / ←→ 旋转 / 空格 迸发',en:'Click to burst memory shards / ←→ orbit / Space to burst'}, watch:{zh:'观看 ↗',en:'Watch ↗'}, read:{zh:'阅读 ↗',en:'Read ↗'},
-  official:{zh:'官方录像',en:'Official'}, transcript:{zh:'文字实录',en:'Transcript'}
- }
-};
+const T = { lang:'zh', dict:{
+ sidesign:{zh:'华夏边缘 · 历史记忆与族群认同',en:'HUAXIA FRONTIERS · Historical Memory & Ethnic Identity'},
+ metaline:{zh:'田野坐标 31°06′N 103°51′E · 岷江上游 · 田野期 1990s—2000s · STUDY No.01',en:'FIELD SITE 31°06′N 103°51′E · UPPER MINJIANG · FIELDWORK 1990s—2000s · STUDY No.01'},
+ ensub:{zh:'THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity',en:'THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity'},
+ quote:{zh:'"当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b>让它看起来像个圆形。"<br><span style="font-size:12.5px;color:var(--dim)">—— 王明珂 · 当代华语世界最具范式意义的历史人类学经典之一</span>',
+  en:'"When we draw a circle on paper, it is in fact its <b>edge</b> that makes it look like a circle."<br><span style="font-size:12.5px;color:var(--dim)">— Wang Ming-ke · A paradigm-defining classic of historical anthropology</span>'},
+ st1:{zh:'LIVE · 人在读',en:'LIVE · READING'}, st2:{zh:'豆瓣评分',en:'Douban'}, st3:{zh:'微信读书推荐值',en:'WeRead Score'}, st4:{zh:'豆瓣书评',en:'Reviews'},
+ cta0:{zh:'影像里的边缘',en:'The Edge on Screen'}, cta1:{zh:'进入边缘 · 概念八章',en:'ENTER THE EDGE'}, cta2:{zh:'观看 3D 造物记',en:'WATCH THE MAKING'},
+ hint:{zh:'SCROLL · 向下进入边缘',en:'SCROLL · INTO THE EDGE'},
+ dCap1a:{zh:'Ⅰ · 边缘之外',en:'Ⅰ · BEYOND THE EDGE'}, dCap1b:{zh:'BEYOND THE EDGE',en:'远处只见一线环光'},
+ dCap2a:{zh:'Ⅱ · 越过边界',en:'Ⅱ · CROSSING THE LINE'}, dCap2b:{zh:'CROSSING THE LINE',en:'边界在身后合拢'},
+ dCap3a:{zh:'Ⅲ · 华夏',en:'Ⅲ · HUAXIA'}, dCap3b:{zh:'HUAXIA',en:'内核近在眼前'},
+ mdTitle:{zh:'影像里的边缘',en:'The Edge on Screen'}, mdLead:{zh:'全网经核验的讲座与解读（2026-11 数据）。',en:'Verified lectures and readings across the web (Nov 2026).'},
+ mdH1:{zh:'平台',en:'Platform'}, mdH2:{zh:'内容',en:'Title'}, mdH3:{zh:'频道',en:'Channel'}, mdH4:{zh:'热度',en:'Stats'}, mdH5:{zh:'直达',en:'Go'},
+ socT:{zh:'全平台直达 · FIND THE EDGE EVERYWHERE',en:'FIND THE EDGE EVERYWHERE'},
+ cTitle:{zh:'八个概念，一次<em>边缘</em>之旅',en:'Eight Concepts, One Journey to <em>the Edge</em>'},
+ cLead:{zh:'这条思想的谱系上，考古学教我们追问知识如何成形，边界理论把认同安放在"线"上，集体记忆说记忆活在社会的框架里——华夏不是一份固定的名单，而是一道随资源竞争、记忆与失忆不断移动的边界。读懂边缘，才读懂"什么是中国人"。',
+  en:'On this genealogy of ideas, archaeology asks how knowledge takes form, boundary theory places identity on the line, and collective memory lives within social frames — Huaxia is not a fixed roster but a boundary that moves with resource competition, memory and forgetting. To read the edge is to read "what is Chinese."'},
+ pTitle:{zh:'图录 · <em>边缘的两种观看</em>',en:'Plates · <em>Two Ways of Seeing the Edge</em>'},
+ pLead:{zh:'两张主题图，把书中的范式之争与认同之变收进一方画面。',en:'Two plates gather the paradigm shift and the making of identity into single frames.'},
+ pl1a:{zh:'图版壹',en:'PLATE Ⅰ'}, pl1b:{zh:'何为华夏边缘 · 身份认同如何形成',en:'What is the Huaxia Edge — how identity forms'},
+ pl2a:{zh:'图版贰',en:'PLATE Ⅱ'}, pl2b:{zh:'从客观特征到主观认同 · 范式之变',en:'From objective traits to subjective identity — a paradigm shift'},
+ bTitle:{zh:'书影 · <em>纸上的边缘</em>',en:'From the Book · <em>the edge on paper</em>'},
+ bLead:{zh:'从原书电子版中提取的矢量书影——封面与内页图版，无限放大而不失真。悬停卡片，让书页立起来。',en:'Vector plates lifted from the original e-book — cover and inner figures, crisp at any magnification. Hover a card to stand the book up.'},
+ bcap1:{zh:'封面',en:'COVER'}, bcap1b:{zh:'世纪文景 · 2020年版',en:'Century Wenjing · 2020'}, bcap2:{zh:'内页图版',en:'INNER PLATE'},
+ mTitle:{zh:'全书<em>思维导图</em>',en:'The Book as a <em>Mind Map</em>'},
+ mLead:{zh:'全书结构化作一张活的地图：理论框架、生态边界、历史形成、现代变迁、研究方法——悬停任意节点，追溯它通向"华夏边缘"的路径。中英双语随语言切换。',en:'The whole book drawn as a living map: theoretical framework, ecological boundary, historical formation, modern change, methodology — hover any node to trace its path back to "the Huaxia edge."'},
+ ml1:{zh:'悬停节点 · 追溯谱系',en:'Hover a node · trace the lineage'}, ml2:{zh:'横向滚动查看全图',en:'Scroll sideways for the full map'}, ml3:{zh:'双语切换 · L 键',en:'Bilingual · press L'},
+ mkTitle:{zh:'3D 造物记：<em>从 0 到边缘</em>',en:'The 3D Making: <em>from 0 to the Edge</em>'},
+ mkLead:{zh:'与本书同构的 3D 隐喻——发光的内核是"华夏"，青铜巨环是"边缘"，环绕的碎片是被记起与被遗忘的记忆，双碉楼矗立在羌族田野的边缘。以下工程从空场景开始逐块搭建，全程可复现。',en:'A 3D metaphor built from the book itself — the glowing core is Huaxia, the bronze ring is its edge, the orbiting shards are memories remembered and forgotten, and two Qiang watchtowers stand at the margin. Assembled block by block from an empty file.'},
+ mkChip1:{zh:'⬇ 下载 Blender 工程文件',en:'⬇ Download the Blender file'},
+ playHint:{zh:'点击画面 · 迸发记忆碎片 / ←→ 旋转 / 空格 迸发',en:'Click to burst memory shards / ←→ orbit / Space to burst'},
+ prTitle:{zh:'他们如何谈论边缘',en:'On the Edge, in Their Words'},
+ auTitle:{zh:'作者与版本谱系',en:'The Author & the Editions'}, auName:{zh:'王明珂',en:'王明珂'},
+ trTitle:{zh:'边缘，正被<em>译向边缘之外</em>',en:'The edge is being <em>translated beyond itself</em>'},
+ trLead:{zh:'《华夏边缘》至今没有任何官方外译本。一项面向英语世界的首次全文翻译工程正在进行——让"边缘"的方法，抵达汉语之外。',en:'No official translation of Huaxia Frontiers exists in any language. A first full English translation is now underway — carrying "the edge" beyond Chinese.'},
+ ftZh:{zh:'华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）',en:'Huaxia Frontiers · Historical Memory and Ethnic Identity<br>by Wang Ming-ke · Shanghai People'+String.fromCharCode(39)+'s Publishing House / Century Wenjing'}
+}};
 function tx(o){ return o ? (o[T.lang] || o.zh || '') : ''; }
 function applyLang(){
   document.documentElement.lang = T.lang==='zh' ? 'zh-CN' : 'en';
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const v = T.dict[el.dataset.i18n]; if(v) el.innerHTML = tx(v); });
-  renderCards(); renderQuotes(); renderAuthor(); renderMedia(); renderSoc(); renderMap();
-  document.getElementById('btnLang').innerHTML = (T.lang==='zh' ? 'EN' : '中文') + ' <kbd>L</kbd>';
-}
-function renderCards(){
-  const ENN=['the Edge','Membership','Forgetting','Origins','the Valley','Light','Ecology','Method'];
   document.getElementById('cards').innerHTML = CARDS.map((c,i)=>
-   `<div class="glass card"><div class="cn">${T.lang==='zh'?'概念 '+c.k:'CONCEPT '+c.k} · A Study in ${ENN[i]}</div><div class="lat">${c.lat}</div><h3>${tx(c.h)}</h3><p>${tx(c.p)}</p></div>`).join('');
-}
-function renderQuotes(){
+   `<div class="glass card"><div class="cn">${T.lang==='zh'?'概念 '+c.k:'CONCEPT '+c.k} · A Study in ${['the Edge','Membership','Forgetting','Origins','the Valley','Light','Ecology','Method'][i]}</div><div class="lat">${c.lat}</div><h3>${tx(c.h)}</h3><p>${tx(c.p)}</p></div>`).join('');
   document.getElementById('quotes').innerHTML = QUOTES.map(q=>
    `<div class="glass q"><p>${tx(q.p)}</p><div class="who">${tx(q.w)} <span>${tx(q.s)}</span></div></div>`).join('');
-}
-function renderAuthor(){
   document.getElementById('auList').innerHTML = AULIST.map(a=>`<li>${tx(a)}</li>`).join('');
   document.getElementById('tlList').innerHTML = TL.map(r=>
    `<div class="row"><div class="yr">${r.y}</div><div class="ds"><b>${tx(r.b)}</b><span>${tx(r.s)}</span></div></div>`).join('');
-}
-function renderMedia(){
   document.getElementById('mediaRows').innerHTML = MEDIA.map(m=>
    `<tr><td class="n">${m.p}</td><td>${tx(m.c)}</td><td>${tx(m.ch)}</td><td class="n">${typeof m.h==='string'?m.h+(T.lang==='zh'?' 播放':''):tx(m.h)}</td><td><a href="${m.u}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">${m.act==='read'?(T.lang==='zh'?'阅读 ↗':'Read ↗'):(T.lang==='zh'?'观看 ↗':'Watch ↗')}</a></td></tr>`).join('');
-}
-function renderSoc(){
   document.getElementById('socLinks').innerHTML = SOC.map(s=>
    `<a href="${s.u}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><b>${s.n}</b><span>${tx(s.d)}</span></a>`).join('');
+  renderMap();
+  document.getElementById('btnLang').innerHTML = (T.lang==='zh' ? 'EN' : '中文') + ' <kbd>L</kbd>';
+  io2.observe();
 }
 
-/* ============ 思维导图（中英） ============ */
+/* ================= 思维导图（中英） ================= */
 const MAP = { r:{zh:'华夏边缘',en:'Huaxia Edge'}, br:[
  {zh:'理论框架',en:'Theoretical Framework', ch:[
    {zh:'族群理论',en:'Ethnicity Theory', ch:[{zh:'主观认同',en:'Subjective Identification'},{zh:'工具论与原基论',en:'Instrumentalism vs Primordialism'},{zh:'文化裙带',en:'Cultural Nepotism'}]},
@@ -563,7 +541,7 @@ function renderMap(){
   });
 }
 
-/* ============ THREE.JS HERO ============ */
+/* ================= THREE.JS HERO（动态背景全站回归） ================= */
 const canvas = document.getElementById('bg');
 const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));
@@ -615,15 +593,15 @@ function applyDensity(){ const f=DENS[density];
   dust.geometry.setDrawRange(0,Math.floor(700*f)); frags.geometry.setDrawRange(0,Math.floor(260*f)); }
 applyDensity();
 function applyTheme(t){ theme=t; document.documentElement.setAttribute('data-theme',t); const p=PAL[t];
-  renderer.setClearColor(SCENES[sceneK].bg); scene.fog.color.set(SCENES[sceneK].fog);
-  edge.material.color.set(SCENES[sceneK].ring); core.material.color.set(SCENES[sceneK].core); glow.material.color.set(SCENES[sceneK].core);
+  const s=SCENES[sceneK];
+  renderer.setClearColor(s.bg); scene.fog.color.set(s.fog);
+  edge.material.color.set(s.ring); core.material.color.set(s.core); glow.material.color.set(s.core);
   frags.material.color.set(p.frag); dust.material.color.set(p.dust);
   [core,band,dust].forEach(cl=>{ const a=cl.geometry.attributes.color;
     for(let i=0;i<a.count;i++){ const c=p.band[Math.floor(Math.random()*p.band.length)]; a.setXYZ(i,c[0],c[1],c[2]); }
     a.needsUpdate=true; });
-  key.color.set(SCENES[sceneK].key);
+  key.color.set(s.key);
 }
-applyTheme('dark');
 
 /* 可玩：点击迸发记忆碎片 + 拖拽旋转青铜环 */
 const raycaster = new THREE.Raycaster();
@@ -652,7 +630,7 @@ addEventListener('pointermove', e=>{
   if(dragging){ dragVel = (e.clientX - lastX)*.0035; edge.rotation.z += dragVel; lastX = e.clientX; }
 });
 addEventListener('pointerup', ()=>{ dragging = false; });
-canvas.addEventListener('click', e=>{ if(!dragging || Math.abs(dragVel)<.001) burst(e.clientX, e.clientY); });
+canvas.addEventListener('click', e=>{ burst(e.clientX, e.clientY); });
 
 let mx=0,my=0,scrolly=0,paused=false;
 addEventListener('scroll', ()=>{ scrolly = scrollY/innerHeight; });
@@ -660,9 +638,9 @@ addEventListener('resize', ()=>{ camera.aspect=innerWidth/innerHeight; camera.up
 const clock = new THREE.Clock(); let simT = 0;
 const look = new THREE.Vector3(0,.4,0);
 (function tick(){ requestAnimationFrame(tick);
-  if(!paused) simT += Math.min(clock.getDelta(),.05)*SPD[speedK]; else clock.getDelta();
+  if(!paused) simT += Math.min(clock.getDelta(),.05); else clock.getDelta();
   const t = simT;
-  if(!dragging){ edge.rotation.z += dragVel; dragVel *= .96; edge.rotation.z += t*.0002; }
+  if(!dragging){ edge.rotation.z += dragVel; dragVel *= .96; }
   band.rotation.z = t*.03; dust.rotation.z = -t*.018; frags.rotation.z = t*.045;
   core.rotation.y = t*.05; glow.scale.setScalar(1 + Math.sin(t*1.4)*.05);
   inner.intensity = 1.5 + Math.sin(t*1.4)*.35;
@@ -671,27 +649,39 @@ const look = new THREE.Vector3(0,.4,0);
     bvel[j].x*=.985; bvel[j].y*=.985;
     if(bLife[j]<=0) bpos[j*3+1]=-999; } }
   bGeo.attributes.position.needsUpdate = true;
+  /* 从远及近穿越 → 之后回到中景，动态背景陪伴全站 */
   const vh = innerHeight, d0 = vh*.8, d1 = vh*2.95;
   const dp = Math.max(0, Math.min(1, (scrollY-d0)/(d1-d0)));
   const ez = dp*dp*(3-2*dp);
-  const px = mx*1.6*(1-ez), py = my*.9*(1-ez);
-  camera.position.x += ((px+.85*ez)-camera.position.x)*.06;
-  camera.position.y += ((-16+py*1.4+11.6*ez)-camera.position.y)*.07;
-  camera.position.z += ((6.2-3.2*ez)-camera.position.z)*.07;
-  look.set(0,.4-.85*ez,0); camera.lookAt(look);
-  canvas.style.opacity = Math.max(0, 1-Math.max(0,(scrolly-3.2))/.85);
+  let tpx, tpy, tpz, lx, ly, lz, op;
+  if(scrollY < d0){
+    tpx = mx*1.6; tpy = -16+my*1.4; tpz = 6.2; lx=0; ly=.4; lz=0; op = 1;
+  } else if(dp < 1){
+    tpx = .85*ez + mx*1.6*(1-ez); tpy = -16+11.6*ez + my*.9*(1-ez); tpz = 6.2-3.1*ez;
+    lx = 0; ly = .4-.85*ez; lz = 0; op = 1;
+  } else {
+    const b = scrolly;
+    tpx = Math.sin(b*.35)*1.3 + mx*.7; tpy = -6.2+my*.5; tpz = 4.6;
+    lx = 0; ly = -.3; lz = 0; op = .34;
+  }
+  camera.position.x += (tpx-camera.position.x)*.05;
+  camera.position.y += (tpy-camera.position.y)*.06;
+  camera.position.z += (tpz-camera.position.z)*.06;
+  look.set(lx,ly,lz); camera.lookAt(look);
+  const cur = parseFloat(canvas.style.opacity||1);
+  canvas.style.opacity = cur + (op-cur)*.08;
   document.querySelectorAll('.dcap').forEach(d=>{
     d.style.opacity = Math.max(0, 1-Math.abs(dp-(+d.dataset.p))*5.5); });
   renderer.render(scene, camera);
 })();
 
-/* ============ 命令条 ============ */
+/* ================= 命令条 ================= */
 const btnLang=document.getElementById('btnLang'), btnSound=document.getElementById('btnSound'),
       btnPause=document.getElementById('btnPause'), btnTheme=document.getElementById('btnTheme'),
       btnHide=document.getElementById('btnHide');
 function toggleLang(){ T.lang = T.lang==='zh'?'en':'zh'; applyLang(); }
 btnLang.onclick = toggleLang;
-/* 生成式环境配乐：和声循环 Am9→Fmaj7→Cmaj9→G6 + 混响 + 风 */
+/* 生成式环境配乐：Am9→Fmaj7→Cmaj9→G6 和声循环 + 混响 + 风 */
 let audio = null;
 function toggleSound(){
   if(!audio){
@@ -738,8 +728,7 @@ function toggleSound(){
   audio.master.gain.linearRampToValueAtTime(on?0:.055, audio.ctx.currentTime+1.6);
   btnSound.classList.toggle('on', !on);
 }
-function togglePause(){ paused = !paused; btnPause.classList.toggle('on', paused);
-  document.getElementById('flowRead').textContent = paused ? '0.0' : '1.0'; }
+function togglePause(){ paused = !paused; btnPause.classList.toggle('on', paused); }
 function toggleTheme(){ applyTheme(theme==='dark'?'light':'dark'); btnTheme.classList.toggle('on', theme==='light'); }
 function toggleHide(){ document.body.classList.toggle('ui-hidden'); }
 btnSound.onclick = toggleSound; btnPause.onclick = togglePause;
@@ -755,7 +744,7 @@ addEventListener('keydown', e=>{
   else if(e.code==='Space' && !paused){ burst(innerWidth/2, innerHeight/2); e.preventDefault(); }
 });
 
-/* ============ 氛围面板：四套场景全对比 ============ */
+/* ================= 氛围面板（极简：场景×4 + 雾） ================= */
 const SCENES = {
  morning:{bg:0x0e1119, fog:0x0e1119, fd:.042, key:0xfff1d6, ki:2.6, rim:0x7fa0ff, ri:.5, core:0xffe2a8, ring:0xd8b878,
    st:{zh:'晨光漂流 · 清透大气',en:'Morning drift · clear air'}, bgc:'#0e1119'},
@@ -772,7 +761,7 @@ function setScene(k){ sceneK = k; const s = SCENES[k];
   rim.color.set(s.rim); rim.intensity = s.ri;
   scene.fog.color.set(s.fog); scene.fog.density = s.fd*(+document.getElementById('fogR').value/50||.5)+.014;
   renderer.setClearColor(s.bg);
-  document.body.style.background = '#'+s.bg.toString(16).padStart(6,'0');
+  if(theme==='dark') document.body.style.background = s.bgc;
   edge.material.color.set(s.ring); core.material.color.set(s.core); glow.material.color.set(s.core);
   document.getElementById('apStatus').innerHTML = tx(s.st);
 }
@@ -781,20 +770,16 @@ document.querySelectorAll('#segScene span').forEach(s=>{
   s.onclick = ()=>{ document.querySelectorAll('#segScene span').forEach(x=>x.classList.toggle('on',x===s));
     setScene(s.dataset.v); };
 });
-document.querySelectorAll('#segDen span').forEach(s=>{
-  s.onclick = ()=>{ density = s.dataset.v; applyDensity();
-    document.querySelectorAll('#segDen span').forEach(x=>x.classList.toggle('on',x===s));
-    document.getElementById('denRead').textContent = {lo:'疏',mid:'常',full:'繁'}[density] || {lo:'Thin',mid:'Mid',full:'Dense'}[density]; };
-});
 const fogSlider = document.getElementById('fogR');
-fogSlider.oninput = ()=>{ scene.fog.density = .018+(+fogSlider.value/100)*.05;
-  document.getElementById('fogRead').textContent = fogSlider.value+'%'; };
+fogSlider.oninput = ()=>{ scene.fog.density = .018+(+fogSlider.value/100)*.05; };
 
-/* ============ 浮现 & 加载 ============ */
+/* ================= 浮现 ================= */
 const io = new IntersectionObserver(es=>es.forEach(e=>{
   if(e.isIntersecting) e.target.classList.add('on');
 }),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main .bpage').forEach(el=>el.classList.add('on')) };
+
 applyLang();
 setScene('morning');
 </script>
