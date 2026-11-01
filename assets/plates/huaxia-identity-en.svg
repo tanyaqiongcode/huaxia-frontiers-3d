@@ -1,176 +1,179 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 1440 960">
-  <!-- Generator: Adobe Illustrator 30.1.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 136)  -->
-  <defs>
-    <linearGradient id="linear-gradient" x1="-238.75" y1="1021" x2="-238" y2="1020" gradientTransform="translate(343921 980101) scale(1440 -960)" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#fbf7ed"/>
-      <stop offset="1" stop-color="#f3e8d4"/>
-    </linearGradient>
-    <clipPath id="clippath">
-      <path d="M630,247h180c91.13,0,165,49.25,165,110v249c0,60.75-73.87,110-165,110h-180c-91.13,0-165-49.25-165-110v-249c0-60.75,73.87-110,165-110Z" fill="none"/>
-    </clipPath>
-    <linearGradient id="linear-gradient1" x1="-238.03" y1="1020.87" x2="-238.03" y2="1019.87" gradientTransform="translate(122116 479037) scale(510 -469)" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#d2e1d7"/>
-      <stop offset=".6" stop-color="#f2e7cd"/>
-      <stop offset="1" stop-color="#dfcda5"/>
-    </linearGradient>
-    <linearGradient id="linear-gradient2" x1="-237.1" y1="1020.83" x2="-236.6" y2="1019.83" gradientTransform="translate(32938.86 245457) scale(136.12 -240)" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#8fb0a5"/>
-      <stop offset="1" stop-color="#467f82"/>
-    </linearGradient>
-  </defs>
-  <rect width="1440" height="960" fill="url(#linear-gradient)"/>
-  <path d="M43,34h1354M43,913h1354" fill="none" stroke="#a3977b"/>
-  <text transform="translate(45 62)" fill="#173f40" font-family="TimesNewRomanPS-BoldMT, &apos;Times New Roman&apos;" font-size="14" font-weight="700" isolation="isolate" letter-spacing=".16em"><tspan x="0" y="0">FIELD READER / HISTORICAL ANTHROPOLOGY</tspan></text>
-  <text transform="translate(1072.32 62)" fill="#173f40" font-family="TimesNewRomanPS-BoldMT, &apos;Times New Roman&apos;" font-size="14" font-weight="700" isolation="isolate" letter-spacing=".16em"><tspan x="0" y="0">WANG MING-KE · HUAXIA FRONTIER</tspan></text>
-  <text transform="translate(272.9 133)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="65" isolation="isolate"><tspan x="0" y="0">Reading identity from the margins</tspan></text>
-  <text transform="translate(286.27 170)" fill="#173f40" font-family="TimesNewRomanPS-ItalicMT, &apos;Times New Roman&apos;" font-size="23" font-style="italic" isolation="isolate"><tspan x="0" y="0">Along the upper Min River, who counted as “one of us” depended on which village you asked.</tspan></text>
-  <path d="M45,194h1350" fill="none" stroke="#a3977b"/>
-  <text transform="translate(53 225)" fill="#173f40" font-family="TimesNewRomanPS-BoldMT, &apos;Times New Roman&apos;" font-size="14" font-weight="700" isolation="isolate" letter-spacing=".16em"><tspan x="0" y="0">I. DRAWING A BOUNDARY</tspan></text>
-  <text transform="translate(595.31 225)" fill="#173f40" font-family="TimesNewRomanPS-BoldMT, &apos;Times New Roman&apos;" font-size="14" font-weight="700" isolation="isolate" letter-spacing=".16em"><tspan x="0" y="0">A VALLEY IN THREE VOICES</tspan></text>
-  <text transform="translate(1031 225)" fill="#173f40" font-family="TimesNewRomanPS-BoldMT, &apos;Times New Roman&apos;" font-size="14" font-weight="700" isolation="isolate" letter-spacing=".16em"><tspan x="0" y="0">II. REMEMBERING A PAST</tspan></text>
-  <g>
-    <g clip-path="url(#clippath)">
-      <g>
-        <rect x="465" y="247" width="510" height="469" fill="url(#linear-gradient1)"/>
-        <circle cx="830" cy="317" r="33" fill="#c38a5c" isolation="isolate" opacity=".76"/>
-        <path d="M465,411l36-21,27,7,47-35,19,5,40-36,13,4,33-38,16,27,22,2,34,38,15-15,15,9,32-24,12,9,38-31,14,9,15-13,49,53,33-19v374h-510v-305Z" fill="#b6c2ac"/>
-        <path d="M465,411l36-21,27,7,47-35,19,5,40-36,13,4,33-38,16,27,22,2,34,38,15-15,15,9,32-24,12,9,38-31,14,9,15-13,49,53,33-19" fill="none" stroke="#48655d" stroke-width="1.05"/>
-        <path d="M465,370l19-11,26,27,28,3,33,39,21-8,46,46,41,7,36,15,57-49,34-17,19-27,18,11,26-35,10,9,55-54,41,29v361h-510v-346Z" fill="#90a78d"/>
-        <path d="M465,370l19-11,26,27,28,3,33,39,21-8,46,46,41,7,36,15,57-49,34-17,19-27,18,11,26-35,10,9,55-54,41,29" fill="none" stroke="#48655d" stroke-width="1.05"/>
-        <path d="M465,397l33,14,24,28,31,5,32,48,44,12,17,25,29,11,12,23,60-12,26-27,32-18,20-32,26-9,29-47,33-10,37-20,25,3v325h-510v-319Z" fill="#758e72"/>
-        <path d="M465,397l33,14,24,28,31,5,32,48,44,12,17,25,29,11,12,23,60-12,26-27,32-18,20-32,26-9,29-47,33-10,37-20,25,3" fill="none" stroke="#48655d" stroke-width="1.05"/>
-        <path d="M440,416c-8,10-13.33,18.67-16,26s-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M460,416c-8,10-13.33,18.67-16,26s-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M480,427.1c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M500,441.7c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M520,455.9c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M540,469.5c-8,10-13.33,18.67-16,26s-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M560,482.3c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M580,494.1c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M600,504.7c-8,10-13.33,18.67-16,26s-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M620,513.9c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M640,521.7c-8,10-13.33,18.67-16,26s-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M660,527.9c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M680,532.4c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M700,535.1c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M720,536c-8,10-13.33,18.67-16,26s-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M740,535.1c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M760,532.4c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M780,527.9c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M800,521.7c-8,10-13.33,18.67-16,26s-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M820,513.9c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M840,504.7c-8,10-13.33,18.67-16,26s-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M860,494.1c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M880,482.3c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M900,469.5c-8,10-13.33,18.67-16,26s-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M920,455.9c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M940,441.7c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M960,427.1c-8,10-13.33,18.67-16,26-2.67,7.33-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M980,416c-8,10-13.33,18.67-16,26s-8.67,17.33-18,30" fill="none" isolation="isolate" opacity=".36" stroke="#48685b" stroke-width="1.1"/>
-        <path d="M465,472c58.67-1.33,118,19.67,178,63,60,43.33,94.67,45.33,104,6,64.67-62.67,140.67-92,228-88v263h-510v-244Z" fill="#c7c297"/>
-        <path d="M465,492c60.67-6.67,116,9.67,166,49,50,39.33,87.67,46.67,113,22,74-68,151-98.67,231-92" fill="none" stroke="#9d9c72" stroke-width="4"/>
-        <path d="M730,476c-19.33,12-15.33,24.33,12,37,27.33,12.67,21,23-19,31-48,11.33-54.33,26-19,44,35.33,18,27,35-25,51-29.33,15.33-40,41-32,77h125c-42-23.33-46.33-44.67-13-64s28-39.33-16-60c-48.67-16-52-30-10-42s50.67-24.67,26-38c-31.33-13.33-41-25.33-29-36Z" fill="url(#linear-gradient2)"/>
-        <path d="M435,562c55.33-24.67,106.33-30.67,153-18,46.67,12.67,74.67,16.67,84,12" fill="none" stroke="#a18c5e" stroke-width="2"/>
-        <path d="M435,577c55.33-24.67,106.33-30.67,153-18,46.67,12.67,74.67,16.67,84,12" fill="none" stroke="#a18c5e" stroke-width="2"/>
-        <path d="M435,592c55.33-24.67,106.33-30.67,153-18,46.67,12.67,74.67,16.67,84,12" fill="none" stroke="#a18c5e" stroke-width="2"/>
-        <path d="M435,607c55.33-24.67,106.33-30.67,153-18,46.67,12.67,74.67,16.67,84,12" fill="none" stroke="#a18c5e" stroke-width="2"/>
-        <path d="M435,622c55.33-24.67,106.33-30.67,153-18,46.67,12.67,74.67,16.67,84,12" fill="none" stroke="#a18c5e" stroke-width="2"/>
-        <path d="M435,637c55.33-24.67,106.33-30.67,153-18,46.67,12.67,74.67,16.67,84,12" fill="none" stroke="#a18c5e" stroke-width="2"/>
-        <path d="M435,652c55.33-24.67,106.33-30.67,153-18,46.67,12.67,74.67,16.67,84,12" fill="none" stroke="#a18c5e" stroke-width="2"/>
-        <path d="M435,667c55.33-24.67,106.33-30.67,153-18,46.67,12.67,74.67,16.67,84,12" fill="none" stroke="#a18c5e" stroke-width="2"/>
-        <path d="M806,560c38-26.67,90-41,156-43s83.67-4.33,53-7" fill="none" stroke="#88906a" stroke-width="2"/>
-        <path d="M806,573c38-26.67,90-41,156-43s83.67-4.33,53-7" fill="none" stroke="#88906a" stroke-width="2"/>
-        <path d="M806,586c38-26.67,90-41,156-43s83.67-4.33,53-7" fill="none" stroke="#88906a" stroke-width="2"/>
-        <path d="M806,599c38-26.67,90-41,156-43s83.67-4.33,53-7" fill="none" stroke="#88906a" stroke-width="2"/>
-        <path d="M806,612c38-26.67,90-41,156-43s83.67-4.33,53-7" fill="none" stroke="#88906a" stroke-width="2"/>
-        <path d="M806,625c38-26.67,90-41,156-43s83.67-4.33,53-7" fill="none" stroke="#88906a" stroke-width="2"/>
-        <path d="M806,638c38-26.67,90-41,156-43s83.67-4.33,53-7" fill="none" stroke="#88906a" stroke-width="2"/>
-        <circle cx="670" cy="469" r="10" fill="#f7efdb" stroke="#8d5c3f"/>
-        <text transform="translate(666.75 473)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="13" isolation="isolate"><tspan x="0" y="0">1</tspan></text>
-        <circle cx="788" cy="510" r="10" fill="#f7efdb" stroke="#8d5c3f"/>
-        <text transform="translate(784.75 514)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="13" isolation="isolate"><tspan x="0" y="0">2</tspan></text>
-        <circle cx="607" cy="563" r="10" fill="#f7efdb" stroke="#8d5c3f"/>
-        <text transform="translate(603.75 567)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="13" isolation="isolate"><tspan x="0" y="0">3</tspan></text>
-        <path d="M465,681c62.67-14,119.67-2.33,171,35h-171v-35ZM812,716c56-42.67,110.33-64,163-64v64h-163Z" fill="#6f795a"/>
-      </g>
-    </g>
-    <path d="M630,247h180c91.13,0,165,49.25,165,110v249c0,60.75-73.87,110-165,110h-180c-91.13,0-165-49.25-165-110v-249c0-60.75,73.87-110,165-110Z" fill="none" stroke="#7d866e" stroke-width="1.1"/>
-  </g>
-  <text transform="translate(564.28 741)" fill="#173f40" font-family="TimesNewRomanPS-ItalicMT, &apos;Times New Roman&apos;" font-size="16" font-style="italic" isolation="isolate"><tspan x="0" y="0">Upper Min River valley · a schematic field scene</tspan></text>
-  <g>
-    <circle cx="73" cy="277" r="13" fill="none" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-    <path d="M69,263c-8.22,1.05-14.03,8.56-12.98,16.78,1.05,8.22,8.56,14.03,16.78,12.98,5.57-.71,10.28-4.48,12.2-9.76" fill="none" stroke="#b56c43" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
-    <path d="M81,266l11-8,3,4-11,8-5,1,2-5Z" fill="#a78d67" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-  </g>
-  <text transform="translate(107 277)" fill="#80553b" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="13" isolation="isolate" letter-spacing=".12em"><tspan x="0" y="0">FIG. 01</tspan></text>
-  <text transform="translate(53 315)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="29" isolation="isolate"><tspan x="0" y="0">The line around a circle</tspan></text>
-  <text transform="translate(53 345)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">Draw a circle. Its rim tells you where</tspan></text>
-  <text transform="translate(53 369)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">it ends. To study a people, Wang asks</tspan></text>
-  <text transform="translate(53 393)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">where people themselves draw the line.</tspan></text>
-  <path d="M53,411h352" isolation="isolate" opacity=".7" stroke="#bba98c"/>
-  <g>
-    <path d="M55,447l12-23,9,4-10,23-11-4Z" fill="#b0bdad" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-    <path d="M71,449l15-19,6,4-9,19-12-4Z" fill="#d1ac77" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-    <circle cx="85" cy="437" r="1" fill="none" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-    <circle cx="82" cy="441" r="1" fill="none" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-    <path d="M58,445l9-15M73,447l8-9" fill="none" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-  </g>
-  <text transform="translate(107 436)" fill="#80553b" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="13" isolation="isolate" letter-spacing=".12em"><tspan x="0" y="0">FIG. 02</tspan></text>
-  <text transform="translate(53 474)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="29" isolation="isolate"><tspan x="0" y="0">The limits of likeness</tspan></text>
-  <text transform="translate(53 504)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">Neighbours may speak alike and use</tspan></text>
-  <text transform="translate(53 528)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">the same tools, yet call themselves by</tspan></text>
-  <text transform="translate(53 552)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">different names. Who counts as kin?</tspan></text>
-  <path d="M53,570h352" isolation="isolate" opacity=".7" stroke="#bba98c"/>
-  <g>
-    <path d="M54,608c10-8.67,22.67-12.67,38-12M53,603c9.33-9.33,22.33-13.33,39-12M54,598c9.33-9.33,22-13.33,38-12" fill="none" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-    <path d="M75,589v-12M75,585l-5-4M75,582l5-5" fill="none" stroke="#a75f37" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-  </g>
-  <text transform="translate(107 595)" fill="#80553b" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="13" isolation="isolate" letter-spacing=".12em"><tspan x="0" y="0">FIG. 03</tspan></text>
-  <text transform="translate(53 633)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="29" isolation="isolate"><tspan x="0" y="0">Fields, pasture and water</tspan></text>
-  <text transform="translate(53 663)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">Sharing a spring can draw households</tspan></text>
-  <text transform="translate(53 687)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">together. A claim to pasture can set</tspan></text>
-  <text transform="translate(53 711)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">those same neighbours apart.</tspan></text>
-  <path d="M53,729h352" isolation="isolate" opacity=".7" stroke="#bba98c"/>
-  <g>
-    <path d="M1051,261v13M1038,281v-7h26v7" fill="none" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-    <circle cx="1051" cy="261" r="3.6" fill="#ad6b44" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-    <circle cx="1038" cy="284" r="4" fill="none" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-    <circle cx="1051" cy="284" r="4" fill="none" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-    <circle cx="1064" cy="284" r="4" fill="none" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-  </g>
-  <text transform="translate(1085 277)" fill="#80553b" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="13" isolation="isolate" letter-spacing=".12em"><tspan x="0" y="0">FIG. 04</tspan></text>
-  <text transform="translate(1031 315)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="29" isolation="isolate"><tspan x="0" y="0">Heroes and brothers</tspan></text>
-  <text transform="translate(1031 345)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">A hero can stand at the head of a line</tspan></text>
-  <text transform="translate(1031 369)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">of descent. Brothers give neighbouring</tspan></text>
-  <text transform="translate(1031 393)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">villages a way to speak of kinship.</tspan></text>
-  <path d="M1031,411h352" isolation="isolate" opacity=".7" stroke="#bba98c"/>
-  <g>
-    <path d="M1033,444c10-10.67,22-13.67,36-9M1034,449c9.33-11.33,21.67-14.33,37-9" fill="none" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-    <path d="M1035,427l6-6,8,6h-14ZM1054,429l6-6,8,6h-14Z" fill="#ba8961" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-    <path d="M1038,428v5h8v-5M1057,430v5h8v-5" fill="none" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-  </g>
-  <text transform="translate(1085 436)" fill="#80553b" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="13" isolation="isolate" letter-spacing=".12em"><tspan x="0" y="0">FIG. 05</tspan></text>
-  <text transform="translate(1031 474)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="29" isolation="isolate"><tspan x="0" y="0">A name changes hands</tspan></text>
-  <text transform="translate(1031 504)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">Walk upstream. The village that one</tspan></text>
-  <text transform="translate(1031 528)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">settlement calls an outsider may call</tspan></text>
-  <text transform="translate(1031 552)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">the next village an outsider in turn.</tspan></text>
-  <path d="M1031,570h352" isolation="isolate" opacity=".7" stroke="#bba98c"/>
-  <g>
-    <path d="M1033,580c6.67-1.33,12.67-.67,18,2v25c-5.33-2.67-11.33-3.33-18-2v-25ZM1051,582c6.67-2.67,13-3.67,19-3v25c-6.67,0-13,1-19,3v-25Z" fill="#e9d5b4" stroke="#456963" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-    <path d="M1037,586l9,1M1037,592l8,1M1056,588l9-2M1056,594l7-2" fill="none" stroke="#ac805c" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"/>
-  </g>
-  <text transform="translate(1085 595)" fill="#80553b" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="13" isolation="isolate" letter-spacing=".12em"><tspan x="0" y="0">FIG. 06</tspan></text>
-  <text transform="translate(1031 633)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="29" isolation="isolate"><tspan x="0" y="0">What falls from memory</tspan></text>
-  <text transform="translate(1031 663)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">Some forebears recur in every telling.</tspan></text>
-  <text transform="translate(1031 687)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">Others fade as ties change. Wang calls</tspan></text>
-  <text transform="translate(1031 711)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">this pattern structural amnesia.</tspan></text>
-  <path d="M1031,729h352" isolation="isolate" opacity=".7" stroke="#bba98c"/>
-  <rect x="45" y="778" width="1350" height="106" rx="3" ry="3" fill="#254e4e"/>
-  <text transform="translate(68 805)" fill="#e4bf86" font-family="TimesNewRomanPS-BoldMT, &apos;Times New Roman&apos;" font-size="14" font-weight="700" isolation="isolate" letter-spacing=".16em"><tspan x="0" y="0">FROM THE FIELD / BROTHER ANCESTORS</tspan></text>
-  <text transform="translate(68 843)" fill="#fffae9" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="31" isolation="isolate"><tspan x="0" y="0">Three villages, three brothers.</tspan></text>
-  <text transform="translate(579 817)" fill="#fff8e9" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">In one valley account, three brothers founded three villages. A story told across four valleys</tspan></text>
-  <text transform="translate(579 846)" fill="#fff8e9" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="20" isolation="isolate"><tspan x="0" y="0">could begin with four brothers. The remembered family grew with the circle of neighbours.</tspan></text>
-  <text transform="translate(46 938)" fill="#173f40" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="16" isolation="isolate"><tspan x="0" y="0">Source: Wang Ming-ke, Huaxia Frontier, 2020 Chinese edition, prefatory essay, pp. 10–11, and Part I.</tspan></text>
-  <text transform="translate(1131.8 938)" fill="#80553b" font-family="TimesNewRomanPSMT, &apos;Times New Roman&apos;" font-size="13" isolation="isolate" letter-spacing=".12em"><tspan x="0" y="0">ILLUSTRATED READING GUIDE </tspan></text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 960" width="1440" height="960" role="img" aria-labelledby="title desc">
+<title id="title">Huaxia Frontier — Reading identity from the margins</title>
+<desc id="desc">An illustrated reading guide to Wang Ming-ke’s Huaxia Frontier. Six short panels surround an imagined river valley with villages, terraced fields and mountains. Along the upper Min River, stories of brother ancestors linked villages that cooperated and competed for local resources.</desc>
+<defs>
+<linearGradient id="paper" x2="0.75" y2="1"><stop stop-color="#fbf7ed"/><stop offset="1" stop-color="#f3e8d4"/></linearGradient>
+<linearGradient id="sky" x2="0" y2="1"><stop stop-color="#d2e1d7"/><stop offset=".6" stop-color="#f2e7cd"/><stop offset="1" stop-color="#dfcda5"/></linearGradient>
+<linearGradient id="water" x2=".5" y2="1"><stop stop-color="#8fb0a5"/><stop offset="1" stop-color="#467f82"/></linearGradient>
+<pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 6 6 0" stroke="#213f40" stroke-width=".55" opacity=".28"/></pattern>
+<clipPath id="frame"><rect x="0" y="0" width="510" height="469" rx="165" ry="110"/></clipPath>
+<g id="house"><path d="M0 1h18v15H0z" fill="#f1e5c8" stroke="#374d48"/><path d="m-3 1 7-6h13l5 6z" fill="#9c5a3c" stroke="#374d48"/><path d="M4 6h3v4H4zm7 2h4v8h-4z" fill="#34504b"/></g>
+<g id="tree"><path d="M0 0v-21" stroke="#424d3b" stroke-width="1.3"/><path d="m0-29-5 12h3l-6 10h16l-6-10h3z" fill="#4a6652"/></g>
+</defs>
+<style>text{font-family:"Times New Roman",Times,serif;fill:#173f40}.eyebrow{font-size:14px;letter-spacing:2.2px;font-weight:bold}.kicker{font-size:13px;letter-spacing:1.6px;fill:#80553b}.label{font-size:16px;font-style:italic}.small{font-size:16px}.body{font-size:20px}.head{font-size:29px}.fine{fill:none;stroke:#a3977b;stroke-width:1}.icon{fill:none;stroke:#456963;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}</style>
+<rect width="1440" height="960" fill="url(#paper)"/>
+<path class="fine" d="M43 34h1354M43 913h1354"/>
+
+<text x="45" y="62" class="eyebrow" >FIELD READER   /   HISTORICAL ANTHROPOLOGY</text>
+<text x="1395" y="62" class="eyebrow" text-anchor="end">WANG MING-KE     ·     HUAXIA FRONTIER</text>
+<text x="720" y="133" class="" text-anchor="middle" font-size="65">Reading identity from the margins</text>
+<text x="720" y="170" class="" text-anchor="middle" font-size="23" font-style="italic">Along the upper Min River, who counted as “one of us” depended on which village you asked.</text>
+<path d="M45 194h1350" class="fine"/>
+<text x="53" y="225" class="eyebrow" >I.   DRAWING A BOUNDARY</text>
+<text x="720" y="225" class="eyebrow" text-anchor="middle">A VALLEY IN THREE VOICES</text>
+<text x="1031" y="225" class="eyebrow" >II.   REMEMBERING A PAST</text>
+<g transform="translate(465 247)"><g clip-path="url(#frame)"><rect width="510" height="469" fill="url(#sky)"/><circle cx="365" cy="70" r="33" fill="#c38a5c" opacity=".76"/>
+<path d="M0 164 L36 143 L63 150 L110 115 L129 120 L169 84 L182 88 L215 50 L231 77 L253 79 L287 117 L302 102 L317 111 L349 87 L361 96 L399 65 L413 74 L428 61 L477 114 L510 95 V469 H0 Z" fill="#b6c2ac"/><path d="M0 164 L36 143 L63 150 L110 115 L129 120 L169 84 L182 88 L215 50 L231 77 L253 79 L287 117 L302 102 L317 111 L349 87 L361 96 L399 65 L413 74 L428 61 L477 114 L510 95" fill="none" stroke="#48655d" stroke-width="1.05"/>
+<path d="M0 123 L19 112 L45 139 L73 142 L106 181 L127 173 L173 219 L214 226 L250 241 L307 192 L341 175 L360 148 L378 159 L404 124 L414 133 L469 79 L510 108 V469 H0 Z" fill="#90a78d"/><path d="M0 123 L19 112 L45 139 L73 142 L106 181 L127 173 L173 219 L214 226 L250 241 L307 192 L341 175 L360 148 L378 159 L404 124 L414 133 L469 79 L510 108" fill="none" stroke="#48655d" stroke-width="1.05"/>
+<path d="M0 150 L33 164 L57 192 L88 197 L120 245 L164 257 L181 282 L210 293 L222 316 L282 304 L308 277 L340 259 L360 227 L386 218 L415 171 L448 161 L485 141 L510 144 V469 H0 Z" fill="#758e72"/><path d="M0 150 L33 164 L57 192 L88 197 L120 245 L164 257 L181 282 L210 293 L222 316 L282 304 L308 277 L340 259 L360 227 L386 218 L415 171 L448 161 L485 141 L510 144" fill="none" stroke="#48655d" stroke-width="1.05"/>
+<path d="M-25.0 169.0q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M-5.0 169.0q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M15.0 180.1q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M35.0 194.7q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M55.0 208.9q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M75.0 222.5q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M95.0 235.3q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M115.0 247.1q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M135.0 257.7q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M155.0 266.9q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M175.0 274.7q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M195.0 280.9q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M215.0 285.4q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M235.0 288.1q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M255.0 289.0q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M275.0 288.1q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M295.0 285.4q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M315.0 280.9q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M335.0 274.7q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M355.0 266.9q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M375.0 257.7q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M395.0 247.1q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M415.0 235.3q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M435.0 222.5q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M455.0 208.9q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M475.0 194.7q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M495.0 180.1q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M515.0 169.0q-12 15 -16 26t-18 30" stroke="#48685b" opacity=".36" fill="none" stroke-width="1.1"/>
+<path d="M0 225 Q88 223 178 288 T282 294 Q379 200 510 206 V469 H0Z" fill="#c7c297"/><path d="M0 245 Q91 235 166 294 T279 316 Q390 214 510 224" fill="none" stroke="#9d9c72" stroke-width="4"/>
+<path d="M265 229q-29 18 12 37t-19 31q-72 17-19 44t-25 51q-44 23-32 77h125q-63-35-13-64t-16-60q-73-24-10-42t26-38q-47-20-29-36z" fill="url(#water)"/>
+<path d="M-30 315 Q53 278 123 297 T207 309" fill="none" stroke="#a18c5e" stroke-width="2"/>
+<path d="M-30 330 Q53 293 123 312 T207 324" fill="none" stroke="#a18c5e" stroke-width="2"/>
+<path d="M-30 345 Q53 308 123 327 T207 339" fill="none" stroke="#a18c5e" stroke-width="2"/>
+<path d="M-30 360 Q53 323 123 342 T207 354" fill="none" stroke="#a18c5e" stroke-width="2"/>
+<path d="M-30 375 Q53 338 123 357 T207 369" fill="none" stroke="#a18c5e" stroke-width="2"/>
+<path d="M-30 390 Q53 353 123 372 T207 384" fill="none" stroke="#a18c5e" stroke-width="2"/>
+<path d="M-30 405 Q53 368 123 387 T207 399" fill="none" stroke="#a18c5e" stroke-width="2"/>
+<path d="M-30 420 Q53 383 123 402 T207 414" fill="none" stroke="#a18c5e" stroke-width="2"/>
+<path d="M341 313 Q398 273 497 270 T550 263" fill="none" stroke="#88906a" stroke-width="2"/>
+<path d="M341 326 Q398 286 497 283 T550 276" fill="none" stroke="#88906a" stroke-width="2"/>
+<path d="M341 339 Q398 299 497 296 T550 289" fill="none" stroke="#88906a" stroke-width="2"/>
+<path d="M341 352 Q398 312 497 309 T550 302" fill="none" stroke="#88906a" stroke-width="2"/>
+<path d="M341 365 Q398 325 497 322 T550 315" fill="none" stroke="#88906a" stroke-width="2"/>
+<path d="M341 378 Q398 338 497 335 T550 328" fill="none" stroke="#88906a" stroke-width="2"/>
+<path d="M341 391 Q398 351 497 348 T550 341" fill="none" stroke="#88906a" stroke-width="2"/>
+<use href="#tree" transform="translate(10 261.2) scale(0.73)"/>
+<use href="#tree" transform="translate(15 255.2) scale(0.55)"/>
+<use href="#tree" transform="translate(20 258.7) scale(0.62)"/>
+<use href="#tree" transform="translate(50 269.2) scale(0.45)"/>
+<use href="#tree" transform="translate(55 270.7) scale(0.77)"/>
+<use href="#tree" transform="translate(60 272.8) scale(0.54)"/>
+<use href="#tree" transform="translate(91 270.2) scale(0.46)"/>
+<use href="#tree" transform="translate(96 268.1) scale(0.52)"/>
+<use href="#tree" transform="translate(101 269.9) scale(0.54)"/>
+<use href="#tree" transform="translate(127 277.9) scale(0.62)"/>
+<use href="#tree" transform="translate(132 274.5) scale(0.65)"/>
+<use href="#tree" transform="translate(137 275.8) scale(0.66)"/>
+<use href="#tree" transform="translate(372 247.0) scale(0.52)"/>
+<use href="#tree" transform="translate(377 250.0) scale(0.47)"/>
+<use href="#tree" transform="translate(382 249.2) scale(0.72)"/>
+<use href="#tree" transform="translate(414 237.4) scale(0.79)"/>
+<use href="#tree" transform="translate(419 242.2) scale(0.48)"/>
+<use href="#tree" transform="translate(424 243.5) scale(0.77)"/>
+<use href="#tree" transform="translate(457 227.1) scale(0.51)"/>
+<use href="#tree" transform="translate(462 229.5) scale(0.65)"/>
+<use href="#tree" transform="translate(467 227.4) scale(0.53)"/>
+<use href="#tree" transform="translate(330 319.5) scale(0.63)"/>
+<use href="#tree" transform="translate(335 317.4) scale(0.54)"/>
+<use href="#tree" transform="translate(340 316.5) scale(0.79)"/>
+<use href="#tree" transform="translate(352 317.8) scale(0.46)"/>
+<use href="#tree" transform="translate(357 319.1) scale(0.51)"/>
+<use href="#tree" transform="translate(362 322.5) scale(0.70)"/>
+<use href="#tree" transform="translate(114 377.1) scale(0.72)"/>
+<use href="#tree" transform="translate(119 375.6) scale(0.65)"/>
+<use href="#tree" transform="translate(124 382.7) scale(0.49)"/>
+<use href="#tree" transform="translate(120 383.4) scale(0.47)"/>
+<use href="#tree" transform="translate(125 384.5) scale(0.79)"/>
+<use href="#tree" transform="translate(130 382.7) scale(0.49)"/>
+<use href="#tree" transform="translate(462 349.8) scale(0.50)"/>
+<use href="#tree" transform="translate(467 349.3) scale(0.78)"/>
+<use href="#tree" transform="translate(472 351.1) scale(0.47)"/>
+<use href="#tree" transform="translate(450 356.3) scale(0.72)"/>
+<use href="#tree" transform="translate(455 360.1) scale(0.75)"/>
+<use href="#tree" transform="translate(460 356.2) scale(0.58)"/>
+<use href="#house" transform="translate(197.63 250.49) scale(0.49)"/>
+<use href="#house" transform="translate(204.0 247.06) scale(0.49)"/>
+<use href="#house" transform="translate(209.39 250.0) scale(0.49)"/>
+<use href="#house" transform="translate(204.49 253.43) scale(0.49)"/>
+<use href="#house" transform="translate(301.29 297.67) scale(0.67)"/>
+<use href="#house" transform="translate(310.0 292.98) scale(0.67)"/>
+<use href="#house" transform="translate(317.37 297.0) scale(0.67)"/>
+<use href="#house" transform="translate(310.67 301.69) scale(0.67)"/>
+<use href="#house" transform="translate(117.78 354.94) scale(0.94)"/>
+<use href="#house" transform="translate(130.0 348.36) scale(0.94)"/>
+<use href="#house" transform="translate(140.34 354.0) scale(0.94)"/>
+<use href="#house" transform="translate(130.94 360.58) scale(0.94)"/>
+
+
+
+<path d="M0 434q94-21 171 35H0z M347 469q84-64 163-64v64z" fill="#6f795a"/></g><rect width="510" height="469" rx="165" ry="110" fill="none" stroke="#7d866e" stroke-width="1.1"/></g>
+<text x="720" y="741" class="label" text-anchor="middle">Upper Min River valley · a schematic field scene</text>
+<g class="icon" transform="translate(53 258)"><circle cx="20" cy="19" r="13"/><path d="M16 5a15 15 0 1 0 16 20" stroke="#b56c43" stroke-width="3"/><path d="M28 8 39 0l3 4-11 8-5 1z" fill="#a78d67"/></g>
+<text x="107" y="277" class="kicker" >01</text>
+<text x="53" y="315" class="head" >The line around a circle</text>
+<text x="53" y="345" class="body" >Draw a circle. Its rim tells you where</text>
+<text x="53" y="369" class="body" >it ends. To study a people, Wang asks</text>
+<text x="53" y="393" class="body" >where people themselves draw the line.</text>
+<path d="M53 411h352" stroke="#bba98c" opacity=".7"/>
+<g class="icon" transform="translate(53 417)"><path d="m2 30 12-23 9 4-10 23z" fill="#b0bdad"/><path d="m18 32 15-19 6 4-9 19z" fill="#d1ac77"/><circle cx="32" cy="20" r="1"/><circle cx="29" cy="24" r="1"/><path d="m5 28 9-15m6 17 8-9"/></g>
+<text x="107" y="436" class="kicker" >02</text>
+<text x="53" y="474" class="head" >The limits of likeness</text>
+<text x="53" y="504" class="body" >Neighbours may speak alike and use</text>
+<text x="53" y="528" class="body" >the same tools, yet call themselves by</text>
+<text x="53" y="552" class="body" >different names. Who counts as kin?</text>
+<path d="M53 570h352" stroke="#bba98c" opacity=".7"/>
+<g class="icon" transform="translate(53 576)"><path d="M1 32Q16 19 39 20M0 27Q14 13 39 15M1 22Q15 8 39 10"/><path d="M22 13V1m0 8-5-4m5 1 5-5" stroke="#a75f37" stroke-width="2"/></g>
+<text x="107" y="595" class="kicker" >03</text>
+<text x="53" y="633" class="head" >Fields, pasture and water</text>
+<text x="53" y="663" class="body" >Sharing a spring can draw households</text>
+<text x="53" y="687" class="body" >together. A claim to pasture can set</text>
+<text x="53" y="711" class="body" >those same neighbours apart.</text>
+<path d="M53 729h352" stroke="#bba98c" opacity=".7"/>
+<g class="icon" transform="translate(1031 258)"><path d="M20 3v13M7 23v-7h26v7"/><circle cx="20" cy="3" r="3.6" fill="#ad6b44"/><circle cx="7" cy="26" r="4"/><circle cx="20" cy="26" r="4"/><circle cx="33" cy="26" r="4"/></g>
+<text x="1085" y="277" class="kicker" >04</text>
+<text x="1031" y="315" class="head" >Heroes and brothers</text>
+<text x="1031" y="345" class="body" >A hero can stand at the head of a line</text>
+<text x="1031" y="369" class="body" >of descent. Brothers give neighbouring</text>
+<text x="1031" y="393" class="body" >villages a way to speak of kinship.</text>
+<path d="M1031 411h352" stroke="#bba98c" opacity=".7"/>
+<g class="icon" transform="translate(1031 417)"><path d="M2 27q15-16 36-9M3 32q14-17 37-9"/><path d="m4 10 6-6 8 6zm19 2 6-6 8 6z" fill="#ba8961"/><path d="M7 11v5h8v-5m11 2v5h8v-5"/></g>
+<text x="1085" y="436" class="kicker" >05</text>
+<text x="1031" y="474" class="head" >A name changes hands</text>
+<text x="1031" y="504" class="body" >Walk upstream. The village that one</text>
+<text x="1031" y="528" class="body" >settlement calls an outsider may call</text>
+<text x="1031" y="552" class="body" >the next village an outsider in turn.</text>
+<path d="M1031 570h352" stroke="#bba98c" opacity=".7"/>
+<g class="icon" transform="translate(1031 576)"><path d="M2 4q10-2 18 2v25q-8-4-18-2zm18 2q10-4 19-3v25q-10 0-19 3z" fill="#e9d5b4"/><path d="m6 10 9 1m-9 5 8 1m11-5 9-2m-9 8 7-2" stroke="#ac805c"/></g>
+<text x="1085" y="595" class="kicker" >06</text>
+<text x="1031" y="633" class="head" >What falls from memory</text>
+<text x="1031" y="663" class="body" >Some forebears recur in every telling.</text>
+<text x="1031" y="687" class="body" >Others fade as ties change. Wang calls</text>
+<text x="1031" y="711" class="body" >this pattern structural amnesia.</text>
+<path d="M1031 729h352" stroke="#bba98c" opacity=".7"/>
+<rect x="45" y="778" width="1350" height="106" fill="#254e4e" rx="3"/>
+<text x="68" y="805" class="eyebrow" style="fill:#e4bf86">FROM THE FIELD   /   BROTHER ANCESTORS</text>
+<text x="68" y="843" class="" font-size="31" style="fill:#fffae9">Three villages, three brothers.</text>
+<text x="579" y="817" class="" font-size="20" style="fill:#fff8e9">In one valley account, three brothers founded three villages. A story told across four valleys</text>
+<text x="579" y="846" class="" font-size="20" style="fill:#fff8e9">could begin with four brothers. The remembered family grew with the circle of neighbours.</text>
+<text x="46" y="938" class="small" >Source: Wang Ming-ke, Huaxia Frontier, 2020 Chinese edition, prefatory essay, pp. 10–11, and Part I.</text>
+<text x="1395" y="938" class="kicker" text-anchor="end">ILLUSTRATED READING GUIDE     /     01</text>
+<g aria-label="Reading guide, sections 01 to 06"><g><circle cx="501" cy="311" r="16" fill="#173f40" stroke="#f7efdb" stroke-width="2"/><text x="501" y="316" text-anchor="middle" font-family="Times New Roman,serif" font-size="16" style="fill:#fff8e7">01</text></g><g><circle cx="501" cy="470" r="16" fill="#173f40" stroke="#f7efdb" stroke-width="2"/><text x="501" y="475" text-anchor="middle" font-family="Times New Roman,serif" font-size="16" style="fill:#fff8e7">02</text></g><g><circle cx="501" cy="629" r="16" fill="#173f40" stroke="#f7efdb" stroke-width="2"/><text x="501" y="634" text-anchor="middle" font-family="Times New Roman,serif" font-size="16" style="fill:#fff8e7">03</text></g><g><circle cx="939" cy="311" r="16" fill="#173f40" stroke="#f7efdb" stroke-width="2"/><text x="939" y="316" text-anchor="middle" font-family="Times New Roman,serif" font-size="16" style="fill:#fff8e7">04</text></g><g><circle cx="939" cy="470" r="16" fill="#173f40" stroke="#f7efdb" stroke-width="2"/><text x="939" y="475" text-anchor="middle" font-family="Times New Roman,serif" font-size="16" style="fill:#fff8e7">05</text></g><g><circle cx="939" cy="629" r="16" fill="#173f40" stroke="#f7efdb" stroke-width="2"/><text x="939" y="634" text-anchor="middle" font-family="Times New Roman,serif" font-size="16" style="fill:#fff8e7">06</text></g></g></svg>
