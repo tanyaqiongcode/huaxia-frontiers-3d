@@ -399,7 +399,7 @@ const loader = document.getElementById('loader'), lpct = document.getElementById
 const clock = new THREE.Clock();
 const tmpP = new THREE.Vector3(), tmpT = new THREE.Vector3(), look = new THREE.Vector3();
 let li = -1;
-let fpsSamples = [], fpsChecked = false;
+let fpsSamples = [], fpsChecked = false, lastT = performance.now();
 function tick(){
   try{
   requestAnimationFrame(tick);
@@ -453,7 +453,8 @@ function tick(){
     if(lp>=100){ loaded=true; loader.classList.add('done'); } }
   R.render(S, C);
   if(!fpsChecked){
-    fpsSamples.push(clock.getDelta());
+    const nowT = performance.now();
+    fpsSamples.push((nowT - lastT)/1000); lastT = nowT;
     if(fpsSamples.length >= 30){
       const avg = fpsSamples.reduce((a,b)=>a+b,0)/fpsSamples.length;
       if(avg > 0.04) R.setPixelRatio(1);
