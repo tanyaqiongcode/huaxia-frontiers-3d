@@ -281,7 +281,7 @@
     </div>
     <div class="fogrow"><span data-i18n="pMist">雾</span><input type="range" id="fogR" min="0" max="100" value="50"></div>
     <label><span data-i18n="pDen">粒子</span>
-      <span class="seg" id="segDen"><span data-v="lo">疏</span><span data-v="mid" class="on">常</span><span data-v="full">繁</span></span></label>
+      <span class="seg" id="segDen"><span data-v="lo" data-i18n="spLo">疏</span><span data-v="mid" class="on" data-i18n="spMid">常</span><span data-v="full" data-i18n="spFull">繁</span></span></label>
   </div>
 </div>
 
@@ -313,7 +313,7 @@
   </div>
 
   <section id="media">
-    <div class="reveal"><span class="num">贰 · MEDIA</span>
+    <div class="reveal"><span class="num" data-i18n="bdMedia">贰 · MEDIA</span>
       <h2 data-i18n="mdTitle">影像里的边缘</h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="mdLead">全网经核验的讲座与解读（2026-11 数据）。</p></div>
@@ -327,7 +327,7 @@
   </section>
 
   <section id="concepts">
-    <div class="reveal"><span class="num">叁 · CONCEPTS</span>
+    <div class="reveal"><span class="num" data-i18n="bdConcepts">叁 · CONCEPTS</span>
       <h2 data-i18n-html="cTitle">八个概念，一次<em>边缘</em>之旅</h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="cLead">这条思想的谱系上，考古学教我们追问知识如何成形，边界理论把认同安放在"线"上，集体记忆说记忆活在社会的框架里——华夏不是一份固定的名单，而是一道随资源竞争、记忆与失忆不断移动的边界。读懂边缘，才读懂"什么是中国人"。</p></div>
@@ -335,7 +335,7 @@
   </section>
 
   <section id="plates">
-    <div class="reveal"><span class="num">肆 · PLATES</span>
+    <div class="reveal"><span class="num" data-i18n="bdPlates">肆 · PLATES</span>
       <h2 data-i18n-html="pTitle">图录 · <em>边缘的两种观看</em></h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="pLead">两张主题图，把书中的范式之争与认同之变收进一方画面。</p></div>
@@ -347,7 +347,7 @@
   </section>
 
   <section id="book">
-    <div class="reveal"><span class="num">伍 · FROM THE BOOK</span>
+    <div class="reveal"><span class="num" data-i18n="bdBook">伍 · FROM THE BOOK</span>
       <h2 data-i18n-html="bTitle">书影 · <em>纸上的边缘</em></h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="bLead">从原书电子版中提取的矢量书影——封面与内页图版，无限放大而不失真。悬停卡片，让书页立起来。</p></div>
@@ -512,9 +512,9 @@ const T = { lang:'zh', dict:{
  st1:{zh:'LIVE · 人在读',en:'LIVE · READING'}, st2:{zh:'豆瓣评分',en:'Douban'}, st3:{zh:'微信读书推荐值',en:'WeRead Score'}, st4:{zh:'豆瓣书评',en:'Reviews'},
  cta0:{zh:'影像里的边缘',en:'The Edge on Screen'}, cta1:{zh:'进入边缘 · 概念八章',en:'ENTER THE EDGE'}, cta2:{zh:'观看 3D 造物记',en:'WATCH THE MAKING'},
  hint:{zh:'SCROLL · 向下进入边缘',en:'SCROLL · INTO THE EDGE'},
- dCap1a:{zh:'Ⅰ · 边缘之外',en:'Ⅰ · BEYOND THE EDGE'}, dCap1b:{zh:'BEYOND THE EDGE',en:'远处只见一线环光'},
- dCap2a:{zh:'Ⅱ · 越过边界',en:'Ⅱ · CROSSING THE LINE'}, dCap2b:{zh:'CROSSING THE LINE',en:'边界在身后合拢'},
- dCap3a:{zh:'Ⅲ · 华夏',en:'Ⅲ · HUAXIA'}, dCap3b:{zh:'HUAXIA',en:'内核近在眼前'},
+ dCap1a:{zh:'Ⅰ · 边缘之外',en:'Ⅰ · BEYOND THE EDGE'}, dCap1b:{zh:'远处只见一线环光',en:'BEYOND THE EDGE'},
+ dCap2a:{zh:'Ⅱ · 越过边界',en:'Ⅱ · CROSSING THE LINE'}, dCap2b:{zh:'边界在身后合拢',en:'THE LINE CLOSES BEHIND YOU'},
+ dCap3a:{zh:'Ⅲ · 华夏',en:'Ⅲ · HUAXIA'}, dCap3b:{zh:'内核近在眼前',en:'THE CORE, UP CLOSE'},
  mdTitle:{zh:'影像里的边缘',en:'The Edge on Screen'}, mdLead:{zh:'全网经核验的讲座与解读（2026-11 数据）。',en:'Verified lectures and readings across the web (Nov 2026).'},
  mdH1:{zh:'平台',en:'Platform'}, mdH2:{zh:'内容',en:'Title'}, mdH3:{zh:'频道',en:'Channel'}, mdH4:{zh:'热度',en:'Stats'}, mdH5:{zh:'直达',en:'Go'},
  socT:{zh:'全平台直达 · FIND THE EDGE EVERYWHERE',en:'FIND THE EDGE EVERYWHERE'},
@@ -545,6 +545,7 @@ function tx(o){ return o ? (o[T.lang] || o.zh || '') : ''; }
 function applyLang(){
   document.documentElement.lang = T.lang==='zh' ? 'zh-CN' : 'en';
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const v = T.dict[el.dataset.i18n]; if(v) el.innerHTML = tx(v); });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const v = T.dict[el.dataset.i18nHtml]; if(v) el.innerHTML = tx(v); });
   document.getElementById('cards').innerHTML = CARDS.map((c,i)=>
    `<div class="glass card"><div class="cn">${T.lang==='zh'?'概念':'CONCEPT '+c.k}${T.lang==='en'?' · A Study in '+['the Edge','Membership','Forgetting','Origins','the Valley','Light','Ecology','Method'][i]:''}</div>${T.lang==='en'?'<div class="lat">'+tx(c.lat)+'</div>':''}<h3>${tx(c.h)}</h3><p>${tx(c.p)}</p></div>`).join('');
   document.getElementById('quotes').innerHTML = QUOTES.map(q=>
@@ -613,21 +614,21 @@ function renderMap(){
   });
   s += '</svg>';
   wrap.innerHTML = s;
-  wrap.querySelectorAll('.node').forEach(g=>{
+  wrap.addEventListener('click', e=>{
+    const g = e.target.closest('.node'); if(!g) return;
     const key = g.dataset.key;
-    if(MAPR[key] && MAPR[key].ch){
-      g.addEventListener('click', ()=>{ mapExp[key] = !mapExp[key]; renderMap(); });
-      g.addEventListener('mouseenter', ()=>{
-        wrap.querySelectorAll('.hi').forEach(x=>x.classList.remove('hi'));
-        g.classList.add('hi');
-        const gy = +g.querySelector('rect').getAttribute('y') + 15;
-        wrap.querySelectorAll('.edge').forEach(p=>{
-          if(Math.abs(+p.dataset.t - gy) < 3 && +p.dataset.x2 <= +g.querySelector('rect').getAttribute('x') + 2) p.classList.add('hi');
-        });
-      });
-      g.addEventListener('mouseleave', ()=> wrap.querySelectorAll('.hi').forEach(x=>x.classList.remove('hi')));
-    }
+    if(MAPR[key] && MAPR[key].ch){ mapExp[key] = !mapExp[key]; renderMap(); }
   });
+  wrap.addEventListener('mouseover', e=>{
+    const g = e.target.closest('.node'); if(!g) return;
+    wrap.querySelectorAll('.hi').forEach(x=>x.classList.remove('hi'));
+    g.classList.add('hi');
+    const gy = +g.querySelector('rect').getAttribute('y') + 15;
+    wrap.querySelectorAll('.edge').forEach(p=>{
+      if(Math.abs(+p.dataset.t - gy) < 3 && +p.dataset.x2 <= +g.querySelector('rect').getAttribute('x') + 2) p.classList.add('hi');
+    });
+  });
+  wrap.addEventListener('mouseout', ()=> wrap.querySelectorAll('.hi').forEach(x=>x.classList.remove('hi')));
 }
 
 /* ================= THREE.JS HERO（动态背景全站回归） ================= */
@@ -808,7 +809,8 @@ const look = new THREE.Vector3(0,.4,0);
   bGeo.attributes.position.needsUpdate = true;
   /* 从远及近穿越 → 之后回到中景，动态背景陪伴全站 */
   const vh = innerHeight, d0 = vh*.75, d1 = vh*2.15;
-  const dp = Math.max(0, Math.min(1, (scrollY-d0)/(d1-d0)));
+  const rawDp = (scrollY-d0)/(d1-d0);
+  const dp = Math.max(0, Math.min(1, rawDp));
   const ez = dp*dp*(3-2*dp);
   let tpx, tpy, tpz, lx, ly, lz, op;
   if(scrollY < d0){
@@ -828,7 +830,7 @@ const look = new THREE.Vector3(0,.4,0);
   const cur = parseFloat(canvas.style.opacity||1);
   canvas.style.opacity = cur + (op-cur)*.08;
   document.querySelectorAll('.dcap').forEach(d=>{
-    d.style.opacity = Math.max(0, 1-Math.abs(dp-(+d.dataset.p))*5.5); });
+    d.style.opacity = Math.max(0, 1-Math.abs(dp-(+d.dataset.p))*5.5) * Math.max(0, 1-Math.max(0,rawDp-1)*3); });
   if((window.__fc=(window.__fc||0)+1)%2===0) updateScroll();
   renderer.render(scene, camera);
 })();
