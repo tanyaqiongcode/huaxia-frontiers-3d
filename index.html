@@ -55,6 +55,8 @@
   .num{display:inline-block;font-size:11px;color:var(--dim);letter-spacing:.3em;border:1px solid var(--line);
     padding:4px 12px;border-radius:99px;margin-bottom:26px}
   h2{font-size:clamp(26px,4vw,40px);font-weight:600;letter-spacing:.14em;margin-bottom:14px}
+  /* 罗马数字统一Times New Roman（中文自然回落宋体） */
+  .num,.dcap span{font-family:"Times New Roman","Times","Georgia",serif}
   h2 em{font-style:normal;color:var(--gold)}
   .lead{color:var(--ink);opacity:.82;font-size:16px;line-height:2;max-width:640px}
   .rule{width:56px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin:26px 0}
@@ -1174,7 +1176,7 @@ const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main
 
 applyLang();
 setScene('morning');
-console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v19');
+console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v19.1');
 document.documentElement.setAttribute('data-scene','morning');
 </script>
 </body>
