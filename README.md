@@ -6,6 +6,11 @@
 
 **在线访问**：https://tanyaqiongcode.github.io/huaxia-frontiers-3d/
 
+## 两个版本 · Two editions
+
+- **沉浸版 · Immersive edition**（3D 动态叙事，主站）：https://tanyaqiongcode.github.io/huaxia-frontiers-3d/
+- **阅读版 · Reading edition**（轻量阅读，无障碍优先）：https://tanyaqiongcode.github.io/huaxia-frontiers-3d/reading/
+
 ## 站点内容
 
 | 区块 | 内容 |
