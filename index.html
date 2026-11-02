@@ -232,9 +232,10 @@
   .lcap{text-align:center;flex:0 0 auto}
   .lcap span{font-family:var(--fserif);font-size:clamp(30px,4.6vw,52px);letter-spacing:.16em;color:var(--gold-hi)}
   .lcap i{display:block;font-style:normal;font-size:13px;letter-spacing:.3em;color:var(--dim);margin-top:14px}
-  .lsvg{height:62vh;flex:0 0 auto;border:1px solid var(--line);border-radius:10px;background:#fff;
-    box-shadow:0 26px 70px rgba(0,0,0,.5)}
-.lnavs{position:absolute;bottom:4.5vh;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:3}
+  .lsvg{height:62vh;flex:0 0 auto;border-radius:10px;filter:drop-shadow(0 18px 44px rgba(0,0,0,.45))}
+  .lsvg.paper{border:1px solid var(--line);background:#fff;box-shadow:0 26px 70px rgba(0,0,0,.5)}
+.lnote{position:absolute;top:5vh;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:.12em;color:var(--dim);max-width:92vw;text-align:center}
+  .lnavs{position:absolute;bottom:4.5vh;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:3}
   .lnavs a{font-size:11.5px;letter-spacing:.16em;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:6px 16px;cursor:pointer;background:rgba(8,9,14,.5);transition:color .3s,border-color .3s}
   .lnavs a:hover{color:var(--gold-hi);border-color:var(--gold)}
   .lorb{position:absolute;top:50%;left:0;width:14px;height:14px;border-radius:50%;background:var(--gold-hi);
@@ -347,7 +348,7 @@
 <div class="mark" title="The Frontiers of Huaxia"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="currentColor"/></svg></div>
 
 <div class="apanel" id="apanel">
-  <div class="hd" id="apHead"><b data-i18n="apT">氛围 · ATMOSPHERE</b><i>NO.01</i></div>
+  <div class="hd" id="apHead"><b data-i18n="apT">氛围</b><i>NO.01</i></div>
   <div class="bd">
     <label><span data-i18n="pScene">场景</span></label>
     <div class="seg" id="segScene">
@@ -407,7 +408,7 @@
   </section>
 
   <section id="media">
-    <div class="reveal"><span class="num" data-i18n="bdMedia">Ⅱ · MEDIA</span>
+    <div class="reveal"><span class="num" data-i18n="bdMedia">Ⅱ · 影像</span>
       <h2 data-i18n="mdTitle">影像里的边缘</h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="mdLead">全网经核验的讲座与解读（2026-11 数据）。</p></div>
@@ -421,7 +422,7 @@
   </section>
 
   <section id="concepts">
-    <div class="reveal"><span class="num" data-i18n="bdConcepts">Ⅲ · CONCEPTS</span>
+    <div class="reveal"><span class="num" data-i18n="bdConcepts">Ⅲ · 概念</span>
       <h2 data-i18n-html="cTitle">八个概念，一次<em>边缘</em>之旅</h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="cLead">这条思想的谱系上，考古学教我们追问知识如何成形，边界理论把认同安放在“线”上，集体记忆说记忆活在社会的框架里——华夏不是一份固定的名单，而是一道随资源竞争、记忆与失忆不断移动的边界。读懂边缘，才读懂“什么是中国人”。</p></div>
@@ -429,7 +430,7 @@
   </section>
 
   <section id="plates">
-    <div class="reveal"><span class="num" data-i18n="bdPlates">Ⅳ · PLATES</span>
+    <div class="reveal"><span class="num" data-i18n="bdPlates">Ⅳ · 信息图</span>
       <h2 data-i18n-html="pTitle">图录 · <em>边缘的两种观看</em></h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="pLead">两张主题图，把书中的范式之争与认同之变收进一方画面。</p></div>
@@ -453,14 +454,15 @@
         <img class="lsvg" src="assets/book/fig-113.png" alt="p.113"">
         <div class="lcap"><span data-i18n="ls4a">1950s</span><i data-i18n="ls4b">民族识别 · 学术知识建构</i></div>
         <img class="lsvg" src="assets/book/fig-127.png" alt="p.185"">
-        <div class="lcap"><span data-i18n="ls5a">NOW</span><i data-i18n="ls5b">边缘重构</i></div>
+        <div class="lcap"><span data-i18n="ls5a">此刻</span><i data-i18n="ls5b">边缘重构 · 多元一体</i></div>
       </div>
+      <div class="lnote" data-i18n="lsNote">注：BP 为距今（以 1950 年为测年基准），BC 为公元前，未标注年份为公元纪年。</div>
       <div class="lnavs"><a data-p="0.1" data-i18n="ln1">生计边界</a><a data-p="0.4" data-i18n="ln2">历史书写</a><a data-p="0.72" data-i18n="ln3">认同变迁</a></div>
     </div>
   </section>
 
   <section id="mmap">
-    <div class="reveal"><span class="num" data-i18n="bdMap">Ⅴ · MIND MAP</span>
+    <div class="reveal"><span class="num" data-i18n="bdMap">Ⅴ · 导图</span>
       <h2 data-i18n-html="mTitle">全书<em>思维导图</em></h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="mLead">全书结构化作一张活的地图：理论框架、生态边界、历史形成、现代变迁、研究方法——悬停任意节点，追溯它通向“华夏边缘”的路径。中英双语随语言切换。</p></div>
@@ -468,7 +470,7 @@
   </section>
 
   <section id="maker" class="maker">
-    <div class="reveal"><span class="num" data-i18n="bdMaking">Ⅵ · THE MAKING</span>
+    <div class="reveal"><span class="num" data-i18n="bdMaking">Ⅵ · 造物记</span>
       <h2 data-i18n-html="mkTitle">3D 造物记：<em>从 0 到边缘</em></h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="mkLead">与本书同构的 3D 隐喻——发光的内核是“华夏”，青铜巨环是“边缘”，环绕的碎片是被记起与被遗忘的记忆，双碉楼矗立在羌族田野的边缘。以下工程从空场景开始逐块搭建，全程可复现。</p></div>
@@ -492,7 +494,7 @@
   </section>
 
   <section id="praise">
-    <div class="reveal"><span class="num" data-i18n="bdPraise">Ⅶ · PRAISE</span>
+    <div class="reveal"><span class="num" data-i18n="bdPraise">Ⅶ · 回响</span>
       <h2 data-i18n="prTitle">他们如何谈论边缘</h2>
       <div class="rule"></div></div>
     <p class="prLead" data-i18n="prLead">当代华语世界最具范式意义的历史人类学经典之一</p>
@@ -506,7 +508,7 @@
   </section>
 
   <section id="author">
-    <div class="reveal"><span class="num" data-i18n="bdAuthor">Ⅷ · AUTHOR &amp; EDITIONS</span>
+    <div class="reveal"><span class="num" data-i18n="bdAuthor">Ⅷ · 作者与版本</span>
       <h2 data-i18n="auTitle">作者与版本谱系</h2>
       <div class="rule"></div></div>
     <div class="duo">
@@ -519,7 +521,7 @@
   </section>
 
   <section id="translation">
-    <div class="reveal"><span class="num" data-i18n="bdTranslation">Ⅸ · TRANSLATION</span>
+    <div class="reveal"><span class="num" data-i18n="bdTranslation">Ⅸ · 译程</span>
       <h2 data-i18n-html="trTitle">边缘之外</h2>
       <div class="rule"></div>
       <p class="lead" style="color:var(--dim)" data-i18n="trLead">《华夏边缘》至今没有任何官方外译本。一项面向英语世界的首次全文翻译工程正在进行——让“边缘”的方法，抵达汉语之外。</p></div>
@@ -529,7 +531,7 @@
     <div class="inner">
       <div class="en">Translating Wang Ming-ke's <i>Huaxia Frontiers</i><br>into English — for the first time.</div>
       <div class="zh" data-i18n="ftZh">华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）</div>
-      <div class="springer">SPRINGER · TRANSLATION PROJECT IN PROGRESS</div>
+      <div class="springer" data-i18n="springer">SPRINGER · TRANSLATION PROJECT IN PROGRESS</div>
       <div class="credits">Planet textures: Solar System Scope (CC BY 4.0) · Earth &amp; Moon imagery: NASA · Built on three.js (MIT) · SVG graphics: the editors</div>
     </div>
   </footer>
@@ -614,6 +616,7 @@ const T = { lang:'zh', dict:{
  ctaMain:{zh:'从岷江上游读起',en:'Begin upstream, in the Minjiang valley'},
  ctaMedia:{zh:'影像与访谈',en:'Watch the talks'},
  mMenu:{zh:'目录',en:'Menu'}, mTray:{zh:'设置',en:'Settings'},
+ springer:{zh:'施普林格 · 译事进行中',en:'SPRINGER · TRANSLATION PROJECT IN PROGRESS'},
  story1:{zh:'一条山沟里有三个寨子。问起祖先，人们说：从前有三个弟兄来到这里，各自建了一个寨子。',en:'Three villages share one mountain valley. Ask about the ancestors, and people say: three brothers came here long ago, and each founded a village.'},
  story2:{zh:'若把来往密切的四条山沟一起算进来，故事又可以从四个弟兄讲起。',en:'Count the four valleys whose people visit one another, and the story begins instead with four brothers.'},
  story3:{zh:'人们今天同谁来往，也影响他们怎样讲述共同的过去。',en:'Whom people visit today shapes how they tell their common past.'},
@@ -627,20 +630,21 @@ const T = { lang:'zh', dict:{
  ls2b:{zh:'周人族源 · 西周记忆',en:'Zhou origins · Western Zhou memory'},
  ls3b:{zh:'汉代凝练 · 长城资源界线',en:'Han consolidation · the Great Wall line'},
  ls4b:{zh:'民族识别 · 学术知识建构',en:'Ethnic classification · the making of knowledge'},
- ls5b:{zh:'边缘重构',en:'The edge remade'},
- apT:{zh:'氛围 · ATMOSPHERE',en:'ATMOSPHERE'},
+ lsNote:{zh:'注：BP 为距今（以 1950 年为测年基准），BC 为公元前，未标注年份为公元纪年。',en:'Note: BP = before present (1950 baseline); BC = before Christ; unmarked years are CE.'},
+ ls5b:{zh:'边缘重构 · 多元一体',en:'The edge remade · unity in diversity'},
+ apT:{zh:'氛围',en:'ATMOSPHERE'},
  pScene:{zh:'场景',en:'SCENE'}, pMist:{zh:'雾',en:'MIST'}, pDen:{zh:'粒子',en:'PARTICLES'},
  stMo:{zh:'晨光漂流 · 清透大气',en:'Morning drift · clear air'},
  scMo:{zh:'晨光',en:'Morning'}, scDu:{zh:'暮色',en:'Dusk'}, scMo2:{zh:'月夜',en:'Moonlit'}, scNe:{zh:'霓虹',en:'Neon'},
- bdMedia:{zh:'Ⅱ · MEDIA',en:'Ⅱ · MEDIA'},
- bdConcepts:{zh:'Ⅲ · CONCEPTS',en:'Ⅲ · CONCEPTS'},
- bdPlates:{zh:'Ⅳ · PLATES',en:'Ⅳ · PLATES'},
- bdBook:{zh:'Ⅴ · FROM THE BOOK',en:'Ⅴ · FROM THE BOOK'},
- bdMap:{zh:'Ⅴ · MIND MAP',en:'Ⅴ · MIND MAP'},
- bdMaking:{zh:'Ⅵ · THE MAKING',en:'Ⅵ · THE MAKING'},
- bdPraise:{zh:'Ⅶ · PRAISE',en:'Ⅶ · PRAISE'},
- bdAuthor:{zh:'Ⅷ · AUTHOR &amp; EDITIONS',en:'Ⅷ · AUTHOR &amp; EDITIONS'},
- bdTranslation:{zh:'Ⅸ · TRANSLATION',en:'Ⅸ · TRANSLATION'},
+ bdMedia:{zh:'Ⅱ · 影像',en:'Ⅱ · MEDIA'},
+ bdConcepts:{zh:'Ⅲ · 概念',en:'Ⅲ · CONCEPTS'},
+ bdPlates:{zh:'Ⅳ · 信息图',en:'Ⅳ · PLATES'},
+
+ bdMap:{zh:'Ⅴ · 导图',en:'Ⅴ · MIND MAP'},
+ bdMaking:{zh:'Ⅵ · 造物记',en:'Ⅵ · THE MAKING'},
+ bdPraise:{zh:'Ⅶ · 回响',en:'Ⅶ · PRAISE'},
+ bdAuthor:{zh:'Ⅷ · 作者与版本',en:'Ⅷ · AUTHOR &amp; EDITIONS'},
+ bdTranslation:{zh:'Ⅸ · 译程',en:'Ⅸ · TRANSLATION'},
  spLo:{zh:'疏',en:'Sparse'}, spMid:{zh:'常',en:'Normal'}, spFull:{zh:'繁',en:'Dense'},
  sidesign:{zh:'华夏边缘 · 历史记忆与族群认同',en:'HUAXIA FRONTIER · Historical Memory & Ethnic Identity'},
  metaline:{zh:'田野坐标 北纬31°06′ 东经103°51′ · 岷江上游 · 田野期一九九〇至二〇〇〇年代 · 研究编号 01',en:'FIELD SITE 31°06′N 103°51′E · UPPER MINJIANG · FIELDWORK 1990s—2000s · STUDY No.01'},
@@ -655,7 +659,7 @@ const T = { lang:'zh', dict:{
  dCap3a:{zh:'Ⅲ · 华夏',en:'III · Huaxia'}, dCap3b:{zh:'内核近在眼前',en:'Inside the circle'},
  mdTitle:{zh:'影像里的边缘',en:'Watch the talks'}, mdLead:{zh:'全网经核验的讲座与解读（2026-11 数据）。',en:'Hear Wang Ming-ke trace a question from the bronze finds at Sanxingdui to the stories people tell in Qiang villages. The recordings and readings below offer several ways into his work.'},
  mdH1:{zh:'平台',en:'Platform'}, mdH2:{zh:'内容',en:'Title'}, mdH3:{zh:'频道',en:'Channel'}, mdH4:{zh:'热度',en:'Audience or format'}, mdH5:{zh:'直达',en:'Link'},
- socT:{zh:'全平台直达 · FIND THE EDGE EVERYWHERE',en:'Find more talks and discussions'},
+ socT:{zh:'全平台直达',en:'Find more talks and discussions'},
  cTitle:{zh:'八个概念，一次<em>边缘</em>之旅',en:'Who counts as <em>one of us</em>?'},
  cLead:{zh:'这条思想的谱系上，考古学教我们追问知识如何成形，边界理论把认同安放在“线”上，集体记忆说记忆活在社会的框架里——华夏不是一份固定的名单，而是一道随资源竞争、记忆与失忆不断移动的边界。读懂边缘，才读懂“什么是中国人”。',
   en:'On this genealogy of ideas, archaeology asks how knowledge takes form, boundary theory places identity on the line, and collective memory lives within social frames — Huaxia is not a fixed roster but a boundary that moves with resource competition, memory and forgetting. To read the edge is to read "what is Chinese."'},
@@ -674,7 +678,7 @@ const T = { lang:'zh', dict:{
  mkTitle:{zh:'3D 造物记：<em>从 0 到边缘</em>',en:'Making the <em>bronze ring</em>'},
  mkLead:{zh:'与本书同构的 3D 隐喻——发光的内核是“华夏”，青铜巨环是“边缘”，环绕的碎片是被记起与被遗忘的记忆，双碉楼矗立在羌族田野的边缘。以下工程从空场景开始逐块搭建，全程可复现。',en:'Light falls through a bronze ring. Fragments turn around it. Two watchtowers bring western Sichuan into view. The film follows the scene from its first shapes to the finished model.'},
  mkChip1:{zh:'⬇ 下载 Blender 工程文件',en:'⬇ Download the Blender file'},
- ovKick:{zh:'BOOK · 世纪文景 2020',en:'BOOK · CENTURY WENJING 2020'},
+ ovKick:{zh:'书籍 · 世纪文景 2020',en:'BOOK · CENTURY WENJING 2020'},
  ovTitle:{zh:'华夏边缘：历史记忆与族群认同',en:'Huaxia Frontier: Historical Memory and Ethnic Identity'},
  ovEn:{zh:'Huaxia Frontiers: Historical Memory and Ethnic Identity',en:'by Wang Ming-ke'},
  ovBody:{zh:'为什么我们自称“中国人”？华夏从何处来，边界又在哪里？王明珂以考古、文献与多年羌族田野，画出一条随资源竞争与历史记忆不断移动的边界——华夏因边缘而凝聚，也因边缘而改变。读懂边缘，才读懂“什么是中国人”。',en:'Who counted as Huaxia, and who decided? Drawing on archaeological finds, historical texts and years of fieldwork in Qiang communities, Wang Ming-ke traces how people drew boundaries around land, ancestry and belonging.'},
