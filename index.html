@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>华夏边缘 · Huaxia Frontier</title>
+<title>华夏边缘 · The Frontiers of Huaxia</title>
 <meta name="description" content="王明珂《华夏边缘：历史记忆与族群认同》3D沉浸式主题站——边缘如何造就华夏。Bilingual 中文/English.">
 <meta name="theme-color" content="#06070d">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Huaxia Frontier · 华夏边缘">
-<meta property="og:title" content="华夏边缘 · Huaxia Frontier">
+<meta property="og:title" content="华夏边缘 · The Frontiers of Huaxia">
 <meta property="og:description" content="王明珂《华夏边缘：历史记忆与族群认同》3D沉浸式主题站——边缘如何造就华夏。Bilingual 中文/English.">
 <meta property="og:url" content="https://tanyaqiongcode.github.io/huaxia-frontiers-3d/">
 <meta property="og:image" content="https://tanyaqiongcode.github.io/huaxia-frontiers-3d/assets/og-cover.jpg">
@@ -17,7 +17,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="华夏边缘 · Huaxia Frontier">
+<meta name="twitter:title" content="华夏边缘 · The Frontiers of Huaxia">
 <meta name="twitter:description" content="王明珂《华夏边缘》3D沉浸式主题站——边缘如何造就华夏。">
 <meta name="twitter:image" content="https://tanyaqiongcode.github.io/huaxia-frontiers-3d/assets/og-cover.jpg">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Ccircle cx='24' cy='24' r='19' stroke='%23c9a45c' stroke-width='2.5' stroke-dasharray='103 17' stroke-linecap='round' transform='rotate(-58 24 24)'/%3E%3Ccircle cx='40.5' cy='9.5' r='3' fill='%23c9a45c'/%3E%3C/svg%3E">
@@ -76,7 +76,7 @@
   html[lang="en"] #hero .zh{font-size:clamp(38px,6.8vw,92px);letter-spacing:.05em}
   [data-i18n="ensub"]:empty{display:none}
   html[lang="zh-CN"] footer .en{display:none}
-
+  html[lang="en"] footer .zh{display:none}
   .mark{position:fixed;top:22px;right:22px;z-index:6;color:var(--gold-hi);opacity:.92;transition:.4s}
   .mark:hover{opacity:1}
   .mark svg{display:block;width:46px;height:46px;animation:spin360 16s linear infinite}
@@ -173,8 +173,8 @@
   #hero .scrollhint{display:none}
   .apanel label{display:flex;align-items:center;justify-content:space-between;letter-spacing:.14em}
   .seg{display:flex;gap:4px;flex-wrap:wrap}
-  .seg button{padding:3px 10px;border:1px solid var(--line);border-radius:99px;cursor:pointer;transition:.25s;font-size:11px;display:flex;align-items:center;gap:5px}
-  .seg button.on{background:var(--gold);color:#100c04;border-color:var(--gold)}
+  .seg span{padding:3px 10px;border:1px solid var(--line);border-radius:99px;cursor:pointer;transition:.25s;font-size:11px;display:flex;align-items:center;gap:5px}
+  .seg span.on{background:var(--gold);color:#100c04;border-color:var(--gold)}
   .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
   .status{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:10px;letter-spacing:.1em}
   .sdot{width:6px;height:6px;border-radius:50%;background:#4faf6e;box-shadow:0 0 10px rgba(79,175,110,.9);animation:pulse 2s infinite}
@@ -318,61 +318,6 @@
   footer .zh{color:var(--dim);font-size:14px;margin-top:14px;letter-spacing:.12em;line-height:2}
   footer .springer{margin-top:26px;color:var(--dim);font-size:12px;letter-spacing:.24em}
   footer .credits{margin-top:14px;color:var(--dim);opacity:.75;font-size:10.5px;letter-spacing:.08em;font-family:"Times New Roman",serif}
-
-  /* Field account and its three historical reference points */
-  #descend{height:44vh;height:44svh}
-  #story,#lscroll{height:auto;max-width:1180px;padding:clamp(42px,6vw,78px) clamp(20px,4vw,48px);scroll-margin-top:58px}
-  .sstk{display:block;height:auto;position:static;overflow:visible}
-  .valley-reading{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:clamp(22px,5vw,60px);align-items:start;margin-top:24px}
-  .valley-picture{position:sticky;top:15vh;background:linear-gradient(145deg,var(--glass),var(--glass2));border:1px solid var(--line);border-radius:12px}
-  .valley{display:block;width:100%;height:auto;max-height:none;transform:none;will-change:auto}
-  .valley-picture figcaption{border-top:1px solid var(--line);padding:14px 20px;margin:0;font-size:14px;line-height:1.65;color:var(--ink);letter-spacing:.02em}
-  .vOuter{opacity:.25;transition:opacity .4s}.vOuter.nearby{opacity:1}
-  .village-passages{counter-reset:village}
-  .village-passages .scap{position:relative;inset:auto;transform:none;opacity:1;width:auto;text-align:left;font-size:clamp(17px,1.6vw,21px);line-height:1.7;padding:15px 0 18px 38px;border-top:1px solid var(--line);text-wrap:pretty}
-  .village-passages .scap::before{counter-increment:village;content:counter(village,decimal-leading-zero);position:absolute;left:0;top:20px;color:var(--gold-hi);font:14px Georgia,serif}
-  .sBtn{position:static;display:inline-block;transform:none;opacity:1;white-space:normal;margin-top:10px}
-  #lscroll header .num,#story header .num{margin-bottom:12px}
-  .time-nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 22px}
-  .time-nav a{display:inline-flex;gap:8px;align-items:center;padding:8px 13px;color:var(--ink);background:var(--glass);border:1px solid var(--line);border-radius:22px;text-decoration:none;font-size:14px}
-  .time-nav a:focus-visible,.time-nav a:hover{outline:2px solid var(--gold-hi)}
-  .time-nav small,.time-date{color:var(--gold-hi)}
-  .time-nodes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-  .time-nodes article{min-width:0;padding:22px;border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:5px;background:linear-gradient(150deg,var(--glass),var(--glass2));scroll-margin-top:80px}
-  .time-nodes article:target,.time-nodes article:focus-visible{outline:2px solid var(--gold-hi);outline-offset:2px}
-  .time-nodes h3{font-weight:600;font-size:clamp(20px,2vw,26px);line-height:1.35;margin:10px 0}
-  .time-nodes p{font-size:16px;line-height:1.65;color:var(--ink);text-wrap:pretty}
-  .time-nodes .time-date,.time-nodes small{font-size:14px;color:var(--gold-hi)}
-  .time-nodes small{display:block;margin-top:14px}
-  .time-art{display:block;width:100%;height:75px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-top:8px}
-  @media(max-width:760px),(prefers-reduced-motion:reduce){
-    #descend{display:none}
-    .dcap{display:none}
-    .valley-reading,.time-nodes{grid-template-columns:1fr}
-    .valley-picture{position:static}
-    .valley{max-height:260px}
-    .vOuter{opacity:1;transition:none}
-    .time-nodes article{padding:20px}
-  }
-  button{font:inherit;color:inherit;background:none;border:0}
-  :focus-visible{outline:3px solid var(--gold-hi);outline-offset:4px}
-  .apanel .hd{width:100%}
-  #hero .quote{opacity:1;background:radial-gradient(ellipse at center,rgba(6,7,13,.92) 18%,rgba(6,7,13,.76) 65%,transparent 100%)}
-  [data-theme="light"] #hero .quote{background:radial-gradient(ellipse at center,rgba(242,234,215,.96) 18%,rgba(242,234,215,.8) 65%,transparent 100%)}
-  #hero .en{max-width:min(100%,680px);text-wrap:balance}
-  #bookOverlay{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;border:0;background:transparent;color:var(--ink);padding:clamp(10px,4vw,24px)}
-  #bookOverlay[open]{display:flex;align-items:center;justify-content:center}
-  #bookOverlay::backdrop{background:rgba(4,5,9,.82);backdrop-filter:blur(12px)}
-  #bookOverlay .glass{background:var(--bg2)}
-  #closeBook{width:36px;height:36px}
-  .mapwrap .node:not([role="button"]){cursor:default}
-  .mapwrap .node:focus-visible rect{stroke:var(--gold-hi);stroke-width:3}
-  @media(max-width:760px){#hero .en{font-size:15px;letter-spacing:.09em}#bookOverlay .glass{padding:24px!important;flex-wrap:wrap}#bookOverlay .glass>div{min-width:0!important}}
-.static-scene :is(#bg,#apanel,#btnPause,#descend){display:none}
-.static-scene #hero{overflow:clip}
-.static-scene #hero::after{content:"";position:absolute;top:50%;left:50%;width:min(85vw,70vh);aspect-ratio:1;border:2px solid var(--gold);opacity:.27;border-radius:50%;transform:translate(-50%,-50%) rotate(-17deg) scaleX(1.12);pointer-events:none;z-index:-1}
-main{overflow-x:clip}
-.media-table{max-width:100%;overflow-x:auto}
 </style>
 </head>
 <body>
@@ -381,15 +326,15 @@ main{overflow-x:clip}
 <div class="grain"></div>
 
 <div class="cmdbar">
-  <button type="button" class="pill" id="btnLang">A/文 <kbd>L</kbd></button>
-  <button type="button" class="pill" id="btnMenu" aria-controls="navpop" aria-expanded="false"><span data-i18n="mMenu">目录</span></button>
+  <div class="pill" id="btnLang">A/文 <kbd>L</kbd></div>
+  <div class="pill" id="btnMenu"><span data-i18n="mMenu">目录</span></div>
   <div id="tooltray">
-    <button type="button" class="pill" id="btnSound" aria-pressed="false">♪ <kbd>S</kbd></button>
-    <button type="button" class="pill" id="btnPause" aria-pressed="false">⏸ <kbd>P</kbd></button>
-    <button type="button" class="pill" id="btnTheme" aria-pressed="false">◐ <kbd>T</kbd></button>
-    <button type="button" class="pill" id="btnHide">⊘ <kbd>H</kbd></button>
+    <div class="pill" id="btnSound">♪ <kbd>S</kbd></div>
+    <div class="pill" id="btnPause">⏸ <kbd>P</kbd></div>
+    <div class="pill" id="btnTheme">◐ <kbd>T</kbd></div>
+    <div class="pill" id="btnHide">⊘ <kbd>H</kbd></div>
   </div>
-  <button type="button" class="pill trayToggle" id="btnTray" aria-controls="tooltray" aria-expanded="false">⚙ <span data-i18n="mTray">设置</span></button>
+  <div class="pill trayToggle" id="btnTray">⚙ <span data-i18n="mTray">设置</span></div>
 </div>
 <div class="navpop" id="navpop" style="display:none">
   <a href="#media" data-i18n="nMedia">影像与访谈</a>
@@ -401,36 +346,36 @@ main{overflow-x:clip}
   <a href="#praise" data-i18n="nPraise">读者回响</a>
   <a href="#translation" data-i18n="nTr">译程</a>
 </div>
-<button type="button" class="restore" id="btnRestore" title="恢复界面 (H)">◎</button>
-<div class="mark" title="Huaxia Frontier"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="currentColor"/></svg></div>
+<div class="restore" id="btnRestore" title="恢复界面 (H)">◎</div>
+<div class="mark" title="The Frontiers of Huaxia"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="currentColor"/></svg></div>
 
 <div class="apanel" id="apanel">
-  <button type="button" class="hd" id="apHead" aria-controls="atmosphereOptions" aria-expanded="true"><b data-i18n="apT">氛围</b><i>NO.01</i></button>
-  <div class="bd" id="atmosphereOptions">
-    <span id="sceneLabel" data-i18n="pScene">场景</span>
-    <div class="seg" id="segScene" role="group" aria-labelledby="sceneLabel">
-      <button type="button" data-v="morning" class="on"><i class="dot" style="background:#ffd9a0"></i><span data-i18n="scMo">晨光</span></button>
-      <button type="button" data-v="dusk"><i class="dot" style="background:#ff9a5c"></i><span data-i18n="scDu">暮色</span></button>
-      <button type="button" data-v="moonlit"><i class="dot" style="background:#9fb8ff"></i><span data-i18n="scMo2">月夜</span></button>
-      <button type="button" data-v="neon"><i class="dot" style="background:#7affd4"></i><span data-i18n="scNe">霓虹</span></button>
+  <div class="hd" id="apHead"><b data-i18n="apT">氛围</b><i>NO.01</i></div>
+  <div class="bd">
+    <label><span data-i18n="pScene">场景</span></label>
+    <div class="seg" id="segScene">
+      <span data-v="morning" class="on"><i class="dot" style="background:#ffd9a0"></i><span data-i18n="scMo">晨光</span></span>
+      <span data-v="dusk"><i class="dot" style="background:#ff9a5c"></i><span data-i18n="scDu">暮色</span></span>
+      <span data-v="moonlit"><i class="dot" style="background:#9fb8ff"></i><span data-i18n="scMo2">月夜</span></span>
+      <span data-v="neon"><i class="dot" style="background:#7affd4"></i><span data-i18n="scNe">霓虹</span></span>
     </div>
-    <div class="fogrow"><label for="fogR" data-i18n="pMist">雾</label><input type="range" id="fogR" min="0" max="100" value="50"></div>
-    <div><span id="densityLabel" data-i18n="pDen">粒子</span>
-      <span class="seg" id="segDen" role="group" aria-labelledby="densityLabel"><button type="button" data-v="lo" data-i18n="spLo">疏</button><button type="button" data-v="mid" class="on" data-i18n="spMid">常</button><button type="button" data-v="full" data-i18n="spFull">繁</button></span></div>
+    <div class="fogrow"><span data-i18n="pMist">雾</span><input type="range" id="fogR" min="0" max="100" value="50"></div>
+    <label><span data-i18n="pDen">粒子</span>
+      <span class="seg" id="segDen"><span data-v="lo" data-i18n="spLo">疏</span><span data-v="mid" class="on" data-i18n="spMid">常</span><span data-v="full" data-i18n="spFull">繁</span></span></label>
   </div>
 </div>
 
 <main>
   <section id="hero">
-    <h1 class="zh" data-i18n="heroZh">华夏边缘</h1>
-    <div class="en" data-i18n="ensub">历史记忆与族群认同</div>
+    <div class="zh" data-i18n="heroZh">华夏边缘</div>
+    <div class="en" data-i18n="ensub">THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity</div>
     <div class="quote" data-i18n-html="quote">“当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b><br>让它看起来像个圆形。”<br><span style="font-size:12.5px;color:var(--dim)">—— 王明珂</span></div>
     <div class="cta">
       <a class="btn" href="#story" data-i18n="ctaMain">从岷江上游读起</a>
       <a class="btn ghost" href="#media" data-i18n="ctaMedia">影像与访谈</a>
     </div>
     <div class="scrollhint" data-i18n="hint">SCROLL · 向下进入边缘</div>
-    <button type="button" class="heroBook" aria-haspopup="dialog" aria-controls="bookOverlay"><img src="assets/book/cover.jpg" alt="华夏边缘 · 世纪文景2020"><span class="hbCue"><span class="hbPing"></span><span class="hbTxt" data-i18n="hbCue">点击读简介</span></span></button>
+    <div class="heroBook"><img src="assets/book/cover.jpg" alt="华夏边缘 · 世纪文景2020"><div class="hbCue"><span class="hbPing"></span><span class="hbTxt" data-i18n="hbCue">点击读简介</span></div></div>
   </section>
 
   <div id="descend">
@@ -439,11 +384,10 @@ main{overflow-x:clip}
     <div class="dcap" data-p="0.86"><span data-i18n="dCap3a">Ⅲ · 华夏</span><i data-i18n="dCap3b">HUAXIA</i></div>
   </div>
 
-  <section id="story" aria-labelledby="village-heading">
+  <section id="story">
     <div class="sstk">
-      <header class="village-intro"><span class="num" data-i18n="villageLabel">岷江上游 · 田野笔记</span><h2 id="village-heading" data-i18n="villageTitle">一条山沟里的三个寨子</h2></header>
-      <div class="valley-reading"><figure class="valley-picture">
-      <svg aria-hidden="true" class="valley" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+      <div class="metaline sMeta" data-i18n="metaline">田野坐标 北纬31°06′ 东经103°51′ · 岷江上游 · 田野期一九九〇至二〇〇〇年代 · 研究编号 01</div>
+      <svg class="valley" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
         <g class="vInner">
           <path class="river" d="M500,26 C436,150 544,300 478,430 C452,492 492,540 474,578"/>
           <g class="hamlet" transform="translate(398,196)"><path class="hs" d="M-30,12 L0,-16 L30,12 M-20,12 L-20,34 L20,34 L20,12"/><rect class="hw" x="-5" y="16" width="10" height="10"/></g>
@@ -451,17 +395,17 @@ main{overflow-x:clip}
           <g class="hamlet" transform="translate(446,438)"><path class="hs" d="M-30,12 L0,-16 L30,12 M-20,12 L-20,34 L20,34 L20,12"/><rect class="hw" x="-5" y="16" width="10" height="10"/></g>
         </g>
         <g class="vOuter">
-          <path class="river" d="M102 57 Q214 151 156 207 T222 328 M854 51 Q781 132 853 232 T871 369 M99 351 Q192 395 161 458 T238 550"/><ellipse class="ring" cx="500" cy="300" rx="438" ry="256"/>
+          <ellipse class="ring" cx="500" cy="300" rx="438" ry="256"/>
           <g class="hamlet" transform="translate(148,128)"><path class="hs" d="M-30,12 L0,-16 L30,12 M-20,12 L-20,34 L20,34 L20,12"/><rect class="hw" x="-5" y="16" width="10" height="10"/></g>
           <g class="hamlet" transform="translate(846,182)"><path class="hs" d="M-30,12 L0,-16 L30,12 M-20,12 L-20,34 L20,34 L20,12"/><rect class="hw" x="-5" y="16" width="10" height="10"/></g>
           <g class="hamlet" transform="translate(206,478)"><path class="hs" d="M-30,12 L0,-16 L30,12 M-20,12 L-20,34 L20,34 L20,12"/><rect class="hw" x="-5" y="16" width="10" height="10"/></g>
+          <g class="hamlet" transform="translate(798,486)"><path class="hs" d="M-30,12 L0,-16 L30,12 M-20,12 L-20,34 L20,34 L20,12"/><rect class="hw" x="-5" y="16" width="10" height="10"/></g>
         </g>
       </svg>
-<figcaption data-i18n="villageSource">据王明珂《华夏边缘》2020 年版代序〈如何观看与了解边疆〉，第 10–11 页。图示依据书中例子绘制。</figcaption></figure><div class="village-passages">      <div class="scap c1" data-i18n="story1">一条山沟里有三个寨子。问起祖先，人们说：从前有三个弟兄来到这里，各自建了一个寨子。</div>
+      <div class="scap c1" data-i18n="story1">一条山沟里有三个寨子。问起祖先，人们说：从前有三个弟兄来到这里，各自建了一个寨子。</div>
       <div class="scap c2" data-i18n="story2">若把来往密切的四条山沟一起算进来，故事又可以从四个弟兄讲起。</div>
       <div class="scap c3" data-i18n="story3">人们今天同谁来往，也影响他们怎样讲述共同的过去。</div>
       <a class="btn sBtn" href="#concepts" data-i18n="storyCta">带着这个问题 · 读概念八章</a>
-</div></div>
     </div>
   </section>
 
@@ -470,9 +414,9 @@ main{overflow-x:clip}
       <h2 data-i18n="mdTitle">影像里的边缘</h2>
       <div class="rule"></div>
       <p class="lead" data-i18n="mdLead">全网经核验的讲座与解读（2026-11 数据）。</p></div>
-    <div class="media-table"><table class="links reveal"><thead><tr>
+    <table class="links reveal"><thead><tr>
       <th data-i18n="mdH1">平台</th><th data-i18n="mdH2">内容</th><th data-i18n="mdH3">频道</th><th data-i18n="mdH4">热度</th><th data-i18n="mdH5">直达</th>
-    </tr></thead><tbody id="mediaRows"></tbody></table></div>
+    </tr></thead><tbody id="mediaRows"></tbody></table>
     <div class="soc reveal">
       <div class="soc-t" data-i18n="socT">全平台直达 · FIND THE EDGE EVERYWHERE</div>
       <div class="soc-g" id="socLinks"></div>
@@ -494,13 +438,30 @@ main{overflow-x:clip}
       <p class="lead" data-i18n="pLead">两张主题图，把书中的范式之争与认同之变收进一方画面。</p></div>
     <div class="plates">
       <figure class="plate reveal" data-lang="zh"><a href="assets/plates/huaxia-identity-zh.svg" target="_blank" rel="noopener" aria-label="《华夏边缘》族群认同图解（打开矢量原图）"><img src="assets/plates/huaxia-identity-zh.svg" alt="《华夏边缘》族群认同图解" loading="lazy"></a><figcaption><b data-i18n="pl1a">图版一</b><span data-i18n="pl1b">何为华夏边缘 · 身份认同如何形成</span></figcaption></figure>
-      <figure class="plate reveal" data-lang="en"><a href="assets/plates/huaxia-identity-en.svg" target="_blank" rel="noopener" aria-label="Reading identity from the margins (open full vector)"><img src="assets/plates/huaxia-identity-en.svg" alt="Reading identity from the margins: six illustrations and a valley scene" loading="lazy"></a><figcaption><b>PLATE</b><span>Reading identity from the margins</span></figcaption></figure>
+      <figure class="plate reveal" data-lang="en"><a href="assets/plates/huaxia-identity-en.svg" target="_blank" rel="noopener" aria-label="Reading identity from the margins (open full vector)"><img src="assets/plates/huaxia-identity-en.svg" alt="The Margins of Huaxia" loading="lazy"></a><figcaption><b>PLATE 3</b><span>The Margins of Huaxia — how boundaries shape identity</span></figcaption></figure>
     </div>
   </section>
 
   
 
-<section id="lscroll" aria-labelledby="timeline-title"><header><span class="num" data-i18n="timeLabel">边缘长卷</span><h2 id="timeline-title" data-i18n="timeTitle">边界在何处移动</h2></header><nav class="time-nav"><a href="#time-ecology"><small>01</small> <span data-i18n="ln1">生计边界</span></a><a href="#time-records"><small>02</small> <span data-i18n="ln2">历史书写</span></a><a href="#time-identity"><small>03</small> <span data-i18n="ln3">认同变迁</span></a></nav><div class="time-nodes"><article id="time-ecology" tabindex="-1"><p class="time-date" data-i18n="timeDateecology">约四千年前</p><svg viewBox="0 0 300 85" aria-hidden="true" class="time-art"><path d="M5 51q50-45 99-15t91-9 100 7M5 62q60-26 100-10t91-6 100 4M5 72q58-19 101-5t98-4 90 4"/><path d="M104 27q43 10 6 20t16 15-2 19"/></svg><h3 data-i18n="timeHeadecology">水草与耕地</h3><p data-i18n="timeParaecology">在河湟、鄂尔多斯与西辽河，考古遗存留下不同的生计轨迹。气候渐冷、渐干之际，有些聚落被放弃，有些人家开始多养牛羊。</p><small data-i18n="timeCiteecology">第四至六章</small></article><article id="time-records" tabindex="-1"><p class="time-date" data-i18n="timeDaterecords">先秦至汉代</p><svg viewBox="0 0 300 85" aria-hidden="true" class="time-art"><path d="M44 59L140 19l115 35M44 59l95 13 116-18M140 19l-1 53"/><circle cx="44" cy="59" r="6"/><circle cx="140" cy="19" r="6"/><circle cx="139" cy="72" r="6"/><circle cx="255" cy="54" r="6"/></svg><h3 data-i18n="timeHeadrecords">史家笔下的邻人</h3><p data-i18n="timePararecords">吴地的太伯为什么成了周人的后裔？史书里的「羌」又为何逐渐移向西方？把不同时代的记载并排读，称谓和祖先故事也有了自己的历史。</p><small data-i18n="timeCiterecords">第七至十一章</small></article><article id="time-identity" tabindex="-1"><p class="time-date" data-i18n="timeDateidentity">近代以来</p><svg viewBox="0 0 300 85" aria-hidden="true" class="time-art"><path d="M8 70q40-49 82-23t88-13 112-9M52 39l12-10 12 10m-19-2v12h14V37M159 47l12-10 12 10m-19-2v12h14V45M230 21l12-10 12 10m-19-2v12h14V19"/></svg><h3 data-i18n="timeHeadidentity">沿河而行的称呼</h3><p data-i18n="timeParaidentity">在岷江上游，一座村寨怎样称呼上游和下游的邻人？从村与村的往来，到近代的国族建构，作者循着这些称呼，考察地方认同的变迁。</p><small data-i18n="timeCiteidentity">第十二至十四章</small></article></div></section>
+  <section id="lscroll">
+    <div class="lstick">
+      <div class="lorb" id="lorb"></div>
+      <div class="ltrack" id="ltrack">
+        <div class="lcap"><span data-i18n="ls1a">4000 BP</span><i data-i18n="ls1b">气候变动 · 农业边缘化</i></div>
+        <img class="lsvg paper" src="assets/book/svg/fig-104.svg" alt="p.104">
+        <div class="lcap"><span data-i18n="ls2a">1046 BC</span><i data-i18n="ls2b">周人族源 · 西周记忆</i></div>
+        <img class="lsvg" src="assets/book/svg/transparent/fig-099.svg" alt="p.99">
+        <div class="lcap"><span data-i18n="ls3a">221 BC — 1840</span><i data-i18n="ls3b">汉代凝练 · 长城资源界线</i></div>
+        <img class="lsvg" src="assets/book/svg/transparent/fig-113.svg" alt="p.113">
+        <div class="lcap"><span data-i18n="ls4a">1950s</span><i data-i18n="ls4b">民族识别 · 学术知识建构</i></div>
+        <img class="lsvg" src="assets/book/svg/transparent/fig-127.svg" alt="p.127">
+        <div class="lcap"><span data-i18n="ls5a">此刻</span><i data-i18n="ls5b">边缘重构 · 多元一体</i></div>
+      </div>
+      <div class="lnote" data-i18n="lsNote">注：BP 为距今（以 1950 年为测年基准），BC 为公元前，未标注年份为公元纪年。</div>
+      <div class="lnavs"><a data-p="0.1" data-i18n="ln1">生计边界</a><a data-p="0.4" data-i18n="ln2">历史书写</a><a data-p="0.72" data-i18n="ln3">认同变迁</a></div>
+    </div>
+  </section>
 
   <section id="mmap">
     <div class="reveal"><span class="num" data-i18n="bdMap">Ⅴ · 导图</span>
@@ -565,26 +526,28 @@ main{overflow-x:clip}
     <div class="reveal"><span class="num" data-i18n="bdTranslation">Ⅸ · 译程</span>
       <h2 data-i18n-html="trTitle">边缘之外</h2>
       <div class="rule"></div>
-      <p class="lead" style="color:var(--dim)" data-i18n="trLead">《华夏边缘》的英译工作正在进行。</p></div>
+      <p class="lead" style="color:var(--dim)" data-i18n="trLead">《华夏边缘》至今没有任何官方外译本。一项面向英语世界的首次全文翻译工程正在进行——让“边缘”的方法，抵达汉语之外。</p></div>
   </section>
 
   <footer>
     <div class="inner">
+      <div class="en">Translating Wang Ming-ke's <i>Huaxia Frontiers</i><br>into English — for the first time.</div>
       <div class="zh" data-i18n="ftZh">华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）</div>
       <div class="springer" data-i18n="springer">SPRINGER · TRANSLATION PROJECT IN PROGRESS</div>
+      <div style="margin-top:14px"><a href="reading/" style="color:var(--dim);text-decoration:none;border-bottom:1px dotted var(--line);font-size:11px;letter-spacing:.14em">阅读版 · Reading edition ↗</a></div>
       <div class="credits">Planet textures: Solar System Scope (CC BY 4.0) · Earth &amp; Moon imagery: NASA · Built on three.js (MIT) · SVG graphics: the editors</div>
     </div>
   </footer>
 
 
 
-<dialog id="bookOverlay" aria-labelledby="bookTitle" onclick="if(event.target===this) closeBookOverlay()">
-  <div class="glass" style="max-width:860px;width:100%;max-height:86vh;overflow:auto;padding:38px 40px;display:flex;gap:34px;flex-wrap:wrap">
+<div id="bookOverlay" style="display:none;position:fixed;inset:0;z-index:15;background:rgba(4,5,9,.82);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:24px" onclick="closeBookOverlay()">
+  <div class="glass" style="max-width:860px;width:100%;max-height:86vh;overflow:auto;padding:38px 40px;display:flex;gap:34px;flex-wrap:wrap" onclick="event.stopPropagation()">
     <img src="assets/book/cover.jpg" alt="cover" style="width:210px;flex:0 0 auto;border-radius:6px;box-shadow:0 18px 60px rgba(0,0,0,.6)">
     <div style="flex:1;min-width:260px">
       <div style="font-size:11px;letter-spacing:.3em;color:var(--gold);margin-bottom:12px" data-i18n="ovKick">BOOK · 世纪文景 2020</div>
-      <div style="font-size:30px;letter-spacing:.12em;color:var(--ink);margin-bottom:8px" id="bookTitle" data-i18n="ovTitle">华夏边缘：历史记忆与族群认同</div>
-      <div style="font-family:var(--fserif);font-style:italic;color:var(--dim);font-size:13.5px;margin-bottom:18px" data-i18n="ovEn">Huaxia Frontier: Historical Memory and Ethnic Identity</div>
+      <div style="font-size:30px;letter-spacing:.12em;color:var(--ink);margin-bottom:8px" data-i18n="ovTitle">华夏边缘：历史记忆与族群认同</div>
+      <div style="font-family:var(--fserif);font-style:italic;color:var(--dim);font-size:13.5px;margin-bottom:18px" data-i18n="ovEn">Huaxia Frontiers: Historical Memory and Ethnic Identity</div>
       <div style="font-size:14.5px;line-height:2.1;color:var(--ink);opacity:.88" data-i18n="ovBody">为什么我们自称“中国人”？华夏从何处来，边界又在哪里？王明珂以考古、文献与多年羌族田野，画出一条随资源竞争与历史记忆不断移动的边界——华夏因边缘而凝聚，也因边缘而改变。读懂边缘，才读懂“什么是中国人”。</div>
       <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;font-size:11.5px;color:var(--dim);letter-spacing:.1em">
         <span style="border:1px solid var(--line);border-radius:99px;padding:5px 14px" data-i18n="ovM1">豆瓣 9.1</span>
@@ -592,12 +555,12 @@ main{overflow-x:clip}
         <span style="border:1px solid var(--line);border-radius:99px;padding:5px 14px" data-i18n="ovM3">王明珂 · 历史人类学</span>
       </div>
     </div>
-    <button type="button" id="closeBook" autofocus onclick="closeBookOverlay()" style="position:absolute;top:14px;right:20px;color:var(--dim);cursor:pointer;font-size:22px">×</button>
+    <div onclick="closeBookOverlay()" style="position:absolute;top:14px;right:20px;color:var(--dim);cursor:pointer;font-size:22px">⊗</div>
   </div>
-</dialog>
+</div>
 <script>
-function openBookOverlay(){ document.getElementById('bookOverlay').showModal(); }
-function closeBookOverlay(){ document.getElementById('bookOverlay').close(); }
+function openBookOverlay(){ document.getElementById('bookOverlay').style.display = 'flex'; }
+function closeBookOverlay(){ document.getElementById('bookOverlay').style.display = 'none'; }
 </script>
 </main>
 
@@ -626,7 +589,7 @@ const AULIST = [
  {zh:'哈佛大学东亚系博士（1992）',en:'Ph.D., Harvard University (1992)'},
  {zh:'北京大学历史学系客座讲席教授',en:'Visiting Chair Professor, Peking University'},
  {zh:'长期在川西羌族地区进行历史人类学田野',en:'Decades of fieldwork among the Qiang'},
- {zh:'代表作：《华夏边缘》《羌在汉藏之间》《游牧者的抉择》《毒药猫理论》',en:'Works: Huaxia Frontier; Between Han and Tibetan; Nomads'+String.fromCharCode(39)+' Choices; The Poison Cat Theory'}
+ {zh:'代表作：《华夏边缘》《羌在汉藏之间》《游牧者的抉择》《毒药猫理论》',en:'Works: Huaxia Frontiers; Between Han and Tibetan; Nomads'+String.fromCharCode(39)+' Choices; The Poison Cat Theory'}
 ];
 const TL = [
  {y:'1997',b:{zh:'台北允晨文化 · 繁体初版',en:'Taipei: Yunchen Culture'},s:{zh:'作者成名作，震动台湾学界',en:'The breakthrough work'}},
@@ -651,23 +614,6 @@ const SOC = [
  {n:'中研院史语所',u:'https://www1.ihp.sinica.edu.tw/Fellows/Ming-ke_Wang',d:{zh:'王明珂研究员页面 · 官方',en:'Official fellow page, IHP'}}
 ];
 const T = { lang:'zh', dict:{
- villageLabel:{zh:"岷江上游 · 田野笔记",en:"Upper Min River · field notes"},
- villageTitle:{zh:"一条山沟里的三个寨子",en:"Three villages in one valley"},
- villageSource:{zh:"据王明珂《华夏边缘》2020 年版代序〈如何观看与了解边疆〉，第 10–11 页。图示依据书中例子绘制。",en:"After Wang Ming-ke’s preface to the 2020 Chinese edition, pp. 10–11. The drawing illustrates his example."},
- timeLabel:{zh:"边缘长卷",en:"The long scroll"},
- timeTitle:{zh:"边界在何处移动",en:"Where the boundary moves"},
- timeDateecology:{zh:"约四千年前",en:"About 4,000 years ago"},
- timeHeadecology:{zh:"水草与耕地",en:"Fields and pasture"},
- timeParaecology:{zh:"在河湟、鄂尔多斯与西辽河，考古遗存留下不同的生计轨迹。气候渐冷、渐干之际，有些聚落被放弃，有些人家开始多养牛羊。",en:"In the Hehuang valley, Ordos and the West Liao River basin, the archaeological record tells different stories. As conditions grew colder and drier, some settlements were abandoned. Elsewhere, herding became a larger part of daily life."},
- timeCiteecology:{zh:"第四至六章",en:"Chapters 4–6"},
- timeDaterecords:{zh:"先秦至汉代",en:"Early China to the Han"},
- timeHeadrecords:{zh:"史家笔下的邻人",en:"Neighbours in the histories"},
- timePararecords:{zh:"吴地的太伯为什么成了周人的后裔？史书里的「羌」又为何逐渐移向西方？把不同时代的记载并排读，称谓和祖先故事也有了自己的历史。",en:"How did Taibo of Wu come to be remembered as a descendant of the Zhou? Why did writers place the people they called Qiang ever farther west? Read side by side, the accounts reveal a history of names and ancestry."},
- timeCiterecords:{zh:"第七至十一章",en:"Chapters 7–11"},
- timeDateidentity:{zh:"近代以来",en:"Modern China"},
- timeHeadidentity:{zh:"沿河而行的称呼",en:"Names along the river"},
- timeParaidentity:{zh:"在岷江上游，一座村寨怎样称呼上游和下游的邻人？从村与村的往来，到近代的国族建构，作者循着这些称呼，考察地方认同的变迁。",en:"What did villagers on the upper Min River call their neighbours upstream and down? Following these names from everyday encounters into a period of nation-building, Wang traces changes in local belonging."},
- timeCiteidentity:{zh:"第十二至十四章",en:"Chapters 12–14"},
  prLead:{zh:'当代华语世界最具范式意义的历史人类学经典之一',en:'One of the most paradigm-shifting works of historical anthropology in the Chinese-speaking world'},
  ps1:{zh:'微信读书 · 人在读（2026-11-02 记录）',en:'WeRead readers on record · Nov 2, 2026'},
  ctaMain:{zh:'从岷江上游读起',en:'Begin upstream, in the Minjiang valley'},
@@ -703,9 +649,9 @@ const T = { lang:'zh', dict:{
  bdAuthor:{zh:'Ⅷ · 作者与版本',en:'Ⅷ · AUTHOR &amp; EDITIONS'},
  bdTranslation:{zh:'Ⅸ · 译程',en:'Ⅸ · TRANSLATION'},
  spLo:{zh:'疏',en:'Sparse'}, spMid:{zh:'常',en:'Normal'}, spFull:{zh:'繁',en:'Dense'},
- sidesign:{zh:'华夏边缘 · 历史记忆与族群认同',en:'HUAXIA FRONTIER · Historical Memory and Ethnic Identity'},
+ sidesign:{zh:'华夏边缘 · 历史记忆与族群认同',en:'HUAXIA FRONTIER · Historical Memory & Ethnic Identity'},
  metaline:{zh:'田野坐标 北纬31°06′ 东经103°51′ · 岷江上游 · 田野期一九九〇至二〇〇〇年代 · 研究编号 01',en:'FIELD SITE 31°06′N 103°51′E · UPPER MINJIANG · FIELDWORK 1990s—2000s · STUDY No.01'},
- ensub:{zh:'历史记忆与族群认同',en:'Historical Memory and Ethnic Identity'},
+ ensub:{zh:'',en:'THE FRONTIERS OF HUAXIA · Historical Memory and Ethnic Identity'},
  heroZh:{zh:'华夏边缘',en:'Huaxia Frontier'},
  quote:{zh:'“当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b><br>让它看起来像个圆形。”<br><span style="font-size:12.5px;color:var(--dim)">—— 王明珂</span>',en:'"Draw a circle on a sheet of paper: it is its <b>outline</b><br>that makes it a circle."<br><span style="font-size:12.5px;color:var(--dim)">—— Wang Ming-ke</span>'},
  st1:{zh:'LIVE · 人在读',en:'LIVE · READING'}, st2:{zh:'豆瓣评分',en:'Douban'}, st3:{zh:'微信读书推荐值',en:'WeRead Score'}, st4:{zh:'豆瓣书评',en:'Reviews'},
@@ -722,7 +668,7 @@ const T = { lang:'zh', dict:{
   en:'On this genealogy of ideas, archaeology asks how knowledge takes form, boundary theory places identity on the line, and collective memory lives within social frames — Huaxia is not a fixed roster but a boundary that moves with resource competition, memory and forgetting. To read the edge is to read "what is Chinese."'},
  pTitle:{zh:'信息图 · <em>族群认同图解</em>',en:'Reading identity <em>from the margins</em>'},
  pLead:{zh:'一张图解：范式如何转换、边界如何形成、认同如何变迁——全书的提问与回答，收进一方画面。',en:'One infographic: how paradigms shift, how boundaries form, how identity changes — the book'+String.fromCharCode(39)+'s questions and answers in a single frame.'},
- pl1a:{zh:'图版',en:'PLATE'}, pl1b:{zh:'《华夏边缘》族群认同图解 · 全书核心逻辑一图读懂',en:'Reading identity from the margins'},
+ pl1a:{zh:'图版',en:'PLATE'}, pl1b:{zh:'《华夏边缘》族群认同图解 · 全书核心逻辑一图读懂',en:'The Margins of Huaxia — how boundaries shape identity'},
  pl2a:{zh:'图版贰',en:'PLATE Ⅱ'}, pl2b:{zh:'从客观特征到主观认同 · 范式之变',en:'From objective traits to subjective identity — a paradigm shift'},
 
 
@@ -737,7 +683,7 @@ const T = { lang:'zh', dict:{
  mkChip1:{zh:'⬇ 下载 Blender 工程文件',en:'⬇ Download the Blender file'},
  ovKick:{zh:'书籍 · 世纪文景 2020',en:'BOOK · CENTURY WENJING 2020'},
  ovTitle:{zh:'华夏边缘：历史记忆与族群认同',en:'Huaxia Frontier: Historical Memory and Ethnic Identity'},
- ovEn:{zh:'Huaxia Frontier: Historical Memory and Ethnic Identity',en:'by Wang Ming-ke'},
+ ovEn:{zh:'Huaxia Frontiers: Historical Memory and Ethnic Identity',en:'by Wang Ming-ke'},
  ovBody:{zh:'为什么我们自称“中国人”？华夏从何处来，边界又在哪里？王明珂以考古、文献与多年羌族田野，画出一条随资源竞争与历史记忆不断移动的边界——华夏因边缘而凝聚，也因边缘而改变。读懂边缘，才读懂“什么是中国人”。',en:'Who counted as Huaxia, and who decided? Drawing on archaeological finds, historical texts and years of fieldwork in Qiang communities, Wang Ming-ke traces how people drew boundaries around land, ancestry and belonging.'},
  ovM1:{zh:'豆瓣 9.1',en:'Douban 9.1'}, ovM2:{zh:'微信读书推荐值 91.9%',en:'WeRead 91.9%'}, ovM3:{zh:'王明珂 · 历史人类学',en:'Wang Ming-ke · Historical Anthropology'},
  hbCue:{zh:'点击读简介',en:'Click to read'},
@@ -746,8 +692,8 @@ const T = { lang:'zh', dict:{
  auTitle:{zh:'作者与版本谱系',en:'Wang Ming-ke and the book in print'}, auName:{zh:'王明珂',en:'Wang Ming-ke'},
  trTitle:{zh:'边缘之外',en:'Beyond the <em>margins</em>'},
  trLead:{zh:'边缘，是华夏最早的记忆，也是它最新的提问。三千年间，这条线在草原、雪山与河谷之间移动；今天，它移到了一种语言的边界上——而这部书的英译，已经在路上，即将抵达。',
- en:'The edge is Huaxia'+String.fromCharCode(39)+'s oldest memory — and its newest question. For three thousand years it has drifted across steppe, snowline and river valley; today it arrives at the border of a language — and the English translation of this book is underway.'},
- ftZh:{zh:'华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）',en:'Huaxia Frontier · Historical Memory and Ethnic Identity<br>by Wang Ming-ke · Shanghai People'+String.fromCharCode(39)+'s Publishing House / Century Wenjing'}
+ en:'The edge is Huaxia'+String.fromCharCode(39)+'s oldest memory — and its newest question. For three thousand years it has drifted across steppe, snowline and river valley; today it arrives at the border of a language — and the first English translation of this book is already on its way.'},
+ ftZh:{zh:'华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）',en:'Huaxia Frontiers · Historical Memory and Ethnic Identity<br>by Wang Ming-ke · Shanghai People'+String.fromCharCode(39)+'s Publishing House / Century Wenjing'}
 }};
 function tx(o){ return o ? (o[T.lang] || o.zh || '') : ''; }
 function applyLang(){
@@ -767,8 +713,6 @@ function applyLang(){
    `<a href="${s.u}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><b>${s.n}</b><span>${tx(s.d)}</span></a>`).join('');
   renderMap();
   document.getElementById('btnLang').innerHTML = (T.lang==='zh' ? 'EN' : '中文') + ' <kbd>L</kbd>';
-  const labels={btnSound:['环境声音','Ambient sound'],btnPause:['暂停动画','Pause animation'],btnTheme:['浅色主题','Light theme'],btnHide:['隐藏界面','Hide interface'],btnRestore:['恢复界面','Restore interface'],closeBook:['关闭书籍简介','Close book details'],btnLang:['Switch to English','切换到中文']};
-  for(const [id,pair] of Object.entries(labels)){const el=document.getElementById(id); const name=pair[T.lang==='zh'?0:1];el.setAttribute('aria-label',name);el.title=name;}
   io2.observe();
 }
 
@@ -829,18 +773,16 @@ function renderMap(){
   const L = T.lang, ROW = 38, W = 1560, NODEW = [260, 200, 210, 252];
   const mapX = [30, 330, 640, 990];
   let y = 40; const nodes = [], edges = [];
-  function walk(n, depth){
+  function walk(n, depth, py){
     const kids = (n.ch && mapExp[n.zh]) ? n.ch : null;
     let my;
     if(!kids){ my = y + 16; y = my + 16; }
-    else {
-      const ys = kids.map(c=>walk(c, depth+1)); my = (Math.min(...ys)+Math.max(...ys))/2;
-      ys.forEach(ty=>edges.push({fy:my,ty,x1:mapX[depth]+NODEW[depth],x2:mapX[depth+1]}));
-    }
+    else { const ys = kids.map(c=>walk(c, depth+1)); my = (Math.min(...ys)+Math.max(...ys))/2; }
     nodes.push({n, depth, x:mapX[Math.min(depth,3)], y:my});
+    if(py!==null) edges.push({fy:py, ty:my, x1:mapX[Math.max(0,depth-1)]+NODEW[Math.max(0,depth-1)], x2:mapX[Math.min(depth,3)]});
     return my;
   }
-  walk(MAP.r, 0);
+  walk(MAP.r, 0, null);
   const H = y + 40;
   const label = n => L==='zh' ? n.zh : n.en;
   let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="mapgrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5b7fd9"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs>`;
@@ -849,7 +791,7 @@ function renderMap(){
   nodes.forEach(nd=>{
     const w = NODEW[Math.min(nd.depth,3)], h = 30;
     const cls = nd.depth===0?'root':(nd.depth<=1?'mid':'');
-    s += `<g class="node ${cls}" ${nd.n.ch ? `role="button" tabindex="0" aria-label="${label(nd.n)}" aria-expanded="${!!mapExp[nd.n.zh]}"` : ''} data-key="${nd.n.zh}"><rect x="${nd.x}" y="${nd.y-h/2}" width="${w}" height="${h}" rx="9"/><text x="${nd.x+14}" y="${nd.y+4.5}">${label(nd.n).slice(0,32)}</text>`;
+    s += `<g class="node ${cls}" data-key="${nd.n.zh}"><rect x="${nd.x}" y="${nd.y-h/2}" width="${w}" height="${h}" rx="9"/><text x="${nd.x+14}" y="${nd.y+4.5}">${label(nd.n).slice(0,32)}</text>`;
     if(nd.n.ch){
       const open = mapExp[nd.n.zh];
       s += `<g class="plus" transform="translate(${nd.x+w-20},${nd.y})"><circle r="8.5" class="pc"/><text y="3.5" class="pt">${open?'−':'+'+nd.n.ch.length}</text></g>`;
@@ -865,12 +807,7 @@ function renderMap(){
   wrap.addEventListener('click', e=>{
     const g = e.target.closest('.node'); if(!g) return;
     const key = g.dataset.key;
-    if(MAPR[key] && MAPR[key].ch){ mapExp[key] = !mapExp[key]; renderMap(); wrap.querySelector('.node[data-key="'+CSS.escape(key)+'"]').focus({preventScroll:true}); }
-  });
-  wrap.addEventListener('keydown', e=>{
-    if((e.key==='Enter'||e.key===' ') && e.target.matches('.node[role="button"]')){
-      e.preventDefault(); e.stopPropagation(); e.target.dispatchEvent(new MouseEvent('click',{bubbles:true}));
-    }
+    if(MAPR[key] && MAPR[key].ch){ mapExp[key] = !mapExp[key]; renderMap(); }
   });
   wrap.addEventListener('mouseover', e=>{
     const g = e.target.closest('.node'); if(!g) return;
@@ -886,9 +823,6 @@ function renderMap(){
 
 /* ================= THREE.JS HERO（动态背景全站回归） ================= */
 const canvas = document.getElementById('bg');
-let theme='dark', paused=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let sceneActions;
-function initScene(){
 const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));
 renderer.setSize(innerWidth, innerHeight);
@@ -901,7 +835,7 @@ const PAL = {
   light:{ bg:0xece3d2, ring:0x8a6c33, core:0xb9853a, glow:0xb9853a, coreC:[.55,.42,.2], edgeC:[.3,.44,.52],
     band:[[.42,.33,.2],[.55,.44,.26],[.36,.28,.16],[.6,.48,.3]], frag:0x6b5124, dust:0x6b5c3a, key:0xfff1d6 }
 };
-
+let theme = 'dark';
 const SCENES = {
  morning:{bg:0x0e1119, fog:0x0e1119, fd:.042, key:0xfff1d6, ki:2.6, rim:0x7fa0ff, ri:.5, core:0xffe2a8, ring:0xd8b878,
    st:{zh:'晨光漂流 · 清透大气',en:'Morning drift · clear air'}, bgc:'#0e1119'},
@@ -1068,7 +1002,7 @@ addEventListener('pointermove', e=>{
 addEventListener('pointerup', ()=>{ dragging = false; });
 canvas.addEventListener('click', e=>{ burst(e.clientX, e.clientY); });
 
-let mx=0,my=0,scrolly=0;
+let mx=0,my=0,scrolly=0,paused=false;
 addEventListener('scroll', ()=>{ scrolly = scrollY/innerHeight; });
 addEventListener('resize', ()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
 const clock = new THREE.Clock(); let simT = 0;
@@ -1095,8 +1029,7 @@ const look = new THREE.Vector3(0,.4,0);
     if(bLife[j]<=0) bpos[j*3+1]=-999; } }
   bGeo.attributes.position.needsUpdate = true;
   /* 从远及近穿越 → 之后回到中景，动态背景陪伴全站 */
-  const vh = innerHeight, transition=document.getElementById('descend');
-  const d0=transition.offsetTop-vh*.72, d1=d0+Math.max(1,transition.offsetHeight);
+  const vh = innerHeight, d0 = vh*.75, d1 = vh*2.15;
   const rawDp = (scrollY-d0)/(d1-d0);
   const dp = Math.max(0, Math.min(1, rawDp));
   const ez = dp*dp*(3-2*dp);
@@ -1119,30 +1052,9 @@ const look = new THREE.Vector3(0,.4,0);
   canvas.style.opacity = cur + (op-cur)*.08;
   document.querySelectorAll('.dcap').forEach(d=>{
     d.style.opacity = Math.max(0, 1-Math.abs(dp-(+d.dataset.p))*5.5) * Math.max(0, 1-Math.max(0,rawDp-1)*3); });
+  if((window.__fc=(window.__fc||0)+1)%2===0) updateScroll();
   renderer.render(scene, camera);
 })();
-
-/* ================= 氛围面板（极简：场景×4 + 雾） ================= */
-let sceneK = 'morning';
-function setScene(k){ sceneK = k; const s = SCENES[k];
-  key.color.set(s.key); key.intensity = s.ki;
-  rim.color.set(s.rim); rim.intensity = s.ri;
-  scene.fog.color.set(s.fog); scene.fog.density = s.fd*(+document.getElementById('fogR').value/50||.5)+.014;
-  renderer.setClearColor(s.bg);
-  document.documentElement.setAttribute('data-scene', k);
-  edge.material.color.set(s.ring); core.material.color.set(s.core); glow.material.color.set(s.core);
-}
-document.querySelectorAll('#segScene button').forEach(s=>{
-  s.onclick = ()=>{ document.querySelectorAll('#segScene button').forEach(x=>{x.classList.toggle('on',x===s);x.setAttribute('aria-pressed',String(x===s));});
-    setScene(s.dataset.v); };
-});
-const fogSlider = document.getElementById('fogR');
-fogSlider.oninput = ()=>{ scene.fog.density = .018+(+fogSlider.value/100)*.05; };
-
-document.querySelectorAll('#segDen button').forEach(function(s){ s.onclick=function(){density=s.dataset.v;document.querySelectorAll('#segDen button').forEach(function(x){ x.classList.toggle('on',x===s);x.setAttribute('aria-pressed',String(x===s)); });applyDensity(); }; });
-setScene('morning');
-return {applyTheme, burst, rotate(direction){edge.rotation.z+=direction*.14;dragVel=direction*.012;}};
-}
 
 /* ================= 命令条 ================= */
 const btnLang=document.getElementById('btnLang'), btnSound=document.getElementById('btnSound'),
@@ -1204,55 +1116,93 @@ function toggleSound(){
     setInterval(playChord, 8600);
     audio = {ctx, master};
   }
-  const on = btnSound.getAttribute('aria-pressed')==='true';
+  const on = audio.master.gain.value > 0;
   audio.master.gain.linearRampToValueAtTime(on?0:.16, audio.ctx.currentTime+1.6);
-  btnSound.classList.toggle('on', !on); btnSound.setAttribute('aria-pressed',String(!on));
+  btnSound.classList.toggle('on', !on);
 }
-function togglePause(){ paused = !paused; btnPause.classList.toggle('on', paused); btnPause.setAttribute('aria-pressed',String(paused)); }
-function toggleTheme(){ theme=theme==='dark'?'light':'dark'; document.documentElement.dataset.theme=theme; sceneActions?.applyTheme(theme); btnTheme.classList.toggle('on', theme==='light'); btnTheme.setAttribute('aria-pressed',String(theme==='light')); }
-function toggleHide(){
-  const hidden=document.body.classList.toggle('ui-hidden');
-  document.querySelectorAll('main,.cmdbar,.apanel,#navpop').forEach(el=>el.inert=hidden);
-  document.getElementById('navpop').style.display='none';
-  document.getElementById('btnMenu').setAttribute('aria-expanded','false');
-  document.getElementById(hidden?'btnRestore':'btnHide').focus({preventScroll:true});
-}
+function togglePause(){ paused = !paused; btnPause.classList.toggle('on', paused); }
+function toggleTheme(){ applyTheme(theme==='dark'?'light':'dark'); btnTheme.classList.toggle('on', theme==='light'); }
+function toggleHide(){ document.body.classList.toggle('ui-hidden'); }
 const hb=document.querySelector('.heroBook'); if(hb) hb.onclick=function(){ if(window.openBookOverlay) openBookOverlay(); };
-function toggleNavPop(){ const n=document.getElementById('navpop'); if(n){const open=n.style.display==='none'; n.style.display=open?'flex':'none';document.getElementById('btnMenu').setAttribute('aria-expanded',String(open));if(open)n.querySelector('a').focus();} }
-document.getElementById('navpop').addEventListener('click', function(e){ if(e.target.tagName==='A'){this.style.display='none';document.getElementById('btnMenu').setAttribute('aria-expanded','false');const heading=document.querySelector(e.target.hash+' h2')||document.querySelector(e.target.hash);if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}} });
+function toggleNavPop(){ const n=document.getElementById('navpop'); if(n) n.style.display = (n.style.display==='none'?'flex':'none'); }
+document.getElementById('navpop').addEventListener('click', function(e){ if(e.target.tagName==='A') this.style.display='none'; });
 document.getElementById('btnMenu').onclick = toggleNavPop;
-document.getElementById('btnTray').onclick = function(){const open=document.body.classList.toggle('tray-open');this.setAttribute('aria-expanded',String(open));if(open)document.getElementById('btnSound').focus();};
-if(innerWidth<760){ const ap=document.getElementById('apanel'); if(ap){ap.classList.add('closed');document.getElementById('apHead').setAttribute('aria-expanded','false');} }
-/* 三寨子故事：一条山沟与邻近三沟 */
+document.getElementById('btnTray').onclick = function(){ document.body.classList.toggle('tray-open'); };
+if(innerWidth<760){ const ap=document.getElementById('apanel'); if(ap) ap.classList.add('closed'); }
+/* 三寨子故事：滚动驱动 三沟→四沟 拉远 */
 (function(){
-  const sec=document.getElementById('story');
-  const near=sec.querySelector('.vOuter');
-  const second=sec.querySelector('.c2');
-  function updateValley(){
-    near.classList.toggle('nearby', second.getBoundingClientRect().top < innerHeight * .72);
+  const sec=document.getElementById('story'); if(!sec) return;
+  const svg=sec.querySelector('.valley'), vOut=sec.querySelector('.vOuter'); if(!svg||!vOut) return;
+  function updStory(){
+    const r=sec.getBoundingClientRect(), total=r.height-innerHeight;
+    if(total<=0) return;
+    const p=Math.min(1,Math.max(0,-r.top/total));
+    sec.classList.toggle('p1', p<.38);
+    sec.classList.toggle('p2', p>=.38 && p<.72);
+    sec.classList.toggle('p3', p>=.72);
+    const sc = p<.38 ? 1 : (p<.72 ? 1-(p-.38)/.34*.42 : .58);
+    svg.style.transform='scale('+sc+')';
+    vOut.style.opacity = p<.38 ? 0 : Math.min(1,(p-.38)/.15);
   }
-  addEventListener('scroll',updateValley,{passive:true});
-  addEventListener('resize',updateValley);
-  updateValley();
+  addEventListener('scroll',updStory,{passive:true}); addEventListener('resize',updStory); updStory();
 })();
-
-[["btnSound",toggleSound],["btnPause",togglePause],["btnTheme",toggleTheme],["btnHide",toggleHide],["btnRestore",toggleHide],["apHead",()=>{const closed=document.getElementById('apanel').classList.toggle('closed');document.getElementById('apHead').setAttribute('aria-expanded',String(!closed));}]].forEach(([id,fn])=>{
+document.querySelectorAll('#segDen span').forEach(function(s){ s.onclick=function(){density=s.dataset.v;document.querySelectorAll('#segDen span').forEach(function(x){ x.classList.toggle('on',x===s); });applyDensity(); }; });
+[["btnSound",toggleSound],["btnPause",togglePause],["btnTheme",toggleTheme],["btnHide",toggleHide],["btnRestore",toggleHide],["apHead",()=>document.getElementById('apanel').classList.toggle('closed')]].forEach(([id,fn])=>{
   const el = document.getElementById(id); if(el) el.onclick = fn;
 });
-document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',String(b.classList.contains('on'))));
 addEventListener('keydown', e=>{
-  if(e.defaultPrevented||e.ctrlKey||e.metaKey||e.altKey||e.isComposing||e.repeat)return;
-  if(document.getElementById('bookOverlay').open)return;
-  if(e.key==='Escape'){ if(window.closeKnife) closeKnife(); if(window.closeBookOverlay) closeBookOverlay(); const np=document.getElementById('navpop'); if(np && np.style.display!=='none'){np.style.display='none';document.getElementById('btnMenu').setAttribute('aria-expanded','false');document.getElementById('btnMenu').focus();} if(document.body.classList.contains('tray-open')){document.body.classList.remove('tray-open');document.getElementById('btnTray').setAttribute('aria-expanded','false');document.getElementById('btnTray').focus();}return; }
-  if(e.target.closest('input,textarea,select,video,[contenteditable="true"]')) return;
-  if((e.key===' ' || e.key.startsWith('Arrow')) && e.target.closest('button,a,[role="button"]'))return;
+  if(e.key==='Escape'){ if(window.closeKnife) closeKnife(); if(window.closeBookOverlay) closeBookOverlay(); const np=document.getElementById('navpop'); if(np) np.style.display='none'; document.body.classList.remove('tray-open'); }
+  if(e.target.tagName==='INPUT') return;
   const k = e.key.toLowerCase();
   if(k==='l') toggleLang(); else if(k==='s') toggleSound(); else if(k==='p') togglePause();
   else if(k==='t') toggleTheme(); else if(k==='h') toggleHide();
-  else if(k==='arrowleft'){ sceneActions?.rotate(-1); }
-  else if(k==='arrowright'){ sceneActions?.rotate(1); }
-  else if(e.code==='Space' && sceneActions && !paused && scrollY<innerHeight){ sceneActions.burst(innerWidth/2, innerHeight/2); e.preventDefault(); }
+  else if(k==='arrowleft'){ edge.rotation.z -= .14; dragVel = -.012; }
+  else if(k==='arrowright'){ edge.rotation.z += .14; dragVel = .012; }
+  else if(e.code==='Space' && !paused){ burst(innerWidth/2, innerHeight/2); e.preventDefault(); }
 });
+
+/* ================= 氛围面板（极简：场景×4 + 雾） ================= */
+let sceneK = 'morning';
+function setScene(k){ sceneK = k; const s = SCENES[k];
+  key.color.set(s.key); key.intensity = s.ki;
+  rim.color.set(s.rim); rim.intensity = s.ri;
+  scene.fog.color.set(s.fog); scene.fog.density = s.fd*(+document.getElementById('fogR').value/50||.5)+.014;
+  renderer.setClearColor(s.bg);
+  document.documentElement.setAttribute('data-scene', k);
+  edge.material.color.set(s.ring); core.material.color.set(s.core); glow.material.color.set(s.core);
+}
+document.querySelectorAll('#segScene span').forEach(s=>{
+  s.onclick = ()=>{ document.querySelectorAll('#segScene span').forEach(x=>x.classList.toggle('on',x===s));
+    setScene(s.dataset.v); };
+});
+const fogSlider = document.getElementById('fogR');
+fogSlider.oninput = ()=>{ scene.fog.density = .018+(+fogSlider.value/100)*.05; };
+
+/* ================= 边缘长卷（滚轮驱动） ================= */
+(function(){
+  const navs=document.querySelector('.lnavs'); if(!navs) return;
+  navs.addEventListener('click', function(e){
+    const a=e.target.closest('a'); if(!a) return;
+    const ls=document.getElementById('lscroll'); if(!ls) return;
+    const top=ls.getBoundingClientRect().top+scrollY;
+    const p=parseFloat(a.dataset.p)||0;
+    window.scrollTo({top: top + p*(ls.offsetHeight-innerHeight), behavior:'smooth'});
+  });
+})();
+function updateScroll(){
+  const sec = document.getElementById('lscroll');
+  if(!sec) return;
+  const total = sec.offsetHeight - innerHeight;
+  const p = Math.max(0, Math.min(1, -sec.getBoundingClientRect().top / Math.max(1,total)));
+  const track = document.getElementById('ltrack');
+  const maxX = Math.max(0, track.scrollWidth - innerWidth);
+  track.style.transform = 'translateX(' + (-p*maxX) + 'px)';
+  const orb = document.getElementById('lorb');
+  orb.style.left = (p*maxX + innerWidth*0.5) + 'px';
+}
+addEventListener('scroll', updateScroll, {passive:true});
+addEventListener('resize', updateScroll);
+updateScroll();
 
 /* ================= 浮现 ================= */
 const io = new IntersectionObserver(es=>es.forEach(e=>{
@@ -1262,15 +1212,8 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main .bpage').forEach(el=>el.classList.add('on')) };
 
 applyLang();
-btnPause.setAttribute('aria-pressed',String(paused));
-btnPause.classList.toggle('on',paused);
-try {
-  sceneActions=initScene();
-} catch(error) {
-  document.documentElement.classList.add('static-scene');
-  console.warn('Showing the static reading edition.',error);
-}
-console.info('Huaxia Frontier site — v7.2 (2026-11-02) | v21');
+setScene('morning');
+console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v21');
 document.documentElement.setAttribute('data-scene','morning');
 </script>
 </body>
