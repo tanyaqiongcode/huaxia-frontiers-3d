@@ -1,4 +1,4 @@
-# 华夏边缘 · The Frontiers of Huaxia — 3D 主题站
+# 华夏边缘 · Huaxia Frontier — 3D 主题站
 
 王明珂《华夏边缘：历史记忆与族群认同》3D 沉浸式主题网站。
 
