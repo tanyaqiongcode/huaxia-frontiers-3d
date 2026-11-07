@@ -50,6 +50,8 @@
   /* 右下提示 */
   .hint{position:fixed;right:18px;bottom:18px;z-index:5;font-size:11px;color:var(--dim);letter-spacing:.12em;text-align:right;line-height:1.9;pointer-events:none}
   .hint kbd{border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:10px;font-family:var(--fserif)}
+  .langBtn{position:fixed;top:22px;right:70px;z-index:5;border:1px solid var(--line);border-radius:99px;background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));color:var(--dim);padding:8px 16px;font-size:12px;letter-spacing:.16em;cursor:pointer;font-family:var(--fserif);backdrop-filter:blur(8px)}
+  .langBtn:hover{color:var(--gold-hi);border-color:var(--gold)}
 
   /* 对话/字幕 */
   .dlg{position:fixed;left:50%;bottom:74px;transform:translateX(-50%);z-index:6;width:min(680px,92vw);
@@ -110,20 +112,21 @@
 <canvas id="gl"></canvas>
 <div class="vignette"></div><div class="grain"></div>
 <div class="mark" title="Huaxia Frontier"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="#c9a45c" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="#c9a45c"/></svg></div>
+<button class="langBtn" id="btnLang">EN</button>
 
 <div class="sceneCard"><b id="zName">河谷 · 岷江上游</b><i id="zSub">沿河谷行走，边缘在脚下移动。</i></div>
 <div class="hudR">
   <div class="ring"><svg width="44" height="44"><circle cx="22" cy="22" r="18" stroke="rgba(201,164,92,.2)" stroke-width="3" fill="none"/><circle id="ringFg" cx="22" cy="22" r="18" stroke="#e8cf96" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="113" stroke-dashoffset="113"/></svg><b id="pct">0%</b></div>
-  <div class="cnt">记忆碎片 <b id="cShard">0</b>/12<br>倾听讲述 <b id="cNpc">0</b>/3</div>
+  <div class="cnt" data-i18n-html="hudCnt">记忆碎片 <b id="cShard">0</b>/12<br>倾听讲述 <b id="cNpc">0</b>/3</div>
 </div>
-<div class="posHUD" id="posHUD">你现在：<b id="posTxt">边缘之上</b></div>
-<div class="hint" id="hint"><kbd>W A S D</kbd> 移动 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务</div>
-<div class="tasks" id="tasks"><b>行走任务</b><ul>
+<div class="posHUD" id="posHUD" data-i18n-html="posHud">你现在：<b id="posTxt">边缘之上</b></div>
+<div class="hint" id="hint" data-i18n-html="hintTxt"><kbd>W A S D</kbd> 移动 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务</div>
+<div class="tasks" id="tasks"><b data-i18n="tasksT">行走任务</b><ul>
   <li id="tShard">拾取 12 枚记忆碎片（0/12）</li>
-  <li id="tNpc1">倾听 寨老阿爷 的讲述</li>
-  <li id="tNpc2">倾听 河湟考古者 的讲述</li>
-  <li id="tNpc3">倾听 长城戍卒 的讲述</li>
-  <li id="tLine">见证边界线移动</li>
+  <li id="tNpc1" data-i18n="tNpc1">倾听 寨老阿爷 的讲述</li>
+  <li id="tNpc2" data-i18n="tNpc2">倾听 河湟考古者 的讲述</li>
+  <li id="tNpc3" data-i18n="tNpc3">倾听 长城戍卒 的讲述</li>
+  <li id="tLine" data-i18n="tLine">见证边界线移动</li>
 </ul></div>
 <div class="dlg" id="dlg"><div class="who" id="dlgWho"></div><div class="txt" id="dlgTxt"></div><div class="more" id="dlgMore">E · 继续</div></div>
 <div class="toast" id="toast"></div>
@@ -131,16 +134,16 @@
 <div class="joy" id="joy"><div class="base"></div><div class="stick" id="stick"></div></div>
 
 <div class="veil" id="intro"><div class="card">
-  <h1>边缘行走</h1><div class="sub">《华夏边缘：历史记忆与族群认同》· 互动行走</div>
-  <p>你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十二枚记忆碎片散落在谷地里，三段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。</p>
-  <div class="keys"><kbd>W A S D</kbd> 移动 · 鼠标拖拽 视角 · 滚轮 远近<br><kbd>E</kbd> 对话 · <kbd>T</kbd> 晨昏切换 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务清单</div>
-  <button class="go" id="btnGo">开 始 行 走</button>
+  <h1 data-i18n="gTitle">边缘行走</h1><div class="sub" data-i18n="gSub">《华夏边缘：历史记忆与族群认同》· 互动行走</div>
+  <p data-i18n-html="gIntro">你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十二枚记忆碎片散落在谷地里，三段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。</p>
+  <div class="keys" data-i18n-html="gKeys"><kbd>W A S D</kbd> 移动 · 鼠标拖拽 视角 · 滚轮 远近<br><kbd>E</kbd> 对话 · <kbd>T</kbd> 晨昏切换 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务清单</div>
+  <button class="go" id="btnGo" data-i18n="gGo">开 始 行 走</button>
 </div></div>
 
 <div class="veil" id="end"><div class="card">
-  <h1>行至边缘</h1><div class="sub">WALKED TO THE MARGIN</div>
-  <p>你拾起了散落的记忆，也听完了三段讲述。<br>边界在你脚下移动过——它不在墙上，不在族谱里，<br>而在资源、记忆，与每一次往来之间。<br><br>什么是中国人？这个问题没有终点，<br>正如边缘，一直在移动。</p>
-  <button class="go" onclick="location.reload()">重 新 行 走</button>
+  <h1 data-i18n="eTitle">行至边缘</h1><div class="sub" data-i18n="eSub">WALKED TO THE MARGIN</div>
+  <p data-i18n-html="eBody">你拾起了散落的记忆，也听完了三段讲述。<br>边界在你脚下移动过——它不在墙上，不在族谱里，<br>而在资源、记忆，与每一次往来之间。<br><br>什么是中国人？这个问题没有终点，<br>正如边缘，一直在移动。</p>
+  <button class="go" onclick="location.reload()" data-i18n="eGo">重 新 行 走</button>
 </div></div>
 
 <script src="../assets/three.min.js"></script>
@@ -163,15 +166,63 @@ const hemi = new THREE.HemisphereLight(0xaec4e4, 0x3a4038, .95); scene.add(hemi)
 const sun = new THREE.DirectionalLight(0xffd9a0, 1.6); sun.position.set(70,90,40); scene.add(sun);
 scene.add(new THREE.AmbientLight(0x22262e,.7));
 const THEMES=[
- {fog:0x141b2a,bg:0x141b2a,sun:0xffd9a0,si:1.6,hemi:0xaec4e4,name:'晨光'},
- {fog:0x1a1210,bg:0x150e0a,sun:0xff9a5c,si:1.0,hemi:0xd6a08a,name:'暮色'},
- {fog:0x0a0e18,bg:0x080c16,sun:0xb9c8ff,si:.7,hemi:0x8a9cd6,name:'月夜'}];
+ {fog:0x141b2a,bg:0x141b2a,sun:0xffd9a0,si:1.6,hemi:0xaec4e4,name:{zh:'晨光',en:'Morning'}},
+ {fog:0x1a1210,bg:0x150e0a,sun:0xff9a5c,si:1.0,hemi:0xd6a08a,name:{zh:'暮色',en:'Dusk'}},
+ {fog:0x0a0e18,bg:0x080c16,sun:0xb9c8ff,si:.7,hemi:0x8a9cd6,name:{zh:'月夜',en:'Moonlit'}}];
 let themeIx=0;
 function applyTheme(){ const t=THEMES[themeIx];
   scene.fog.color.setHex(t.fog); scene.background.setHex(t.bg);
   sun.color.setHex(t.sun); sun.intensity=t.si; hemi.color.setHex(t.hemi);
-  toast('氛围 · '+t.name); }
+  toast(tx('themePre')+t.name[T.lang]); }
 function fract(x){ return x - Math.floor(x); }
+
+/* ---- 双语 ---- */
+const T={lang: localStorage.getItem('walkLang')||'zh', dict:{
+ gTitle:{zh:'边缘行走',en:'Walking the Edge'},
+ gSub:{zh:'《华夏边缘：历史记忆与族群认同》· 互动行走',en:'Huaxia Frontier: Historical Memory and Ethnic Identity · an interactive walk'},
+ gIntro:{zh:'你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十二枚记忆碎片散落在谷地里，三段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。',
+  en:'You are a walker, dropped onto the small planet of the Huaxia world. The Hehuang sites, the Qiang villages of the Min River, the beacon towers of the Wall — twelve shards of memory lie scattered in the valley, and three tellings wait to be heard.<br>Collect them, and watch the golden <b style="color:var(--gold-hi)">boundary line</b> move with your steps. It is not in the wall, nor in the genealogy — it lives in resources, memory, and every meeting between people.'},
+ gKeys:{zh:'<kbd>W A S D</kbd> 移动 · 鼠标拖拽 视角 · 滚轮 远近<br><kbd>E</kbd> 对话 · <kbd>T</kbd> 晨昏切换 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务清单',
+  en:'<kbd>W A S D</kbd> move · drag to orbit · scroll to zoom<br><kbd>E</kbd> talk · <kbd>T</kbd> time of day · <kbd>M</kbd> sound · <kbd>J</kbd> tasks'},
+ gGo:{zh:'开 始 行 走',en:'Start walking'},
+ eTitle:{zh:'行至边缘',en:'Walked to the Margin'},
+ eSub:{zh:'行至边缘之外',en:'WALKED TO THE MARGIN'},
+ eBody:{zh:'你拾起了散落的记忆，也听完了三段讲述。<br>边界在你脚下移动过——它不在墙上，不在族谱里，<br>而在资源、记忆，与每一次往来之间。<br><br>什么是中国人？这个问题没有终点，<br>正如边缘，一直在移动。',
+  en:'You gathered the scattered memories and heard the three tellings.<br>The boundary moved beneath your feet — it is not in the wall, nor in the genealogy,<br>but in resources, memory, and every meeting between people.<br><br>Who counts as Chinese? The question has no end —<br>the edge, after all, keeps moving.'},
+ eGo:{zh:'重 新 行 走',en:'Walk again'},
+ hudCnt:{zh:'记忆碎片 <b id="cShard">0</b>/12<br>倾听讲述 <b id="cNpc">0</b>/3',en:'Memory shards <b id="cShard">0</b>/12<br>Tellings heard <b id="cNpc">0</b>/3'},
+ posHud:{zh:'你现在：<b id="posTxt">边缘之上</b>',en:'You are: <b id="posTxt">on the edge</b>'},
+ posIn:{zh:'华夏之内',en:'within Huaxia'}, posEdge:{zh:'边缘之上',en:'on the edge'}, posOut:{zh:'华夏之外',en:'beyond the edge'},
+ hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务',
+  en:'<kbd>W A S D</kbd> move · drag orbit · <kbd>E</kbd> talk<br><kbd>T</kbd> day cycle · <kbd>M</kbd> sound · <kbd>J</kbd> tasks'},
+ tasksT:{zh:'行走任务',en:'Walking tasks'},
+ tShardTpl:{zh:'拾取 12 枚记忆碎片（{n}/12）',en:'Collect 12 memory shards ({n}/12)'},
+ tNpc1:{zh:'倾听 寨老阿爷 的讲述',en:'Hear the village elder'},
+ tNpc2:{zh:'倾听 河湟考古者 的讲述',en:'Hear the Hehuang archaeologist'},
+ tNpc3:{zh:'倾听 长城戍卒 的讲述',en:'Hear the soldier of the Wall'},
+ tLine:{zh:'见证边界线移动',en:'See the boundary line move'},
+ actTpl:{zh:'按 E · 倾听 {n}',en:'Press E · hear {n}'},
+ moreCont:{zh:'E · 继续',en:'E · continue'}, moreBye:{zh:'E · 告辞',en:'E · farewell'},
+ shardPre:{zh:'记忆碎片 · ',en:'Memory shard · '},
+ heardSuf:{zh:'的讲述，已听见。',en:' — heard.'},
+ themePre:{zh:'氛围 · ',en:'Atmosphere · '},
+ sndOff:{zh:'声音 · 已静',en:'Sound · muted'}, sndOn:{zh:'声音 · 已开',en:'Sound · on'},
+ zValleyN:{zh:'河谷 · 岷江上游',en:'Valley · upper Min River'},
+ zValleyS:{zh:'沿河谷行走，边缘在脚下移动。',en:'Walk the valley — the boundary moves beneath your feet.'}
+}};
+function tx(k){ const v=T.dict[k]; return v?(v[T.lang]||v.zh):''; }
+function toggleLang(){ T.lang=T.lang==='zh'?'en':'zh'; applyLang(); }
+function applyLang(){
+  document.documentElement.lang = T.lang==='zh'?'zh-CN':'en';
+  try{ localStorage.setItem('walkLang',T.lang); }catch(e){}
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ const v=T.dict[el.dataset.i18n]; if(v) el.textContent=v[T.lang]||v.zh; });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const v=T.dict[el.dataset.i18nHtml]; if(v) el.innerHTML=v[T.lang]||v.zh; });
+  const b=document.getElementById('btnLang'); if(b) b.textContent = T.lang==='zh'?'EN':'中文';
+  if(typeof updHUD==='function') updHUD();
+  if(typeof dlgNpc!=='undefined' && dlgNpc) showLine();
+  if(typeof lastZone!=='undefined') lastZone='';
+}
+document.getElementById('btnLang').addEventListener('click',toggleLang);
 
 /* ---- 地面（球冠 + 分区顶点色） ---- */
 const riverPts=[[-100,36],[-80,28],[-60,20],[-35,14],[-12,11],[10,9],[35,11],[60,16],[85,24],[105,32]];
@@ -257,24 +308,24 @@ mesh(new THREE.BoxGeometry(2.6,0.5,2.6),matRoof,95,33,5.8);
 
 /* ---- 记忆碎片 ---- */
 const TOASTS=[
- '边缘视角：不问“华夏有什么”，而问“华夏的边界在哪里”。',
- '族群如俱乐部：入会资格由边界决定，而非成员的内在特征。',
- '结构性失忆：忘记什么，与记得什么同样重要。',
- '英雄祖先与弟兄祖先：两种历史心性，对应两种社会形态。',
- '满天星斗到月明星稀：边缘退场，核心才亮起来。',
- '西辽河的夏家店上层：农牧混合带的兴衰。',
- '吴太伯的故事：边缘人群借祖先记忆，走进华夏。',
- '羌人概念的西移：被称作“羌”的人群，不断向西漂移。',
- '汉代的四方意象：西戎、北狄、东夷、南蛮。',
- '北川羌族的尔玛认同：认同，可以重新学习。',
- '湘西革屯运动：边缘的变迁，自有其微观过程。',
- '反思性国族认同：多元一体，是过程而非答案。'];
+ {zh:'边缘视角：不问“华夏有什么”，而问“华夏的边界在哪里”。',en:'The margin view: ask not what Huaxia has, but where its boundary lies.'},
+ {zh:'族群如俱乐部：入会资格由边界决定，而非成员的内在特征。',en:'Ethnicity as a club: membership is set by the boundary, not by inner traits.'},
+ {zh:'结构性失忆：忘记什么，与记得什么同样重要。',en:'Structural amnesia: what a group forgets matters as much as what it remembers.'},
+ {zh:'英雄祖先与弟兄祖先：两种历史心性，对应两种社会形态。',en:'Hero and brother ancestors: two historical mentalities, two social forms.'},
+ {zh:'满天星斗到月明星稀：边缘退场，核心才亮起来。',en:'From a sky of many stars to one bright moon: as margins empty, the core brightens.'},
+ {zh:'西辽河的夏家店上层：农牧混合带的兴衰。',en:'The Upper Xiajiadian of the west Liao River: the rise and fall of a farming-herding belt.'},
+ {zh:'吴太伯的故事：边缘人群借祖先记忆，走进华夏。',en:'The Wu Taibo story: marginal peoples used ancestral memory to walk into Huaxia.'},
+ {zh:'羌人概念的西移：被称作“羌”的人群，不断向西漂移。',en:'The westward drift of “Qiang”: the name kept moving from people to people.'},
+ {zh:'汉代的四方意象：西戎、北狄、东夷、南蛮。',en:'Han images of the four quarters: Rong of the west, Di of the north, Yi of the east, Man of the south.'},
+ {zh:'北川羌族的尔玛认同：认同，可以重新学习。',en:'The Rma identity of the Beichuan Qiang: identity can be learned anew.'},
+ {zh:'湘西革屯运动：边缘的变迁，自有其微观过程。',en:'The Xiangxi garrison-abolition movement: change at the margin has its micro-processes.'},
+ {zh:'反思性国族认同：多元一体，是过程而非答案。',en:'A reflexive national identity: pluralistic unity is a process, not an answer.'}];
+
 const SHARD_POS=[[-5,7],[5,9],[-12,11],[-68,25],[-78,28],[-62,31],[66,30],[78,32],[90,33],[-30,16],[-50,22],[30,12]];
 const shards=[]; const matShard=new THREE.MeshBasicMaterial({color:0xffd98a,transparent:true,opacity:.92});
 SHARD_POS.forEach(([a,t],i)=>{ const m=new THREE.Mesh(new THREE.OctahedronGeometry(0.42),matShard.clone());
   m.position.copy(P(a,t,1.1)); m.userData={a,t,got:false,ph:i}; scene.add(m); shards.push(m); });
 
-/* ---- 边界线（随进度移动） ---- */
 let lineMesh=null, prog=0;
 function aLine(tDeg){ const base=36+16*prog; return base + 5*Math.sin(tDeg*0.09+0.5); }
 function buildLine(){
@@ -286,20 +337,28 @@ function buildLine(){
 }
 buildLine();
 
-/* ---- NPC 与讲述 ---- */
 const NPCS=[
- {a:0,t:13,name:'寨老阿爷',done:false,lines:[
-  '客人从谷口来？坐。这条沟里的人，都在讲祖先。',
-  '问起祖先，人们说：从前有三个弟兄来到这里，各自建了一个寨子。若把来往密切的四条山沟一起算进来，故事又可以从四个弟兄讲起。',
-  '人们今天同谁来往，也影响他们怎样讲述共同的过去。——你往沟里走吧，边界不在墙上，在脚上。']},
- {a:-72,t:26,name:'河湟考古者',done:false,lines:[
-  '这是四千年前的屋子地基。那会儿，气候开始转干、转冷。',
-  '谷子里种不成庄稼的人，赶着羊往高处走。农业的边缘，就这样长出了游牧的边缘。',
-  '我们管这叫“月明星稀”——边缘的人群退场了，核心才亮起来。']},
- {a:72,t:28,name:'长城戍卒',done:false,lines:[
-  '墙里的叫耕，墙外的叫牧。这条线画在地上，也画在人心里。',
-  '可只要北边草场好了，“他们”里就有人想进来。墙挡的是资源，从来不是人。',
-  '你一路走来，看过寨子、看过遗址——你说，谁算华夏？']}];
+ {a:0,t:13,name:{zh:'寨老阿爷',en:'Village elder'},done:false,lines:{
+  zh:['客人从谷口来？坐。这条沟里的人，都在讲祖先。',
+      '问起祖先，人们说：从前有三个弟兄来到这里，各自建了一个寨子。若把来往密切的四条山沟一起算进来，故事又可以从四个弟兄讲起。',
+      '人们今天同谁来往，也影响他们怎样讲述共同的过去。——你往沟里走吧，边界不在墙上，在脚上。'],
+  en:['A guest from the valley mouth? Sit. Everyone in this gully tells stories of the ancestors.',
+      "Ask about the ancestors, and people say: long ago three brothers came here and each raised a village. Count the four gullies whose people visit one another, and the story begins instead with four brothers.",
+      'Whom people visit today shapes how they tell their shared past. — Walk on up the gully. The boundary is not on a wall; it is under your feet.']}},
+ {a:-72,t:26,name:{zh:'河湟考古者',en:'Hehuang archaeologist'},done:false,lines:{
+  zh:['这是四千年前的屋子地基。那会儿，气候开始转干、转冷。',
+      '谷子里种不成庄稼的人，赶着羊往高处走。农业的边缘，就这样长出了游牧的边缘。',
+      '我们管这叫“月明星稀”——边缘的人群退场了，核心才亮起来。'],
+  en:['These are house floors from four thousand years ago. Back then, the climate was turning dry and cold.',
+      'People who could no longer farm the valley drove their sheep into the heights. The margin of farming thus grew the margin of herding.',
+      'We call it “a bright moon among sparse stars” — as the margins empty out, the core brightens.']}},
+ {a:72,t:28,name:{zh:'长城戍卒',en:'Soldier of the Wall'},done:false,lines:{
+  zh:['墙里的叫耕，墙外的叫牧。这条线画在地上，也画在人心里。',
+      '可只要北边草场好了，“他们”里就有人想进来。墙挡的是资源，从来不是人。',
+      '你一路走来，看过寨子、看过遗址——你说，谁算华夏？'],
+  en:['Inside the wall they call it farming; outside, herding. The line is drawn on the land, and in the heart.',
+      'Yet whenever the northern pastures flourish, some of “them” want in. The wall holds back resources — never people.',
+      'You have walked past villages and ruins. So tell me — who counts as Huaxia?']}}];
 const matRobe=new THREE.MeshStandardMaterial({color:0xd8d4c8,roughness:.9});
 const matSkin=new THREE.MeshStandardMaterial({color:0xd9c6ad,roughness:.9});
 NPCS.forEach(n=>{ addCol(n.a,n.t,0.9);
@@ -326,6 +385,7 @@ addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
   if(k==='t'){ themeIx=(themeIx+1)%THEMES.length; applyTheme(); }
   if(k==='m') toggleSound();
   if(k==='j') document.getElementById('tasks').classList.toggle('show');
+  if(k==='l') toggleLang();
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault(); });
 addEventListener('keyup',e=>{ keys[e.key.toLowerCase()]=false; });
 const camS={dir:new THREE.Vector3(0,0,-1), dist:9, pitch:0.34};
@@ -364,15 +424,15 @@ function tryTalk(){
   const n=nearNpc(); if(!n) return;
   dlgNpc=n; dlgIx=0; $('dlg').classList.add('show'); showLine(); }
 function showLine(){ const n=dlgNpc;
-  $('dlgWho').textContent=n.name;
-  const txt=n.lines[dlgIx]; $('dlgTxt').textContent=''; let i=0;
+  $('dlgWho').textContent=n.name[T.lang];
+  const txt=n.lines[T.lang][dlgIx]; $('dlgTxt').textContent=''; let i=0;
   clearInterval(typing);
   typing=setInterval(()=>{ $('dlgTxt').textContent=txt.slice(0,++i); if(i>=txt.length) clearInterval(typing); },26);
-  $('dlgMore').textContent = (dlgIx<n.lines.length-1)?'E · 继续':'E · 告辞'; }
+  $('dlgMore').textContent = (dlgIx<n.lines[T.lang].length-1)?tx('moreCont'):tx('moreBye'); }
 function advanceDlg(){ const n=dlgNpc;
   if(dlgIx<n.lines.length-1){ dlgIx++; showLine(); return; }
   $('dlg').classList.remove('show'); dlgNpc=null;
-  if(!n.done){ n.done=true; updHUD(); buildLine(); toast(n.name+'的讲述，已听见。'); } }
+  if(!n.done){ n.done=true; updHUD(); buildLine(); toast(n.name[T.lang]+tx('heardSuf')); } }
 let toastT=null;
 function toast(s){ const t=$('toast'); t.textContent=s; t.classList.add('show');
   clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2600); }
@@ -380,7 +440,7 @@ function toast(s){ const t=$('toast'); t.textContent=s; t.classList.add('show');
 /* ---- HUD ---- */
 function updHUD(){ const ns=shards.filter(s=>s.userData.got).length, nn=NPCS.filter(n=>n.done).length;
   $('cShard').textContent=ns; $('cNpc').textContent=nn;
-  $('tShard').textContent=`拾取 12 枚记忆碎片（${ns}/12）`; $('tShard').classList.toggle('done',ns===12);
+  $('tShard').textContent=tx('tShardTpl').replace('{n}',ns); $('tShard').classList.toggle('done',ns===12);
   ['tNpc1','tNpc2','tNpc3'].forEach((id,i)=>$(id).classList.toggle('done',NPCS[i].done));
   const p=ns/12*0.7+nn/3*0.3;
   $('ringFg').style.strokeDashoffset=113*(1-p); $('pct').textContent=Math.round(p*100)+'%';
@@ -389,6 +449,10 @@ function updHUD(){ const ns=shards.filter(s=>s.userData.got).length, nn=NPCS.fil
 
 /* ---- 主循环 ---- */
 const camRay=new THREE.Raycaster();
+const Z={
+ village:{n:{zh:'羌寨 · 岷江上游',en:'Qiang village · upper Min River'},s:{zh:'山沟里的人们，这样讲述祖先。',en:'This is how people in the gully tell their ancestors.'}},
+ hehuang:{n:{zh:'河湟遗址 · 四千年前',en:'Hehuang sites · 4000 BP'},s:{zh:'气候转干，农业让出谷地。',en:'The climate turns dry; farming yields the valley.'}},
+ wall:{n:{zh:'长城边缘 · 资源界线',en:'Wall margin · the resource line'},s:{zh:'墙里墙外，两种生计。',en:'Inside the wall: farming. Outside: herding.'}}};
 const clock=new THREE.Clock();
 let camPos=new THREE.Vector3(), lastZone='';
 function loop(){
@@ -440,37 +504,36 @@ function loop(){
   shards.forEach(s=>{ if(s.userData.got) return;
     s.rotation.y+=dt*1.4; s.position.copy(P(s.userData.a,s.userData.t,1.1+Math.sin(now*1.8+s.userData.ph)*0.18));
     if(planarDist(pP,s.position)<1.6){ s.userData.got=true; s.visible=false;
-      toast('记忆碎片 · '+TOASTS[shards.indexOf(s)]); updHUD(); } });
+      toast(tx('shardPre')+TOASTS[shards.indexOf(s)][T.lang]); updHUD(); } });
   /* NPC */
   const near=nearNpc(); $('actBtn').style.display=(near&&!dlgNpc)?'block':'none';
-  if(near) $('actBtn').textContent='按 E · 倾听 '+near.name;
+  if(near) $('actBtn').textContent=tx('actTpl').replace('{n}',near.name[T.lang]);
   NPCS.forEach(n=>{ if(n.mesh) n.mesh.position.y=Math.sin(now*1.2+n.a)*0.03; });
   /* 区域卡 */
-  const zones=[['羌寨 · 岷江上游','山沟里的人们，这样讲述祖先。',0,10],
-               ['河湟遗址 · 四千年前','气候转干，农业让出谷地。',-72,26],
-               ['长城边缘 · 资源界线','墙里墙外，两种生计。',75,30]];
+  const zones=[[Z.village,0,10],[Z.hehuang,-72,26],[Z.wall,75,30]];
   let zn=null; zones.forEach(z=>{ if(planarDist(pP,P(z[2],z[3]))<26) zn=z; });
-  if(zn && zn[0]!==lastZone){ lastZone=zn[0]; $('zName').textContent=zn[0]; $('zSub').textContent=zn[1]; }
-  if(!zn && lastZone!=='河谷 · 岷江上游'){ lastZone='河谷 · 岷江上游';
-    $('zName').textContent='河谷 · 岷江上游'; $('zSub').textContent='沿河谷行走，边缘在脚下移动。'; }
+  if(zn && zn[0][T.lang]!==lastZone){ lastZone=zn[0][T.lang]; $('zName').textContent=zn[0][T.lang]; $('zSub').textContent=zn[1][T.lang]; }
+  if(!zn && lastZone!==tx('zValleyN')){ lastZone=tx('zValleyN');
+    $('zName').textContent=tx('zValleyN'); $('zSub').textContent=tx('zValleyS'); }
   /* 位置判定 */
   const tDeg=Math.acos(Math.max(-1,Math.min(1,pP.y/R)))/D2R;
   const aDeg=Math.atan2(pP.z,pP.x)/D2R;
   const dA=aDeg-aLine(tDeg);
   const pos=$('posTxt'), ph=$('posHUD');
-  if(dA<-4){ pos.textContent='华夏之内'; ph.classList.remove('out'); }
-  else if(dA<=4){ pos.textContent='边缘之上'; ph.classList.remove('out'); }
-  else { pos.textContent='华夏之外'; ph.classList.add('out'); }
+  if(dA<-4){ pos.textContent=tx('posIn'); ph.classList.remove('out'); }
+  else if(dA<=4){ pos.textContent=tx('posEdge'); ph.classList.remove('out'); }
+  else { pos.textContent=tx('posOut'); ph.classList.add('out'); }
   renderer.render(scene,camera);
 }
 loop();
 updHUD();
+applyLang();
 
 /* ---- 声音（生成式氛围） ---- */
 let actx=null,master=null,muted=false;
 function toggleSound(){ if(!actx) return; muted=!muted;
   master.gain.linearRampToValueAtTime(muted?0:0.15,actx.currentTime+0.4);
-  toast(muted?'声音 · 已静':'声音 · 已开'); }
+  toast(tx(muted?'sndOff':'sndOn')); }
 document.getElementById('btnGo').addEventListener('click',()=>{
   document.getElementById('intro').style.display='none';
   try{ actx=new (window.AudioContext||window.webkitAudioContext)();
