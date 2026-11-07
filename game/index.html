@@ -242,17 +242,15 @@ function toggleP2(){
   if(p2){ scene.remove(p2.grp); p2=null;
     if('speechSynthesis' in window) speechSynthesis.cancel();
     toast(tx('p2Off')); return; }
-  const g=new THREE.Group();
-  const robe=new THREE.Mesh(new THREE.ConeGeometry(0.4,1.5,10),new THREE.MeshStandardMaterial({color:0xb2554a,roughness:.9})); robe.position.y=0.75; g.add(robe);
-  const head=new THREE.Mesh(new THREE.SphereGeometry(0.19,10,8),matSkin); head.position.y=1.66; g.add(head);
-  const hair=new THREE.Mesh(new THREE.SphereGeometry(0.2,10,8,0,Math.PI*2,0,1.4),new THREE.MeshStandardMaterial({color:0x1a1a1e})); hair.position.y=1.7; g.add(hair);
+  const fig2=makeFigure({jacket:0x7a4640,trouser:0x3c3a34,boot:0x241f19,skin:0xd9c6ad,hair:0x14141a,satchel:true});
+  const g=new THREE.Group(); g.add(fig2.yawG);
   const base=pGroup.position.clone(); const upB=base.clone().normalize();
   const side=new THREE.Vector3().crossVectors(upB,new THREE.Vector3(0,0,1)).normalize();
   base.addScaledVector(side,2.2).setLength(R);
   g.position.copy(base); g.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),base.clone().normalize());
   scene.add(g);
-  p2={grp:g, stepT:0.2};
-  addCol&&0; toast(tx('p2On')); }
+  p2={grp:g, yawG:fig2.yawG, fig:fig2, stepT:0.2, walkPhase:0};
+  toast(tx('p2On')); }
 
 /* ---- 地面（球冠 + 分区顶点色） ---- */
 const riverPts=[[-100,36],[-80,28],[-60,20],[-35,14],[-12,11],[10,9],[35,11],[60,16],[85,24],[105,32]];
@@ -496,24 +494,61 @@ const NPCS=[
   en:['After the 2008 earthquake, many outsiders came to help us rebuild. That was when people here began to say: we are Rma, we are Qiang.',
       'As a girl I only spoke the Han way. Now my grandson learns Qiang at school and comes home to teach me.',
       'Identity is not carried in the blood. It grows out of daily life. Beichuan is proof — and so is everywhere else.']}}];
-const matRobe=new THREE.MeshStandardMaterial({color:0xd8d4c8,roughness:.9});
 const matSkin=new THREE.MeshStandardMaterial({color:0xd9c6ad,roughness:.9});
-NPCS.forEach(n=>{ addCol(n.a,n.t,0.9);
+/* 关节人形工厂：比例·服饰·配件（o={jacket,trouser,boot,skin,hair,hat,hatC,scarf,satchel,robe,robeC,apron,staff}） */
+function makeFigure(o){
   const g=new THREE.Group();
-  const robe=new THREE.Mesh(new THREE.ConeGeometry(0.42,1.5,10),matRobe); robe.position.y=0.75; g.add(robe);
-  const head=new THREE.Mesh(new THREE.SphereGeometry(0.2,10,8),matSkin); head.position.y=1.68; g.add(head);
-  const hair=new THREE.Mesh(new THREE.SphereGeometry(0.21,10,8,0,Math.PI*2,0,1.4),new THREE.MeshStandardMaterial({color:0x24242a})); hair.position.y=1.72; g.add(hair);
-  g.position.copy(P(n.a,n.t,0)); const up=g.position.clone().normalize();
-  g.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),up); scene.add(g); n.mesh=g; });
+  const M=c=>new THREE.MeshStandardMaterial({color:c,roughness:.92});
+  const yawG=new THREE.Group(); g.add(yawG);
+  const body=new THREE.Group(); yawG.add(body);
+  const torso=new THREE.Mesh(new THREE.BoxGeometry(0.33,0.5,0.2),M(o.jacket)); torso.position.y=1.13; body.add(torso);
+  const hip=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.15,0.19),M(o.trouser)); hip.position.y=0.8; body.add(hip);
+  const neck=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.06,0.09,6),M(o.skin)); neck.position.y=1.42; body.add(neck);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.115,12,10),M(o.skin)); head.position.y=1.585; body.add(head);
+  const hair=new THREE.Mesh(new THREE.SphereGeometry(0.122,12,10,0,Math.PI*2,0,1.55),M(o.hair)); hair.position.y=1.605; body.add(hair);
+  if(o.hat==='brim'){ const cr=new THREE.Mesh(new THREE.CylinderGeometry(0.115,0.128,0.095,10),M(o.hatC)); cr.position.y=1.705; body.add(cr);
+    const br=new THREE.Mesh(new THREE.CylinderGeometry(0.205,0.215,0.02,12),M(o.hatC)); br.position.y=1.662; body.add(br); }
+  if(o.hat==='wrap'){ const w=new THREE.Mesh(new THREE.CylinderGeometry(0.126,0.132,0.11,10),M(o.hatC)); w.position.y=1.672; body.add(w); }
+  if(o.scarf){ const sc=new THREE.Mesh(new THREE.BoxGeometry(0.23,0.28,0.11),M(0xa33b2e)); sc.position.set(0,1.3,0.015); body.add(sc); }
+  function arm(sd){ const a=new THREE.Group(); a.position.set(0.205*sd,1.33,0);
+    const up=new THREE.Mesh(new THREE.BoxGeometry(0.09,0.3,0.1),M(o.jacket)); up.position.y=-0.15; a.add(up);
+    const lo=new THREE.Mesh(new THREE.BoxGeometry(0.075,0.25,0.085),M(o.skin)); lo.position.y=-0.41; a.add(lo);
+    body.add(a); return a; }
+  const armL=arm(-1), armR=arm(1);
+  function leg(sd){ const l=new THREE.Group(); l.position.set(0.088*sd,0.82,0);
+    const th=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.4,0.13),M(o.trouser)); th.position.y=-0.2; l.add(th);
+    const ca=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.32,0.11),M(o.trouser)); ca.position.y=-0.55; l.add(ca);
+    const bt=new THREE.Mesh(new THREE.BoxGeometry(0.11,0.09,0.2),M(o.boot||0x2a241e)); bt.position.set(0,-0.75,0.035); l.add(bt);
+    yawG.add(l); return l; }
+  const legL=leg(-1), legR=leg(1);
+  if(o.robe){ const rb=new THREE.Mesh(new THREE.ConeGeometry(0.35,o.robe,10),M(o.robeC)); rb.position.y=o.robe/2+0.66; yawG.add(rb); }
+  if(o.apron){ const ap=new THREE.Mesh(new THREE.BoxGeometry(0.26,0.34,0.035),M(o.apron)); ap.position.set(0,0.6,0.115); yawG.add(ap); }
+  if(o.satchel){ const sp=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.4,0.16),M(0x6b5638)); sp.position.set(0,1.04,-0.2); yawG.add(sp);
+    const st=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.44,0.02),M(0x3a2f22)); st.position.set(0.1,1.24,-0.015); st.rotation.z=0.32; yawG.add(st); }
+  if(o.staff){ const stf=new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.035,1.5,6),M(0x4a3b2a)); stf.position.set(0.32,0.75,0.05); yawG.add(stf); }
+  return {g, yawG, body, legL, legR, armL, armR};
+}
+const NPC_LOOKS=[
+ {jacket:0x35415e,trouser:0x2e3850,hair:0x8a8a92,hat:'wrap',hatC:0x2c2c34,robe:1.15,robeC:0x35415e,staff:true},
+ {jacket:0x6b6248,trouser:0x4c463a,hair:0x2a2a30,hat:'brim',hatC:0x8a7a5f,satchel:true},
+ {jacket:0x57503f,trouser:0x474138,hair:0x24242a,hat:'wrap',hatC:0x3d3a33,staff:true},
+ {jacket:0x3f566b,trouser:0x333940,hair:0x1a1a20},
+ {jacket:0x4a4058,trouser:0x2f3a52,hair:0x1c1c22,hat:'wrap',hatC:0xa33b2e,robe:0.8,robeC:0x2f3a52,apron:0x7a3b46}];
+NPCS.forEach((n,i)=>{ addCol(n.a,n.t,0.9);
+  const fig=makeFigure(NPC_LOOKS[i]||{});
+  fig.g.position.copy(P(n.a,n.t,0)); const up=fig.g.position.clone().normalize();
+  fig.g.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),up);
+  fig.yawG.rotation.y=(n.faceA!==undefined)?n.faceA:[Math.PI*0.55,Math.PI*0.95,-Math.PI*0.4,Math.PI*0.2,Math.PI*0.75][i];
+  scene.add(fig.g); n.mesh=fig.g; n.fig=fig; });
 
 /* ---- 玩家 ---- */
 const player={a:0,t:34,yaw:0};
 const pGroup=new THREE.Group();
-{ const robe=new THREE.Mesh(new THREE.ConeGeometry(0.4,1.5,10),new THREE.MeshStandardMaterial({color:0xe3ddcd,roughness:.9})); robe.position.y=0.75; pGroup.add(robe);
-  const head=new THREE.Mesh(new THREE.SphereGeometry(0.19,10,8),matSkin); head.position.y=1.66; pGroup.add(head);
-  const hair=new THREE.Mesh(new THREE.SphereGeometry(0.2,10,8,0,Math.PI*2,0,1.4),new THREE.MeshStandardMaterial({color:0x1e2026})); hair.position.y=1.7; pGroup.add(hair);
-  const pack=new THREE.Mesh(new THREE.BoxGeometry(0.36,0.5,0.22),matWood); pack.position.set(0,1.0,0.28); pGroup.add(pack); }
+const figP=makeFigure({jacket:0x46536b,trouser:0x4c463a,boot:0x2a241e,skin:0xd9c6ad,hair:0x1e2026,
+  hat:'brim',hatC:0x59513f,scarf:true,satchel:true});
+pGroup.add(figP.yawG);
 pGroup.position.copy(P(player.a,player.t,0)); scene.add(pGroup);
+let walkPhase=0;
 
 let stepT=0.2;
 /* ---- 输入 ---- */
@@ -630,10 +665,20 @@ function loop(){
       setOnGround(pP);
     /* 朝向 */
     const dlt=pP.clone().sub(old);
-    if(dlt.lengthSq()>1e-6){ const ty=Math.atan2(dlt.x,dlt.z);
-      let cur=pGroup.rotation.y, diff=((ty-cur+Math.PI*3)%(Math.PI*2))-Math.PI;
-      pGroup.rotation.y=cur+diff*0.18; }
-    stepT-=dt; if(stepT<=0){ playStep(); stepT=0.34+Math.random()*0.08; }
+    const isMove=dlt.lengthSq()>1e-7;
+    if(isMove){ const ty=Math.atan2(dlt.x,dlt.z);
+      let cur=figP.yawG.rotation.y, diff=((ty-cur+Math.PI*3)%(Math.PI*2))-Math.PI;
+      figP.yawG.rotation.y=cur+diff*0.22; }
+    const cad=(keys['shift']?12.6:9.0)*(isMove?1:0);
+    walkPhase+=dt*cad;
+    const sw=Math.sin(walkPhase)*0.52*(isMove?1:0);
+    figP.legL.rotation.x=sw; figP.legR.rotation.x=-sw;
+    figP.armL.rotation.x=-sw*0.65; figP.armR.rotation.x=sw*0.65;
+    figP.body.position.y=Math.abs(Math.cos(walkPhase))*0.04*(isMove?1:0);
+    figP.body.rotation.x=0.055*(isMove?1:0);
+    if(!isMove){ walkPhase=0; figP.legL.rotation.x*=0.8; figP.legR.rotation.x*=0.8;
+      figP.armL.rotation.x*=0.8; figP.armR.rotation.x*=0.8; }
+    stepT-=dt; if(stepT<=0&&isMove){ playStep(); stepT=0.34+Math.random()*0.08; }
   } else { stepT=0.15; }
   /* 同伴（双人同屏） */
   if(p2){
@@ -652,10 +697,18 @@ function loop(){
           p2P.addScaledVector(push,(c.r+0.5-d)); setOnGround(p2P); } });
         setOnGround(p2P);
       const dl2=p2P.clone().sub(old2);
-      if(dl2.lengthSq()>1e-6){ const ty2=Math.atan2(dl2.x,dl2.z);
-        let cur2=p2.grp.rotation.y, diff2=((ty2-cur2+Math.PI*3)%(Math.PI*2))-Math.PI;
-        p2.grp.rotation.y=cur2+diff2*0.18; }
-      p2.stepT-=dt; if(p2.stepT<=0){ playStep(); p2.stepT=0.36+Math.random()*0.08; }
+      const isM2=dl2.lengthSq()>1e-7;
+      if(isM2){ const ty2=Math.atan2(dl2.x,dl2.z);
+        let cur2=p2.yawG.rotation.y, diff2=((ty2-cur2+Math.PI*3)%(Math.PI*2))-Math.PI;
+        p2.yawG.rotation.y=cur2+diff2*0.22; }
+      const cad2=(keys['shift']?12.6:9.0)*(isM2?1:0);
+      p2.walkPhase+=dt*cad2;
+      const sw2=Math.sin(p2.walkPhase)*0.52*(isM2?1:0);
+      p2.fig.legL.rotation.x=sw2; p2.fig.legR.rotation.x=-sw2;
+      p2.fig.armL.rotation.x=-sw2*0.65; p2.fig.armR.rotation.x=sw2*0.65;
+      p2.fig.body.position.y=Math.abs(Math.cos(p2.walkPhase))*0.04*(isM2?1:0);
+      if(!isM2){ p2.walkPhase=0; p2.fig.legL.rotation.x*=0.8; p2.fig.legR.rotation.x*=0.8; }
+    p2.stepT-=dt; if(p2.stepT<=0&&isM2){ playStep(); p2.stepT=0.36+Math.random()*0.08; }
     } else { p2.stepT=0.15; }
   }
   /* 面片贴地 */
@@ -697,7 +750,7 @@ function loop(){
   if(p2 && !near){ const n2=nearNpc(p2.grp.position); if(n2) near=n2; }
   $('actBtn').style.display=(near&&!dlgNpc)?'block':'none';
   if(near) $('actBtn').textContent=tx('actTpl').replace('{n}',near.name[T.lang]);
-  NPCS.forEach(n=>{ if(n.mesh) n.mesh.position.y=Math.sin(now*1.2+n.a)*0.03; });
+  NPCS.forEach((n,i)=>{ if(n.fig) n.fig.body.rotation.z=Math.sin(now*1.1+i*2.1)*0.035; });
   /* 区域卡 */
   const zones=[[Z.village.n,Z.village.s,0,10],[Z.hehuang.n,Z.hehuang.s,-72,26],[Z.wall.n,Z.wall.s,75,30],[Z.modern.n,Z.modern.s,-135,24],[Z.beichuan.n,Z.beichuan.s,-105,13]];
   let zn=null; zones.forEach(z=>{ if(planarDist(pP,P(z[2],z[3]))<26) zn=z; });
