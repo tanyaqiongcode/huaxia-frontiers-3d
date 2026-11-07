@@ -52,6 +52,10 @@
   .hint kbd{border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:10px;font-family:var(--fserif)}
   .langBtn{position:fixed;top:22px;right:70px;z-index:5;border:1px solid var(--line);border-radius:99px;background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));color:var(--dim);padding:8px 16px;font-size:12px;letter-spacing:.16em;cursor:pointer;font-family:var(--fserif);backdrop-filter:blur(8px)}
   .langBtn:hover{color:var(--gold-hi);border-color:var(--gold)}
+  .bar{position:fixed;left:0;right:0;height:0;background:#04060a;z-index:8;transition:height .9s cubic-bezier(.4,0,.2,1)}
+  #barT{top:0}#barB{bottom:0} body.cine .bar{height:11vh}
+  #compass{position:fixed;left:50%;bottom:122px;transform:translateX(-50%);z-index:5;display:none;align-items:center;gap:9px;pointer-events:none;color:var(--gold-hi);font-size:11.5px;letter-spacing:.14em}
+  #cA{display:inline-block;transition:transform .12s linear;font-size:13px}
 
   /* 对话/字幕 */
   .dlg{position:fixed;left:50%;bottom:74px;transform:translateX(-50%);z-index:6;width:min(680px,92vw);
@@ -111,6 +115,8 @@
 <body>
 <canvas id="gl"></canvas>
 <div class="vignette"></div><div class="grain"></div>
+<div class="bar" id="barT"></div><div class="bar" id="barB"></div>
+<div id="compass"><span id="cA">▲</span><span id="cTxt"></span></div>
 <div class="mark" title="Huaxia Frontier"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="#c9a45c" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="#c9a45c"/></svg></div>
 <button class="langBtn" id="btnLang">EN</button>
 
@@ -463,6 +469,17 @@ for(let i=0;i<16;i++){ const a=-160+fract(i*5.3)*320, t=20+fract(i*11.7)*34;
   if(riverDist(a,t)<4) continue;
   const r=0.3+fract(i*9.1)*0.6;
   mesh(new THREE.DodecahedronGeometry(r,0),matRockD,a,t,r*0.55,fract(i*4.7)*3); }
+/* 鸟群（盘旋河谷） */
+const flock=[]; const birdM=new THREE.MeshBasicMaterial({color:0x232833,side:THREE.DoubleSide});
+for(let i=0;i<8;i++){ const b=new THREE.Group();
+  const wL=new THREE.Mesh(new THREE.PlaneGeometry(0.55,0.16),birdM); wL.position.x=-0.26; wL.rotation.y=0.25;
+  const wR=new THREE.Mesh(new THREE.PlaneGeometry(0.55,0.16),birdM); wR.position.x=0.26; wR.rotation.y=-0.25;
+  b.add(wL,wR); scene.add(b);
+  flock.push({b,wL,wR,ph:fract(i*7.3)*7,r:24+fract(i*3.1)*18,h:22+fract(i*5.7)*12,sp:0.05+fract(i*9.7)*0.045,cx:-16,cz:8}); }
+/* 落地尘土环 */
+const dust=new THREE.Mesh(new THREE.RingGeometry(0.32,0.46,26),
+  new THREE.MeshBasicMaterial({color:0xcfc9b4,transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false}));
+scene.add(dust);
 /* 松树 */
 [[-30,6],[24,16],[-26,18],[30,8],[-58,16],[52,20],[-40,30],[40,26],[-88,20],[98,26]].forEach(([a,t])=>{
   addCol(a,t,0.8);
@@ -609,7 +626,7 @@ pGroup.add(figP.yawG);
 pGroup.position.copy(P(player.a,player.t,0)); scene.add(pGroup);
 let walkPhase=0, vy=0, jumpOff=0, lit=false, beaconHinted=false, prevSide='in', crossT=0, fpsN=0, fpsT=0, started=false, actx=null, master=null, muted=false, humGain=null;
 
-let stepT=0.2;
+let stepT=0.2, padYaw=0, padPitch=0, padB0=false, padB2=false, plGain=null, dustT=1;
 /* ---- 输入 ---- */
 const keys={};
 addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
@@ -625,6 +642,17 @@ addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
   if(k==='l') toggleLang();
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault(); });
 addEventListener('keyup',e=>{ const k=e.key.toLowerCase(); keys[k]=false; if(p2 && k.startsWith('arrow')) P2KEY[k]=false; });
+function pollPad(){ if(!started) return;
+  const gps=navigator.getGamepads?navigator.getGamepads():[]; let gp=null;
+  for(const g of gps) if(g&&g.connected){gp=g;break;}
+  if(!gp) return;
+  const dz=v=>Math.abs(v)<0.15?0:v;
+  joy.x=Math.max(-1,Math.min(1,joy.x+dz(gp.axes[0]||0)));
+  joy.f=Math.max(-1,Math.min(1,joy.f-dz(gp.axes[1]||0)));
+  padYaw=-dz(gp.axes[2]||0)*0.05; padPitch=dz(gp.axes[3]||0)*0.035;
+  const b0=gp.buttons[0]&&gp.buttons[0].pressed, b2=gp.buttons[2]&&gp.buttons[2].pressed;
+  if(b0&&!padB0){ vy=7.4; } padB0=b0;
+  if(b2&&!padB2){ tryTalk(); } padB2=b2; }
 const camS={dir:new THREE.Vector3(0,0,-1), dist:9, pitch:0.34};
 let dragging=false,lx=0,ly=0;
 const cv=document.getElementById('gl');
@@ -700,11 +728,12 @@ let camPos=new THREE.Vector3(), lastZone='';
 function loop(){
   requestAnimationFrame(loop);
   const dt=Math.min(0.05,clock.getDelta()), now=clock.elapsedTime;
+  pollPad();
   /* 移动输入 */
   let mx=((keys['d']?1:0)-(keys['a']?1:0)) + ((!p2&&keys['arrowright'])?1:0) - ((!p2&&keys['arrowleft'])?1:0) + joy.x;
   let mf=((keys['w']?1:0)-(keys['s']?1:0)) + ((!p2&&keys['arrowup'])?1:0) - ((!p2&&keys['arrowdown'])?1:0) + joy.f;
   if(jumpOff>0||vy!==0){ jumpOff+=vy*dt; vy-=21*dt;
-    if(jumpOff<=0){ jumpOff=0; vy=0; playStep(); } }
+    if(jumpOff<=0){ jumpOff=0; vy=0; playStep(); dustT=0; } }
   mf=Math.max(-1,Math.min(1,mf)); mx=Math.max(-1,Math.min(1,mx));
   const pP=pGroup.position, up=pP.clone().normalize();
   /* 相机方向切于球面 */
@@ -783,6 +812,8 @@ function loop(){
     cdist=Math.min(18,Math.max(9,camS.dist+sep*0.55)); }
   const upF=focus.clone().normalize();
   camS.dir.addScaledVector(upF,-camS.dir.dot(upF)); if(camS.dir.lengthSq()<1e-6) camS.dir.set(0,0,-1); camS.dir.normalize();
+  camS.dir.applyAxisAngle(upF,padYaw);
+  camS.pitch=Math.max(0.06,Math.min(0.95,camS.pitch+padPitch));
   const back=camS.dir.clone().multiplyScalar(-1);
   const want=focus.clone().addScaledVector(upF,1.7+cdist*Math.sin(camS.pitch)).addScaledVector(back,cdist*Math.cos(camS.pitch));
   [pGroup.position, p2&&p2.grp.position].filter(Boolean).forEach(pp=>{
@@ -814,6 +845,29 @@ function loop(){
   $('actBtn').style.display=(near&&!dlgNpc)?'block':'none';
   if(near) $('actBtn').textContent=tx('actTpl').replace('{n}',near.name[T.lang]);
   NPCS.forEach((n,i)=>{ if(n.fig) n.fig.body.rotation.z=Math.sin(now*1.1+i*2.1)*0.035; });
+  /* 鸟群 */
+  flock.forEach((f,i)=>{ const a=now*f.sp+f.ph;
+    const y=f.h+Math.sin(now*1.6+i)*1.4;
+    f.b.position.set(f.cx+Math.cos(a)*f.r, y, f.cz+Math.sin(a)*f.r);
+    const ah=a+0.12; f.b.lookAt(f.cx+Math.cos(ah)*f.r, y, f.cz+Math.sin(ah)*f.r);
+    const fl=Math.sin(now*10+i*1.7)*0.55; f.wL.rotation.y=0.25+fl; f.wR.rotation.y=-0.25-fl; });
+  /* 罗盘指引 */
+  { let cS=null,cD=1e9;
+    shards.forEach(sh=>{ if(sh.userData.got) return; const d=planarDist(pGroup.position,sh.position); if(d<cD){cD=d;cS=sh;} });
+    const comp=$('compass');
+    if(cS && cD>7 && started){ comp.style.display='flex';
+      const to=cS.position.clone().sub(pGroup.position); to.addScaledVector(up,-to.dot(up)).normalize();
+      const cr=new THREE.Vector3().crossVectors(camS.dir,to).dot(up);
+      const ag=Math.atan2(cr,camS.dir.dot(to));
+      $('cA').style.transform='rotate('+(-ag*57.3)+'deg)';
+      $('cTxt').textContent=Math.round(cD)+' m';
+    } else comp.style.display='none'; }
+  /* 落地尘土 */
+  if(dustT<0.55){ dustT+=dt; const u=Math.min(1,dustT/0.55);
+    const upD=pGroup.position.clone().normalize();
+    dust.position.copy(pGroup.position).addScaledVector(upD,0.06);
+    dust.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),upD);
+    dust.scale.setScalar(0.6+u*2.4); dust.material.opacity=0.45*(1-u); }
   /* 区域卡 */
   const zones=[[Z.village.n,Z.village.s,0,10],[Z.hehuang.n,Z.hehuang.s,-72,26],[Z.wall.n,Z.wall.s,75,30],[Z.modern.n,Z.modern.s,-135,24],[Z.beichuan.n,Z.beichuan.s,-105,13]];
   let zn=null; zones.forEach(z=>{ if(planarDist(pP,P(z[2],z[3]))<26) zn=z; });
@@ -839,6 +893,15 @@ function loop(){
   prevSide=sideNow; crossT-=dt;
   if(actx&&master){ const hT=(started?Math.max(0,1-Math.abs(dA)/9):0)*0.03;
     humGain.gain.value+=(hT-humGain.gain.value)*0.04; }
+  if(window.__amb){ const A=window.__amb, z=lastZone||'';
+    let tw=0.05,tq=0.03,tw3=0;
+    if(z.startsWith('河湟')){tw=0.08;tq=0.006;tw3=0.02;} else if(z.startsWith('长城')){tw=0.065;tq=0;tw3=0.05;}
+    else if(z.startsWith('现代')){tw=0.028;tq=0.02;tw3=0;} else if(z.startsWith('羌寨')){tw=0.035;tq=0.05;tw3=0;}
+    if(muted){tw=0;tq=0;tw3=0;}
+    A.wind.gain.value+=(tw-A.wind.gain.value)*0.02;
+    A.water.gain.value+=(tq-A.water.gain.value)*0.02;
+    A.whistle.gain.value+=(tw3-A.whistle.gain.value)*0.02; }
+  if(plGain) plGain.gain.value+=((muted?0:0.045+prog*0.07)-plGain.gain.value)*0.01;
   sun.position.set(pP.x+34,pP.y+52,pP.z+22); sun.target.position.copy(pP); sun.target.updateMatrixWorld();
   fpsN++; fpsT+=dt; if(fpsT>2){ const f=fpsN/fpsT;
     if(f<42 && sun.castShadow){ sun.castShadow=false; renderer.setPixelRatio(1); toast(tx('qDegrade')); }
@@ -898,6 +961,8 @@ document.getElementById('btnNew').addEventListener('click',()=>{ try{localStorag
 document.getElementById('btnGo').addEventListener('click',()=>{
   started=true; setInterval(saveGame,4000);
   document.getElementById('intro').style.display='none';
+  document.body.classList.add('cine');
+  setTimeout(()=>{ document.body.classList.remove('cine'); },2600);
   try{ actx=new (window.AudioContext||window.webkitAudioContext)();
     master=actx.createGain(); master.gain.value=0.15; master.connect(actx.destination);
     const len=actx.sampleRate*2, buf=actx.createBuffer(1,len,actx.sampleRate), ch=buf.getChannelData(0);
@@ -906,7 +971,14 @@ document.getElementById('btnGo').addEventListener('click',()=>{
     const src=actx.createBufferSource(); src.buffer=buf; src.loop=true;
     const f=actx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=380;
     const g=actx.createGain(); g.gain.value=0.06;
-    src.connect(f); f.connect(g); g.connect(master); src.start();
+    src.connect(f); f.connect(g); g.connect(master);
+    const wF2=actx.createBiquadFilter(); wF2.type='bandpass'; wF2.frequency.value=300; wF2.Q.value=1.1;
+    const wG2=actx.createGain(); wG2.gain.value=0; wF2.connect(wG2); wG2.connect(master); src.connect(wF2);
+    const wF3=actx.createBiquadFilter(); wF3.type='bandpass'; wF3.frequency.value=760; wF3.Q.value=9;
+    const wG3=actx.createGain(); wG3.gain.value=0; wF3.connect(wG3); wG3.connect(master); src.connect(wF3);
+    plGain=actx.createGain(); plGain.gain.value=0.05; plGain.connect(master);
+    window.__amb={wind:g,water:wG2,whistle:wG3};
+    src.start();
     const humOsc1=actx.createOscillator(); humOsc1.type='sine'; humOsc1.frequency.value=106;
     const humOsc2=actx.createOscillator(); humOsc2.type='sine'; humOsc2.frequency.value=112.5;
     humGain=actx.createGain(); humGain.gain.value=0;
@@ -918,7 +990,7 @@ document.getElementById('btnGo').addEventListener('click',()=>{
       const o=actx.createOscillator(); o.type='sine'; o.frequency.value=440*Math.pow(2,(m-69)/12);
       const gg=actx.createGain(); gg.gain.setValueAtTime(0,t0);
       gg.gain.linearRampToValueAtTime(0.05,t0+0.04); gg.gain.exponentialRampToValueAtTime(0.0001,t0+1.8);
-      o.connect(gg); gg.connect(master); o.start(t0); o.stop(t0+2); },2400);
+      o.connect(gg); gg.connect(plGain); o.start(t0); o.stop(t0+2); },2400);
   }catch(e){}
 });
 </script>
