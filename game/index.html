@@ -285,7 +285,7 @@ function toggleP2(){
   if(p2){ scene.remove(p2.grp); p2=null;
     if('speechSynthesis' in window) speechSynthesis.cancel();
     toast(tx('p2Off')); return; }
-  const fig2=makeFigure({jacket:0x7a4640,trouser:0x3c3a34,boot:0x241f19,skin:0xd9c6ad,hair:0x14141a,satchel:true});
+  const fig2=makeFigure({jacket:0x7a4640,trouser:0x3c3a34,boot:0x241f19,skin:0xd9c6ad,hair:0x14141a});
   const g=new THREE.Group(); g.add(fig2.yawG);
   const base=pGroup.position.clone(); const upB=base.clone().normalize();
   const side=new THREE.Vector3().crossVectors(upB,new THREE.Vector3(0,0,1)).normalize();
@@ -617,7 +617,7 @@ function makeFigure(o){
 }
 const NPC_LOOKS=[
  {jacket:0x35415e,trouser:0x2e3850,hair:0x8a8a92,hat:'wrap',hatC:0x2c2c34,robe:1.15,robeC:0x35415e,staff:true},
- {jacket:0x6b6248,trouser:0x4c463a,hair:0x2a2a30,hat:'brim',hatC:0x8a7a5f,satchel:true},
+ {jacket:0x6b6248,trouser:0x4c463a,hair:0x2a2a30,hat:'brim',hatC:0x8a7a5f},
  {jacket:0x57503f,trouser:0x474138,hair:0x24242a,hat:'wrap',hatC:0x3d3a33,staff:true},
  {jacket:0x3f566b,trouser:0x333940,hair:0x1a1a20},
  {jacket:0x4a4058,trouser:0x2f3a52,hair:0x1c1c22,hat:'wrap',hatC:0xa33b2e,robe:0.8,robeC:0x2f3a52,apron:0x7a3b46}];
@@ -632,7 +632,7 @@ NPCS.forEach((n,i)=>{ addCol(n.a,n.t,0.9);
 const player={a:0,t:34,yaw:0};
 const pGroup=new THREE.Group();
 const figP=makeFigure({jacket:0x46536b,trouser:0x4c463a,boot:0x2a241e,skin:0xd9c6ad,hair:0x1e2026,
-  hat:'brim',hatC:0x59513f,scarf:true,satchel:true});
+  hat:'brim',hatC:0x59513f,scarf:true});
 pGroup.add(figP.yawG);
 pGroup.position.copy(P(player.a,player.t,0)); scene.add(pGroup);
 let walkPhase=0, vy=0, jumpOff=0, lit=false, beaconHinted=false, prevSide='in', crossT=0, fpsN=0, fpsT=0, started=false, actx=null, master=null, muted=false, humGain=null;
@@ -743,8 +743,6 @@ function loop(){
   /* 移动输入 */
   let mx=((keys['d']?1:0)-(keys['a']?1:0)) + ((!p2&&keys['arrowright'])?1:0) - ((!p2&&keys['arrowleft'])?1:0) + joy.x;
   let mf=((keys['w']?1:0)-(keys['s']?1:0)) + ((!p2&&keys['arrowup'])?1:0) - ((!p2&&keys['arrowdown'])?1:0) + joy.f;
-  if(jumpOff>0||vy!==0){ jumpOff+=vy*dt; vy-=21*dt;
-    if(jumpOff<=0){ jumpOff=0; vy=0; playStep(); dustT=0; } }
   mf=Math.max(-1,Math.min(1,mf)); mx=Math.max(-1,Math.min(1,mx));
   const pP=pGroup.position, up=pP.clone().normalize();
   /* 相机方向切于球面 */
