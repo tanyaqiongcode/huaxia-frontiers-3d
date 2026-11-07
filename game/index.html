@@ -158,6 +158,11 @@ const R = 140, D2R = Math.PI/180;
 const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('gl'), antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.8;
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x141b2a, 0.0088);
 scene.background = new THREE.Color(0x141b2a);
@@ -165,8 +170,12 @@ const camera = new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.1, 600)
 addEventListener('resize', ()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
 
 /* 光照与主题 */
-const hemi = new THREE.HemisphereLight(0xaec4e4, 0x3a4038, .95); scene.add(hemi);
-const sun = new THREE.DirectionalLight(0xffd9a0, 1.6); sun.position.set(70,90,40); scene.add(sun);
+const hemi = new THREE.HemisphereLight(0x9ab2d8, 0x2f342c, .7); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffd9a0, 0.95); sun.position.set(70,90,40); scene.add(sun);
+sun.castShadow = true; sun.shadow.mapSize.set(2048,2048);
+sun.shadow.camera.left=-24; sun.shadow.camera.right=24; sun.shadow.camera.top=24; sun.shadow.camera.bottom=-24;
+sun.shadow.camera.near=5; sun.shadow.camera.far=220; sun.shadow.bias=-0.0004; sun.shadow.normalBias=0.03;
+scene.add(sun.target);
 scene.add(new THREE.AmbientLight(0x22262e,.7));
 const THEMES=[
  {fog:0x141b2a,bg:0x141b2a,sun:0xffd9a0,si:1.6,hemi:0xaec4e4,name:{zh:'晨光',en:'Morning'}},
@@ -196,7 +205,7 @@ const T={lang: localStorage.getItem('walkLang')||'zh', dict:{
  hudCnt:{zh:'记忆碎片 <b id="cShard">0</b>/17<br>倾听讲述 <b id="cNpc">0</b>/5',en:'Memory shards <b id="cShard">0</b>/17<br>Tellings heard <b id="cNpc">0</b>/5'},
  posHud:{zh:'你现在：<b id="posTxt">边缘之上</b>',en:'You are: <b id="posTxt">on the edge</b>'},
  posIn:{zh:'华夏之内',en:'within Huaxia'}, posEdge:{zh:'边缘之上',en:'on the edge'}, posOut:{zh:'华夏之外',en:'beyond the edge'},
- hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · <kbd>⇧</kbd> 疾行 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>G</kbd> 同行 · <kbd>V</kbd> 配音 · <kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务',
+ hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · <kbd>空格</kbd> 跳跃 · <kbd>⇧</kbd> 疾行 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>G</kbd> 同行 · <kbd>V</kbd> 配音 · <kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务',
   en:'<kbd>W A S D</kbd> move · <kbd>⇧</kbd> hurry · drag orbit · <kbd>E</kbd> talk<br><kbd>G</kbd> companion · <kbd>V</kbd> voice · <kbd>T</kbd> day · <kbd>M</kbd> sound · <kbd>J</kbd> tasks'},
  tasksT:{zh:'行走任务',en:'Walking tasks'},
  tShardTpl:{zh:'拾取 17 枚记忆碎片（{n}/17）',en:'Collect 17 memory shards ({n}/17)'},
@@ -211,6 +220,10 @@ const T={lang: localStorage.getItem('walkLang')||'zh', dict:{
  p2On:{zh:'同伴已加入 · 方向键行走 · 回车对话',en:'Companion joined · arrows to walk · Enter to talk'},
  p2Off:{zh:'同伴已离开',en:'Companion left'},
  memoEmpty:{zh:'还没有拾取记忆碎片。',en:'No memory shards collected yet.'},
+ crossToast:{zh:'你越过了边界。',en:'You crossed the boundary.'},
+ beaconGo:{zh:'记忆已齐 · 去东边的烽燧，点燃边界之火',en:'Memories complete — light the beacon eastward'},
+ beaconLit:{zh:'烽火燃起 · 边界在移动中',en:'The beacon burns — the boundary is on the move'},
+ qDegrade:{zh:'画质 · 已自动调低',en:'Quality · auto-reduced'},
  tLine:{zh:'见证边界线移动',en:'See the boundary line move'},
  actTpl:{zh:'按 E · 倾听 {n}',en:'Press E · hear {n}'},
  moreCont:{zh:'E · 继续',en:'E · continue'}, moreBye:{zh:'E · 告辞',en:'E · farewell'},
@@ -235,7 +248,20 @@ function applyLang(){
 }
 function renderMemo(){ const m=document.getElementById('tMemo'); if(!m) return;
   const got=shards.map((x,i)=>x.userData.got?i:-1).filter(i=>i>=0);
-  m.innerHTML = got.length? got.map(i=>'<div>· '+TOASTS[i][T.lang]+'</div>').join('') : '<div>'+tx('memoEmpty')+'</div>'; }
+  m.innerHTML = got.length? got.map(i=>'<div>· '+TOASTS[i][T.lang]+'<span style="opacity:.6"> —— '+PART_N[PART_IX[i]][T.lang]+'</span></div>').join('') : '<div>'+tx('memoEmpty')+'</div>'; }
+const PART_N=[
+ {zh:'Ⅰ · 边缘与内涵',en:'I · Edge and Essence'},
+ {zh:'Ⅱ · 华夏生态边界的形成',en:'II · The ecological boundary'},
+ {zh:'Ⅲ · 华夏族群边缘的形成与扩张',en:'III · Forming and expanding the edge'},
+ {zh:'Ⅳ · 华夏边缘的延续与变迁',en:'IV · Continuity and change'}];
+const PART_IX=[0,0,0,0,1,1,2,2,2,3,3,3,3,3,3,3,2];
+function tryBeacon(){ if(lit || prog<1) return;
+  if(planarDist(pGroup.position,P(95,33,0))>6.5) return;
+  lit=true; beaconFlame.visible=true;
+  beaconLight.intensity=2.4;
+  lineMesh.material.color.setHex(0xffb35c); lineMesh.material.opacity=1;
+  toast(tx('beaconLit')); playEnd();
+  setTimeout(()=>{ $('end').style.display='flex'; },2600); }
 document.getElementById('btnLang').addEventListener('click',toggleLang);
 let p2=null; const P2KEY={};
 function toggleP2(){
@@ -310,21 +336,22 @@ const gGeo = new THREE.SphereGeometry(R, 96, 44, 0, Math.PI*2, 0, 1.12);
     const rd=riverDist(a,t); if(rd<9) c.lerp(cWet, 1-rd/9);
     if(e>3.5) c.lerp(cRock, Math.min(1,(e-3.5)/4.5));
     if(t>50 && e>2.5) c.lerp(cSnow, Math.min(0.8,(t-50)/9));
-    c.multiplyScalar(1.02+0.28*fract(Math.sin(a*12.9898+t*78.233)*43758.5453));
+    c.multiplyScalar(0.7+0.18*fract(Math.sin(a*12.9898+t*78.233)*43758.5453));
     cols.push(c.r,c.g,c.b);
   }
   gGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols,3));
   gGeo.computeVertexNormals(); }
 { /* 地表笔触纹理（程序生成画布） */
   const cv=document.createElement('canvas'); cv.width=cv.height=256; const tc=cv.getContext('2d');
-  tc.fillStyle='#cfd5b0'; tc.fillRect(0,0,256,256);
+  tc.fillStyle='#96a07e'; tc.fillRect(0,0,256,256);
   const tones=['rgba(150,165,120,.30)','rgba(190,180,140,.26)','rgba(118,128,102,.22)','rgba(205,200,165,.22)'];
   for(let i=0;i<1100;i++){ tc.fillStyle=tones[i%4]; tc.beginPath();
     tc.ellipse(Math.random()*256,Math.random()*256,2+Math.random()*7,1+Math.random()*4,Math.random()*3.14,0,7); tc.fill(); }
   for(let i=0;i<1600;i++){ tc.fillStyle='rgba(96,104,80,'+(0.05+Math.random()*0.13)+')';
     tc.fillRect(Math.random()*256,Math.random()*256,1.6,1.6); }
   const gt=new THREE.CanvasTexture(cv); gt.wrapS=gt.wrapT=THREE.RepeatWrapping; gt.repeat.set(12,6);
-  scene.add(new THREE.Mesh(gGeo, new THREE.MeshStandardMaterial({vertexColors:true, roughness:1, metalness:0, map:gt}))); }
+  const groundMesh=new THREE.Mesh(gGeo, new THREE.MeshStandardMaterial({vertexColors:true, roughness:1, metalness:0, map:gt}));
+  groundMesh.receiveShadow=true; scene.add(groundMesh); }
 
 /* 岷江 */
 { const pts=riverPts.map(([a,t])=>{ const aR=a*D2R,tR=t*D2R;
@@ -332,7 +359,10 @@ const gGeo = new THREE.SphereGeometry(R, 96, 44, 0, Math.PI*2, 0, 1.12);
     return new THREE.Vector3(rr*Math.sin(tR)*Math.cos(aR), rr*Math.cos(tR), rr*Math.sin(tR)*Math.sin(aR)); });
   const ribbon=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),110,0.6,6,false),
     new THREE.MeshBasicMaterial({color:0x3a5a7d,transparent:true,opacity:.95}));
-  scene.add(ribbon); }
+  scene.add(ribbon);
+  const hl=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p=>p.clone().add(new THREE.Vector3(0,0.16,0)))),110,0.16,5,false),
+    new THREE.MeshBasicMaterial({color:0xaac6e4,transparent:true,opacity:.5}));
+  scene.add(hl); window.__water=ribbon; window.__waterHL=hl; }
 /* 星空 */
 { const g=new THREE.BufferGeometry(); const v=[];
   for(let i=0;i<1700;i++){ const th=Math.random()*Math.PI*2, ph=Math.acos(Math.random()*0.92);
@@ -340,6 +370,25 @@ const gGeo = new THREE.SphereGeometry(R, 96, 44, 0, Math.PI*2, 0, 1.12);
   g.setAttribute('position', new THREE.Float32BufferAttribute(v,3));
   const pm=new THREE.PointsMaterial({color:0xcfd8ea,size:1.15,sizeAttenuation:false,transparent:true,opacity:.6});
   pm.fog=false; scene.add(new THREE.Points(g,pm)); }
+/* 天空穹顶（渐变+日轮） */
+{ const skyGeo=new THREE.SphereGeometry(470,24,16);
+  const skyMat=new THREE.ShaderMaterial({side:THREE.BackSide, depthWrite:false, fog:false,
+    uniforms:{ cTop:{value:new THREE.Color(0x0d1526)}, cMid:{value:new THREE.Color(0x33455f)},
+      cLow:{value:new THREE.Color(0x7d8aa4)}, sunDir:{value:new THREE.Vector3(70,90,40).normalize()}, sunCol:{value:new THREE.Color(0xffd9a0)} },
+    vertexShader:'varying vec3 vP; void main(){ vP=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
+    fragmentShader:'varying vec3 vP; uniform vec3 cTop; uniform vec3 cMid; uniform vec3 cLow; uniform vec3 sunDir; uniform vec3 sunCol; void main(){ vec3 d=normalize(vP); float h=clamp(d.y*1.55+0.06,0.0,1.0); vec3 c=mix(cLow,cMid,smoothstep(0.0,0.34,h)); c=mix(c,cTop,smoothstep(0.3,0.9,h)); float s=pow(max(dot(d,normalize(sunDir)),0.0),220.0); c+=sunCol*s*1.2; float gl=pow(max(dot(d,normalize(sunDir)),0.0),7.0); c+=sunCol*gl*0.16; gl_FragColor=vec4(c,1.0); }'});
+  scene.add(new THREE.Mesh(skyGeo,skyMat)); }
+/* 云（广告板，缓漂） */
+{ const cv=document.createElement('canvas'); cv.width=256; cv.height=128; const tc=cv.getContext('2d');
+  for(let i=0;i<26;i++){ const g2=tc.createRadialGradient(40+Math.random()*176,44+Math.random()*44,4,40+Math.random()*176,52+Math.random()*40,26+Math.random()*22);
+    g2.addColorStop(0,'rgba(233,238,246,.85)'); g2.addColorStop(1,'rgba(233,238,246,0)'); tc.fillStyle=g2; tc.fillRect(0,0,256,128); }
+  const ct=new THREE.CanvasTexture(cv);
+  const clouds=new THREE.Group();
+  for(let i=0;i<7;i++){ const cm=new THREE.MeshBasicMaterial({map:ct,transparent:true,opacity:.5,depthWrite:false}); cm.fog=false;
+    const pl=new THREE.Mesh(new THREE.PlaneGeometry(120+Math.random()*70,42+Math.random()*22),cm);
+    const aa=i*0.9+0.4; pl.position.set(Math.cos(aa)*300,95+Math.random()*60,Math.sin(aa)*300);
+    pl.lookAt(0,60,0); clouds.add(pl); }
+  scene.add(clouds); window.__clouds=clouds; }
 
 /* ---- 场景物件 ---- */
 const colliders=[]; // {a,t,r}
@@ -354,6 +403,7 @@ function mesh(g,m,a,t,h,ry,blk){ const o=new THREE.Mesh(g,m); o.position.copy(P(
   const up=o.position.clone().normalize();
   o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),up);
   if(ry) o.rotateY(ry);
+  o.castShadow=true; o.receiveShadow=true;
   if(blk!==false) camBlockers.push(o);
   scene.add(o); return o; }
 /* 碉楼（八角收分石塔）×3 */
@@ -395,6 +445,14 @@ mesh(new THREE.BoxGeometry(0.5,1.15,0.06),matRed,-105,13.5,1.95);
 [[-103,11.5],[-107,15],[-100,15.5]].forEach(([a,t])=>{
   mesh(new THREE.CylinderGeometry(0.05,0.07,2.6,6),matWood,a,t,1.3);
   mesh(new THREE.BoxGeometry(0.6,0.8,0.03),matRed,a,t,2.2); });
+/* 踏石过河（跳跃挑战） */
+[[1.5,9.2],[4,9.0],[6.5,9.1],[9,9.4]].forEach(([a,t])=>{
+  mesh(new THREE.CylinderGeometry(0.75,0.9,0.55,7),matStone,a,t,0.32); });
+/* 烽燧火（finale，初始隐藏） */
+const beaconFlame=new THREE.Mesh(new THREE.ConeGeometry(0.55,1.6,6),
+  new THREE.MeshBasicMaterial({color:0xffa14a,transparent:true,opacity:.92}));
+beaconFlame.position.copy(P(95,33,6.6)); beaconFlame.visible=false; scene.add(beaconFlame);
+const beaconLight=new THREE.PointLight(0xff8a3c,0,34); beaconLight.position.copy(P(95,33,6.9)); scene.add(beaconLight);
 /* 草簇与岩石（地理细节） */
 const matGrass=new THREE.MeshStandardMaterial({color:0x4c6242,roughness:1});
 const matRockD=new THREE.MeshStandardMaterial({color:0x6f6a60,roughness:1});
@@ -526,6 +584,7 @@ function makeFigure(o){
   if(o.satchel){ const sp=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.4,0.16),M(0x6b5638)); sp.position.set(0,1.04,-0.2); yawG.add(sp);
     const st=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.44,0.02),M(0x3a2f22)); st.position.set(0.1,1.24,-0.015); st.rotation.z=0.32; yawG.add(st); }
   if(o.staff){ const stf=new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.035,1.5,6),M(0x4a3b2a)); stf.position.set(0.32,0.75,0.05); yawG.add(stf); }
+  g.traverse(x=>{ if(x.isMesh) x.castShadow=true; });
   return {g, yawG, body, legL, legR, armL, armR};
 }
 const NPC_LOOKS=[
@@ -548,14 +607,15 @@ const figP=makeFigure({jacket:0x46536b,trouser:0x4c463a,boot:0x2a241e,skin:0xd9c
   hat:'brim',hatC:0x59513f,scarf:true,satchel:true});
 pGroup.add(figP.yawG);
 pGroup.position.copy(P(player.a,player.t,0)); scene.add(pGroup);
-let walkPhase=0;
+let walkPhase=0, vy=0, jumpOff=0, lit=false, beaconHinted=false, prevSide='in', crossT=0, fpsN=0, fpsT=0, started=false, actx=null, master=null, muted=false, humGain=null;
 
 let stepT=0.2;
 /* ---- 输入 ---- */
 const keys={};
 addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
   if(p2 && k.startsWith('arrow')) P2KEY[k]=true;
-  if(k==='e') tryTalk();
+  if(k==='e'){ tryTalk(); tryBeacon(); }
+  if(k===' ' && jumpOff<=0 && vy===0){ vy=7.4; }
   if(k==='enter' && p2) tryTalkP2();
   if(k==='g') toggleP2();
   if(k==='v') toggleVoice();
@@ -625,7 +685,7 @@ function updHUD(){ const ns=shards.filter(s=>s.userData.got).length, nn=NPCS.fil
   const p=ns/17*0.7+nn/5*0.3;
   $('ringFg').style.strokeDashoffset=113*(1-p); $('pct').textContent=Math.round(p*100)+'%';
   if(prog!==p){ prog=p; buildLine(); }
-  if(ns===17 && nn===5 && $('end').style.display!=='flex') setTimeout(()=>{ $('end').style.display='flex'; playEnd(); },1400); }
+  if(ns===17 && nn===5 && !beaconHinted){ beaconHinted=true; toast(tx('beaconGo')); } }
 
 /* ---- 主循环 ---- */
 const camRay=new THREE.Raycaster();
@@ -643,6 +703,8 @@ function loop(){
   /* 移动输入 */
   let mx=((keys['d']?1:0)-(keys['a']?1:0)) + ((!p2&&keys['arrowright'])?1:0) - ((!p2&&keys['arrowleft'])?1:0) + joy.x;
   let mf=((keys['w']?1:0)-(keys['s']?1:0)) + ((!p2&&keys['arrowup'])?1:0) - ((!p2&&keys['arrowdown'])?1:0) + joy.f;
+  if(jumpOff>0||vy!==0){ jumpOff+=vy*dt; vy-=21*dt;
+    if(jumpOff<=0){ jumpOff=0; vy=0; playStep(); } }
   mf=Math.max(-1,Math.min(1,mf)); mx=Math.max(-1,Math.min(1,mx));
   const pP=pGroup.position, up=pP.clone().normalize();
   /* 相机方向切于球面 */
@@ -663,6 +725,7 @@ function loop(){
         if(push.lengthSq()<1e-6) push.set(0,1,0); push.normalize();
         pP.addScaledVector(push,(c.r+0.5-d)); setOnGround(pP); } });
       setOnGround(pP);
+      if(jumpOff>0||vy>0) pP.addScaledVector(up,jumpOff);
     /* 朝向 */
     const dlt=pP.clone().sub(old);
     const isMove=dlt.lengthSq()>1e-7;
@@ -744,7 +807,7 @@ function loop(){
     s.rotation.y+=dt*1.4; s.position.copy(P(s.userData.a,s.userData.t,1.1+Math.sin(now*1.8+s.userData.ph)*0.18));
     const nearP = planarDist(pP,s.position)<1.6 || (p2 && planarDist(p2.grp.position,s.position)<1.6);
     if(nearP){ s.userData.got=true; s.visible=false;
-      toast(tx('shardPre')+TOASTS[shards.indexOf(s)][T.lang]); playCollect(); updHUD(); } });
+      toast(tx('shardPre')+TOASTS[shards.indexOf(s)][T.lang]+' —— '+PART_N[PART_IX[shards.indexOf(s)]][T.lang]); playCollect(); updHUD(); } });
   /* NPC */
   let near=nearNpc(pGroup.position);
   if(p2 && !near){ const n2=nearNpc(p2.grp.position); if(n2) near=n2; }
@@ -757,14 +820,29 @@ function loop(){
   if(zn && zn[0][T.lang]!==lastZone){ lastZone=zn[0][T.lang]; $('zName').textContent=zn[0][T.lang]; $('zSub').textContent=zn[1][T.lang]; }
   if(!zn && lastZone!==tx('zValleyN')){ lastZone=tx('zValleyN');
     $('zName').textContent=tx('zValleyN'); $('zSub').textContent=tx('zValleyS'); }
+  /* 烽火燃动 */
+  if(lit){ beaconFlame.rotation.y+=dt*3; beaconLight.intensity=2.2+Math.sin(now*11)*0.5;
+    beaconFlame.scale.setScalar(1+Math.sin(now*9)*0.08); }
+  if(window.__water){ window.__water.material.opacity=0.86+Math.sin(now*1.4)*0.09;
+    window.__waterHL.material.opacity=0.4+Math.sin(now*1.1+2)*0.15; }
+  if(window.__clouds) window.__clouds.rotation.y+=dt*0.004;
   /* 位置判定 */
   const tDeg=Math.acos(Math.max(-1,Math.min(1,pP.y/Math.max(1,pP.length()))))/D2R;
   const aDeg=Math.atan2(pP.z,pP.x)/D2R;
   const dA=aDeg-aLine(tDeg);
+  const sideNow = dA<-4?'in':(dA<=4?'edge':'out');
   const pos=$('posTxt'), ph=$('posHUD');
   if(dA<-4){ pos.textContent=tx('posIn'); ph.classList.remove('out'); }
   else if(dA<=4){ pos.textContent=tx('posEdge'); ph.classList.remove('out'); }
   else { pos.textContent=tx('posOut'); ph.classList.add('out'); }
+  if(sideNow!==prevSide && crossT<=0){ toast(tx('crossToast')); tone(147,actx?actx.currentTime:0,0.5,0.05); tone(220,actx?actx.currentTime+0.08:0,0.5,0.045); crossT=4; }
+  prevSide=sideNow; crossT-=dt;
+  if(actx&&master){ const hT=(started?Math.max(0,1-Math.abs(dA)/9):0)*0.03;
+    humGain.gain.value+=(hT-humGain.gain.value)*0.04; }
+  sun.position.set(pP.x+34,pP.y+52,pP.z+22); sun.target.position.copy(pP); sun.target.updateMatrixWorld();
+  fpsN++; fpsT+=dt; if(fpsT>2){ const f=fpsN/fpsT;
+    if(f<42 && sun.castShadow){ sun.castShadow=false; renderer.setPixelRatio(1); toast(tx('qDegrade')); }
+    fpsN=0; fpsT=0; }
   renderer.render(scene,camera);
 }
 loop(); updHUD(); applyLang();
@@ -772,7 +850,7 @@ if(loadGame()){ document.getElementById('btnGo').textContent=tx('gContinue');
   document.getElementById('btnNew').style.display='inline-block'; }
 
 /* ---- 声音（生成式氛围） ---- */
-let actx=null,master=null,muted=false;
+
 function toggleSound(){ if(!actx) return; muted=!muted;
   master.gain.linearRampToValueAtTime(muted?0:0.15,actx.currentTime+0.4);
   toast(tx(muted?'sndOff':'sndOn')); }
@@ -806,7 +884,6 @@ function speak(text,lang,pitch){ if(!voiceOn || muted || !('speechSynthesis' in 
     const v=vs.find(x=>x.lang && x.lang.replace('_','-').startsWith(u.lang));
     if(v) u.voice=v;
     speechSynthesis.speak(u); }catch(e){} }
-let started=false;
 function saveGame(){ try{ if(!started) return;
   localStorage.setItem('walkSaveV2', JSON.stringify({
     g: shards.map(x=>x.userData.got?1:0), n: NPCS.map(x=>x.done?1:0),
@@ -830,6 +907,11 @@ document.getElementById('btnGo').addEventListener('click',()=>{
     const f=actx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=380;
     const g=actx.createGain(); g.gain.value=0.06;
     src.connect(f); f.connect(g); g.connect(master); src.start();
+    const humOsc1=actx.createOscillator(); humOsc1.type='sine'; humOsc1.frequency.value=106;
+    const humOsc2=actx.createOscillator(); humOsc2.type='sine'; humOsc2.frequency.value=112.5;
+    humGain=actx.createGain(); humGain.gain.value=0;
+    humOsc1.connect(humGain); humOsc2.connect(humGain); humGain.connect(master);
+    humOsc1.start(); humOsc2.start();
     const PENTA=[0,3,5,7,10];
     setInterval(()=>{ if(muted) return; const t0=actx.currentTime+0.02;
       const m=57+PENTA[Math.floor(Math.random()*5)]+(Math.random()<0.3?12:0);
