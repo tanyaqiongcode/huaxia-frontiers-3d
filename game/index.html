@@ -751,6 +751,9 @@ function loop(){
   camS.dir.addScaledVector(up,-camS.dir.dot(up)); if(camS.dir.lengthSq()<1e-6) camS.dir.set(0,0,-1); camS.dir.normalize();
   const right=new THREE.Vector3().crossVectors(camS.dir,up).normalize();
   const mv=camS.dir.clone().multiplyScalar(mf).addScaledVector(right,mx);
+  /* 跳跃物理（每帧·独立于移动） */
+  if(jumpOff>0||vy!==0){ jumpOff+=vy*dt; vy-=21*dt;
+    if(jumpOff<=0){ jumpOff=0; vy=0; playStep(); dustT=0; } }
   if(mv.lengthSq()>0.001){
     mv.normalize();
     const old=pP.clone();
@@ -764,8 +767,6 @@ function loop(){
       if(d<c.r+0.5){ const push=pP.clone().sub(cP); push.addScaledVector(up,-push.dot(up));
         if(push.lengthSq()<1e-6) push.set(0,1,0); push.normalize();
         pP.addScaledVector(push,(c.r+0.5-d)); setOnGround(pP); } });
-      setOnGround(pP);
-      if(jumpOff>0||vy>0) pP.addScaledVector(up,jumpOff);
     /* 朝向 */
     const dlt=pP.clone().sub(old);
     const isMove=dlt.lengthSq()>1e-7;
@@ -783,6 +784,8 @@ function loop(){
       figP.armL.rotation.x*=0.8; figP.armR.rotation.x*=0.8; }
     stepT-=dt; if(stepT<=0&&isMove){ playStep(); stepT=0.34+Math.random()*0.08; }
   } else { stepT=0.15; }
+  setOnGround(pP);
+  if(jumpOff>0||vy>0) pP.addScaledVector(up,jumpOff);
   /* 同伴（双人同屏） */
   if(p2){
     const p2P=p2.grp.position, up2=p2P.clone().normalize();
