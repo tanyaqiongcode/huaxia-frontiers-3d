@@ -54,6 +54,8 @@
   .langBtn:hover{color:var(--gold-hi);border-color:var(--gold)}
   .bar{position:fixed;left:0;right:0;height:0;background:#04060a;z-index:8;transition:height .9s cubic-bezier(.4,0,.2,1)}
   #barT{top:0}#barB{bottom:0} body.cine .bar{height:11vh}
+  #btnCard{margin-right:12px}
+  #cardPrev img{width:100%;max-width:420px;border-radius:10px;border:1px solid var(--line);display:block;margin:0 auto 10px}
   #compass{position:fixed;left:50%;bottom:122px;transform:translateX(-50%);z-index:5;display:none;align-items:center;gap:9px;pointer-events:none;color:var(--gold-hi);font-size:11.5px;letter-spacing:.14em}
   #cA{display:inline-block;transition:transform .12s linear;font-size:13px}
 
@@ -153,6 +155,8 @@
 <div class="veil" id="end"><div class="card">
   <h1 data-i18n="eTitle">行至边缘</h1><div class="sub" data-i18n="eSub">WALKED TO THE MARGIN</div>
   <p data-i18n-html="eBody">你拾起了散落的记忆，也听完了五段讲述。<br>边界在你脚下移动过——它不在墙上，不在族谱里，<br>而在资源、记忆，与每一次往来之间。<br><br>什么是中国人？这个问题没有终点，<br>正如边缘，一直在移动。</p>
+  <button class="go" id="btnCard" style="margin-bottom:12px" data-i18n="eCard">生成行走纪念卡</button>
+  <div id="cardPrev"></div>
   <button class="go" onclick="location.reload()" data-i18n="eGo">重 新 行 走</button>
 </div></div>
 
@@ -208,6 +212,7 @@ const T={lang: localStorage.getItem('walkLang')||'zh', dict:{
  eBody:{zh:'你拾起了散落的记忆，也听完了三段讲述。<br>边界在你脚下移动过——它不在墙上，不在族谱里，<br>而在资源、记忆，与每一次往来之间。<br><br>什么是中国人？这个问题没有终点，<br>正如边缘，一直在移动。',
   en:'You gathered the scattered memories and heard the five tellings.<br>The boundary moved beneath your feet — it is not in the wall, nor in the genealogy,<br>but in resources, memory, and every meeting between people.<br><br>Who counts as Chinese? The question has no end —<br>the edge, after all, keeps moving.'},
  eGo:{zh:'重 新 行 走',en:'Walk again'},
+ eCard:{zh:'生成行走纪念卡',en:'Make a walk card'},
  hudCnt:{zh:'记忆碎片 <b id="cShard">0</b>/17<br>倾听讲述 <b id="cNpc">0</b>/5',en:'Memory shards <b id="cShard">0</b>/17<br>Tellings heard <b id="cNpc">0</b>/5'},
  posHud:{zh:'你现在：<b id="posTxt">边缘之上</b>',en:'You are: <b id="posTxt">on the edge</b>'},
  posIn:{zh:'华夏之内',en:'within Huaxia'}, posEdge:{zh:'边缘之上',en:'on the edge'}, posOut:{zh:'华夏之外',en:'beyond the edge'},
@@ -626,7 +631,7 @@ pGroup.add(figP.yawG);
 pGroup.position.copy(P(player.a,player.t,0)); scene.add(pGroup);
 let walkPhase=0, vy=0, jumpOff=0, lit=false, beaconHinted=false, prevSide='in', crossT=0, fpsN=0, fpsT=0, started=false, actx=null, master=null, muted=false, humGain=null;
 
-let stepT=0.2, padYaw=0, padPitch=0, padB0=false, padB2=false, plGain=null, dustT=1;
+let stepT=0.2, padYaw=0, padPitch=0, padB0=false, padB2=false, plGain=null, dustT=1, steps=0, walkT0=0;
 /* ---- 输入 ---- */
 const keys={};
 addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
@@ -917,7 +922,7 @@ if(loadGame()){ document.getElementById('btnGo').textContent=tx('gContinue');
 function toggleSound(){ if(!actx) return; muted=!muted;
   master.gain.linearRampToValueAtTime(muted?0:0.15,actx.currentTime+0.4);
   toast(tx(muted?'sndOff':'sndOn')); }
-function playStep(){ if(!actx||muted) return; const t0=actx.currentTime;
+function playStep(){ steps++; if(!actx||muted) return; const t0=actx.currentTime;
   const src=actx.createBufferSource(); src.buffer=window.__stepBuf;
   src.playbackRate.value=0.9+Math.random()*0.3;
   const f=actx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=650+Math.random()*350; f.Q.value=1.2;
@@ -944,7 +949,11 @@ function speak(text,lang,pitch){ if(!voiceOn || muted || !('speechSynthesis' in 
     const u=new SpeechSynthesisUtterance(text);
     u.lang = lang==='zh'?'zh-CN':'en-US'; u.rate=0.95; u.pitch=pitch||1;
     const vs=voices.length?voices:speechSynthesis.getVoices();
-    const v=vs.find(x=>x.lang && x.lang.replace('_','-').startsWith(u.lang));
+    const PREF={'zh-CN':['Tingting','婷婷','Yunyan','Xiaoxiao','晓晓','Huihui','Meijia'],'en-US':['Samantha','Ava','Daniel','Karen','Moira']};
+    const lc=x=>x.lang.replace('_','-').slice(0,5);
+    let v=vs.find(x=>lc(x)===u.lang && PREF[u.lang].some(nm=>x.name.indexOf(nm)>=0));
+    if(!v) v=vs.find(x=>lc(x)===u.lang && x.localService);
+    if(!v) v=vs.find(x=>lc(x)===u.lang);
     if(v) u.voice=v;
     speechSynthesis.speak(u); }catch(e){} }
 function saveGame(){ try{ if(!started) return;
@@ -958,8 +967,51 @@ function loadGame(){ try{ const raw=localStorage.getItem('walkSaveV2'); if(!raw)
   if(d.p) pGroup.position.copy(new THREE.Vector3(d.p[0],d.p[1],d.p[2])).setLength(R);
   updHUD(); return d.g.some(v=>v) || d.n.some(v=>v); }catch(e){ return false; } }
 document.getElementById('btnNew').addEventListener('click',()=>{ try{localStorage.removeItem('walkSaveV2');}catch(e){} location.reload(); });
+function makeCard(){
+  const cv=document.createElement('canvas'); cv.width=900; cv.height=1200; const c=cv.getContext('2d');
+  const g=c.createLinearGradient(0,0,0,1200);
+  g.addColorStop(0,'#0d1526'); g.addColorStop(0.55,'#131c2b'); g.addColorStop(1,'#0a0d16');
+  c.fillStyle=g; c.fillRect(0,0,900,1200);
+  c.strokeStyle='rgba(201,164,92,.55)'; c.lineWidth=2; c.strokeRect(26,26,848,1148);
+  c.strokeStyle='rgba(201,164,92,.22)'; c.lineWidth=1; c.strokeRect(38,38,824,1124);
+  for(let i=0;i<110;i++){ c.fillStyle='rgba(214,222,238,'+(0.12+Math.random()*0.5)+')';
+    c.fillRect(44+Math.random()*812, 52+Math.random()*420, 1.6, 1.6); }
+  c.textAlign='center';
+  c.fillStyle='#e8cf96'; c.font='600 62px "Times New Roman","Songti SC","STSong",serif';
+  c.fillText('边 缘 行 走', 450, 205);
+  c.fillStyle='#8b8474'; c.font='21px "Times New Roman","Songti SC",serif';
+  c.fillText('《华夏边缘：历史记忆与族群认同》· 互动行走', 450, 252);
+  c.strokeStyle='rgba(201,164,92,.5)'; c.lineWidth=1.5;
+  c.beginPath(); c.moveTo(70,540); c.lineTo(388,540); c.stroke();
+  c.beginPath(); c.moveTo(512,540); c.lineTo(830,540); c.stroke();
+  c.beginPath(); c.arc(450,540,62,Math.PI*1.22,Math.PI*1.78); c.stroke();
+  const ns=shards.filter(x=>x.userData.got).length, nn=NPCS.filter(x=>x.done).length;
+  const mins=Math.max(1,Math.round((Date.now()-walkT0)/60000));
+  c.fillStyle='#e8dfc8'; c.font='34px "Times New Roman","Songti SC",serif';
+  c.fillText('记忆碎片 '+ns+' / 17 · 倾听讲述 '+nn+' / 5', 450, 640);
+  c.fillStyle='#8b8474'; c.font='19px "Times New Roman","Songti SC",serif';
+  c.fillText('行走 '+mins+' 分钟 · 足迹 '+steps+' 步'+(lit?' · 烽火已燃':''), 450, 688);
+  const Q=[['边界不在墙上，在脚上。','The boundary is not on a wall — it walks with you.'],
+           ['读懂边缘，才读懂“什么是中国人”。','To read the edge is to read what is Chinese.'],
+           ['什么是中国人？这个问题没有终点。','Who counts as Chinese? The question has no end.']];
+  const q=Q[Math.floor(Math.random()*Q.length)];
+  c.fillStyle='#c9a45c'; c.font='27px "Times New Roman","Songti SC",serif';
+  c.fillText(q[0], 450, 810);
+  c.fillStyle='#8b8474'; c.font='16px "Times New Roman",serif';
+  c.fillText(q[1], 450, 848);
+  c.fillStyle='#c9a45c'; c.font='17px "Times New Roman",serif';
+  c.fillText('tanyaqiongcode.github.io/huaxia-frontiers-3d/game/', 450, 1108);
+  c.fillStyle='#8b8474'; c.font='13px "Times New Roman","Songti SC",serif';
+  c.fillText('WALKING THE EDGE · 华夏边缘 · 17 碎片 · 5 讲述 · 5 区域', 450, 1140);
+  const url=cv.toDataURL('image/png');
+  const prev=document.getElementById('cardPrev');
+  prev.innerHTML='<img src="'+url+'" alt="walk card" style="width:100%;max-width:420px;border-radius:10px;border:1px solid var(--line);display:block;margin:0 auto 10px">'
+    +'<a href="'+url+'" download="huaxia-edge-walk.png" style="color:var(--gold-hi);text-decoration:none;font-size:12px;letter-spacing:.14em;border:1px solid var(--line);border-radius:99px;padding:8px 22px;display:inline-block">↓ 下载纪念卡 PNG</a>';
+  prev.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+document.getElementById('btnCard').addEventListener('click',makeCard);
 document.getElementById('btnGo').addEventListener('click',()=>{
-  started=true; setInterval(saveGame,4000);
+  started=true; walkT0=Date.now(); setInterval(saveGame,4000);
   document.getElementById('intro').style.display='none';
   document.body.classList.add('cine');
   setTimeout(()=>{ document.body.classList.remove('cine'); },2600);
