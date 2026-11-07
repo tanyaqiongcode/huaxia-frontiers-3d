@@ -609,8 +609,12 @@ function makeFigure(o){
   const legL=leg(-1), legR=leg(1);
   if(o.robe){ const rb=new THREE.Mesh(new THREE.ConeGeometry(0.35,o.robe,10),M(o.robeC)); rb.position.y=o.robe/2+0.66; yawG.add(rb); }
   if(o.apron){ const ap=new THREE.Mesh(new THREE.BoxGeometry(0.26,0.34,0.035),M(o.apron)); ap.position.set(0,0.6,0.115); yawG.add(ap); }
-  if(o.satchel){ const sp=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.4,0.16),M(0x6b5638)); sp.position.set(0,1.04,-0.2); yawG.add(sp);
-    const st=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.44,0.02),M(0x3a2f22)); st.position.set(0.1,1.24,-0.015); st.rotation.z=0.32; yawG.add(st); }
+  if(o.satchel){
+    const bpM=M(o.packC||0x4a5240);
+    const bp=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.28,0.11),bpM); bp.position.set(0,1.05,-0.145); yawG.add(bp);
+    const flap=new THREE.Mesh(new THREE.BoxGeometry(0.21,0.09,0.12),M(o.packC||0x4a5240)); flap.position.set(0,1.17,-0.145); yawG.add(flap);
+    [-0.07,0.07].forEach(sx=>{ const st=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.4,0.02),M(0x3a2f22));
+      st.position.set(sx,1.22,-0.075); st.rotation.x=0.15; yawG.add(st); }); }
   if(o.staff){ const stf=new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.035,1.5,6),M(0x4a3b2a)); stf.position.set(0.32,0.75,0.05); yawG.add(stf); }
   g.traverse(x=>{ if(x.isMesh) x.castShadow=true; });
   return {g, yawG, body, legL, legR, armL, armR};
@@ -632,7 +636,7 @@ NPCS.forEach((n,i)=>{ addCol(n.a,n.t,0.9);
 const player={a:0,t:34,yaw:0};
 const pGroup=new THREE.Group();
 const figP=makeFigure({jacket:0x46536b,trouser:0x4c463a,boot:0x2a241e,skin:0xd9c6ad,hair:0x1e2026,
-  hat:'brim',hatC:0x59513f,scarf:true});
+  hat:'brim',hatC:0x59513f,scarf:true,satchel:true,packC:0x4a5240});
 pGroup.add(figP.yawG);
 pGroup.position.copy(P(player.a,player.t,0)); scene.add(pGroup);
 let walkPhase=0, vy=0, jumpOff=0, lit=false, beaconHinted=false, prevSide='in', crossT=0, fpsN=0, fpsT=0, started=false, actx=null, master=null, muted=false, humGain=null;
