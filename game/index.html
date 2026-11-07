@@ -155,8 +155,6 @@
 <script>
 /* ============ 边缘行走 · 小行星球面行走 ============ */
 const R = 140, D2R = Math.PI/180;
-const P = (aD, tD, h) => { const a=aD*D2R, t=tD*D2R, r=R+(h||0);
-  return new THREE.Vector3(r*Math.sin(t)*Math.cos(a), r*Math.cos(t), r*Math.sin(t)*Math.sin(a)); };
 const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('gl'), antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.setSize(innerWidth, innerHeight);
@@ -265,27 +263,85 @@ function riverDist(a,t){ let best=1e9;
     let u=((a-a1)*da+(t-t1)*dt)/L2; u=Math.max(0,Math.min(1,u));
     const da2=a1+u*da-a, dt2=t1+u*dt-t; best=Math.min(best, da2*da2+dt2*dt2);
   } return Math.sqrt(best); }
+
+function riverDist(a,t){ let best=1e9;
+  for(let i=0;i<riverPts.length-1;i++){
+    const [a1,t1]=riverPts[i],[a2,t2]=riverPts[i+1];
+    const da=a2-a1, dt=t2-t1, L2=da*da+dt*dt||1;
+    let u=((a-a1)*da+(t-t1)*dt)/L2; u=Math.max(0,Math.min(1,u));
+    const da2=a1+u*da-a, dt2=t1+u*dt-t; best=Math.min(best, da2*da2+dt2*dt2);
+  } return Math.sqrt(best); }
+
+/* ---- 真实地理笔触：高程场（河谷下切+山地噪声+建筑台地+边缘山脊） ---- */
+function n2(x,y){ const v=Math.sin(x*127.1+y*311.7)*43758.5453; return v-Math.floor(v); }
+function smoothstep(e0,e1,x){ const u=Math.max(0,Math.min(1,(x-e0)/(e1-e0))); return u*u*(3-2*u); }
+function vnoise(x,y){ const xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi;
+  const u=xf*xf*(3-2*xf), v=yf*yf*(3-2*yf);
+  return n2(xi,yi)*(1-u)*(1-v)+n2(xi+1,yi)*u*(1-v)+n2(xi,yi+1)*(1-u)*v+n2(xi+1,yi+1)*u*v; }
+const FLAT=[[-6,10,18],[-72,26,10],[75,30,12],[-135,24,13],[-105,13,12]];
+function flatMask(a,t){ let m=1;
+  FLAT.forEach(([za,zt,r])=>{ const da=a-za, dt=t-zt; const d=Math.sqrt(da*da+dt*dt);
+    m*=Math.min(1,Math.max(0,(d-r*0.55)/r)); }); return m; }
+function elev(a,t){
+  const rd=riverDist(a,t);
+  const valleyW=smoothstep(9,2,rd);
+  let m=0,amp=.5,fr=1;
+  for(let o=0;o<4;o++){ m+=amp*vnoise(Math.cos(a*D2R)*2.6*fr+13.7, Math.sin(a*D2R)*2.6*fr+t*0.09*fr+7.3); amp*=.5; fr*=2.15; }
+  m/=0.9375;
+  const mountain=(m-0.42)*16*flatMask(a,t);
+  const edge=smoothstep(46,58,t)*5*flatMask(a,t);
+  const riverFloor=-1.9-1.3*smoothstep(6,0,rd);
+  return (mountain+edge)*(1-valleyW)+riverFloor*valleyW; }
+const P = (aD, tD, h) => { const a=aD*D2R, t=tD*D2R, r=R+elev(aD,tD)+(h||0);
+  return new THREE.Vector3(r*Math.sin(t)*Math.cos(a), r*Math.cos(t), r*Math.sin(t)*Math.sin(a)); };
+function setOnGround(v){ const d=Math.max(1,v.length());
+  const a=Math.atan2(v.z,v.x)/D2R, t=Math.acos(Math.max(-1,Math.min(1,v.y/d)))/D2R;
+  v.setLength(R+elev(a,t)); return v; }
+
 const gGeo = new THREE.SphereGeometry(R, 96, 44, 0, Math.PI*2, 0, 1.12);
 { const pos=gGeo.attributes.position, cols=[];
-  const cBase=new THREE.Color(0x39463c), cWet=new THREE.Color(0x2b3a49), cDry=new THREE.Color(0x4a4335), cWall=new THREE.Color(0x3d3a33);
+  const cBase=new THREE.Color(0x4a5a48), cWet=new THREE.Color(0x33475c), cDry=new THREE.Color(0x6b6248), cWall=new THREE.Color(0x57503f), cRock=new THREE.Color(0x6e6a60), cSnow=new THREE.Color(0xdfe6ea);
   for(let i=0;i<pos.count;i++){
     const x=pos.getX(i), y=pos.getY(i), z=pos.getZ(i);
     const a=Math.atan2(z,x)/D2R, t=Math.acos(Math.max(-1,Math.min(1,y/R)))/D2R;
+    const e=elev(a,t);
+    const v=new THREE.Vector3(x,y,z).setLength(R+e); pos.setXYZ(i,v.x,v.y,v.z);
     const c=cBase.clone();
     if(a<-40) c.lerp(cDry, Math.min(1,(-a-40)/35));
     if(a>50)  c.lerp(cWall, Math.min(1,(a-50)/35));
     const rd=riverDist(a,t); if(rd<9) c.lerp(cWet, 1-rd/9);
-    c.multiplyScalar(1.02+0.3*fract(Math.sin(a*12.9898+t*78.233)*43758.5453));
+    if(e>3.5) c.lerp(cRock, Math.min(1,(e-3.5)/4.5));
+    if(t>50 && e>2.5) c.lerp(cSnow, Math.min(0.8,(t-50)/9));
+    c.multiplyScalar(1.02+0.28*fract(Math.sin(a*12.9898+t*78.233)*43758.5453));
     cols.push(c.r,c.g,c.b);
   }
-  gGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols,3)); }
-scene.add(new THREE.Mesh(gGeo, new THREE.MeshStandardMaterial({vertexColors:true, roughness:1, metalness:0})));
+  gGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols,3));
+  gGeo.computeVertexNormals(); }
+{ /* 地表笔触纹理（程序生成画布） */
+  const cv=document.createElement('canvas'); cv.width=cv.height=256; const tc=cv.getContext('2d');
+  tc.fillStyle='#cfd5b0'; tc.fillRect(0,0,256,256);
+  const tones=['rgba(150,165,120,.30)','rgba(190,180,140,.26)','rgba(118,128,102,.22)','rgba(205,200,165,.22)'];
+  for(let i=0;i<1100;i++){ tc.fillStyle=tones[i%4]; tc.beginPath();
+    tc.ellipse(Math.random()*256,Math.random()*256,2+Math.random()*7,1+Math.random()*4,Math.random()*3.14,0,7); tc.fill(); }
+  for(let i=0;i<1600;i++){ tc.fillStyle='rgba(96,104,80,'+(0.05+Math.random()*0.13)+')';
+    tc.fillRect(Math.random()*256,Math.random()*256,1.6,1.6); }
+  const gt=new THREE.CanvasTexture(cv); gt.wrapS=gt.wrapT=THREE.RepeatWrapping; gt.repeat.set(12,6);
+  scene.add(new THREE.Mesh(gGeo, new THREE.MeshStandardMaterial({vertexColors:true, roughness:1, metalness:0, map:gt}))); }
 
 /* 岷江 */
-{ const pts=riverPts.map(p=>P(p[0],p[1],0.12));
-  const ribbon=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),100,0.55,6,false),
-    new THREE.MeshBasicMaterial({color:0x33506b,transparent:true,opacity:.92}));
+{ const pts=riverPts.map(([a,t])=>{ const aR=a*D2R,tR=t*D2R;
+    const rr=R-1.9-1.3*smoothstep(6,0,riverDist(a,t))+0.22;
+    return new THREE.Vector3(rr*Math.sin(tR)*Math.cos(aR), rr*Math.cos(tR), rr*Math.sin(tR)*Math.sin(aR)); });
+  const ribbon=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),110,0.6,6,false),
+    new THREE.MeshBasicMaterial({color:0x3a5a7d,transparent:true,opacity:.95}));
   scene.add(ribbon); }
+/* 星空 */
+{ const g=new THREE.BufferGeometry(); const v=[];
+  for(let i=0;i<1700;i++){ const th=Math.random()*Math.PI*2, ph=Math.acos(Math.random()*0.92);
+    const r=430; v.push(r*Math.sin(ph)*Math.cos(th), r*Math.cos(ph), r*Math.sin(ph)*Math.sin(th)); }
+  g.setAttribute('position', new THREE.Float32BufferAttribute(v,3));
+  const pm=new THREE.PointsMaterial({color:0xcfd8ea,size:1.15,sizeAttenuation:false,transparent:true,opacity:.6});
+  pm.fog=false; scene.add(new THREE.Points(g,pm)); }
 
 /* ---- 场景物件 ---- */
 const colliders=[]; // {a,t,r}
@@ -341,6 +397,16 @@ mesh(new THREE.BoxGeometry(0.5,1.15,0.06),matRed,-105,13.5,1.95);
 [[-103,11.5],[-107,15],[-100,15.5]].forEach(([a,t])=>{
   mesh(new THREE.CylinderGeometry(0.05,0.07,2.6,6),matWood,a,t,1.3);
   mesh(new THREE.BoxGeometry(0.6,0.8,0.03),matRed,a,t,2.2); });
+/* 草簇与岩石（地理细节） */
+const matGrass=new THREE.MeshStandardMaterial({color:0x4c6242,roughness:1});
+const matRockD=new THREE.MeshStandardMaterial({color:0x6f6a60,roughness:1});
+for(let i=0;i<46;i++){ const a=-150+fract(i*13.7)*300, t=8+fract(i*7.9)*44;
+  if(riverDist(a,t)<3.5) continue;
+  mesh(new THREE.ConeGeometry(0.14,0.42,4),matGrass,a,t,0.16,fract(i*3.1)*3); }
+for(let i=0;i<16;i++){ const a=-160+fract(i*5.3)*320, t=20+fract(i*11.7)*34;
+  if(riverDist(a,t)<4) continue;
+  const r=0.3+fract(i*9.1)*0.6;
+  mesh(new THREE.DodecahedronGeometry(r,0),matRockD,a,t,r*0.55,fract(i*4.7)*3); }
 /* 松树 */
 [[-30,6],[24,16],[-26,18],[30,8],[-58,16],[52,20],[-40,30],[40,26],[-88,20],[98,26]].forEach(([a,t])=>{
   addCol(a,t,0.8);
@@ -552,15 +618,16 @@ function loop(){
     mv.normalize();
     const old=pP.clone();
     const axis=new THREE.Vector3().crossVectors(up,mv).normalize();
-    pP.applyAxisAngle(axis, (keys['shift']?10.2:6)*dt/R).setLength(R);
+    pP.applyAxisAngle(axis, (keys['shift']?10.2:6)*dt/R);
     /* 世界边界 */
-    const tDeg=Math.acos(Math.max(-1,Math.min(1,pP.y/R)))/D2R;
-    if(tDeg<3||tDeg>58){ pP.copy(old); }
+    const tDeg=Math.acos(Math.max(-1,Math.min(1,pP.y/Math.max(1,pP.length()))))/D2R;
+    if(tDeg<3||tDeg>58){ pP.copy(old); setOnGround(pP); }
     /* 碰撞 */
     colliders.forEach(c=>{ const cP=P(c.a,c.t,0); const d=planarDist(pP,cP);
       if(d<c.r+0.5){ const push=pP.clone().sub(cP); push.addScaledVector(up,-push.dot(up));
         if(push.lengthSq()<1e-6) push.set(0,1,0); push.normalize();
-        pP.addScaledVector(push,(c.r+0.5-d)); pP.setLength(R); } });
+        pP.addScaledVector(push,(c.r+0.5-d)); setOnGround(pP); } });
+      setOnGround(pP);
     /* 朝向 */
     const dlt=pP.clone().sub(old);
     if(dlt.lengthSq()>1e-6){ const ty=Math.atan2(dlt.x,dlt.z);
@@ -576,13 +643,14 @@ function loop(){
     if(mv2.lengthSq()>0.001){ mv2.normalize();
       const old2=p2P.clone();
       const ax2=new THREE.Vector3().crossVectors(up2,mv2).normalize();
-      p2P.applyAxisAngle(ax2, (keys['shift']?10.2:6)*dt/R).setLength(R);
-      const t2d=Math.acos(Math.max(-1,Math.min(1,p2P.y/R)))/D2R;
+      p2P.applyAxisAngle(ax2, (keys['shift']?10.2:6)*dt/R);
+      const t2d=Math.acos(Math.max(-1,Math.min(1,p2P.y/Math.max(1,p2P.length()))))/D2R;
       if(t2d<3||t2d>58){ p2P.copy(old2); }
       colliders.forEach(c=>{ const cP=P(c.a,c.t,0); const d=planarDist(p2P,cP);
         if(d<c.r+0.5){ const push=p2P.clone().sub(cP); push.addScaledVector(up2,-push.dot(up2));
           if(push.lengthSq()<1e-6) push.set(0,1,0); push.normalize();
-          p2P.addScaledVector(push,(c.r+0.5-d)); p2P.setLength(R); } });
+          p2P.addScaledVector(push,(c.r+0.5-d)); setOnGround(p2P); } });
+        setOnGround(p2P);
       const dl2=p2P.clone().sub(old2);
       if(dl2.lengthSq()>1e-6){ const ty2=Math.atan2(dl2.x,dl2.z);
         let cur2=p2.grp.rotation.y, diff2=((ty2-cur2+Math.PI*3)%(Math.PI*2))-Math.PI;
@@ -595,7 +663,7 @@ function loop(){
   /* 相机（双人取中点） */
   let focus=pP, cdist=camS.dist;
   if(p2){ const sep=planarDist(pP,p2.grp.position);
-    focus=pP.clone().add(p2.grp.position).multiplyScalar(0.5).setLength(R);
+    focus=pP.clone().add(p2.grp.position).multiplyScalar(0.5); setOnGround(focus); focus.setLength(focus.length()+2.2);
     cdist=Math.min(18,Math.max(9,camS.dist+sep*0.55)); }
   const upF=focus.clone().normalize();
   camS.dir.addScaledVector(upF,-camS.dir.dot(upF)); if(camS.dir.lengthSq()<1e-6) camS.dir.set(0,0,-1); camS.dir.normalize();
@@ -637,7 +705,7 @@ function loop(){
   if(!zn && lastZone!==tx('zValleyN')){ lastZone=tx('zValleyN');
     $('zName').textContent=tx('zValleyN'); $('zSub').textContent=tx('zValleyS'); }
   /* 位置判定 */
-  const tDeg=Math.acos(Math.max(-1,Math.min(1,pP.y/R)))/D2R;
+  const tDeg=Math.acos(Math.max(-1,Math.min(1,pP.y/Math.max(1,pP.length()))))/D2R;
   const aDeg=Math.atan2(pP.z,pP.x)/D2R;
   const dA=aDeg-aLine(tDeg);
   const pos=$('posTxt'), ph=$('posHUD');
