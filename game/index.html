@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>边缘行走 · 华夏边缘</title>
+<meta name="description" content="《华夏边缘：历史记忆与族群认同》互动行走体验——在岷江上游的小行星上，收集记忆碎片，看边界在脚下移动。">
+<style>
+  :root{
+    --bg:#0e1320; --gold:#c9a45c; --gold-hi:#e8cf96; --ink:#e8dfc8; --dim:#8b8474;
+    --line:rgba(201,164,92,.25); --glass:rgba(16,20,32,.78);
+    --fserif:"ZhPunct","Times New Roman","Songti SC","STSong","Noto Serif SC","SimSun",serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;background:var(--bg)}
+  body{font-family:var(--fserif);color:var(--ink)}
+  #gl{position:fixed;inset:0;display:block}
+  .vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
+    background:radial-gradient(ellipse at 50% 44%,transparent 34%,rgba(6,8,14,.42) 80%,rgba(6,8,14,.82) 100%)}
+  .grain{position:fixed;inset:-40px;z-index:3;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='260' height='260' filter='url(%23n)'/></svg>");
+    animation:grain 1.1s steps(3) infinite}
+  @keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-14px,9px)}66%{transform:translate(10px,-12px)}100%{transform:translate(0,0)}}
+  .mark{position:fixed;top:18px;right:18px;z-index:5;opacity:.85}
+  .mark svg{width:40px;height:40px;animation:spin360 18s linear infinite}
+  @keyframes spin360{to{transform:rotate(360deg)}}
+
+  /* 场景卡 */
+  .sceneCard{position:fixed;top:18px;left:18px;z-index:5;pointer-events:none;
+    background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));border:1px solid var(--line);
+    border-radius:12px;padding:14px 18px;backdrop-filter:blur(8px);max-width:300px}
+  .sceneCard b{display:block;font-size:17px;letter-spacing:.14em;color:var(--gold-hi);font-weight:600}
+  .sceneCard i{display:block;font-style:normal;font-size:11.5px;color:var(--dim);letter-spacing:.1em;margin-top:6px;line-height:1.7}
+
+  /* 右上进度 */
+  .hudR{position:fixed;top:18px;right:74px;z-index:5;display:flex;align-items:center;gap:14px;pointer-events:none}
+  .ring{width:44px;height:44px;position:relative}
+  .ring svg{transform:rotate(-90deg)}
+  .ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold-hi);font-weight:600}
+  .hudR .cnt{font-size:11.5px;color:var(--dim);letter-spacing:.12em;line-height:1.9}
+  .hudR .cnt b{color:var(--ink)}
+
+  /* 左下位置判定 */
+  .posHUD{position:fixed;left:18px;bottom:18px;z-index:5;pointer-events:none;
+    border:1px solid var(--line);border-radius:99px;padding:8px 18px;font-size:12px;letter-spacing:.16em;
+    background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));backdrop-filter:blur(8px);color:var(--dim)}
+  .posHUD b{color:var(--gold-hi);font-weight:600}
+  .posHUD.out b{color:#9fb8ff}
+
+  /* 右下提示 */
+  .hint{position:fixed;right:18px;bottom:18px;z-index:5;font-size:11px;color:var(--dim);letter-spacing:.12em;text-align:right;line-height:1.9;pointer-events:none}
+  .hint kbd{border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:10px;font-family:var(--fserif)}
+
+  /* 对话/字幕 */
+  .dlg{position:fixed;left:50%;bottom:74px;transform:translateX(-50%);z-index:6;width:min(680px,92vw);
+    background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.72));border:1px solid var(--line);border-radius:14px;
+    padding:16px 22px;backdrop-filter:blur(10px);display:none}
+  .dlg.show{display:block}
+  .dlg .who{font-size:12px;color:var(--gold);letter-spacing:.2em;margin-bottom:8px}
+  .dlg .txt{font-size:15px;line-height:2;color:var(--ink);min-height:30px}
+  .dlg .more{text-align:right;font-size:10.5px;color:var(--dim);letter-spacing:.2em;margin-top:8px}
+
+  /* toast */
+  .toast{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:7;pointer-events:none;
+    background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.7));border:1px solid var(--line);border-radius:99px;
+    padding:9px 22px;font-size:12.5px;letter-spacing:.08em;color:var(--ink);opacity:0;transition:opacity .4s;max-width:88vw;text-align:center}
+  .toast.show{opacity:1}
+
+  /* 任务清单 */
+  .tasks{position:fixed;top:74px;right:18px;z-index:5;width:230px;display:none;
+    background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.72));border:1px solid var(--line);border-radius:12px;padding:14px 16px;backdrop-filter:blur(8px)}
+  .tasks.show{display:block}
+  .tasks b{font-size:12px;color:var(--gold);letter-spacing:.2em}
+  .tasks ul{list-style:none;margin-top:10px}
+  .tasks li{font-size:12px;color:var(--dim);line-height:2;padding-left:16px;position:relative}
+  .tasks li::before{content:"·";position:absolute;left:0;color:var(--gold)}
+  .tasks li.done{color:var(--ink);opacity:.75}
+  .tasks li.done::before{content:"✓";color:#7fbf8f}
+
+  /* 交互按钮（近NPC） */
+  .actBtn{position:fixed;left:50%;bottom:150px;transform:translateX(-50%);z-index:6;display:none;
+    border:1px solid var(--gold);border-radius:99px;background:rgba(201,164,92,.14);color:var(--gold-hi);
+    padding:9px 26px;font-size:13px;letter-spacing:.2em;cursor:pointer;font-family:var(--fserif)}
+
+  /* 摇杆 */
+  .joy{position:fixed;left:26px;bottom:70px;z-index:6;width:110px;height:110px;display:none;pointer-events:auto}
+  body.touch .joy{display:block}
+  .joy .base{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--line);background:rgba(16,20,32,.35)}
+  .joy .stick{position:absolute;left:50%;top:50%;width:46px;height:46px;border-radius:50%;
+    background:rgba(201,164,92,.3);border:1.5px solid var(--gold);transform:translate(-50%,-50%)}
+
+  /* 开场 / 结局 */
+  .veil{position:fixed;inset:0;z-index:9;background:rgba(5,7,12,.86);backdrop-filter:blur(10px);
+    display:flex;align-items:center;justify-content:center;padding:24px}
+  .veil .card{max-width:560px;text-align:center;border:1px solid var(--line);border-radius:16px;padding:42px 44px;
+    background:linear-gradient(160deg,rgba(16,20,32,.9),rgba(8,10,18,.85))}
+  .veil h1{font-size:clamp(28px,4.6vw,40px);letter-spacing:.3em;color:var(--gold-hi);font-weight:600}
+  .veil .sub{font-size:12px;color:var(--dim);letter-spacing:.3em;margin-top:10px}
+  .veil p{font-size:13.5px;color:var(--ink);opacity:.8;line-height:2.1;margin-top:20px;text-align:left}
+  .veil .keys{font-size:11.5px;color:var(--dim);letter-spacing:.1em;line-height:2;margin-top:18px}
+  .veil .keys kbd{border:1px solid var(--line);border-radius:4px;padding:1px 7px;font-size:10px}
+  .veil .go{margin-top:26px;display:inline-block;border:1px solid var(--gold);border-radius:99px;color:var(--gold-hi);
+    padding:12px 44px;font-size:14px;letter-spacing:.3em;cursor:pointer;font-family:var(--fserif);background:rgba(201,164,92,.08)}
+  .veil .go:hover{background:var(--gold);color:#100c04}
+  #end{display:none}
+  #end .card p{text-align:center}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div class="vignette"></div><div class="grain"></div>
+<div class="mark" title="Huaxia Frontier"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="#c9a45c" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="#c9a45c"/></svg></div>
+
+<div class="sceneCard"><b id="zName">河谷 · 岷江上游</b><i id="zSub">沿河谷行走，边缘在脚下移动。</i></div>
+<div class="hudR">
+  <div class="ring"><svg width="44" height="44"><circle cx="22" cy="22" r="18" stroke="rgba(201,164,92,.2)" stroke-width="3" fill="none"/><circle id="ringFg" cx="22" cy="22" r="18" stroke="#e8cf96" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="113" stroke-dashoffset="113"/></svg><b id="pct">0%</b></div>
+  <div class="cnt">记忆碎片 <b id="cShard">0</b>/12<br>倾听讲述 <b id="cNpc">0</b>/3</div>
+</div>
+<div class="posHUD" id="posHUD">你现在：<b id="posTxt">边缘之上</b></div>
+<div class="hint" id="hint"><kbd>W A S D</kbd> 移动 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务</div>
+<div class="tasks" id="tasks"><b>行走任务</b><ul>
+  <li id="tShard">拾取 12 枚记忆碎片（0/12）</li>
+  <li id="tNpc1">倾听 寨老阿爷 的讲述</li>
+  <li id="tNpc2">倾听 河湟考古者 的讲述</li>
+  <li id="tNpc3">倾听 长城戍卒 的讲述</li>
+  <li id="tLine">见证边界线移动</li>
+</ul></div>
+<div class="dlg" id="dlg"><div class="who" id="dlgWho"></div><div class="txt" id="dlgTxt"></div><div class="more" id="dlgMore">E · 继续</div></div>
+<div class="toast" id="toast"></div>
+<button class="actBtn" id="actBtn">按 E · 倾听</button>
+<div class="joy" id="joy"><div class="base"></div><div class="stick" id="stick"></div></div>
+
+<div class="veil" id="intro"><div class="card">
+  <h1>边缘行走</h1><div class="sub">《华夏边缘：历史记忆与族群认同》· 互动行走</div>
+  <p>你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十二枚记忆碎片散落在谷地里，三段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。</p>
+  <div class="keys"><kbd>W A S D</kbd> 移动 · 鼠标拖拽 视角 · 滚轮 远近<br><kbd>E</kbd> 对话 · <kbd>T</kbd> 晨昏切换 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务清单</div>
+  <button class="go" id="btnGo">开 始 行 走</button>
+</div></div>
+
+<div class="veil" id="end"><div class="card">
+  <h1>行至边缘</h1><div class="sub">WALKED TO THE MARGIN</div>
+  <p>你拾起了散落的记忆，也听完了三段讲述。<br>边界在你脚下移动过——它不在墙上，不在族谱里，<br>而在资源、记忆，与每一次往来之间。<br><br>什么是中国人？这个问题没有终点，<br>正如边缘，一直在移动。</p>
+  <button class="go" onclick="location.reload()">重 新 行 走</button>
+</div></div>
+
+<script src="../assets/three.min.js"></script>
+<script>
+/* ============ 边缘行走 · 小行星球面行走 ============ */
+const R = 140, D2R = Math.PI/180;
+const P = (aD, tD, h) => { const a=aD*D2R, t=tD*D2R, r=R+(h||0);
+  return new THREE.Vector3(r*Math.sin(t)*Math.cos(a), r*Math.cos(t), r*Math.sin(t)*Math.sin(a)); };
+const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('gl'), antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth, innerHeight);
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x141b2a, 0.0088);
+scene.background = new THREE.Color(0x141b2a);
+const camera = new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.1, 600);
+addEventListener('resize', ()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+
+/* 光照与主题 */
+const hemi = new THREE.HemisphereLight(0xaec4e4, 0x3a4038, .95); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffd9a0, 1.6); sun.position.set(70,90,40); scene.add(sun);
+scene.add(new THREE.AmbientLight(0x22262e,.7));
+const THEMES=[
+ {fog:0x141b2a,bg:0x141b2a,sun:0xffd9a0,si:1.6,hemi:0xaec4e4,name:'晨光'},
+ {fog:0x1a1210,bg:0x150e0a,sun:0xff9a5c,si:1.0,hemi:0xd6a08a,name:'暮色'},
+ {fog:0x0a0e18,bg:0x080c16,sun:0xb9c8ff,si:.7,hemi:0x8a9cd6,name:'月夜'}];
+let themeIx=0;
+function applyTheme(){ const t=THEMES[themeIx];
+  scene.fog.color.setHex(t.fog); scene.background.setHex(t.bg);
+  sun.color.setHex(t.sun); sun.intensity=t.si; hemi.color.setHex(t.hemi);
+  toast('氛围 · '+t.name); }
+function fract(x){ return x - Math.floor(x); }
+
+/* ---- 地面（球冠 + 分区顶点色） ---- */
+const riverPts=[[-100,36],[-80,28],[-60,20],[-35,14],[-12,11],[10,9],[35,11],[60,16],[85,24],[105,32]];
+function riverDist(a,t){ let best=1e9;
+  for(let i=0;i<riverPts.length-1;i++){
+    const [a1,t1]=riverPts[i],[a2,t2]=riverPts[i+1];
+    const da=a2-a1, dt=t2-t1, L2=da*da+dt*dt||1;
+    let u=((a-a1)*da+(t-t1)*dt)/L2; u=Math.max(0,Math.min(1,u));
+    const da2=a1+u*da-a, dt2=t1+u*dt-t; best=Math.min(best, da2*da2+dt2*dt2);
+  } return Math.sqrt(best); }
+const gGeo = new THREE.SphereGeometry(R, 96, 44, 0, Math.PI*2, 0, 1.12);
+{ const pos=gGeo.attributes.position, cols=[];
+  const cBase=new THREE.Color(0x39463c), cWet=new THREE.Color(0x2b3a49), cDry=new THREE.Color(0x4a4335), cWall=new THREE.Color(0x3d3a33);
+  for(let i=0;i<pos.count;i++){
+    const x=pos.getX(i), y=pos.getY(i), z=pos.getZ(i);
+    const a=Math.atan2(z,x)/D2R, t=Math.acos(Math.max(-1,Math.min(1,y/R)))/D2R;
+    const c=cBase.clone();
+    if(a<-40) c.lerp(cDry, Math.min(1,(-a-40)/35));
+    if(a>50)  c.lerp(cWall, Math.min(1,(a-50)/35));
+    const rd=riverDist(a,t); if(rd<9) c.lerp(cWet, 1-rd/9);
+    c.multiplyScalar(1.02+0.3*fract(Math.sin(a*12.9898+t*78.233)*43758.5453));
+    cols.push(c.r,c.g,c.b);
+  }
+  gGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols,3)); }
+scene.add(new THREE.Mesh(gGeo, new THREE.MeshStandardMaterial({vertexColors:true, roughness:1, metalness:0})));
+
+/* 岷江 */
+{ const pts=riverPts.map(p=>P(p[0],p[1],0.12));
+  const ribbon=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),100,0.55,6,false),
+    new THREE.MeshBasicMaterial({color:0x33506b,transparent:true,opacity:.92}));
+  scene.add(ribbon); }
+
+/* ---- 场景物件 ---- */
+const colliders=[]; // {a,t,r}
+function addCol(a,t,r){ colliders.push({a,t,r}); }
+const matStone=new THREE.MeshStandardMaterial({color:0x6a675e,roughness:.95});
+const matStone2=new THREE.MeshStandardMaterial({color:0x57544c,roughness:.95});
+const matWood=new THREE.MeshStandardMaterial({color:0x4a3b2a,roughness:.9});
+const matRoof=new THREE.MeshStandardMaterial({color:0x33302a,roughness:.95});
+const matPine=new THREE.MeshStandardMaterial({color:0x2f4436,roughness:.95});
+const camBlockers=[];
+function mesh(g,m,a,t,h,ry,blk){ const o=new THREE.Mesh(g,m); o.position.copy(P(a,t,h||0));
+  const up=o.position.clone().normalize();
+  o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),up);
+  if(ry) o.rotateY(ry);
+  if(blk!==false) camBlockers.push(o);
+  scene.add(o); return o; }
+/* 碉楼（八角收分石塔）×3 */
+[[-8,8,11],[2,12,8.5],[10,7,9.5]].forEach(([a,t,h])=>{
+  const g=new THREE.CylinderGeometry(1.1,1.7,h,8,3); addCol(a,t,2.3);
+  const tw=mesh(g,matStone,a,t,h/2); tw.rotateZ(0); 
+});
+/* 羌寨房屋 */
+[[-15,14],[-3,16],[8,15],[16,12],[-20,9]].forEach(([a,t])=>{
+  addCol(a,t,2.1);
+  mesh(new THREE.BoxGeometry(2.6,1.8,2.2),matStone2,a,t,0.9);
+  mesh(new THREE.ConeGeometry(2.2,1.2,4),matRoof,a,t,2.4);
+});
+/* 河湟遗址石圈 + 残墙 */
+[[-70,24],[-76,27],[-65,29],[-80,22]].forEach(([a,t])=>{ addCol(a,t,1.2);
+  mesh(new THREE.BoxGeometry(1.6,0.9,0.7),matStone,a,t,0.45); });
+/* 长城 + 烽燧 */
+[[60,29],[65,30],[70,30],[75,31],[80,31],[85,32],[90,32]].forEach(([a,t])=>{ addCol(a,t,2.0);
+  mesh(new THREE.BoxGeometry(3.4,2.2,1.6),matStone2,a,t,1.1); });
+addCol(95,33,2.4); mesh(new THREE.CylinderGeometry(1.1,1.5,5.5,8),matStone,95,33,2.75);
+mesh(new THREE.BoxGeometry(2.6,0.5,2.6),matRoof,95,33,5.8);
+/* 松树 */
+[[-30,6],[24,16],[-26,18],[30,8],[-58,16],[52,20],[-40,30],[40,26],[-88,20],[98,26]].forEach(([a,t])=>{
+  addCol(a,t,0.8);
+  mesh(new THREE.CylinderGeometry(0.12,0.18,1.2,5),matWood,a,t,0.6,false);
+  mesh(new THREE.ConeGeometry(1.1,2.2,7),matPine,a,t,2.2,false);
+  mesh(new THREE.ConeGeometry(0.8,1.6,7),matPine,a,t,3.6,false);
+});
+/* 索桥（岷江上） */
+{ const br=new THREE.Group();
+  for(let i=0;i<7;i++){ const pl=new THREE.Mesh(new THREE.BoxGeometry(1.6,0.08,0.5),matWood);
+    pl.position.set(0,0,i*0.9-2.7); br.add(pl); }
+  [[-0.7],[0.7]].forEach(([x])=>{ for(let i=0;i<7;i+=2){ const rope=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,1.0,4),matWood);
+    rope.position.set(x,0.5,i*0.9-2.7); br.add(rope); } });
+  const c=P(-12,11,0.9); br.position.copy(c);
+  const up=c.clone().normalize(); br.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),up);
+  br.rotateY(0.5); scene.add(br); }
+
+/* ---- 记忆碎片 ---- */
+const TOASTS=[
+ '边缘视角：不问“华夏有什么”，而问“华夏的边界在哪里”。',
+ '族群如俱乐部：入会资格由边界决定，而非成员的内在特征。',
+ '结构性失忆：忘记什么，与记得什么同样重要。',
+ '英雄祖先与弟兄祖先：两种历史心性，对应两种社会形态。',
+ '满天星斗到月明星稀：边缘退场，核心才亮起来。',
+ '西辽河的夏家店上层：农牧混合带的兴衰。',
+ '吴太伯的故事：边缘人群借祖先记忆，走进华夏。',
+ '羌人概念的西移：被称作“羌”的人群，不断向西漂移。',
+ '汉代的四方意象：西戎、北狄、东夷、南蛮。',
+ '北川羌族的尔玛认同：认同，可以重新学习。',
+ '湘西革屯运动：边缘的变迁，自有其微观过程。',
+ '反思性国族认同：多元一体，是过程而非答案。'];
+const SHARD_POS=[[-5,7],[5,9],[-12,11],[-68,25],[-78,28],[-62,31],[66,30],[78,32],[90,33],[-30,16],[-50,22],[30,12]];
+const shards=[]; const matShard=new THREE.MeshBasicMaterial({color:0xffd98a,transparent:true,opacity:.92});
+SHARD_POS.forEach(([a,t],i)=>{ const m=new THREE.Mesh(new THREE.OctahedronGeometry(0.42),matShard.clone());
+  m.position.copy(P(a,t,1.1)); m.userData={a,t,got:false,ph:i}; scene.add(m); shards.push(m); });
+
+/* ---- 边界线（随进度移动） ---- */
+let lineMesh=null, prog=0;
+function aLine(tDeg){ const base=36+16*prog; return base + 5*Math.sin(tDeg*0.09+0.5); }
+function buildLine(){
+  const base=36+16*prog; const pts=[];
+  for(let i=0;i<=60;i++){ const t=2+i*(46-2)/60; pts.push(P(aLine(t),t,0.18)); }
+  const geo=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),90,0.15,6,false);
+  if(lineMesh){ lineMesh.geometry.dispose(); lineMesh.geometry=geo; }
+  else { lineMesh=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:0xe8cf96,transparent:true,opacity:.85})); scene.add(lineMesh); }
+}
+buildLine();
+
+/* ---- NPC 与讲述 ---- */
+const NPCS=[
+ {a:0,t:13,name:'寨老阿爷',done:false,lines:[
+  '客人从谷口来？坐。这条沟里的人，都在讲祖先。',
+  '问起祖先，人们说：从前有三个弟兄来到这里，各自建了一个寨子。若把来往密切的四条山沟一起算进来，故事又可以从四个弟兄讲起。',
+  '人们今天同谁来往，也影响他们怎样讲述共同的过去。——你往沟里走吧，边界不在墙上，在脚上。']},
+ {a:-72,t:26,name:'河湟考古者',done:false,lines:[
+  '这是四千年前的屋子地基。那会儿，气候开始转干、转冷。',
+  '谷子里种不成庄稼的人，赶着羊往高处走。农业的边缘，就这样长出了游牧的边缘。',
+  '我们管这叫“月明星稀”——边缘的人群退场了，核心才亮起来。']},
+ {a:72,t:28,name:'长城戍卒',done:false,lines:[
+  '墙里的叫耕，墙外的叫牧。这条线画在地上，也画在人心里。',
+  '可只要北边草场好了，“他们”里就有人想进来。墙挡的是资源，从来不是人。',
+  '你一路走来，看过寨子、看过遗址——你说，谁算华夏？']}];
+const matRobe=new THREE.MeshStandardMaterial({color:0xd8d4c8,roughness:.9});
+const matSkin=new THREE.MeshStandardMaterial({color:0xd9c6ad,roughness:.9});
+NPCS.forEach(n=>{ addCol(n.a,n.t,0.9);
+  const g=new THREE.Group();
+  const robe=new THREE.Mesh(new THREE.ConeGeometry(0.42,1.5,10),matRobe); robe.position.y=0.75; g.add(robe);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.2,10,8),matSkin); head.position.y=1.68; g.add(head);
+  const hair=new THREE.Mesh(new THREE.SphereGeometry(0.21,10,8,0,Math.PI*2,0,1.4),new THREE.MeshStandardMaterial({color:0x24242a})); hair.position.y=1.72; g.add(hair);
+  g.position.copy(P(n.a,n.t,0)); const up=g.position.clone().normalize();
+  g.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),up); scene.add(g); n.mesh=g; });
+
+/* ---- 玩家 ---- */
+const player={a:0,t:34,yaw:0};
+const pGroup=new THREE.Group();
+{ const robe=new THREE.Mesh(new THREE.ConeGeometry(0.4,1.5,10),new THREE.MeshStandardMaterial({color:0xe3ddcd,roughness:.9})); robe.position.y=0.75; pGroup.add(robe);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.19,10,8),matSkin); head.position.y=1.66; pGroup.add(head);
+  const hair=new THREE.Mesh(new THREE.SphereGeometry(0.2,10,8,0,Math.PI*2,0,1.4),new THREE.MeshStandardMaterial({color:0x1e2026})); hair.position.y=1.7; pGroup.add(hair);
+  const pack=new THREE.Mesh(new THREE.BoxGeometry(0.36,0.5,0.22),matWood); pack.position.set(0,1.0,0.28); pGroup.add(pack); }
+pGroup.position.copy(P(player.a,player.t,0)); scene.add(pGroup);
+
+/* ---- 输入 ---- */
+const keys={};
+addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
+  if(k==='e') tryTalk();
+  if(k==='t'){ themeIx=(themeIx+1)%THEMES.length; applyTheme(); }
+  if(k==='m') toggleSound();
+  if(k==='j') document.getElementById('tasks').classList.toggle('show');
+  if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault(); });
+addEventListener('keyup',e=>{ keys[e.key.toLowerCase()]=false; });
+const camS={dir:new THREE.Vector3(0,0,-1), dist:9, pitch:0.34};
+let dragging=false,lx=0,ly=0;
+const cv=document.getElementById('gl');
+cv.addEventListener('pointerdown',e=>{ dragging=true; lx=e.clientX; ly=e.clientY; });
+addEventListener('pointermove',e=>{ if(!dragging) return;
+  const dx=e.clientX-lx, dy=e.clientY-ly; lx=e.clientX; ly=e.clientY;
+  const up=pGroup.position.clone().normalize();
+  camS.dir.applyAxisAngle(up,-dx*0.005);
+  camS.pitch=Math.max(0.06,Math.min(0.95,camS.pitch+dy*0.004)); });
+addEventListener('pointerup',()=>dragging=false);
+addEventListener('wheel',e=>{ camS.dist=Math.max(5,Math.min(15,camS.dist+e.deltaY*0.008)); },{passive:true});
+/* 摇杆（触屏） */
+const joy={x:0,f:0}; let joyId=null,jx0=0,jy0=0;
+if('ontouchstart' in window){ document.body.classList.add('touch');
+  const joyEl=document.getElementById('joy'), stick=document.getElementById('stick');
+  joyEl.addEventListener('touchstart',e=>{ const t=e.changedTouches[0]; joyId=t.identifier; jx0=t.clientX; jy0=t.clientY; },{passive:true});
+  joyEl.addEventListener('touchmove',e=>{ for(const t of e.changedTouches){ if(t.identifier!==joyId) continue;
+    let dx=t.clientX-jx0, dy=t.clientY-jy0; const L=Math.hypot(dx,dy)||1; const c=Math.min(1,L/44); dx=dx/L*c; dy=dy/L*c;
+    joy.x=dx; joy.f=-dy; stick.style.transform=`translate(calc(-50% + ${dx*30}px), calc(-50% + ${dy*30}px))`; } },{passive:true});
+  joyEl.addEventListener('touchend',()=>{ joyId=null; joy.x=0; joy.f=0; stick.style.transform='translate(-50%,-50%)'; },{passive:true});
+}
+document.getElementById('actBtn').addEventListener('click',tryTalk);
+
+/* ---- 讲述/状态 ---- */
+const $=id=>document.getElementById(id);
+let dlgNpc=null, dlgIx=0, typing=null;
+function nearNpc(){ let best=null,bd=1e9;
+  NPCS.forEach(n=>{ const c=P(n.a,n.t), d=planarDist(pGroup.position,c); if(d<bd){bd=d;best=n;} });
+  return bd<4.2 ? best : null; }
+function planarDist(pA,pB){ const up=pA.clone().normalize();
+  const d=pB.clone().sub(pA); d.addScaledVector(up,-d.dot(up)); return d.length(); }
+function tryTalk(){
+  if(dlgNpc){ advanceDlg(); return; }
+  const n=nearNpc(); if(!n) return;
+  dlgNpc=n; dlgIx=0; $('dlg').classList.add('show'); showLine(); }
+function showLine(){ const n=dlgNpc;
+  $('dlgWho').textContent=n.name;
+  const txt=n.lines[dlgIx]; $('dlgTxt').textContent=''; let i=0;
+  clearInterval(typing);
+  typing=setInterval(()=>{ $('dlgTxt').textContent=txt.slice(0,++i); if(i>=txt.length) clearInterval(typing); },26);
+  $('dlgMore').textContent = (dlgIx<n.lines.length-1)?'E · 继续':'E · 告辞'; }
+function advanceDlg(){ const n=dlgNpc;
+  if(dlgIx<n.lines.length-1){ dlgIx++; showLine(); return; }
+  $('dlg').classList.remove('show'); dlgNpc=null;
+  if(!n.done){ n.done=true; updHUD(); buildLine(); toast(n.name+'的讲述，已听见。'); } }
+let toastT=null;
+function toast(s){ const t=$('toast'); t.textContent=s; t.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2600); }
+
+/* ---- HUD ---- */
+function updHUD(){ const ns=shards.filter(s=>s.userData.got).length, nn=NPCS.filter(n=>n.done).length;
+  $('cShard').textContent=ns; $('cNpc').textContent=nn;
+  $('tShard').textContent=`拾取 12 枚记忆碎片（${ns}/12）`; $('tShard').classList.toggle('done',ns===12);
+  ['tNpc1','tNpc2','tNpc3'].forEach((id,i)=>$(id).classList.toggle('done',NPCS[i].done));
+  const p=ns/12*0.7+nn/3*0.3;
+  $('ringFg').style.strokeDashoffset=113*(1-p); $('pct').textContent=Math.round(p*100)+'%';
+  if(prog!==p){ prog=p; buildLine(); }
+  if(ns===12 && nn===3 && $('end').style.display!=='flex') setTimeout(()=>{ $('end').style.display='flex'; },1400); }
+
+/* ---- 主循环 ---- */
+const camRay=new THREE.Raycaster();
+const clock=new THREE.Clock();
+let camPos=new THREE.Vector3(), lastZone='';
+function loop(){
+  requestAnimationFrame(loop);
+  const dt=Math.min(0.05,clock.getDelta()), now=clock.elapsedTime;
+  /* 移动输入 */
+  let mx=(keys['d']||keys['arrowright']?1:0)-(keys['a']||keys['arrowleft']?1:0)+joy.x;
+  let mf=(keys['w']||keys['arrowup']?1:0)-(keys['s']||keys['arrowdown']?1:0)+joy.f;
+  mf=Math.max(-1,Math.min(1,mf)); mx=Math.max(-1,Math.min(1,mx));
+  const pP=pGroup.position, up=pP.clone().normalize();
+  /* 相机方向切于球面 */
+  camS.dir.addScaledVector(up,-camS.dir.dot(up)); if(camS.dir.lengthSq()<1e-6) camS.dir.set(0,0,-1); camS.dir.normalize();
+  const right=new THREE.Vector3().crossVectors(camS.dir,up).normalize();
+  const mv=camS.dir.clone().multiplyScalar(mf).addScaledVector(right,mx);
+  if(mv.lengthSq()>0.001){
+    mv.normalize();
+    const old=pP.clone();
+    const axis=new THREE.Vector3().crossVectors(up,mv).normalize();
+    pP.applyAxisAngle(axis, 6*dt/R).setLength(R);
+    /* 世界边界 */
+    const tDeg=Math.acos(Math.max(-1,Math.min(1,pP.y/R)))/D2R;
+    if(tDeg<3||tDeg>58){ pP.copy(old); }
+    /* 碰撞 */
+    colliders.forEach(c=>{ const cP=P(c.a,c.t,0); const d=planarDist(pP,cP);
+      if(d<c.r+0.5){ const push=pP.clone().sub(cP); push.addScaledVector(up,-push.dot(up));
+        if(push.lengthSq()<1e-6) push.set(0,1,0); push.normalize();
+        pP.addScaledVector(push,(c.r+0.5-d)); pP.setLength(R); } });
+    /* 朝向 */
+    const dlt=pP.clone().sub(old);
+    if(dlt.lengthSq()>1e-6){ const ty=Math.atan2(dlt.x,dlt.z);
+      let cur=pGroup.rotation.y, diff=((ty-cur+Math.PI*3)%(Math.PI*2))-Math.PI;
+      pGroup.rotation.y=cur+diff*0.18; }
+  }
+  /* 面片贴地 */
+  pGroup.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),up);
+  /* 相机 */
+  const back=camS.dir.clone().multiplyScalar(-1);
+  const want=pP.clone().addScaledVector(up,1.7+camS.dist*Math.sin(camS.pitch)).addScaledVector(back,camS.dist*Math.cos(camS.pitch));
+  const eye=pP.clone().addScaledVector(up,1.4);
+  const dirW=want.clone().sub(eye); const LW=dirW.length(); dirW.normalize();
+  camRay.set(eye,dirW); camRay.far=LW;
+  const hits=camRay.intersectObjects(camBlockers,false);
+  let target=want;
+  if(hits.length && hits[0].distance<LW-0.3) target=eye.clone().addScaledVector(dirW,Math.max(0.6,hits[0].distance-0.35));
+  if(!camPos.lengthSq()) camPos.copy(target);
+  camPos.lerp(target,0.14); camera.position.copy(camPos);
+  camera.up.copy(up); camera.lookAt(pP.clone().addScaledVector(up,1.4));
+  /* 碎片 */
+  shards.forEach(s=>{ if(s.userData.got) return;
+    s.rotation.y+=dt*1.4; s.position.copy(P(s.userData.a,s.userData.t,1.1+Math.sin(now*1.8+s.userData.ph)*0.18));
+    if(planarDist(pP,s.position)<1.6){ s.userData.got=true; s.visible=false;
+      toast('记忆碎片 · '+TOASTS[shards.indexOf(s)]); updHUD(); } });
+  /* NPC */
+  const near=nearNpc(); $('actBtn').style.display=(near&&!dlgNpc)?'block':'none';
+  if(near) $('actBtn').textContent='按 E · 倾听 '+near.name;
+  NPCS.forEach(n=>{ if(n.mesh) n.mesh.position.y=Math.sin(now*1.2+n.a)*0.03; });
+  /* 区域卡 */
+  const zones=[['羌寨 · 岷江上游','山沟里的人们，这样讲述祖先。',0,10],
+               ['河湟遗址 · 四千年前','气候转干，农业让出谷地。',-72,26],
+               ['长城边缘 · 资源界线','墙里墙外，两种生计。',75,30]];
+  let zn=null; zones.forEach(z=>{ if(planarDist(pP,P(z[2],z[3]))<26) zn=z; });
+  if(zn && zn[0]!==lastZone){ lastZone=zn[0]; $('zName').textContent=zn[0]; $('zSub').textContent=zn[1]; }
+  if(!zn && lastZone!=='河谷 · 岷江上游'){ lastZone='河谷 · 岷江上游';
+    $('zName').textContent='河谷 · 岷江上游'; $('zSub').textContent='沿河谷行走，边缘在脚下移动。'; }
+  /* 位置判定 */
+  const tDeg=Math.acos(Math.max(-1,Math.min(1,pP.y/R)))/D2R;
+  const aDeg=Math.atan2(pP.z,pP.x)/D2R;
+  const dA=aDeg-aLine(tDeg);
+  const pos=$('posTxt'), ph=$('posHUD');
+  if(dA<-4){ pos.textContent='华夏之内'; ph.classList.remove('out'); }
+  else if(dA<=4){ pos.textContent='边缘之上'; ph.classList.remove('out'); }
+  else { pos.textContent='华夏之外'; ph.classList.add('out'); }
+  renderer.render(scene,camera);
+}
+loop();
+updHUD();
+
+/* ---- 声音（生成式氛围） ---- */
+let actx=null,master=null,muted=false;
+function toggleSound(){ if(!actx) return; muted=!muted;
+  master.gain.linearRampToValueAtTime(muted?0:0.15,actx.currentTime+0.4);
+  toast(muted?'声音 · 已静':'声音 · 已开'); }
+document.getElementById('btnGo').addEventListener('click',()=>{
+  document.getElementById('intro').style.display='none';
+  try{ actx=new (window.AudioContext||window.webkitAudioContext)();
+    master=actx.createGain(); master.gain.value=0.15; master.connect(actx.destination);
+    const len=actx.sampleRate*2, buf=actx.createBuffer(1,len,actx.sampleRate), ch=buf.getChannelData(0);
+    for(let i=0;i<len;i++) ch[i]=Math.random()*2-1;
+    const src=actx.createBufferSource(); src.buffer=buf; src.loop=true;
+    const f=actx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=380;
+    const g=actx.createGain(); g.gain.value=0.06;
+    src.connect(f); f.connect(g); g.connect(master); src.start();
+    const PENTA=[0,3,5,7,10];
+    setInterval(()=>{ if(muted) return; const t0=actx.currentTime+0.02;
+      const m=57+PENTA[Math.floor(Math.random()*5)]+(Math.random()<0.3?12:0);
+      const o=actx.createOscillator(); o.type='sine'; o.frequency.value=440*Math.pow(2,(m-69)/12);
+      const gg=actx.createGain(); gg.gain.setValueAtTime(0,t0);
+      gg.gain.linearRampToValueAtTime(0.05,t0+0.04); gg.gain.exponentialRampToValueAtTime(0.0001,t0+1.8);
+      o.connect(gg); gg.connect(master); o.start(t0); o.stop(t0+2); },2400);
+  }catch(e){}
+});
+</script>
+</body>
+</html>
