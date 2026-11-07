@@ -33,7 +33,8 @@
   .sceneCard i{display:block;font-style:normal;font-size:11.5px;color:var(--dim);letter-spacing:.1em;margin-top:6px;line-height:1.7}
 
   /* 右上进度 */
-  .hudR{position:fixed;top:18px;right:74px;z-index:5;display:flex;align-items:center;gap:14px;pointer-events:none}
+  .hudR{position:fixed;top:18px;right:158px;z-index:5;display:flex;align-items:center;gap:14px;pointer-events:none;
+    background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));border:1px solid var(--line);border-radius:12px;padding:10px 16px;backdrop-filter:blur(8px)}
   .ring{width:44px;height:44px;position:relative}
   .ring svg{transform:rotate(-90deg)}
   .ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold-hi);font-weight:600}
@@ -50,7 +51,7 @@
   /* 右下提示 */
   .hint{position:fixed;right:18px;bottom:18px;z-index:5;font-size:11px;color:var(--dim);letter-spacing:.12em;text-align:right;line-height:1.9;pointer-events:none}
   .hint kbd{border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:10px;font-family:var(--fserif)}
-  .langBtn{position:fixed;top:22px;right:70px;z-index:5;border:1px solid var(--line);border-radius:99px;background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));color:var(--dim);padding:8px 16px;font-size:12px;letter-spacing:.16em;cursor:pointer;font-family:var(--fserif);backdrop-filter:blur(8px)}
+  .langBtn{position:fixed;top:20px;right:76px;z-index:5;border:1px solid var(--line);border-radius:99px;background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));color:var(--dim);padding:8px 16px;font-size:12px;letter-spacing:.16em;cursor:pointer;font-family:var(--fserif);backdrop-filter:blur(8px)}
   .langBtn:hover{color:var(--gold-hi);border-color:var(--gold)}
   .bar{position:fixed;left:0;right:0;height:0;background:#04060a;z-index:8;transition:height .9s cubic-bezier(.4,0,.2,1)}
   #barT{top:0}#barB{bottom:0} body.cine .bar{height:11vh}
@@ -112,6 +113,11 @@
   .veil .go:hover{background:var(--gold);color:#100c04}
   #end{display:none}
   #end .card p{text-align:center}
+  @media(max-width:760px){
+    .hudR{top:76px;right:12px}
+    .langBtn{top:20px;right:12px}
+    .mark{top:76px;right:auto;left:12px}
+  }
 </style>
 </head>
 <body>
