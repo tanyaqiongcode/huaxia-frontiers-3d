@@ -591,6 +591,8 @@ function makeFigure(o){
   const hip=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.15,0.19),M(o.trouser)); hip.position.y=0.8; body.add(hip);
   const neck=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.06,0.09,6),M(o.skin)); neck.position.y=1.42; body.add(neck);
   const head=new THREE.Mesh(new THREE.SphereGeometry(0.115,12,10),M(o.skin)); head.position.y=1.585; body.add(head);
+  const eyeL=new THREE.Mesh(new THREE.SphereGeometry(0.018,6,5),M(0x1a1a1e)); eyeL.position.set(-0.042,1.605,0.095); body.add(eyeL);
+  const eyeR=eyeL.clone(); eyeR.position.x=0.042; body.add(eyeR);
   const hair=new THREE.Mesh(new THREE.SphereGeometry(0.122,12,10,0,Math.PI*2,0,1.55),M(o.hair)); hair.position.y=1.605; body.add(hair);
   if(o.hat==='brim'){ const cr=new THREE.Mesh(new THREE.CylinderGeometry(0.115,0.128,0.095,10),M(o.hatC)); cr.position.y=1.705; body.add(cr);
     const br=new THREE.Mesh(new THREE.CylinderGeometry(0.205,0.215,0.02,12),M(o.hatC)); br.position.y=1.662; body.add(br); }
@@ -610,14 +612,15 @@ function makeFigure(o){
   if(o.robe){ const rb=new THREE.Mesh(new THREE.ConeGeometry(0.35,o.robe,10),M(o.robeC)); rb.position.y=o.robe/2+0.66; yawG.add(rb); }
   if(o.apron){ const ap=new THREE.Mesh(new THREE.BoxGeometry(0.26,0.34,0.035),M(o.apron)); ap.position.set(0,0.6,0.115); yawG.add(ap); }
   if(o.satchel){
-    const bpM=M(o.packC||0x4a5240);
-    const bp=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.28,0.11),bpM); bp.position.set(0,1.05,-0.145); yawG.add(bp);
-    const flap=new THREE.Mesh(new THREE.BoxGeometry(0.21,0.09,0.12),M(o.packC||0x4a5240)); flap.position.set(0,1.17,-0.145); yawG.add(flap);
+    const bpM=M(0x3a2a1e);
+    const bp=new THREE.Mesh(new THREE.BoxGeometry(0.19,0.26,0.11),bpM); bp.position.set(0,1.05,-0.15); yawG.add(bp);
+    const flap=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.08,0.12),M(0x4a3520)); flap.position.set(0,1.16,-0.15); yawG.add(flap);
+    const buckle=new THREE.Mesh(new THREE.BoxGeometry(0.06,0.05,0.02),M(0xc9a45c)); buckle.position.set(0,1.1,-0.16); yawG.add(buckle);
     [-0.07,0.07].forEach(sx=>{ const st=new THREE.Mesh(new THREE.BoxGeometry(0.03,0.4,0.02),M(0x3a2f22));
       st.position.set(sx,1.22,-0.075); st.rotation.x=0.15; yawG.add(st); }); }
   if(o.staff){ const stf=new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.035,1.5,6),M(0x4a3b2a)); stf.position.set(0.32,0.75,0.05); yawG.add(stf); }
   g.traverse(x=>{ if(x.isMesh) x.castShadow=true; });
-  return {g, yawG, body, legL, legR, armL, armR};
+  return {g, yawG, body, legL, legR, armL, armR, head};
 }
 const NPC_LOOKS=[
  {jacket:0x35415e,trouser:0x2e3850,hair:0x8a8a92,hat:'wrap',hatC:0x2c2c34,robe:1.15,robeC:0x35415e,staff:true},
@@ -639,7 +642,7 @@ const figP=makeFigure({jacket:0x46536b,trouser:0x4c463a,boot:0x2a241e,skin:0xd9c
   hat:'brim',hatC:0x59513f,scarf:true,satchel:true,packC:0x4a5240});
 pGroup.add(figP.yawG);
 pGroup.position.copy(P(player.a,player.t,0)); scene.add(pGroup);
-let walkPhase=0, vy=0, jumpOff=0, lit=false, beaconHinted=false, prevSide='in', crossT=0, fpsN=0, fpsT=0, started=false, actx=null, master=null, muted=false, humGain=null;
+let walkPhase=0, vy=0, jumpOff=0, lit=false, beaconHinted=false, prevSide='in', crossT=0, fpsN=0, fpsT=0, started=false, actx=null, master=null, muted=false, humGain=null, isMoveGlobal=false, idleT=0, headTurn=0;
 
 let stepT=0.2, padYaw=0, padPitch=0, padB0=false, padB2=false, plGain=null, dustT=1, steps=0, walkT0=0;
 /* ---- 输入 ---- */
@@ -772,6 +775,7 @@ function loop(){
     /* 朝向 */
     const dlt=pP.clone().sub(old);
     const isMove=dlt.lengthSq()>1e-7;
+    isMoveGlobal=isMove;
     if(isMove){ const ty=Math.atan2(dlt.x,dlt.z);
       let cur=figP.yawG.rotation.y, diff=((ty-cur+Math.PI*3)%(Math.PI*2))-Math.PI;
       figP.yawG.rotation.y=cur+diff*0.22; }
@@ -785,7 +789,7 @@ function loop(){
     if(!isMove){ walkPhase=0; figP.legL.rotation.x*=0.8; figP.legR.rotation.x*=0.8;
       figP.armL.rotation.x*=0.8; figP.armR.rotation.x*=0.8; }
     stepT-=dt; if(stepT<=0&&isMove){ playStep(); stepT=0.34+Math.random()*0.08; }
-  } else { stepT=0.15; }
+  } else { isMoveGlobal=false; stepT=0.15; }
   setOnGround(pP);
   if(jumpOff>0||vy>0) pP.addScaledVector(up,jumpOff);
   /* 同伴（双人同屏） */
@@ -867,6 +871,10 @@ function loop(){
     f.b.position.set(f.cx+Math.cos(a)*f.r, y, f.cz+Math.sin(a)*f.r);
     const ah=a+0.12; f.b.lookAt(f.cx+Math.cos(ah)*f.r, y, f.cz+Math.sin(ah)*f.r);
     const fl=Math.sin(now*10+i*1.7)*0.55; f.wL.rotation.y=0.25+fl; f.wR.rotation.y=-0.25-fl; });
+  /* 静立转头 */
+  if(!isMoveGlobal && now-idleT>2){ headTurn=Math.sin((now-idleT-2)*0.8)*0.4; }
+  else { headTurn=0; idleT=now; }
+  if(figP && figP.head) figP.head.rotation.y=headTurn;
   /* 罗盘指引 */
   { let cS=null,cD=1e9;
     shards.forEach(sh=>{ if(sh.userData.got) return; const d=planarDist(pGroup.position,sh.position); if(d<cD){cD=d;cS=sh;} });
