@@ -122,13 +122,15 @@
 <div class="posHUD" id="posHUD" data-i18n-html="posHud">你现在：<b id="posTxt">边缘之上</b></div>
 <div class="hint" id="hint" data-i18n-html="hintTxt"><kbd>W A S D</kbd> 移动 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务</div>
 <div class="tasks" id="tasks"><b data-i18n="tasksT">行走任务</b><ul>
-  <li id="tShard">拾取 12 枚记忆碎片（0/12）</li>
+  <li id="tShard">拾取 17 枚记忆碎片（0/17）</li>
   <li id="tNpc1" data-i18n="tNpc1">倾听 寨老阿爷 的讲述</li>
   <li id="tNpc2" data-i18n="tNpc2">倾听 河湟考古者 的讲述</li>
   <li id="tNpc3" data-i18n="tNpc3">倾听 长城戍卒 的讲述</li>
   <li id="tNpc4" data-i18n="tNpc4">倾听 返乡青年 的讲述</li>
+  <li id="tNpc5" data-i18n="tNpc5">倾听 尔玛阿姐 的讲述</li>
   <li id="tLine" data-i18n="tLine">见证边界线移动</li>
-</ul></div>
+</ul>
+  <div class="memo" id="tMemo"></div></div>
 <div class="dlg" id="dlg"><div class="who" id="dlgWho"></div><div class="txt" id="dlgTxt"></div><div class="more" id="dlgMore">E · 继续</div></div>
 <div class="toast" id="toast"></div>
 <button class="actBtn" id="actBtn">按 E · 倾听</button>
@@ -136,14 +138,15 @@
 
 <div class="veil" id="intro"><div class="card">
   <h1 data-i18n="gTitle">边缘行走</h1><div class="sub" data-i18n="gSub">《华夏边缘：历史记忆与族群认同》· 互动行走</div>
-  <p data-i18n-html="gIntro">你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十五枚记忆碎片散落在谷地里，四段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。</p>
+  <p data-i18n-html="gIntro">你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十七枚记忆碎片散落在谷地里，五段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。<br>也可以按 <b style="color:var(--gold-hi)">G</b> 邀请一位同行者，双人同屏行走。</p>
   <div class="keys" data-i18n-html="gKeys"><kbd>W A S D</kbd> 移动 · 鼠标拖拽 视角 · 滚轮 远近<br><kbd>E</kbd> 对话 · <kbd>T</kbd> 晨昏切换 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务清单</div>
   <button class="go" id="btnGo" data-i18n="gGo">开 始 行 走</button>
+  <button class="go" id="btnNew" style="display:none;margin-top:14px" data-i18n="gNew">重 新 开 始</button>
 </div></div>
 
 <div class="veil" id="end"><div class="card">
   <h1 data-i18n="eTitle">行至边缘</h1><div class="sub" data-i18n="eSub">WALKED TO THE MARGIN</div>
-  <p data-i18n-html="eBody">你拾起了散落的记忆，也听完了四段讲述。<br>边界在你脚下移动过——它不在墙上，不在族谱里，<br>而在资源、记忆，与每一次往来之间。<br><br>什么是中国人？这个问题没有终点，<br>正如边缘，一直在移动。</p>
+  <p data-i18n-html="eBody">你拾起了散落的记忆，也听完了五段讲述。<br>边界在你脚下移动过——它不在墙上，不在族谱里，<br>而在资源、记忆，与每一次往来之间。<br><br>什么是中国人？这个问题没有终点，<br>正如边缘，一直在移动。</p>
   <button class="go" onclick="location.reload()" data-i18n="eGo">重 新 行 走</button>
 </div></div>
 
@@ -183,26 +186,33 @@ const T={lang: localStorage.getItem('walkLang')||'zh', dict:{
  gTitle:{zh:'边缘行走',en:'Walking the Edge'},
  gSub:{zh:'《华夏边缘：历史记忆与族群认同》· 互动行走',en:'Huaxia Frontier: Historical Memory and Ethnic Identity · an interactive walk'},
  gIntro:{zh:'你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十二枚记忆碎片散落在谷地里，三段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。',
-  en:'You are a walker, dropped onto the small planet of the Huaxia world. The Hehuang sites, the Qiang villages of the Min River, the beacon towers of the Wall — fifteen shards of memory lie scattered in the valley, and four tellings wait to be heard.<br>Collect them, and watch the golden <b style="color:var(--gold-hi)">boundary line</b> move with your steps. It is not in the wall, nor in the genealogy — it lives in resources, memory, and every meeting between people.'},
+  en:'You are a walker, dropped onto the small planet of the Huaxia world. The Hehuang sites, the Qiang villages of the Min River, the beacon towers of the Wall — seventeen shards of memory lie scattered in the valley, and five tellings wait to be heard.<br>Collect them, and watch the golden <b style="color:var(--gold-hi)">boundary line</b> move with your steps. It is not in the wall, nor in the genealogy — it lives in resources, memory, and every meeting between people.<br>Or press <b style="color:var(--gold-hi)">G</b> to invite a companion and walk together on one screen.'},
  gKeys:{zh:'<kbd>W A S D</kbd> 移动 · 鼠标拖拽 视角 · 滚轮 远近<br><kbd>E</kbd> 对话 · <kbd>T</kbd> 晨昏切换 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务清单',
   en:'<kbd>W A S D</kbd> move · drag to orbit · scroll to zoom<br><kbd>E</kbd> talk · <kbd>T</kbd> time of day · <kbd>M</kbd> sound · <kbd>J</kbd> tasks'},
  gGo:{zh:'开 始 行 走',en:'Start walking'},
  eTitle:{zh:'行至边缘',en:'Walked to the Margin'},
  eSub:{zh:'行至边缘之外',en:'WALKED TO THE MARGIN'},
  eBody:{zh:'你拾起了散落的记忆，也听完了三段讲述。<br>边界在你脚下移动过——它不在墙上，不在族谱里，<br>而在资源、记忆，与每一次往来之间。<br><br>什么是中国人？这个问题没有终点，<br>正如边缘，一直在移动。',
-  en:'You gathered the scattered memories and heard the four tellings.<br>The boundary moved beneath your feet — it is not in the wall, nor in the genealogy,<br>but in resources, memory, and every meeting between people.<br><br>Who counts as Chinese? The question has no end —<br>the edge, after all, keeps moving.'},
+  en:'You gathered the scattered memories and heard the five tellings.<br>The boundary moved beneath your feet — it is not in the wall, nor in the genealogy,<br>but in resources, memory, and every meeting between people.<br><br>Who counts as Chinese? The question has no end —<br>the edge, after all, keeps moving.'},
  eGo:{zh:'重 新 行 走',en:'Walk again'},
- hudCnt:{zh:'记忆碎片 <b id="cShard">0</b>/15<br>倾听讲述 <b id="cNpc">0</b>/4',en:'Memory shards <b id="cShard">0</b>/15<br>Tellings heard <b id="cNpc">0</b>/4'},
+ hudCnt:{zh:'记忆碎片 <b id="cShard">0</b>/17<br>倾听讲述 <b id="cNpc">0</b>/5',en:'Memory shards <b id="cShard">0</b>/17<br>Tellings heard <b id="cNpc">0</b>/5'},
  posHud:{zh:'你现在：<b id="posTxt">边缘之上</b>',en:'You are: <b id="posTxt">on the edge</b>'},
  posIn:{zh:'华夏之内',en:'within Huaxia'}, posEdge:{zh:'边缘之上',en:'on the edge'}, posOut:{zh:'华夏之外',en:'beyond the edge'},
- hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务',
-  en:'<kbd>W A S D</kbd> move · drag orbit · <kbd>E</kbd> talk<br><kbd>T</kbd> day cycle · <kbd>M</kbd> sound · <kbd>J</kbd> tasks'},
+ hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · <kbd>⇧</kbd> 疾行 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>G</kbd> 同行 · <kbd>V</kbd> 配音 · <kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务',
+  en:'<kbd>W A S D</kbd> move · <kbd>⇧</kbd> hurry · drag orbit · <kbd>E</kbd> talk<br><kbd>G</kbd> companion · <kbd>V</kbd> voice · <kbd>T</kbd> day · <kbd>M</kbd> sound · <kbd>J</kbd> tasks'},
  tasksT:{zh:'行走任务',en:'Walking tasks'},
- tShardTpl:{zh:'拾取 15 枚记忆碎片（{n}/15）',en:'Collect 15 memory shards ({n}/15)'},
+ tShardTpl:{zh:'拾取 17 枚记忆碎片（{n}/17）',en:'Collect 17 memory shards ({n}/17)'},
  tNpc1:{zh:'倾听 寨老阿爷 的讲述',en:'Hear the village elder'},
  tNpc2:{zh:'倾听 河湟考古者 的讲述',en:'Hear the Hehuang archaeologist'},
  tNpc3:{zh:'倾听 长城戍卒 的讲述',en:'Hear the soldier of the Wall'},
  tNpc4:{zh:'倾听 返乡青年 的讲述',en:'Hear the returned youth'},
+ tNpc5:{zh:'倾听 尔玛阿姐 的讲述',en:'Hear the Rma elder sister'},
+ gContinue:{zh:'继 续 行 走',en:'Continue walking'},
+ gNew:{zh:'重 新 开 始',en:'Start over'},
+ voOn:{zh:'配音 · 已开',en:'Voice-over · on'}, voOff:{zh:'配音 · 已静',en:'Voice-over · muted'},
+ p2On:{zh:'同伴已加入 · 方向键行走 · 回车对话',en:'Companion joined · arrows to walk · Enter to talk'},
+ p2Off:{zh:'同伴已离开',en:'Companion left'},
+ memoEmpty:{zh:'还没有拾取记忆碎片。',en:'No memory shards collected yet.'},
  tLine:{zh:'见证边界线移动',en:'See the boundary line move'},
  actTpl:{zh:'按 E · 倾听 {n}',en:'Press E · hear {n}'},
  moreCont:{zh:'E · 继续',en:'E · continue'}, moreBye:{zh:'E · 告辞',en:'E · farewell'},
@@ -225,7 +235,26 @@ function applyLang(){
   if(typeof dlgNpc!=='undefined' && dlgNpc) showLine();
   if(typeof lastZone!=='undefined') lastZone='';
 }
+function renderMemo(){ const m=document.getElementById('tMemo'); if(!m) return;
+  const got=shards.map((x,i)=>x.userData.got?i:-1).filter(i=>i>=0);
+  m.innerHTML = got.length? got.map(i=>'<div>· '+TOASTS[i][T.lang]+'</div>').join('') : '<div>'+tx('memoEmpty')+'</div>'; }
 document.getElementById('btnLang').addEventListener('click',toggleLang);
+let p2=null; const P2KEY={};
+function toggleP2(){
+  if(p2){ scene.remove(p2.grp); p2=null;
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+    toast(tx('p2Off')); return; }
+  const g=new THREE.Group();
+  const robe=new THREE.Mesh(new THREE.ConeGeometry(0.4,1.5,10),new THREE.MeshStandardMaterial({color:0xb2554a,roughness:.9})); robe.position.y=0.75; g.add(robe);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.19,10,8),matSkin); head.position.y=1.66; g.add(head);
+  const hair=new THREE.Mesh(new THREE.SphereGeometry(0.2,10,8,0,Math.PI*2,0,1.4),new THREE.MeshStandardMaterial({color:0x1a1a1e})); hair.position.y=1.7; g.add(hair);
+  const base=pGroup.position.clone(); const upB=base.clone().normalize();
+  const side=new THREE.Vector3().crossVectors(upB,new THREE.Vector3(0,0,1)).normalize();
+  base.addScaledVector(side,2.2).setLength(R);
+  g.position.copy(base); g.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),base.clone().normalize());
+  scene.add(g);
+  p2={grp:g, stepT:0.2};
+  addCol&&0; toast(tx('p2On')); }
 
 /* ---- 地面（球冠 + 分区顶点色） ---- */
 const riverPts=[[-100,36],[-80,28],[-60,20],[-35,14],[-12,11],[10,9],[35,11],[60,16],[85,24],[105,32]];
@@ -306,6 +335,12 @@ mesh(new THREE.BoxGeometry(2.3,0.3,0.8),matStone2,-135,24,2.55);
   mesh(new THREE.SphereGeometry(0.16,8,6),matLamp,a,t,2.8); });
 mesh(new THREE.CylinderGeometry(0.05,0.07,3.0,6),matWood,-133,22.6,1.5);
 mesh(new THREE.BoxGeometry(0.7,0.9,0.03),matRed,-133,22.6,2.6);
+/* 北川 · 尔玛人家 */
+addCol(-105,13.5,1.7); mesh(new THREE.SphereGeometry(1.15,10,8),matStone2,-105,13.5,0.7);
+mesh(new THREE.BoxGeometry(0.5,1.15,0.06),matRed,-105,13.5,1.95);
+[[-103,11.5],[-107,15],[-100,15.5]].forEach(([a,t])=>{
+  mesh(new THREE.CylinderGeometry(0.05,0.07,2.6,6),matWood,a,t,1.3);
+  mesh(new THREE.BoxGeometry(0.6,0.8,0.03),matRed,a,t,2.2); });
 /* 松树 */
 [[-30,6],[24,16],[-26,18],[30,8],[-58,16],[52,20],[-40,30],[40,26],[-88,20],[98,26]].forEach(([a,t])=>{
   addCol(a,t,0.8);
@@ -339,9 +374,11 @@ const TOASTS=[
  {zh:'反思性国族认同：多元一体，是过程而非答案。',en:'A reflexive national identity: pluralistic unity is a process, not an answer.'},
  {zh:'近代华夏边缘再造：从帝国到国族，边缘被重新描绘。',en:'Re-making the modern edge: from empire to nation-state, the margin was drawn anew.'},
  {zh:'民族识别：1950年代的调查，把称呼写进了册页。',en:'The classification of the 1950s: what people called themselves entered the registers as nationalities.'},
- {zh:'多元一体：既是格局，也是尚未完成的过程。',en:'Pluralistic unity: a pattern of many in one — and a process still under way.'}];
+ {zh:'反思性国族认同：多元一体，是过程而非答案。',en:'A reflexive national identity: pluralistic unity is a process, not an answer.'},
+ {zh:'北川的案例：灾后重建让“羌”成为一座县城的公共身份。',en:"Beichuan: after the quake, being Qiang became a whole county’s public project."},
+ {zh:'称呼会移动：“羌”从殷商的牧羊人，一路变成今日的自称。',en:'Names on the move: “Qiang” has travelled from Shang-dynasty herders to a self-chosen name today.'}];
 
-const SHARD_POS=[[-5,7],[5,9],[-12,11],[-68,25],[-78,28],[-62,31],[66,30],[78,32],[90,33],[-30,16],[-50,22],[30,12],[-131,22],[-138,26],[-133,28]];
+const SHARD_POS=[[-5,7],[5,9],[-12,11],[-68,25],[-78,28],[-62,31],[66,30],[78,32],[90,33],[-30,16],[-50,22],[30,12],[-131,22],[-138,26],[-133,28],[-101,12],[-108,15]];
 const shards=[]; const matShard=new THREE.MeshBasicMaterial({color:0xffd98a,transparent:true,opacity:.92});
 SHARD_POS.forEach(([a,t],i)=>{ const m=new THREE.Mesh(new THREE.OctahedronGeometry(0.42),matShard.clone());
   m.position.copy(P(a,t,1.1)); m.userData={a,t,got:false,ph:i}; scene.add(m); shards.push(m); });
@@ -385,7 +422,14 @@ const NPCS=[
       '我去成都打过工，又回来了。当羌族、当中国人——不是一堵你生在里头的墙，是一个你一直在讲的故事。'],
   en:['You walked here? The bus now runs to the county town, and the road goes all the way up the valley.',
       'In the 1950s the classification teams came through. My grandmother could only say she was “Rma”; the form wrote down “Qiang”, a nationality. Children learn it in school now.',
-      'I worked in Chengdu for a while, then came back. Being Qiang, being Chinese — it isn’t a wall you happen to be born inside. It’s a story you keep telling.']}}];
+      'I worked in Chengdu for a while, then came back. Being Qiang, being Chinese — it isn’t a wall you happen to be born inside. It’s a story you keep telling.']}},
+ {a:-105,t:13,name:{zh:'尔玛阿姐',en:'Rma elder sister'},pitch:1.1,done:false,lines:{
+  zh:['汶川地震之后，外面来了很多人帮我们重建。也就在那几年，大家开始说：我们是尔玛，是羌人。',
+      '我小时候只会讲汉话。现在孙子在学堂里学羌语，回家教我。',
+      '认同这个东西，不是血脉里带来的，是日子里长出来的。北川是这样，别处也是。'],
+  en:['After the 2008 earthquake, many outsiders came to help us rebuild. That was when people here began to say: we are Rma, we are Qiang.',
+      'As a girl I only spoke the Han way. Now my grandson learns Qiang at school and comes home to teach me.',
+      'Identity is not carried in the blood. It grows out of daily life. Beichuan is proof — and so is everywhere else.']}}];
 const matRobe=new THREE.MeshStandardMaterial({color:0xd8d4c8,roughness:.9});
 const matSkin=new THREE.MeshStandardMaterial({color:0xd9c6ad,roughness:.9});
 NPCS.forEach(n=>{ addCol(n.a,n.t,0.9);
@@ -409,13 +453,17 @@ let stepT=0.2;
 /* ---- 输入 ---- */
 const keys={};
 addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
+  if(p2 && k.startsWith('arrow')) P2KEY[k]=true;
   if(k==='e') tryTalk();
+  if(k==='enter' && p2) tryTalkP2();
+  if(k==='g') toggleP2();
+  if(k==='v') toggleVoice();
   if(k==='t'){ themeIx=(themeIx+1)%THEMES.length; applyTheme(); }
   if(k==='m') toggleSound();
   if(k==='j') document.getElementById('tasks').classList.toggle('show');
   if(k==='l') toggleLang();
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault(); });
-addEventListener('keyup',e=>{ keys[e.key.toLowerCase()]=false; });
+addEventListener('keyup',e=>{ const k=e.key.toLowerCase(); keys[k]=false; if(p2 && k.startsWith('arrow')) P2KEY[k]=false; });
 const camS={dir:new THREE.Vector3(0,0,-1), dist:9, pitch:0.34};
 let dragging=false,lx=0,ly=0;
 const cv=document.getElementById('gl');
@@ -442,24 +490,26 @@ document.getElementById('actBtn').addEventListener('click',tryTalk);
 /* ---- 讲述/状态 ---- */
 const $=id=>document.getElementById(id);
 let dlgNpc=null, dlgIx=0, typing=null;
-function nearNpc(){ let best=null,bd=1e9;
-  NPCS.forEach(n=>{ const c=P(n.a,n.t), d=planarDist(pGroup.position,c); if(d<bd){bd=d;best=n;} });
+function nearNpc(pPos){ let best=null,bd=1e9;
+  NPCS.forEach(n=>{ const c=P(n.a,n.t), d=planarDist(pPos,c); if(d<bd){bd=d;best=n;} });
   return bd<4.2 ? best : null; }
 function planarDist(pA,pB){ const up=pA.clone().normalize();
   const d=pB.clone().sub(pA); d.addScaledVector(up,-d.dot(up)); return d.length(); }
-function tryTalk(){
+function tryTalk(pPos){
   if(dlgNpc){ advanceDlg(); return; }
-  const n=nearNpc(); if(!n) return;
+  const n=nearNpc(pPos||pGroup.position); if(!n) return;
   dlgNpc=n; dlgIx=0; $('dlg').classList.add('show'); showLine(); }
 function showLine(){ const n=dlgNpc;
   $('dlgWho').textContent=n.name[T.lang];
   const txt=n.lines[T.lang][dlgIx]; $('dlgTxt').textContent=''; let i=0;
   clearInterval(typing);
   typing=setInterval(()=>{ $('dlgTxt').textContent=txt.slice(0,++i); if(i>=txt.length) clearInterval(typing); },26);
+  speak(txt, T.lang, dlgNpc.pitch||1);
   $('dlgMore').textContent = (dlgIx<n.lines[T.lang].length-1)?tx('moreCont'):tx('moreBye'); }
 function advanceDlg(){ const n=dlgNpc;
   if(dlgIx<n.lines.length-1){ dlgIx++; showLine(); return; }
   $('dlg').classList.remove('show'); dlgNpc=null;
+  if('speechSynthesis' in window) speechSynthesis.cancel();
   if(!n.done){ n.done=true; updHUD(); buildLine(); toast(n.name[T.lang]+tx('heardSuf')); playHear(); } }
 let toastT=null;
 function toast(s){ const t=$('toast'); t.textContent=s; t.classList.add('show');
@@ -469,11 +519,12 @@ function toast(s){ const t=$('toast'); t.textContent=s; t.classList.add('show');
 function updHUD(){ const ns=shards.filter(s=>s.userData.got).length, nn=NPCS.filter(n=>n.done).length;
   $('cShard').textContent=ns; $('cNpc').textContent=nn;
   $('tShard').textContent=tx('tShardTpl').replace('{n}',ns); $('tShard').classList.toggle('done',ns===12);
-  ['tNpc1','tNpc2','tNpc3','tNpc4'].forEach((id,i)=>$(id).classList.toggle('done',NPCS[i].done));
-  const p=ns/15*0.7+nn/4*0.3;
+  ['tNpc1','tNpc2','tNpc3','tNpc4','tNpc5'].forEach((id,i)=>$(id).classList.toggle('done',NPCS[i].done));
+  renderMemo();
+  const p=ns/17*0.7+nn/5*0.3;
   $('ringFg').style.strokeDashoffset=113*(1-p); $('pct').textContent=Math.round(p*100)+'%';
   if(prog!==p){ prog=p; buildLine(); }
-  if(ns===15 && nn===4 && $('end').style.display!=='flex') setTimeout(()=>{ $('end').style.display='flex'; playEnd(); },1400); }
+  if(ns===17 && nn===5 && $('end').style.display!=='flex') setTimeout(()=>{ $('end').style.display='flex'; playEnd(); },1400); }
 
 /* ---- 主循环 ---- */
 const camRay=new THREE.Raycaster();
@@ -481,15 +532,16 @@ const Z={
  village:{n:{zh:'羌寨 · 岷江上游',en:'Qiang village · upper Min River'},s:{zh:'山沟里的人们，这样讲述祖先。',en:'This is how people in the gully tell their ancestors.'}},
  hehuang:{n:{zh:'河湟遗址 · 四千年前',en:'Hehuang sites · 4000 BP'},s:{zh:'气候转干，农业让出谷地。',en:'The climate turns dry; farming yields the valley.'}},
  wall:{n:{zh:'长城边缘 · 资源界线',en:'Wall margin · the resource line'},s:{zh:'墙里墙外，两种生计。',en:'Inside the wall: farming. Outside: herding.'}},
- modern:{n:{zh:'现代羌寨 · 国道边上',en:'Modern village · by the highway'},s:{zh:'认同在表格与课堂里，被重新讲述。',en:'Identity, retold in registers and classrooms.'}}};
+ modern:{n:{zh:'现代羌寨 · 国道边上',en:'Modern village · by the highway'},s:{zh:'认同在表格与课堂里，被重新讲述。',en:'Identity, retold in registers and classrooms.'}},
+ beichuan:{n:{zh:'北川 · 尔玛人家',en:'Beichuan · the Rma home'},s:{zh:'认同是可以重新学习的。',en:'Identity can be learned anew.'}}};
 const clock=new THREE.Clock();
 let camPos=new THREE.Vector3(), lastZone='';
 function loop(){
   requestAnimationFrame(loop);
   const dt=Math.min(0.05,clock.getDelta()), now=clock.elapsedTime;
   /* 移动输入 */
-  let mx=(keys['d']||keys['arrowright']?1:0)-(keys['a']||keys['arrowleft']?1:0)+joy.x;
-  let mf=(keys['w']||keys['arrowup']?1:0)-(keys['s']||keys['arrowdown']?1:0)+joy.f;
+  let mx=((keys['d']?1:0)-(keys['a']?1:0)) + ((!p2&&keys['arrowright'])?1:0) - ((!p2&&keys['arrowleft'])?1:0) + joy.x;
+  let mf=((keys['w']?1:0)-(keys['s']?1:0)) + ((!p2&&keys['arrowup'])?1:0) - ((!p2&&keys['arrowdown'])?1:0) + joy.f;
   mf=Math.max(-1,Math.min(1,mf)); mx=Math.max(-1,Math.min(1,mx));
   const pP=pGroup.position, up=pP.clone().normalize();
   /* 相机方向切于球面 */
@@ -500,7 +552,7 @@ function loop(){
     mv.normalize();
     const old=pP.clone();
     const axis=new THREE.Vector3().crossVectors(up,mv).normalize();
-    pP.applyAxisAngle(axis, 6*dt/R).setLength(R);
+    pP.applyAxisAngle(axis, (keys['shift']?10.2:6)*dt/R).setLength(R);
     /* 世界边界 */
     const tDeg=Math.acos(Math.max(-1,Math.min(1,pP.y/R)))/D2R;
     if(tDeg<3||tDeg>58){ pP.copy(old); }
@@ -516,31 +568,70 @@ function loop(){
       pGroup.rotation.y=cur+diff*0.18; }
     stepT-=dt; if(stepT<=0){ playStep(); stepT=0.34+Math.random()*0.08; }
   } else { stepT=0.15; }
+  /* 同伴（双人同屏） */
+  if(p2){
+    const p2P=p2.grp.position, up2=p2P.clone().normalize();
+    const m2f=(P2KEY['arrowup']?1:0)-(P2KEY['arrowdown']?1:0), m2x=(P2KEY['arrowright']?1:0)-(P2KEY['arrowleft']?1:0);
+    const mv2=camS.dir.clone().multiplyScalar(m2f).addScaledVector(right,m2x);
+    if(mv2.lengthSq()>0.001){ mv2.normalize();
+      const old2=p2P.clone();
+      const ax2=new THREE.Vector3().crossVectors(up2,mv2).normalize();
+      p2P.applyAxisAngle(ax2, (keys['shift']?10.2:6)*dt/R).setLength(R);
+      const t2d=Math.acos(Math.max(-1,Math.min(1,p2P.y/R)))/D2R;
+      if(t2d<3||t2d>58){ p2P.copy(old2); }
+      colliders.forEach(c=>{ const cP=P(c.a,c.t,0); const d=planarDist(p2P,cP);
+        if(d<c.r+0.5){ const push=p2P.clone().sub(cP); push.addScaledVector(up2,-push.dot(up2));
+          if(push.lengthSq()<1e-6) push.set(0,1,0); push.normalize();
+          p2P.addScaledVector(push,(c.r+0.5-d)); p2P.setLength(R); } });
+      const dl2=p2P.clone().sub(old2);
+      if(dl2.lengthSq()>1e-6){ const ty2=Math.atan2(dl2.x,dl2.z);
+        let cur2=p2.grp.rotation.y, diff2=((ty2-cur2+Math.PI*3)%(Math.PI*2))-Math.PI;
+        p2.grp.rotation.y=cur2+diff2*0.18; }
+      p2.stepT-=dt; if(p2.stepT<=0){ playStep(); p2.stepT=0.36+Math.random()*0.08; }
+    } else { p2.stepT=0.15; }
+  }
   /* 面片贴地 */
   pGroup.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),up);
-  /* 相机 */
+  /* 相机（双人取中点） */
+  let focus=pP, cdist=camS.dist;
+  if(p2){ const sep=planarDist(pP,p2.grp.position);
+    focus=pP.clone().add(p2.grp.position).multiplyScalar(0.5).setLength(R);
+    cdist=Math.min(18,Math.max(9,camS.dist+sep*0.55)); }
+  const upF=focus.clone().normalize();
+  camS.dir.addScaledVector(upF,-camS.dir.dot(upF)); if(camS.dir.lengthSq()<1e-6) camS.dir.set(0,0,-1); camS.dir.normalize();
   const back=camS.dir.clone().multiplyScalar(-1);
-  const want=pP.clone().addScaledVector(up,1.7+camS.dist*Math.sin(camS.pitch)).addScaledVector(back,camS.dist*Math.cos(camS.pitch));
-  const eye=pP.clone().addScaledVector(up,1.4);
+  const want=focus.clone().addScaledVector(upF,1.7+cdist*Math.sin(camS.pitch)).addScaledVector(back,cdist*Math.cos(camS.pitch));
+  [pGroup.position, p2&&p2.grp.position].filter(Boolean).forEach(pp=>{
+    const d=planarDist(want,pp);
+    if(d<2.4){ const push=want.clone().sub(pp); push.addScaledVector(upF,-push.dot(upF));
+      if(push.lengthSq()<1e-6) push.copy(back);
+      want.addScaledVector(push.normalize(),2.4-d); } });
+  const eye=focus.clone().addScaledVector(upF,1.4);
   const dirW=want.clone().sub(eye); const LW=dirW.length(); dirW.normalize();
   camRay.set(eye,dirW); camRay.far=LW;
   const hits=camRay.intersectObjects(camBlockers,false);
   let target=want;
-  if(hits.length && hits[0].distance<LW-0.3) target=eye.clone().addScaledVector(dirW,Math.max(0.6,hits[0].distance-0.35));
+  if(hits.length && hits[0].distance<LW-0.3) target=eye.clone().addScaledVector(dirW,Math.max(5,hits[0].distance-0.35));
+  [pGroup.position, p2&&p2.grp.position].filter(Boolean).forEach(pp=>{
+    const d3=planarDist(target,pp);
+    if(d3<3.5){ const need=Math.min(3.5-d3, LW); target.addScaledVector(dirW,need); } });
   if(!camPos.lengthSq()) camPos.copy(target);
   camPos.lerp(target,0.14); camera.position.copy(camPos);
-  camera.up.copy(up); camera.lookAt(pP.clone().addScaledVector(up,1.4));
+  camera.up.copy(upF); camera.lookAt(focus.clone().addScaledVector(upF,1.3));
   /* 碎片 */
   shards.forEach(s=>{ if(s.userData.got) return;
     s.rotation.y+=dt*1.4; s.position.copy(P(s.userData.a,s.userData.t,1.1+Math.sin(now*1.8+s.userData.ph)*0.18));
-    if(planarDist(pP,s.position)<1.6){ s.userData.got=true; s.visible=false;
+    const nearP = planarDist(pP,s.position)<1.6 || (p2 && planarDist(p2.grp.position,s.position)<1.6);
+    if(nearP){ s.userData.got=true; s.visible=false;
       toast(tx('shardPre')+TOASTS[shards.indexOf(s)][T.lang]); playCollect(); updHUD(); } });
   /* NPC */
-  const near=nearNpc(); $('actBtn').style.display=(near&&!dlgNpc)?'block':'none';
+  let near=nearNpc(pGroup.position);
+  if(p2 && !near){ const n2=nearNpc(p2.grp.position); if(n2) near=n2; }
+  $('actBtn').style.display=(near&&!dlgNpc)?'block':'none';
   if(near) $('actBtn').textContent=tx('actTpl').replace('{n}',near.name[T.lang]);
   NPCS.forEach(n=>{ if(n.mesh) n.mesh.position.y=Math.sin(now*1.2+n.a)*0.03; });
   /* 区域卡 */
-  const zones=[[Z.village.n,Z.village.s,0,10],[Z.hehuang.n,Z.hehuang.s,-72,26],[Z.wall.n,Z.wall.s,75,30],[Z.modern.n,Z.modern.s,-135,24]];
+  const zones=[[Z.village.n,Z.village.s,0,10],[Z.hehuang.n,Z.hehuang.s,-72,26],[Z.wall.n,Z.wall.s,75,30],[Z.modern.n,Z.modern.s,-135,24],[Z.beichuan.n,Z.beichuan.s,-105,13]];
   let zn=null; zones.forEach(z=>{ if(planarDist(pP,P(z[2],z[3]))<26) zn=z; });
   if(zn && zn[0][T.lang]!==lastZone){ lastZone=zn[0][T.lang]; $('zName').textContent=zn[0][T.lang]; $('zSub').textContent=zn[1][T.lang]; }
   if(!zn && lastZone!==tx('zValleyN')){ lastZone=tx('zValleyN');
@@ -555,9 +646,9 @@ function loop(){
   else { pos.textContent=tx('posOut'); ph.classList.add('out'); }
   renderer.render(scene,camera);
 }
-loop();
-updHUD();
-applyLang();
+loop(); updHUD(); applyLang();
+if(loadGame()){ document.getElementById('btnGo').textContent=tx('gContinue');
+  document.getElementById('btnNew').style.display='inline-block'; }
 
 /* ---- 声音（生成式氛围） ---- */
 let actx=null,master=null,muted=false;
@@ -580,7 +671,34 @@ function playHear(){ if(!actx||muted) return; const t0=actx.currentTime;
   tone(523,t0,0.4,0.07); tone(784,t0+0.12,0.6,0.06); }
 function playEnd(){ if(!actx||muted) return; const t0=actx.currentTime;
   [523,659,880].forEach((f,i)=>tone(f,t0+i*0.22,0.9,0.08)); }
+let voiceOn=true, voices=[];
+function refreshVoices(){ try{ voices=speechSynthesis.getVoices(); }catch(e){} }
+if('speechSynthesis' in window){ refreshVoices(); speechSynthesis.addEventListener('voiceschanged',refreshVoices); }
+function toggleVoice(){ voiceOn=!voiceOn;
+  if(!voiceOn && 'speechSynthesis' in window) speechSynthesis.cancel();
+  toast(tx(voiceOn?'voOn':'voOff')); }
+function speak(text,lang,pitch){ if(!voiceOn || muted || !('speechSynthesis' in window)) return;
+  try{ speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang = lang==='zh'?'zh-CN':'en-US'; u.rate=0.95; u.pitch=pitch||1;
+    const vs=voices.length?voices:speechSynthesis.getVoices();
+    const v=vs.find(x=>x.lang && x.lang.replace('_','-').startsWith(u.lang));
+    if(v) u.voice=v;
+    speechSynthesis.speak(u); }catch(e){} }
+let started=false;
+function saveGame(){ try{ if(!started) return;
+  localStorage.setItem('walkSaveV2', JSON.stringify({
+    g: shards.map(x=>x.userData.got?1:0), n: NPCS.map(x=>x.done?1:0),
+    p: pGroup.position.toArray(), lang: T.lang })); }catch(e){} }
+function loadGame(){ try{ const raw=localStorage.getItem('walkSaveV2'); if(!raw) return false;
+  const d=JSON.parse(raw); if(!d||!d.g) return false;
+  d.g.forEach((v,i)=>{ if(v&&shards[i]){ shards[i].userData.got=true; shards[i].visible=false; } });
+  d.n.forEach((v,i)=>{ if(v&&NPCS[i]) NPCS[i].done=true; });
+  if(d.p) pGroup.position.copy(new THREE.Vector3(d.p[0],d.p[1],d.p[2])).setLength(R);
+  updHUD(); return d.g.some(v=>v) || d.n.some(v=>v); }catch(e){ return false; } }
+document.getElementById('btnNew').addEventListener('click',()=>{ try{localStorage.removeItem('walkSaveV2');}catch(e){} location.reload(); });
 document.getElementById('btnGo').addEventListener('click',()=>{
+  started=true; setInterval(saveGame,4000);
   document.getElementById('intro').style.display='none';
   try{ actx=new (window.AudioContext||window.webkitAudioContext)();
     master=actx.createGain(); master.gain.value=0.15; master.connect(actx.destination);
