@@ -227,21 +227,21 @@ function fract(x){ return x - Math.floor(x); }
 const T={lang: localStorage.getItem('walkLang')||'zh', dict:{
  gTitle:{zh:'边缘行走',en:'Walking the Edge'},
  gSub:{zh:'《华夏边缘：历史记忆与族群认同》· 互动行走',en:'Huaxia Frontier: Historical Memory and Ethnic Identity · an interactive walk'},
- gIntro:{zh:'你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十二枚记忆碎片散落在谷地里，三段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。',
+ gIntro:{zh:'你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十七枚记忆碎片散落在谷地里，五段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。',
   en:'You are a walker, dropped onto the small planet of the Huaxia world. The Hehuang sites, the Qiang villages of the Min River, the beacon towers of the Wall — seventeen shards of memory lie scattered in the valley, and five tellings wait to be heard.<br>Collect them, and watch the golden <b style="color:var(--gold-hi)">boundary line</b> move with your steps. It is not in the wall, nor in the genealogy — it lives in resources, memory, and every meeting between people.<br>Or press <b style="color:var(--gold-hi)">G</b> to invite a companion and walk together on one screen.'},
  gKeys:{zh:'<kbd>W A S D</kbd> 移动 · 鼠标拖拽 视角 · 滚轮 远近<br><kbd>E</kbd> 对话 · <kbd>T</kbd> 晨昏切换 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务清单',
   en:'<kbd>W A S D</kbd> move · drag to orbit · scroll to zoom<br><kbd>E</kbd> talk · <kbd>T</kbd> time of day · <kbd>M</kbd> sound · <kbd>J</kbd> tasks'},
  gGo:{zh:'开 始 行 走',en:'Start walking'},
  eTitle:{zh:'行至边缘',en:'Walked to the Margin'},
  eSub:{zh:'行至边缘之外',en:'WALKED TO THE MARGIN'},
- eBody:{zh:'你拾起了散落的记忆，也听完了三段讲述。<br>边界在你脚下移动过——它不在墙上，不在族谱里，<br>而在资源、记忆，与每一次往来之间。<br><br>什么是中国人？这个问题没有终点，<br>正如边缘，一直在移动。',
+ eBody:{zh:'你拾起了散落的记忆，也听完了五段讲述。<br>边界在你脚下移动过——它不在墙上，不在族谱里，<br>而在资源、记忆，与每一次往来之间。<br><br>什么是中国人？这个问题没有终点，<br>正如边缘，一直在移动。',
   en:'You gathered the scattered memories and heard the five tellings.<br>The boundary moved beneath your feet — it is not in the wall, nor in the genealogy,<br>but in resources, memory, and every meeting between people.<br><br>Who counts as Chinese? The question has no end —<br>the edge, after all, keeps moving.'},
  eGo:{zh:'重 新 行 走',en:'Walk again'},
  eCard:{zh:'生成行走纪念卡',en:'Make a walk card'},
  hudCnt:{zh:'记忆碎片 <b id="cShard">0</b>/17<br>倾听讲述 <b id="cNpc">0</b>/5',en:'Memory shards <b id="cShard">0</b>/17<br>Tellings heard <b id="cNpc">0</b>/5'},
  posHud:{zh:'你现在：<b id="posTxt">边缘之上</b>',en:'You are: <b id="posTxt">on the edge</b>'},
  posIn:{zh:'华夏之内',en:'within Huaxia'}, posEdge:{zh:'边缘之上',en:'on the edge'}, posOut:{zh:'华夏之外',en:'beyond the edge'},
- hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · <kbd>空格</kbd> 跳跃 · <kbd>⇧</kbd> 疾行 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>G</kbd> 同行 · <kbd>V</kbd> 配音 · <kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务',
+ hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · <kbd>空格</kbd> 跳跃 · <kbd>⇧</kbd> 疾行 · <kbd>C/X</kbd> 翻滚 · <kbd>B/N</kbd> 劈叉<br><kbd>E</kbd> 对话 · <kbd>G</kbd> 同行 · <kbd>V</kbd> 配音 · <kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务',
   en:'<kbd>W A S D</kbd> move · <kbd>⇧</kbd> hurry · drag orbit · <kbd>E</kbd> talk<br><kbd>G</kbd> companion · <kbd>V</kbd> voice · <kbd>T</kbd> day · <kbd>M</kbd> sound · <kbd>J</kbd> tasks'},
  tasksT:{zh:'行走任务',en:'Walking tasks'},
  tShardTpl:{zh:'拾取 17 枚记忆碎片（{n}/17）',en:'Collect 17 memory shards ({n}/17)'},
@@ -556,6 +556,19 @@ for(let i=0;i<16;i++){ const a=-160+fract(i*5.3)*320, t=20+fract(i*11.7)*34;
   if(riverDist(a,t)<4) continue;
   const r=0.3+fract(i*9.1)*0.6;
   mesh(new THREE.DodecahedronGeometry(r,0),matRockD,a,t,r*0.55,fract(i*4.7)*3); }
+/* 小花（河谷草甸点缀） */
+const flowerCols=[0xe8a0a0,0xa0c8e8,0xe8d0a0,0xc8a0e8];
+for(let fi=0;fi<12;fi++){ const fa=-140+fi*24+fract(fi*3.7)*15, ft=12+fract(fi*9.1)*30;
+  if(riverDist(fa,ft)<4) continue;
+  mesh(new THREE.CylinderGeometry(0.02,0.03,0.3,4),matGrass,fa,ft,0.15);
+  mesh(new THREE.SphereGeometry(0.07,5,4),new THREE.MeshBasicMaterial({color:flowerCols[fi%4]}),fa,ft,0.34); }
+/* 云影（地面漂移暗斑） */
+{ const shadowGeo=new THREE.CircleGeometry(9,16);
+  const shadowMat=new THREE.MeshBasicMaterial({color:0x0a0e18,transparent:true,opacity:.12,depthWrite:false});
+  for(let ci=0;ci<3;ci++){ const cs=new THREE.Mesh(shadowGeo,shadowMat.clone());
+    cs.rotation.x=-Math.PI/2; cs.position.copy(P(30+ci*40,20+ci*8,elev(30+ci*40,20+ci*8)+0.08));
+    cs.userData={driftX:0.5+ci*0.2,driftZ:0.3+ci*0.15};
+    scene.add(cs); window['__cloudShadow'+ci]=cs; } }
 /* 鸟群（盘旋河谷） */
 const flock=[]; const birdM=new THREE.MeshBasicMaterial({color:0x232833,side:THREE.DoubleSide});
 for(let i=0;i<8;i++){ const b=new THREE.Group();
@@ -614,9 +627,28 @@ const SHARD_POS=[
  [-30,16,0],[-50,22,0],[30,12,0],
  [-131,22,0],[-138,26,0],[-133,28,0],
  [-101,12,0],[-108,15,1.8]];
-const shards=[]; const matShard=new THREE.MeshBasicMaterial({color:0xffd98a,transparent:true,opacity:.92});
-SHARD_POS.forEach(([a,t],i)=>{ const m=new THREE.Mesh(new THREE.OctahedronGeometry(0.42),matShard.clone());
-  const sh=SHARD_POS[i][2]||0; m.position.copy(P(a,t,sh+0.5)); m.userData={a,t,got:false,ph:i,h:sh}; scene.add(m); shards.push(m); });
+const shards=[];
+const GEMS=[
+ {c:0xe8425a,e:0xe8425a,g:'OctahedronGeometry',n:'红宝石'},
+ {c:0x4169e1,e:0x4169e1,g:'DodecahedronGeometry',n:'蓝宝石'},
+ {c:0x2e8b57,e:0x2e8b57,g:'IcosahedronGeometry',n:'祖母绿'},
+ {c:0xd4a574,e:0xd4a574,g:'OctahedronGeometry',n:'琥珀'},
+ {c:0x8a2be2,e:0x8a2be2,g:'DodecahedronGeometry',n:'紫水晶'},
+ {c:0xf0f0f0,e:0xf0f0f0,g:'IcosahedronGeometry',n:'钻石'},
+ {c:0xff8c00,e:0xff8c00,g:'OctahedronGeometry',n:'托帕石'},
+ {c:0xdc143c,e:0xdc143c,g:'TetrahedronGeometry',n:'石榴石'},
+ {c:0x20b2aa,e:0x20b2aa,g:'DodecahedronGeometry',n:'碧玺'},
+ {c:0xdaa520,e:0xdaa520,g:'IcosahedronGeometry',n:'黄水晶'},
+ {c:0x9370db,e:0x9370db,g:'OctahedronGeometry',n:'堇青石'},
+ {c:0xf0e68c,e:0xf0e68c,g:'TetrahedronGeometry',n:'珍珠'},
+ {c:0xe8425a,e:0xe8425a,g:'DodecahedronGeometry',n:'红宝石'},
+ {c:0x4169e1,e:0x4169e1,g:'IcosahedronGeometry',n:'蓝宝石'},
+ {c:0x2e8b57,e:0x2e8b57,g:'TetrahedronGeometry',n:'祖母绿'},
+ {c:0xffd700,e:0xffd700,g:'OctahedronGeometry',n:'金绿宝石'},
+ {c:0x8a2be2,e:0x8a2be2,g:'DodecahedronGeometry',n:'紫水晶'}];
+SHARD_POS.forEach(([a,t,h],i)=>{ const gem=GEMS[i%GEMS.length];
+  const m=new THREE.Mesh(new THREE[gem.g](0.42,0),new THREE.MeshStandardMaterial({color:gem.c,emissive:gem.e,emissiveIntensity:.5,transparent:true,opacity:.88,flatShading:true,roughness:.3,metalness:.6}));
+  const sh=h||0; m.position.copy(P(a,t,sh+0.5)); m.userData={a,t,got:false,ph:i,h:sh}; scene.add(m); shards.push(m); });
 
 let lineMesh=null, prog=0;
 function aLine(tDeg){ const base=36+16*prog; return base + 5*Math.sin(tDeg*0.09+0.5); }
@@ -738,6 +770,7 @@ let hasUmb=false, hasTorch=false;
 let beastState='patrol', beastA=88, beastT=35;
 
 let stepT=0.2, padYaw=0, padPitch=0, padB0=false, padB2=false, plGain=null, dustT=1, steps=0, walkT0=0;
+let rollT=-1, rollDir=0, splitT=-1, splitType=0;
 /* ---- 输入 ---- */
 const keys={};
 addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
@@ -747,6 +780,8 @@ addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
   if(k==='enter' && p2) tryTalkP2();
   if(k==='g') toggleP2();
   if(k==='v') toggleVoice();
+  if((k==='c'||k==='x')&&rollT<0){ rollT=0; rollDir=(k==='c')?1:-1; }
+  if((k==='b'||k==='n')&&splitT<0){ splitT=0; splitType=(k==='b')?1:2; }
   if(k==='t'){ themeIx=(themeIx+1)%THEMES.length; applyTheme(); }
   if(k==='m') toggleSound();
   if(k==='j') document.getElementById('tasks').classList.toggle('show');
@@ -885,6 +920,29 @@ function loop(){
       figP.armL.rotation.x*=0.8; figP.armR.rotation.x*=0.8; }
     stepT-=dt; if(stepT<=0&&isMove){ playStep(); stepT=0.34+Math.random()*0.08; }
   } else { isMoveGlobal=false; stepT=0.15; }
+  /* 技能动画（前滚翻C·后滚翻X·横叉B·竖叉N） */
+  if(rollT>=0){ rollT+=dt*2;
+    if(rollT>=1){ rollT=-1; figP.body.rotation.x=0; figP.body.position.y=0;
+      figP.legL.rotation.x=0; figP.legR.rotation.x=0; figP.armL.rotation.x=0; figP.armR.rotation.x=0; }
+    else {
+      figP.body.rotation.x=rollT*Math.PI*2*rollDir;
+      figP.body.position.y=0.3+Math.sin(rollT*Math.PI)*0.25;
+      figP.legL.rotation.x=-1.6; figP.legR.rotation.x=-1.6;
+      figP.armL.rotation.x=-2.4; figP.armR.rotation.x=-2.4;
+      const fd=camS.dir.clone(); fd.y=0; fd.normalize();
+      pGroup.position.addScaledVector(fd,dt*4*rollDir);
+      setOnGround(pGroup.position);
+    }
+  }
+  if(splitT>=0){ splitT+=dt*0.5;
+    if(splitT>=1){ splitT=-1; figP.legL.rotation.z=0; figP.legR.rotation.z=0;
+      figP.legL.rotation.x=0; figP.legR.rotation.x=0; }
+    else {
+      const sp=Math.sin(splitT*Math.PI)*0.65;
+      if(splitType===1){ figP.legL.rotation.z=sp; figP.legR.rotation.z=-sp; }
+      else { figP.legL.rotation.x=-sp*1.2; figP.legR.rotation.x=sp*1.2; }
+    }
+  }
   setOnGround(pP);
   if(jumpOff>0||vy>0) pP.addScaledVector(up,jumpOff);
   /* 同伴（双人同屏） */
@@ -984,6 +1042,10 @@ function loop(){
     const upB=bP.clone().normalize();
     beastG.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),upB);
   }
+  /* 云影漂移 */
+  for(let ci=0;ci<3;ci++){ const cs=window['__cloudShadow'+ci]; if(!cs) continue;
+    cs.position.x+=cs.userData.driftX*dt; cs.position.z+=cs.userData.driftZ*dt;
+    if(cs.position.x>160) cs.position.x=-160; }
   /* 鸟群 */
   flock.forEach((f,i)=>{ const a=now*f.sp+f.ph;
     const y=f.h+Math.sin(now*1.6+i)*1.4;
