@@ -838,6 +838,7 @@ const clock=new THREE.Clock();
   /* 移动输入 */
 function loop(){
   requestAnimationFrame(loop);
+  try{
   const dt=Math.min(0.05,clock.getDelta()), now=clock.elapsedTime;
   pollPad();
   let mx=((keys['d']?1:0)-(keys['a']?1:0)) + ((!p2&&keys['arrowright'])?1:0) - ((!p2&&keys['arrowleft'])?1:0) + joy.x;
@@ -1095,6 +1096,7 @@ function loop(){
     if(f<42 && sun.castShadow){ sun.castShadow=false; renderer.setPixelRatio(1); toast(tx('qDegrade')); }
     fpsN=0; fpsT=0; }
   renderer.render(scene,camera);
+  }catch(e){ document.title='LOOP ERR: '+e.message+' @'+(e.stack||'').split('\n')[1]; }
 }
 loop(); updHUD(); applyLang();
 if(loadGame()){ document.getElementById('btnGo').textContent=tx('gContinue');
