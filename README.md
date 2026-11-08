@@ -10,7 +10,7 @@
 
 - **沉浸版 · Immersive edition**（3D 动态叙事，主站）：https://tanyaqiongcode.github.io/huaxia-frontiers-3d/
 - **阅读版 · Reading edition**（轻量阅读，无障碍优先）：https://tanyaqiongcode.github.io/huaxia-frontiers-3d/reading/
-- **边缘行走 · Playable walk**（可玩互动行走，拾取记忆碎片、看边界移动）：https://tanyaqiongcode.github.io/huaxia-frontiers-3d/game/
+- **边缘行走 · Interactive reading guide**（互动导读：拾得 17 件史料，每件对应全书一个概念，看边界移动；场景与讲述者为虚构）：https://tanyaqiongcode.github.io/huaxia-frontiers-3d/game/
 
 ## 站点内容
 
