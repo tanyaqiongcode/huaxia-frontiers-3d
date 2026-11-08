@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>边缘行走 · 华夏边缘</title>
+<meta property="og:title" content="边缘行走 · Huaxia Frontier">
+<meta property="og:description" content="在小行星上行走华夏边缘：17 枚记忆碎片、5 段讲述、随脚步移动的边界线。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tanyaqiongcode.github.io/huaxia-frontiers-3d/game/">
+<meta property="og:image" content="https://tanyaqiongcode.github.io/huaxia-frontiers-3d/assets/og-cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="description" content="《华夏边缘：历史记忆与族群认同》互动行走体验——在岷江上游的小行星上，收集记忆碎片，看边界在脚下移动。">
 <style>
   :root{
@@ -135,10 +141,35 @@
   .veil .go:hover{background:var(--gold);color:#100c04}
   #end{display:none}
   #end .card p{text-align:center}
+  #btnSkill{position:fixed;top:64px;right:18px;z-index:6;width:34px;height:34px;border-radius:99px;border:1px solid var(--line);
+    background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));backdrop-filter:blur(8px);color:var(--gold-hi);
+    font-size:13px;cursor:pointer;font-family:inherit}
+  .skillPanel{position:fixed;top:104px;right:18px;z-index:6;max-width:250px;display:none;text-align:left;
+    background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.72));border:1px solid var(--line);border-radius:12px;
+    padding:12px 15px;backdrop-filter:blur(8px);font-size:11px;line-height:2.1;color:var(--dim);letter-spacing:.06em}
+  .skillPanel.show{display:block}
+  .skillPanel b{color:var(--gold-hi);font-weight:600;letter-spacing:.12em}
+  .skillPanel kbd{margin:0 1px}
+  .xlinks{position:fixed;top:20px;right:64px;z-index:6;display:flex;gap:6px}
+  .xlinks a{font-size:10px;letter-spacing:.1em;color:var(--dim);text-decoration:none;border:1px solid var(--line);
+    border-radius:99px;padding:4px 9px;background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));backdrop-filter:blur(8px);transition:.3s}
+  .xlinks a:hover{color:var(--gold-hi);border-color:var(--gold)}
+  #btnJump{position:fixed;right:22px;bottom:118px;z-index:6;width:58px;height:58px;border-radius:99px;display:none;
+    border:1px solid rgba(201,164,92,.5);background:rgba(201,164,92,.16);color:var(--gold-hi);font-size:12px;letter-spacing:.1em;
+    font-family:inherit;backdrop-filter:blur(6px);-webkit-tap-highlight-color:transparent}
   @media(max-width:760px){
     .hudR{top:76px;right:12px}
     .langBtn{top:20px;right:12px}
     .mark{top:76px;right:auto;left:12px}
+    .hint{display:none}
+    #btnSkill{top:64px;right:12px}
+    .xlinks{top:20px;right:64px}
+    #btnJump{display:block}
+    .zoneTabs{bottom:52px;gap:3px}
+    .zoneTabs a{font-size:9px;padding:4px 7px 4px 6px;gap:3px}
+    .zoneTabs a .zg{width:9px;height:9px}
+    .inv{bottom:96px}
+    .posHUD{bottom:8px}
   }
 </style>
 </head>
@@ -151,7 +182,11 @@
   <a data-z="village" class="on"><svg class="zg" viewBox="0 0 12 12"><path d="M4.2 1.2 L7.8 1.2 L8.6 10.8 L3.4 10.8 Z M5.2 8 h1.6 v2.8"/></svg>羌寨</a><a data-z="hehuang"><svg class="zg" viewBox="0 0 12 12"><path d="M2.2 5.2 A4.6 4.6 0 0 1 9.8 5.2 M3 8.6 h6 M5 5.6 L7 7.4"/></svg>河湟</a><a data-z="wall"><svg class="zg" viewBox="0 0 12 12"><path d="M2 10.5 V4.5 h2 v1.8 h1.7 V4.5 h1.8 v1.8 h1.7 V4.5 h2 v6 Z"/></svg>长城</a><a data-z="modern"><svg class="zg" viewBox="0 0 12 12"><path d="M6 11 V5.4 M3.4 5.4 h5.2 L7.5 2.6 h-3 Z M9.6 11 H2.4"/></svg>现代</a><a data-z="beichuan"><svg class="zg" viewBox="0 0 12 12"><path d="M6 1.4 L10.6 6 L6 10.6 L1.4 6 Z"/><circle cx="6" cy="6" r="1.3"/></svg>北川</a>
 </div>
 <div class="mark" title="Huaxia Frontier"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="#c9a45c" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="#c9a45c"/></svg></div>
+<div class="xlinks"><a href="../">主站</a><a href="../reading/">阅读版</a></div>
+<button id="btnSkill" title="招式">武</button>
 <button class="langBtn" id="btnLang">EN</button>
+<button id="btnJump">跳跃</button>
+<div class="skillPanel" id="skillPanel" data-i18n-html="skillTxt"></div>
 
 <div class="sceneCard"><b id="zName">河谷 · 岷江上游</b><i id="zSub">沿河谷行走，边缘在脚下移动。</i></div>
 <div class="hudR">
@@ -197,11 +232,22 @@
   <button class="go" onclick="location.reload()" data-i18n="eGo">重 新 行 走</button>
 </div></div>
 
-<script>window.addEventListener("error",e=>{document.title="ERR:"+e.message+" @"+e.lineno;});</script>
+<script>const __DBG=(location.hostname==="127.0.0.1"||location.hostname==="localhost");window.addEventListener("error",e=>{if(__DBG)document.title="ERR:"+e.message+" @"+e.lineno;});</script>
 <script src="../assets/game-textures.js"></script>
 <script src="../assets/three.min.js"></script>
 <script>
 /* ============ 边缘行走 · 小行星球面行走 ============ */
+/* WebGL 可用性预检：不可用则给出文字版出口并阻断主脚本 */
+if(!(function(){ try{ const c=document.createElement('canvas');
+  return !!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl'))); }catch(e){ return false; } })()){
+  (function(){ const el=document.getElementById('intro'); if(!el) return;
+    el.innerHTML='<div class="card"><h1>边缘行走</h1><div class="sub">《华夏边缘：历史记忆与族群认同》· 互动行走</div>'
+      +'<p style="line-height:2">此设备无法运行 3D 互动行走。<br>欢迎阅读文字与图片版：</p>'
+      +'<p style="margin-top:14px"><a class="go" style="display:inline-block;text-decoration:none;margin:0 8px" href="../reading/">阅 读 版 ↗</a>'
+      +'<a class="go" style="display:inline-block;text-decoration:none;margin:0 8px" href="../">返 回 主 站 ↗</a></p></div>';
+  })();
+  throw new Error('WebGL unavailable');
+}
 const R = 140, D2R = Math.PI/180;
 const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('gl'), antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
@@ -237,7 +283,7 @@ function applyTheme(){ const t=THEMES[themeIx];
 function fract(x){ return x - Math.floor(x); }
 
 /* ---- 双语 ---- */
-const T={lang: localStorage.getItem('walkLang')||'zh', dict:{
+const T={lang: (function(){try{return localStorage.getItem('walkLang')||'zh'}catch(e){return 'zh'}})(), dict:{
  gTitle:{zh:'边缘行走',en:'Walking the Edge'},
  gSub:{zh:'《华夏边缘：历史记忆与族群认同》· 互动行走',en:'Huaxia Frontier: Historical Memory and Ethnic Identity · an interactive walk'},
  gIntro:{zh:'你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十七枚记忆碎片散落在谷地里，五段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。',
@@ -254,8 +300,10 @@ const T={lang: localStorage.getItem('walkLang')||'zh', dict:{
  hudCnt:{zh:'记忆碎片 <b id="cShard">0</b>/17<br>倾听讲述 <b id="cNpc">0</b>/5',en:'Memory shards <b id="cShard">0</b>/17<br>Tellings heard <b id="cNpc">0</b>/5'},
  posHud:{zh:'你现在：<b id="posTxt">边缘之上</b>',en:'You are: <b id="posTxt">on the edge</b>'},
  posIn:{zh:'华夏之内',en:'within Huaxia'}, posEdge:{zh:'边缘之上',en:'on the edge'}, posOut:{zh:'华夏之外',en:'beyond the edge'},
- hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · <kbd>空格</kbd> 跳跃 · <kbd>⇧</kbd> 疾行×2.4 · <kbd>C/X</kbd> 翻滚 · <kbd>B/N</kbd> 劈叉180°<br><kbd>F</kbd> 五连冲拳 · <kbd>R</kbd> 旋风脚 · <kbd>H</kbd> 无影脚 · <kbd>K</kbd> 鲤鱼打挺<br><kbd>Y</kbd> 少林龙爪手 · <kbd>U</kbd> 武当揽雀尾 · <kbd>I</kbd> 醉拳 · <kbd>O</kbd> 八极贴山靠<br><kbd>E</kbd> 对话 · <kbd>G</kbd> 同行 · <kbd>V</kbd> 配音 · <kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务',
-  en:'<kbd>W A S D</kbd> move · <kbd>Space</kbd> jump · <kbd>⇧</kbd> sprint ×2.4 · <kbd>C/X</kbd> roll · <kbd>B/N</kbd> splits<br><kbd>F</kbd> rapid punches · <kbd>R</kbd> tornado kick · <kbd>H</kbd> shadowless kicks · <kbd>K</kbd> kip-up<br><kbd>Y</kbd> Shaolin dragon claw · <kbd>U</kbd> Wudang grasp tail · <kbd>I</kbd> drunken fist · <kbd>O</kbd> baji shoulder rush<br><kbd>E</kbd> talk · <kbd>G</kbd> companion · <kbd>V</kbd> voice · <kbd>T</kbd> day · <kbd>M</kbd> sound · <kbd>J</kbd> tasks'},
+hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · <kbd>空格</kbd> 跳跃 · <kbd>⇧</kbd> 疾行 · <kbd>E</kbd> 对话 · <kbd>G</kbd> 同行 · <kbd>J</kbd> 任务 · <kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音',
+en:'<kbd>W A S D</kbd> move · <kbd>Space</kbd> jump · <kbd>⇧</kbd> sprint · <kbd>E</kbd> talk · <kbd>G</kbd> companion · <kbd>J</kbd> tasks · <kbd>T</kbd> day · <kbd>M</kbd> sound'},
+skillTxt:{zh:'<b>身法</b> · <kbd>C/X</kbd> 翻滚 · <kbd>B/N</kbd> 劈叉180° · <kbd>H</kbd> 无影脚 · <kbd>K</kbd> 鲤鱼打挺<br><b>门派武功</b> · <kbd>Y</kbd> 少林龙爪手 · <kbd>U</kbd> 武当揽雀尾 · <kbd>I</kbd> 醉拳 · <kbd>O</kbd> 八极贴山靠<br><b>搏击</b> · <kbd>F</kbd> 五连冲拳 · <kbd>R</kbd> 旋风脚 · <kbd>V</kbd> 配音开关',
+ en:'<b>Agility</b> · <kbd>C/X</kbd> roll · <kbd>B/N</kbd> splits 180° · <kbd>H</kbd> shadowless kicks · <kbd>K</kbd> kip-up<br><b>School arts</b> · <kbd>Y</kbd> Shaolin dragon claw · <kbd>U</kbd> Wudang grasp tail · <kbd>I</kbd> drunken fist · <kbd>O</kbd> baji shoulder rush<br><b>Combat</b> · <kbd>F</kbd> rapid punches · <kbd>R</kbd> tornado kick · <kbd>V</kbd> voice toggle'},
  tasksT:{zh:'行走任务',en:'Walking tasks'},
  tShardTpl:{zh:'拾取 17 枚记忆碎片（{n}/17）',en:'Collect 17 memory shards ({n}/17)'},
  tNpc1:{zh:'倾听 寨老阿爷 的讲述',en:'Hear the village elder'},
@@ -1368,8 +1416,19 @@ function loop(){
     if(f<42 && sun.castShadow){ sun.castShadow=false; renderer.setPixelRatio(1); toast(tx('qDegrade')); }
     fpsN=0; fpsT=0; }
   renderer.render(scene,camera);
-  }catch(e){ document.title='LOOP ERR: '+e.message+' @'+(e.stack||'').split('\n')[1]; }
+  }catch(e){ if(__DBG) document.title='LOOP ERR: '+e.message+' @'+(e.stack||'').split('\n')[1]; }
 }
+/* 手机开场文案替换 */
+if('ontouchstart' in window){
+  T.dict.gKeys={zh:'<kbd>摇杆</kbd> 移动 · 拖动屏幕转视角<br><kbd>E</kbd> 对话 · <kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务',
+    en:'<kbd>joystick</kbd> move · drag screen to orbit<br><kbd>E</kbd> talk · <kbd>T</kbd> day · <kbd>M</kbd> sound · <kbd>J</kbd> tasks'}; }
+document.getElementById('btnSkill').addEventListener('click',()=>{ document.getElementById('skillPanel').classList.toggle('show'); });
+document.getElementById('btnJump').addEventListener('pointerdown',e=>{ e.preventDefault();
+  if(jumpOff<=0&&vy===0){ vy=9.8; playJumpSfx(); } });
+/* 切后台暂停音频与语音 */
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){ if(actx) actx.suspend(); if(window.speechSynthesis) speechSynthesis.cancel(); }
+  else if(actx) actx.resume(); });
 loop(); updHUD(); applyLang();
 if(loadGame()){ document.getElementById('btnGo').textContent=tx('gContinue');
   document.getElementById('btnNew').style.display='inline-block'; }

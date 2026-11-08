@@ -331,6 +331,13 @@
   footer .zh{color:var(--dim);font-size:14px;margin-top:14px;letter-spacing:.12em;line-height:2}
   footer .springer{margin-top:26px;color:var(--dim);font-size:12px;letter-spacing:.24em}
   footer .credits{margin-top:14px;color:var(--dim);opacity:.75;font-size:10.5px;letter-spacing:.08em;font-family:"Times New Roman",serif}
+  /* —— no3d 静态回退（WebGL 不可用） —— */
+  html.no3d .reveal{opacity:1!important;transform:none!important}
+  html.no3d canvas,html.no3d #veilChip,html.no3d .cmdbar,html.no3d .apanel,html.no3d .vOuter{display:none!important}
+  html.no3d #hero{min-height:92vh}
+  html.no3d #hero::after{content:'';position:absolute;left:50%;top:36%;width:min(44vw,320px);aspect-ratio:1;
+    transform:translate(-50%,-50%);pointer-events:none;
+    background:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Ccircle cx='24' cy='24' r='19' stroke='%23c9a45c' stroke-width='1.2' stroke-dasharray='103 17' stroke-linecap='round' transform='rotate(-58 24 24)' opacity='.8'/%3E%3Ccircle cx='40.5' cy='9.5' r='2.2' fill='%23c9a45c'/%3E%3C/svg%3E")}
 </style>
 </head>
 <body>
@@ -581,9 +588,14 @@ function closeBookOverlay(){ document.getElementById('bookOverlay').style.displa
 </script>
 </main>
 
-<script>window.addEventListener("error",e=>{document.title="ERR:"+e.message+" @"+e.lineno;});</script>
+<script>const __DBG=(location.hostname==="127.0.0.1"||location.hostname==="localhost");window.addEventListener("error",e=>{if(__DBG)document.title="ERR:"+e.message+" @"+e.lineno;});</script>
 <script src="assets/three.min.js"></script>
 <script>
+/* WebGL 预检：不可用则 no3d 静态回退并阻断 3D 脚本 */
+if(!(function(){try{const c=document.createElement('canvas');return !!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl')));}catch(e){return false;}})()){
+  document.documentElement.classList.add('no3d');
+  throw new Error('WebGL unavailable');
+}
 /* ================= i18n ================= */
 const CARDS = [
  {k:'01',lat:{zh:'De Finibus — 论边界',en:'Belonging'},h:{zh:'什么是中国人',en:'Who counts as one of us?'},p:{zh:'不问“华夏有什么”，而问“华夏的边界在哪里”。边缘视角取代定义式民族研究。',en:'When someone says “we Huaxia”, whom does that include? Wang begins with the people who draw that distinction.'}},
