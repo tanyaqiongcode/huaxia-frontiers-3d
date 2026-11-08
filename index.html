@@ -181,6 +181,19 @@
   input[type=range]{-webkit-appearance:none;width:126px;height:2px;background:var(--line);border-radius:2px;outline:none}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--gold-hi);cursor:pointer;box-shadow:0 0 8px rgba(201,164,92,.8)}
   .fogrow{display:flex;align-items:center;gap:10px}
+  /* v37 无障碍：跳到正文 */
+  .skip{position:fixed;top:-52px;left:14px;z-index:99;padding:9px 18px;border-radius:99px;font-size:12px;letter-spacing:.14em;
+    color:#100c04;background:var(--gold);text-decoration:none;transition:top .25s}
+  .skip:focus{top:14px;outline:2px solid var(--gold-hi)}
+  /* v37 渐进入场：文字先可用，3D 后入场（范式参考思想星图） */
+  #veilChip{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:30;
+    display:flex;align-items:center;gap:9px;padding:8px 18px;border-radius:99px;font-size:11px;letter-spacing:.18em;
+    color:var(--dim);border:1px solid var(--line);background:linear-gradient(160deg,var(--glass),var(--glass2));
+    backdrop-filter:blur(8px);transition:opacity .8s,visibility .8s;pointer-events:none}
+  #veilChip .vspin{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--line);border-top-color:var(--gold);animation:vspin 1s linear infinite}
+  @keyframes vspin{to{transform:rotate(360deg)}}
+  #veilChip.off{opacity:0;visibility:hidden}
+  @media(prefers-reduced-motion:reduce){#veilChip .vspin{animation:none}}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:40px}
   .card{padding:26px 24px;transition:.4s;position:relative;overflow:hidden}
@@ -321,20 +334,22 @@
 </style>
 </head>
 <body>
+<a class="skip" href="#hero" data-i18n="skipTxt">跳到正文</a>
 <canvas id="bg"></canvas>
+<div id="veilChip" role="status"><span class="vspin" aria-hidden="true"></span><span data-i18n="veilTxt">正文已可用 · 3D 正在进入现场</span></div>
 <div class="vignette"></div>
 <div class="grain"></div>
 
 <div class="cmdbar">
-  <div class="pill" id="btnLang">A/文 <kbd>L</kbd></div>
-  <div class="pill" id="btnMenu"><span data-i18n="mMenu">目录</span></div>
+  <div class="pill" id="btnLang" role="button" aria-pressed="false" aria-label="切换中英文">A/文 <kbd>L</kbd></div>
+  <div class="pill" id="btnMenu" role="button" aria-expanded="false"><span data-i18n="mMenu">目录</span></div>
   <div id="tooltray">
-    <div class="pill" id="btnSound">♪ <kbd>S</kbd></div>
-    <div class="pill" id="btnPause">⏸ <kbd>P</kbd></div>
-    <div class="pill" id="btnTheme">◐ <kbd>T</kbd></div>
-    <div class="pill" id="btnHide">⊘ <kbd>H</kbd></div>
+    <div class="pill" id="btnSound" role="button" aria-pressed="false" aria-label="环境配乐">♪ <kbd>S</kbd></div>
+    <div class="pill" id="btnPause" role="button" aria-pressed="false" aria-label="暂停渲染">⏸ <kbd>P</kbd></div>
+    <div class="pill" id="btnTheme" role="button" aria-pressed="false" aria-label="明暗主题">◐ <kbd>T</kbd></div>
+    <div class="pill" id="btnHide" role="button" aria-pressed="false" aria-label="隐藏界面">⊘ <kbd>H</kbd></div>
   </div>
-  <div class="pill trayToggle" id="btnTray">⚙ <span data-i18n="mTray">设置</span></div>
+  <div class="pill trayToggle" id="btnTray" role="button" aria-expanded="false">⚙ <span data-i18n="mTray">设置</span></div>
 </div>
 <div class="navpop" id="navpop" style="display:none">
   <a href="#media" data-i18n="nMedia">影像与访谈</a>
@@ -347,11 +362,11 @@
   <a href="#translation" data-i18n="nTr">译程</a>
   <a href="game/" style="color:var(--gold-hi)">边缘行走 · 游戏 ↗</a>
 </div>
-<div class="restore" id="btnRestore" title="恢复界面 (H)">◎</div>
-<div class="mark" title="Huaxia Frontier"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="currentColor"/></svg></div>
+<div class="restore" id="btnRestore" role="button" aria-pressed="false" title="恢复界面 (H)" aria-label="恢复界面">◎</div>
+<div class="mark" title="Huaxia Frontier" role="img" aria-label="华夏边缘印记 · 不闭合的圆环"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="currentColor"/></svg></div>
 
 <div class="apanel" id="apanel">
-  <div class="hd" id="apHead"><b data-i18n="apT">氛围</b><i>NO.01</i></div>
+  <div class="hd" id="apHead" role="button" aria-expanded="true"><b data-i18n="apT">氛围</b><i>NO.01</i></div>
   <div class="bd">
     <label><span data-i18n="pScene">场景</span></label>
     <div class="seg" id="segScene">
@@ -360,9 +375,9 @@
       <span data-v="moonlit"><i class="dot" style="background:#9fb8ff"></i><span data-i18n="scMo2">月夜</span></span>
       <span data-v="neon"><i class="dot" style="background:#7affd4"></i><span data-i18n="scNe">霓虹</span></span>
     </div>
-    <div class="fogrow"><span data-i18n="pMist">雾</span><input type="range" id="fogR" min="0" max="100" value="50"></div>
-    <label><span data-i18n="pDen">粒子</span>
-      <span class="seg" id="segDen"><span data-v="lo" data-i18n="spLo">疏</span><span data-v="mid" class="on" data-i18n="spMid">常</span><span data-v="full" data-i18n="spFull">繁</span></span></label>
+    <div class="fogrow"><span data-i18n="pMist">雾</span><input type="range" id="fogR" min="0" max="100" value="50" aria-label="雾浓度"></div>
+    <label><span data-i18n="pDen">画质</span>
+      <span class="seg" id="segQ"><span data-v="auto" class="on" data-i18n="qAuto">自动</span><span data-v="high" data-i18n="qHigh">典藏</span><span data-v="mid" data-i18n="qMid">均衡</span><span data-v="low" data-i18n="qLow">轻量</span></span></label>
   </div>
 </div>
 
@@ -376,7 +391,7 @@
       <a class="btn ghost" href="#media" data-i18n="ctaMedia">影像与访谈</a>
     </div>
     <div class="scrollhint" data-i18n="hint">SCROLL · 向下进入边缘</div>
-    <div class="heroBook"><img src="assets/book/cover.jpg" alt="华夏边缘 · 世纪文景2020"><div class="hbCue"><span class="hbPing"></span><span class="hbTxt" data-i18n="hbCue">点击读简介</span></div></div>
+    <div class="heroBook" role="button" tabindex="0" aria-label="打开《华夏边缘》书籍简介"><img src="assets/book/cover.jpg" alt="华夏边缘 · 世纪文景2020"><div class="hbCue"><span class="hbPing"></span><span class="hbTxt" data-i18n="hbCue">点击读简介</span></div></div>
   </section>
 
   <div id="descend">
@@ -638,7 +653,7 @@ const T = { lang:'zh', dict:{
  lsNote:{zh:'注：BP 为距今（以 1950 年为测年基准），BC 为公元前，未标注年份为公元纪年。',en:'Note: BP = before present (1950 baseline); BC = before Christ; unmarked years are CE.'},
  ls5b:{zh:'边缘重构 · 多元一体',en:'The edge remade · unity in diversity'},
  apT:{zh:'氛围',en:'ATMOSPHERE'},
- pScene:{zh:'场景',en:'SCENE'}, pMist:{zh:'雾',en:'MIST'}, pDen:{zh:'粒子',en:'PARTICLES'},
+ pScene:{zh:'场景',en:'SCENE'}, pMist:{zh:'雾',en:'MIST'}, pDen:{zh:'画质',en:'QUALITY'},
  stMo:{zh:'晨光漂流 · 清透大气',en:'Morning drift · clear air'},
  scMo:{zh:'晨光',en:'Morning'}, scDu:{zh:'暮色',en:'Dusk'}, scMo2:{zh:'月夜',en:'Moonlit'}, scNe:{zh:'霓虹',en:'Neon'},
  bdMedia:{zh:'Ⅱ · 影像',en:'Ⅱ · MEDIA'},
@@ -650,7 +665,9 @@ const T = { lang:'zh', dict:{
  bdPraise:{zh:'Ⅶ · 回响',en:'Ⅶ · PRAISE'},
  bdAuthor:{zh:'Ⅷ · 作者与版本',en:'Ⅷ · AUTHOR &amp; EDITIONS'},
  bdTranslation:{zh:'Ⅸ · 译程',en:'Ⅸ · TRANSLATION'},
- spLo:{zh:'疏',en:'Sparse'}, spMid:{zh:'常',en:'Normal'}, spFull:{zh:'繁',en:'Dense'},
+ qAuto:{zh:'自动',en:'Auto'}, qHigh:{zh:'典藏',en:'Ultra'}, qMid:{zh:'均衡',en:'Balanced'}, qLow:{zh:'轻量',en:'Lite'},
+ veilTxt:{zh:'正文已可用 · 3D 正在进入现场',en:'Text is ready · the 3D scene is arriving'},
+ skipTxt:{zh:'跳到正文',en:'Skip to content'},
  sidesign:{zh:'华夏边缘 · 历史记忆与族群认同',en:'HUAXIA FRONTIER · Historical Memory & Ethnic Identity'},
  metaline:{zh:'田野坐标 北纬31°06′ 东经103°51′ · 岷江上游 · 田野期一九九〇至二〇〇〇年代 · 研究编号 01',en:'FIELD SITE 31°06′N 103°51′E · UPPER MINJIANG · FIELDWORK 1990s—2000s · STUDY No.01'},
  ensub:{zh:'',en:'Historical Memory and Ethnic Identity'},
@@ -898,6 +915,10 @@ const band = galaxyDisc(4600,PAL.dark); scene.add(band);
 const dust = ringCloud(700,5.9,7.6,1.5,.03,PAL.dark.band); scene.add(dust);
 /* 太阳系（贴图：Solar System Scope CC-BY 4.0；地球：NASA via three.js） */
 const texLoader = new THREE.TextureLoader();
+/* v37 渐进入场：贴图就绪即撤下提示条（8 秒保险兜底，加载出错同样放手） */
+{ const veil=document.getElementById('veilChip'); let veiled=false;
+  const drop=()=>{ if(veiled||!veil) return; veiled=true; veil.classList.add('off'); setTimeout(()=>veil.remove(),900); };
+  THREE.DefaultLoadingManager.onLoad=drop; THREE.DefaultLoadingManager.onError=drop; setTimeout(drop,8000); }
 const sunMesh = new THREE.Mesh(new THREE.SphereGeometry(.85,48,32),
   new THREE.MeshBasicMaterial({map:texLoader.load('assets/planets/2k_sun.jpg')}));
 scene.add(sunMesh);
@@ -961,6 +982,19 @@ function applyDensity(){ const f=DENS[density];
   core.material.opacity=.92*OP[density]; band.material.opacity=.92*OP[density];
   dust.material.opacity=.92*OP[density]; frags.material.opacity=.75*OP[density]; }
 applyDensity();
+/* v37 画质四档：DPR × 粒子密度联动（范式参考思想星图展陈设置） */
+const DPR_CAP={low:1, mid:1.35, high:2};
+let quality='auto';
+function autoQuality(){ const coarse=matchMedia('(pointer:coarse)').matches, w=Math.min(screen.width||0,innerWidth);
+  return ((coarse&&w<820)||(devicePixelRatio||1)<=1)?'mid':'high'; }
+function applyQuality(k){ quality=(k==='auto')?autoQuality():k;
+  density = quality==='low'?'lo':(quality==='mid'?'mid':'full');
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1, DPR_CAP[quality]||1.75));
+  renderer.setSize(innerWidth, innerHeight);
+  applyDensity();
+  document.querySelectorAll('#segQ span').forEach(x=>x.classList.toggle('on',x.dataset.v===k));
+  try{ localStorage.setItem('hxQuality', k); }catch(e){} }
+try{ applyQuality(localStorage.getItem('hxQuality')||'auto'); }catch(e){ applyQuality('auto'); }
 function applyTheme(t){ theme=t; document.documentElement.setAttribute('data-theme',t); const p=PAL[t];
   const s=SCENES[sceneK];
   renderer.setClearColor(s.bg); scene.fog.color.set(s.fog);
@@ -1064,7 +1098,7 @@ const look = new THREE.Vector3(0,.4,0);
 const btnLang=document.getElementById('btnLang'), btnSound=document.getElementById('btnSound'),
       btnPause=document.getElementById('btnPause'), btnTheme=document.getElementById('btnTheme'),
       btnHide=document.getElementById('btnHide');
-function toggleLang(){ T.lang = T.lang==='zh'?'en':'zh'; applyLang(); }
+function toggleLang(){ T.lang = T.lang==='zh'?'en':'zh'; applyLang(); btnLang.setAttribute('aria-pressed', String(T.lang==='en')); }
 btnLang.onclick = toggleLang;
 /* 生成式环境配乐：Am9→Fmaj7→Cmaj9→G6 和声循环 + 混响 + 风 */
 let audio = null;
@@ -1123,15 +1157,22 @@ function toggleSound(){
   const on = audio.master.gain.value > 0;
   audio.master.gain.linearRampToValueAtTime(on?0:.16, audio.ctx.currentTime+1.6);
   btnSound.classList.toggle('on', !on);
+  btnSound.setAttribute('aria-pressed', String(!on));
 }
-function togglePause(){ paused = !paused; btnPause.classList.toggle('on', paused); }
-function toggleTheme(){ applyTheme(theme==='dark'?'light':'dark'); btnTheme.classList.toggle('on', theme==='light'); }
-function toggleHide(){ document.body.classList.toggle('ui-hidden'); }
-const hb=document.querySelector('.heroBook'); if(hb) hb.onclick=function(){ if(window.openBookOverlay) openBookOverlay(); };
-function toggleNavPop(){ const n=document.getElementById('navpop'); if(n) n.style.display = (n.style.display==='none'?'flex':'none'); }
+function togglePause(){ paused = !paused; btnPause.classList.toggle('on', paused); btnPause.setAttribute('aria-pressed', String(paused)); }
+function toggleTheme(){ applyTheme(theme==='dark'?'light':'dark'); btnTheme.classList.toggle('on', theme==='light'); btnTheme.setAttribute('aria-pressed', String(theme==='light')); }
+function toggleHide(){ document.body.classList.toggle('ui-hidden');
+  const hid = document.body.classList.contains('ui-hidden');
+  btnHide.setAttribute('aria-pressed', String(hid)); btnRestore.setAttribute('aria-pressed', String(hid)); }
+const hb=document.querySelector('.heroBook'); if(hb){ hb.onclick=function(){ if(window.openBookOverlay) openBookOverlay(); };
+  hb.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); if(window.openBookOverlay) openBookOverlay(); } }); }
+function toggleNavPop(){ const n=document.getElementById('navpop'); if(!n) return;
+  const open = (n.style.display==='flex'); n.style.display = open?'none':'flex';
+  const m=document.getElementById('btnMenu'); if(m&&m.setAttribute) m.setAttribute('aria-expanded', String(!open)); }
 document.getElementById('navpop').addEventListener('click', function(e){ if(e.target.tagName==='A') this.style.display='none'; });
 document.getElementById('btnMenu').onclick = toggleNavPop;
-document.getElementById('btnTray').onclick = function(){ document.body.classList.toggle('tray-open'); };
+document.getElementById('btnTray').onclick = function(){ document.body.classList.toggle('tray-open');
+  this.setAttribute('aria-expanded', String(document.body.classList.contains('tray-open'))); };
 if(innerWidth<760){ const ap=document.getElementById('apanel'); if(ap) ap.classList.add('closed'); }
 /* 三寨子故事：滚动驱动 三沟→四沟 拉远 */
 (function(){
@@ -1150,12 +1191,14 @@ if(innerWidth<760){ const ap=document.getElementById('apanel'); if(ap) ap.classL
   }
   addEventListener('scroll',updStory,{passive:true}); addEventListener('resize',updStory); updStory();
 })();
-document.querySelectorAll('#segDen span').forEach(function(s){ s.onclick=function(){density=s.dataset.v;document.querySelectorAll('#segDen span').forEach(function(x){ x.classList.toggle('on',x===s); });applyDensity(); }; });
-[["btnSound",toggleSound],["btnPause",togglePause],["btnTheme",toggleTheme],["btnHide",toggleHide],["btnRestore",toggleHide],["apHead",()=>document.getElementById('apanel').classList.toggle('closed')]].forEach(([id,fn])=>{
+document.querySelectorAll('#segQ span').forEach(function(s){ s.onclick=function(){ applyQuality(s.dataset.v); }; });
+[["btnSound",toggleSound],["btnPause",togglePause],["btnTheme",toggleTheme],["btnHide",toggleHide],["btnRestore",toggleHide],["apHead",function(){ const ap=document.getElementById('apanel'); ap.classList.toggle('closed');
+  const h=document.getElementById('apHead'); if(h) h.setAttribute('aria-expanded', String(!ap.classList.contains('closed'))); }]].forEach(([id,fn])=>{
   const el = document.getElementById(id); if(el) el.onclick = fn;
 });
 addEventListener('keydown', e=>{
-  if(e.key==='Escape'){ if(window.closeKnife) closeKnife(); if(window.closeBookOverlay) closeBookOverlay(); const np=document.getElementById('navpop'); if(np) np.style.display='none'; document.body.classList.remove('tray-open'); }
+  if(e.key==='Escape'){ if(window.closeKnife) closeKnife(); if(window.closeBookOverlay) closeBookOverlay(); const np=document.getElementById('navpop'); if(np) np.style.display='none'; document.body.classList.remove('tray-open');
+    const bt=document.getElementById('btnTray'); if(bt&&bt.setAttribute) bt.setAttribute('aria-expanded','false'); }
   if(e.target.tagName==='INPUT') return;
   const k = e.key.toLowerCase();
   if(k==='l') toggleLang(); else if(k==='s') toggleSound(); else if(k==='p') togglePause();
@@ -1217,7 +1260,7 @@ const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main
 
 applyLang();
 setScene('morning');
-console.info('Huaxia Frontier site — v7.2 (2026-11-02) | v23 immersive');
+console.info('Huaxia Frontier site — v37 (2026-11-08) | quality tiers · progressive entry · a11y');
 document.documentElement.setAttribute('data-scene','morning');
 </script>
 </body>
