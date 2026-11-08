@@ -771,6 +771,7 @@ let beastState='patrol', beastA=88, beastT=35;
 
 let stepT=0.2, padYaw=0, padPitch=0, padB0=false, padB2=false, plGain=null, dustT=1, steps=0, walkT0=0;
 let rollT=-1, rollDir=0, splitT=-1, splitType=0;
+const bursts=[];
 /* ---- 输入 ---- */
 const keys={};
 addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
@@ -780,8 +781,8 @@ addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
   if(k==='enter' && p2) tryTalkP2();
   if(k==='g') toggleP2();
   if(k==='v') toggleVoice();
-  if((k==='c'||k==='x')&&rollT<0){ rollT=0; rollDir=(k==='c')?1:-1; }
-  if((k==='b'||k==='n')&&splitT<0){ splitT=0; splitType=(k==='b')?1:2; }
+  if((k==='c'||k==='x')&&rollT<0){ rollT=0; rollDir=(k==='c')?1:-1; playRollSfx(k==='x'); }
+  if((k==='b'||k==='n')&&splitT<0){ splitT=0; splitType=(k==='b')?1:2; playSplitSfx(); }
   if(k==='t'){ themeIx=(themeIx+1)%THEMES.length; applyTheme(); }
   if(k==='m') toggleSound();
   if(k==='j') document.getElementById('tasks').classList.toggle('show');
@@ -1007,13 +1008,22 @@ function loop(){
   camPos.lerp(target,0.14); camera.position.copy(camPos);
   camera.up.copy(upF); camera.lookAt(focus.clone().addScaledVector(upF,1.3));
   /* 碎片 */
+  /* 粒子爆裂推进 */
+  for(let bi=bursts.length-1;bi>=0;bi--){ const B=bursts[bi]; B.t+=dt;
+    const pa=B.pts.geometry.attributes.position;
+    for(let i=0;i<B.vel.length;i++){ const v=B.vel[i];
+      pa.array[i*3]+=v.x*dt; pa.array[i*3+1]+=v.y*dt; pa.array[i*3+2]+=v.z*dt;
+      v.multiplyScalar(1-dt*1.6); }
+    pa.needsUpdate=true;
+    B.pts.material.opacity=Math.max(0,1-B.t/0.9);
+    if(B.t>0.9){ scene.remove(B.pts); B.pts.geometry.dispose(); B.pts.material.dispose(); bursts.splice(bi,1); } }
   shards.forEach(s=>{ if(s.userData.got) return;
     s.rotation.y+=dt*1.4; s.position.copy(P(s.userData.a,s.userData.t,(s.userData.h||0)+0.5+Math.sin(now*1.8+s.userData.ph)*0.18));
     const d3P = pP.distanceTo(s.position) < 1.9;
     const d3P2 = p2 && p2.grp.position.distanceTo(s.position) < 1.9;
     const nearP = d3P || d3P2;
     if(nearP){ s.userData.got=true; s.visible=false;
-      toast(tx('shardPre')+TOASTS[shards.indexOf(s)][T.lang]+' —— '+PART_N[PART_IX[shards.indexOf(s)]][T.lang]); playCollect(); updHUD(); } });
+      toast(tx('shardPre')+TOASTS[shards.indexOf(s)][T.lang]+' —— '+PART_N[PART_IX[shards.indexOf(s)]][T.lang]); playCollect(); burst(s.position,s.material.color.getHex()); updHUD(); } });
   /* NPC */
   let near=nearNpc(pGroup.position);
   if(p2 && !near){ const n2=nearNpc(p2.grp.position); if(n2) near=n2; }
@@ -1192,10 +1202,34 @@ function playJumpSfx(){ if(!actx||muted) return; const t0=actx.currentTime;
   o.frequency.setValueAtTime(330,t0); o.frequency.exponentialRampToValueAtTime(660,t0+0.12);
   const g=actx.createGain(); g.gain.setValueAtTime(0.07,t0); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.18);
   o.connect(g); g.connect(master); o.start(t0); o.stop(t0+0.2); }
+function playRollSfx(back){ if(!actx||muted||!window.__stepBuf) return; const t0=actx.currentTime;
+  const src=actx.createBufferSource(); src.buffer=window.__stepBuf; src.playbackRate.value=1.4;
+  const f=actx.createBiquadFilter(); f.type='bandpass'; f.Q.value=1.1;
+  f.frequency.setValueAtTime(back?850:1500,t0);
+  f.frequency.exponentialRampToValueAtTime(back?380:240,t0+0.36);
+  const g=actx.createGain(); g.gain.setValueAtTime(0.0001,t0);
+  g.gain.exponentialRampToValueAtTime(0.13,t0+0.05); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.38);
+  src.connect(f); f.connect(g); g.connect(master); src.start(t0); src.stop(t0+0.42); }
+function playSplitSfx(){ if(!actx||muted||!window.__stepBuf) return; const t0=actx.currentTime;
+  const src=actx.createBufferSource(); src.buffer=window.__stepBuf; src.playbackRate.value=0.7;
+  const f=actx.createBiquadFilter(); f.type='lowpass'; f.frequency.setValueAtTime(520,t0);
+  f.frequency.linearRampToValueAtTime(300,t0+0.65);
+  const g=actx.createGain(); g.gain.setValueAtTime(0.0001,t0);
+  g.gain.linearRampToValueAtTime(0.09,t0+0.12); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.7);
+  src.connect(f); f.connect(g); g.connect(master); src.start(t0); src.stop(t0+0.75); }
 function playHear(){ if(!actx||muted) return; const t0=actx.currentTime;
   tone(523,t0,0.4,0.07); tone(784,t0+0.12,0.6,0.06); }
 function playEnd(){ if(!actx||muted) return; const t0=actx.currentTime;
   [523,659,880].forEach((f,i)=>tone(f,t0+i*0.22,0.9,0.08)); }
+/* 宝石收集彩色粒子爆裂 */
+function burst(pos,hex){ const N=26; const g=new THREE.BufferGeometry();
+  const arr=new Float32Array(N*3); const up=pos.clone().normalize(); const vel=[];
+  for(let i=0;i<N;i++){ arr[i*3]=pos.x; arr[i*3+1]=pos.y; arr[i*3+2]=pos.z;
+    const v=new THREE.Vector3(Math.random()-0.5,Math.random()-0.5,Math.random()-0.5).normalize()
+      .multiplyScalar(1.4+Math.random()*2.2).addScaledVector(up,1.1); vel.push(v); }
+  g.setAttribute('position',new THREE.Float32BufferAttribute(arr,3));
+  const m=new THREE.PointsMaterial({color:hex,size:0.17,transparent:true,opacity:1,blending:THREE.AdditiveBlending,depthWrite:false});
+  const pts=new THREE.Points(g,m); scene.add(pts); bursts.push({pts,vel,t:0}); }
 let voiceOn=true, voices=[];
 function refreshVoices(){ try{ voices=speechSynthesis.getVoices(); }catch(e){} }
 if('speechSynthesis' in window){ refreshVoices(); speechSynthesis.addEventListener('voiceschanged',refreshVoices); }
