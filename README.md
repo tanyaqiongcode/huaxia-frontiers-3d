@@ -33,7 +33,7 @@
 ```
 ├── index.html               # 单页站点（样式与交互内联）
 ├── assets/three.min.js      # Three.js r128（本地化）
-├── assets/models/*.glb      # 游戏用碉楼、羌寨石屋（blender/game_models.py 生成）
+├── assets/models/*.glb      # 游戏模型（碉楼、石屋、长城、烽燧、遗址、树、牲畜；blender/game_models.py 生成）
 ├── assets/build.mp4 · render_01..03.png · plates/   # 造物记与图录
 └── blender/build_complete.blend
 ```
@@ -44,7 +44,7 @@
 blender --background --factory-startup --python build_scene.py
 ```
 
-游戏模型（碉楼、羌寨石屋）：
+游戏模型（碉楼、石屋、长城、烽燧、河湟遗址、树、牲畜）：
 
 ```bash
 blender --background --factory-startup --python blender/game_models.py
@@ -61,4 +61,5 @@ Planet textures: [Solar System Scope](https://www.solarsystemscope.com/textures/
 
 - 材质纹理：[Poly Haven](https://polyhaven.com)（CC0）——forrest_ground_01 / rock_wall / brown_mud_dry / weathered_planks（512px 漫反射，assets/game-textures.js）
 - three.js r128（MIT）· 行星贴图 NASA / Solar System Scope（CC BY 4.0）
-- 互动导读里的碉楼、羌寨平顶石屋：Blender 脚本建模（`blender/game_models.py`，本项目原创），导出为 `assets/models/*.glb`，由 three.js GLTFLoader（r128，MIT）加载
+- 互动导读里的碉楼、羌寨平顶石屋、汉代夯土长城墙段与烽燧（夯层夹芦苇，依河西汉塞形制）、河湟齐家文化半地穴房址与彩陶罐、冷杉／白杨／核桃、绵羊／黄牛／马：均由 Blender 脚本建模（`blender/game_models.py`，本项目原创），导出为 `assets/models/*.glb`，由 three.js GLTFLoader（r128，MIT）加载
+- 月面贴图：NASA（经 three.js examples）
