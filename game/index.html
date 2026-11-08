@@ -56,6 +56,12 @@
   .bar{position:fixed;left:0;right:0;height:0;background:#04060a;z-index:8;transition:height .9s cubic-bezier(.4,0,.2,1)}
   #barT{top:0}#barB{bottom:0} body.cine .bar{height:11vh}
   #btnCard{margin-right:12px}
+  .inv{position:fixed;left:18px;bottom:62px;z-index:5;display:flex;gap:8px;pointer-events:none}
+  .inv span{font-size:11px;letter-spacing:.12em;color:var(--gold-hi);border:1px solid var(--line);border-radius:8px;padding:5px 12px;background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));backdrop-filter:blur(8px)}
+  .ftG{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .ftG a{font-size:11px;letter-spacing:.1em;color:var(--dim);border:1px solid var(--line);border-radius:8px;padding:5px 10px;cursor:pointer;text-decoration:none;transition:color .3s,border-color .3s}
+  .ftG a:hover{color:var(--gold-hi);border-color:var(--gold)}
+  .ftT{font-size:11px;color:var(--dim);letter-spacing:.18em;margin-top:14px}
   #cardPrev img{width:100%;max-width:420px;border-radius:10px;border:1px solid var(--line);display:block;margin:0 auto 10px}
   #compass{position:fixed;left:50%;bottom:122px;transform:translateX(-50%);z-index:5;display:none;align-items:center;gap:9px;pointer-events:none;color:var(--gold-hi);font-size:11.5px;letter-spacing:.14em}
   #cA{display:inline-block;transition:transform .12s linear;font-size:13px}
@@ -133,6 +139,7 @@
   <div class="ring"><svg width="44" height="44"><circle cx="22" cy="22" r="18" stroke="rgba(201,164,92,.2)" stroke-width="3" fill="none"/><circle id="ringFg" cx="22" cy="22" r="18" stroke="#e8cf96" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="113" stroke-dashoffset="113"/></svg><b id="pct">0%</b></div>
   <div class="cnt" data-i18n-html="hudCnt">记忆碎片 <b id="cShard">0</b>/12<br>倾听讲述 <b id="cNpc">0</b>/3</div>
 </div>
+<div class="inv" id="inv"></div>
 <div class="posHUD" id="posHUD" data-i18n-html="posHud">你现在：<b id="posTxt">边缘之上</b></div>
 <div class="hint" id="hint" data-i18n-html="hintTxt"><kbd>W A S D</kbd> 移动 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务</div>
 <div class="tasks" id="tasks"><b data-i18n="tasksT">行走任务</b><ul>
@@ -144,7 +151,12 @@
   <li id="tNpc5" data-i18n="tNpc5">倾听 尔玛阿姐 的讲述</li>
   <li id="tLine" data-i18n="tLine">见证边界线移动</li>
 </ul>
-  <div class="memo" id="tMemo"></div></div>
+  <div class="memo" id="tMemo"></div>
+  <div class="ftT" data-i18n="ftT">快速移动 · FAST TRAVEL</div>
+  <div class="ftG" id="ftG">
+    <a data-z="village">羌寨</a><a data-z="hehuang">河湟遗址</a><a data-z="wall">长城边缘</a><a data-z="modern">现代羌寨</a><a data-z="beichuan">北川</a>
+  </div>
+  </div>
 <div class="dlg" id="dlg"><div class="who" id="dlgWho"></div><div class="txt" id="dlgTxt"></div><div class="more" id="dlgMore">E · 继续</div></div>
 <div class="toast" id="toast"></div>
 <button class="actBtn" id="actBtn">按 E · 倾听</button>
@@ -241,6 +253,12 @@ const T={lang: localStorage.getItem('walkLang')||'zh', dict:{
  beaconGo:{zh:'记忆已齐 · 去东边的烽燧，点燃边界之火',en:'Memories complete — light the beacon eastward'},
  beaconLit:{zh:'烽火燃起 · 边界在移动中',en:'The beacon burns — the boundary is on the move'},
  qDegrade:{zh:'画质 · 已自动调低',en:'Quality · auto-reduced'},
+ ftT:{zh:'快速移动 · FAST TRAVEL',en:'FAST TRAVEL'},
+ invUmb:{zh:'雨伞',en:'Umbrella'}, invTorch:{zh:'火把',en:'Torch'},
+ wRain:{zh:'暴雨来袭',en:'Rain approaching'}, wUmb:{zh:'雨伞为你遮挡',en:'Your umbrella shields you'}, wNoUmb:{zh:'没有雨伞——在雨中行走',en:'No umbrella — walking in the rain'},
+ bNear:{zh:'灌木丛中有野兽出没',en:'Something stirs in the brush'}, bTorch:{zh:'火把的光让野兽退却',en:'Your torch keeps the beast at bay'},
+ bCaught:{zh:'野兽逼近——你退回了谷口',en:'The beast drove you back'},
+ ftT:{zh:'快速移动 · FAST TRAVEL',en:'FAST TRAVEL'},
  tLine:{zh:'见证边界线移动',en:'See the boundary line move'},
  actTpl:{zh:'按 E · 倾听 {n}',en:'Press E · hear {n}'},
  moreCont:{zh:'E · 继续',en:'E · continue'}, moreBye:{zh:'E · 告辞',en:'E · farewell'},
@@ -380,6 +398,14 @@ const gGeo = new THREE.SphereGeometry(R, 96, 44, 0, Math.PI*2, 0, 1.12);
   const hl=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p=>p.clone().add(new THREE.Vector3(0,0.16,0)))),110,0.16,5,false),
     new THREE.MeshBasicMaterial({color:0xaac6e4,transparent:true,opacity:.5}));
   scene.add(hl); window.__water=ribbon; window.__waterHL=hl; }
+/* 暴雨粒子 */
+const RAIN_N=420;
+const rainGeo=new THREE.BufferGeometry();
+const rainArr=new Float32Array(RAIN_N*3);
+for(let i=0;i<RAIN_N;i++){ rainArr[i*3]=(Math.random()-0.5)*36; rainArr[i*3+1]=Math.random()*22; rainArr[i*3+2]=(Math.random()-0.5)*36; }
+rainGeo.setAttribute('position', new THREE.Float32BufferAttribute(rainArr,3));
+const rainMat=new THREE.PointsMaterial({color:0x9db4d6,size:0.07,sizeAttenuation:true,transparent:true,opacity:0});
+const rainPts=new THREE.Points(rainGeo,rainMat); rainPts.visible=false; scene.add(rainPts);
 /* 星空 */
 { const g=new THREE.BufferGeometry(); const v=[];
   for(let i=0;i<1700;i++){ const th=Math.random()*Math.PI*2, ph=Math.acos(Math.random()*0.92);
@@ -462,6 +488,27 @@ mesh(new THREE.BoxGeometry(0.5,1.15,0.06),matRed,-105,13.5,1.95);
 [[-103,11.5],[-107,15],[-100,15.5]].forEach(([a,t])=>{
   mesh(new THREE.CylinderGeometry(0.05,0.07,2.6,6),matWood,a,t,1.3);
   mesh(new THREE.BoxGeometry(0.6,0.8,0.03),matRed,a,t,2.2); });
+/* 道具（雨伞/火把） */
+const matUmb=new THREE.MeshBasicMaterial({color:0x4a9e9e,transparent:true,opacity:.9});
+const matTor=new THREE.MeshBasicMaterial({color:0xcc7733,transparent:true,opacity:.9});
+const itemUmb=new THREE.Mesh(new THREE.OctahedronGeometry(0.45),matUmb);
+itemUmb.position.copy(P(-18,8,1.2)); itemUmb.userData={type:'umb',got:false}; scene.add(itemUmb);
+const itemTor=new THREE.Mesh(new THREE.OctahedronGeometry(0.45),matTor);
+itemTor.position.copy(P(68,27,1.2)); itemTor.userData={type:'torch',got:false}; scene.add(itemTor);
+/* 猛兽（低模狼） */
+const beastG=new THREE.Group();
+{ const bm=M=>new THREE.MeshStandardMaterial({color:0x3a3a3a,roughness:.95});
+  const body=new THREE.Mesh(new THREE.BoxGeometry(1.1,0.45,0.4),bm()); body.position.y=0.45; beastG.add(body);
+  const head=new THREE.Mesh(new THREE.BoxGeometry(0.35,0.3,0.3),bm()); head.position.set(0.65,0.62,0); beastG.add(head);
+  const snout=new THREE.Mesh(new THREE.ConeGeometry(0.1,0.25,5),bm()); snout.rotation.z=-Math.PI/2; snout.position.set(0.88,0.56,0); beastG.add(snout);
+  [[-0.35,0.15],[0.35,0.15],[-0.35,-0.15],[0.35,-0.15]].forEach(([lx,lz])=>{
+    const leg=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.05,0.45,5),bm()); leg.position.set(lx,0.22,lz); beastG.add(leg); });
+  const tail=new THREE.Mesh(new THREE.ConeGeometry(0.06,0.4,5),bm()); tail.rotation.z=Math.PI/2.4; tail.position.set(-0.65,0.55,0); beastG.add(tail);
+  const eyeM=new THREE.MeshBasicMaterial({color:0xcccc44});
+  [[0.78,0.08],[0.78,-0.08]].forEach(([ex,ez])=>{ const e=new THREE.Mesh(new THREE.SphereGeometry(0.035,5,4),eyeM); e.position.set(ex,0.66,ez); beastG.add(e); });
+}
+beastG.traverse(x=>{ if(x.isMesh) x.castShadow=true; });
+scene.add(beastG); beastG.position.copy(P(88,35,0));
 /* 踏石过河（跳跃挑战） */
 [[1.5,9.2],[4,9.0],[6.5,9.1],[9,9.4]].forEach(([a,t])=>{
   mesh(new THREE.CylinderGeometry(0.75,0.9,0.55,7),matStone,a,t,0.32); });
@@ -643,6 +690,9 @@ const figP=makeFigure({jacket:0x46536b,trouser:0x4c463a,boot:0x2a241e,skin:0xd9c
 pGroup.add(figP.yawG);
 pGroup.position.copy(P(player.a,player.t,0)); scene.add(pGroup);
 let walkPhase=0, vy=0, jumpOff=0, lit=false, beaconHinted=false, prevSide='in', crossT=0, fpsN=0, fpsT=0, started=false, actx=null, master=null, muted=false, humGain=null, isMoveGlobal=false, idleT=0, headTurn=0;
+let weather='clear', weatherT=0;
+let hasUmb=false, hasTorch=false;
+let beastState='patrol', beastA=88, beastT=35;
 
 let stepT=0.2, padYaw=0, padPitch=0, padB0=false, padB2=false, plGain=null, dustT=1, steps=0, walkT0=0;
 /* ---- 输入 ---- */
@@ -865,16 +915,52 @@ function loop(){
   $('actBtn').style.display=(near&&!dlgNpc)?'block':'none';
   if(near) $('actBtn').textContent=tx('actTpl').replace('{n}',near.name[T.lang]);
   NPCS.forEach((n,i)=>{ if(n.fig) n.fig.body.rotation.z=Math.sin(now*1.1+i*2.1)*0.035; });
+  /* 猛兽AI */
+  if(beastG){
+    const bP=beastG.position;
+    const p1d=planarDist(pP,bP), p2d=p2?planarDist(p2.grp.position,bP):999;
+    const nearD=Math.min(p1d,p2d);
+    if(beastState==='patrol'){
+      beastA+=dt*0.3;
+      const bp=P(beastA,beastT,0); bP.copy(bp);
+      if(nearD<10&&!hasTorch){ beastState='chase'; toast(tx('bNear')); }
+      if(nearD<12&&hasTorch){ const away=bP.clone().sub(pP).normalize(); bP.addScaledVector(away,dt*5); }
+    } else if(beastState==='chase'){
+      const target=p1d<p2d?pP:(p2?p2.grp.position:pP);
+      const dir=target.clone().sub(bP); dir.y=0; dir.normalize();
+      bP.addScaledVector(dir,7.2*dt); bP.setLength(R+elev(Math.atan2(bP.z,bP.x)/D2R,Math.acos(Math.max(-1,Math.min(1,bP.y/bP.length())))/D2R));
+      if(nearD<1.6){ /* 被追上 */
+        pGroup.position.copy(P(0,34,0)); if(p2) p2.grp.position.copy(P(2,34,0));
+        beastState='patrol'; }
+      if(nearD>16||hasTorch){ beastState='patrol'; }
+    }
+    const upB=bP.clone().normalize();
+    beastG.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),upB);
+  }
   /* 鸟群 */
   flock.forEach((f,i)=>{ const a=now*f.sp+f.ph;
     const y=f.h+Math.sin(now*1.6+i)*1.4;
     f.b.position.set(f.cx+Math.cos(a)*f.r, y, f.cz+Math.sin(a)*f.r);
     const ah=a+0.12; f.b.lookAt(f.cx+Math.cos(ah)*f.r, y, f.cz+Math.sin(ah)*f.r);
     const fl=Math.sin(now*10+i*1.7)*0.55; f.wL.rotation.y=0.25+fl; f.wR.rotation.y=-0.25-fl; });
+  /* 雨伞+火把 */
+  if(!window.__umbM&&hasUmb){ const um=new THREE.Group();
+    const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,0.85,5),new THREE.MeshStandardMaterial({color:0x4a3b2a}));
+    const cano=new THREE.Mesh(new THREE.ConeGeometry(0.5,0.2,8),new THREE.MeshStandardMaterial({color:0x4a3b2e,side:THREE.DoubleSide}));
+    cano.position.y=0.45; um.add(pole,cano); um.userData={isUmb:true};
+    um.position.set(0.28,1.85,0.1); figP.yawG.add(um); window.__umbM=um; }
+  if(window.__umbM) window.__umbM.visible=(hasUmb&&weather==='rain');
   /* 静立转头 */
   if(!isMoveGlobal && now-idleT>2){ headTurn=Math.sin((now-idleT-2)*0.8)*0.4; }
   else { headTurn=0; idleT=now; }
   if(figP && figP.head) figP.head.rotation.y=headTurn;
+  /* 道具拾取 */
+  [itemUmb,itemTor].forEach(it=>{ if(it.userData.got) return;
+    it.rotation.y+=dt*1.6;
+    if(planarDist(pP,it.position)<1.6){ it.userData.got=true; it.visible=false;
+      if(it.userData.type==='umb'){ hasUmb=true; $('inv').innerHTML+='<span data-i18n="invUmb">'+tx('invUmb')+'</span>'; }
+      if(it.userData.type==='torch'){ hasTorch=true; $('inv').innerHTML+='<span data-i18n="invTorch">'+tx('invTorch')+'</span>'; }
+      playCollect(); } });
   /* 罗盘指引 */
   { let cS=null,cD=1e9;
     shards.forEach(sh=>{ if(sh.userData.got) return; const d=planarDist(pGroup.position,sh.position); if(d<cD){cD=d;cS=sh;} });
@@ -898,6 +984,22 @@ function loop(){
   if(zn && zn[0][T.lang]!==lastZone){ lastZone=zn[0][T.lang]; $('zName').textContent=zn[0][T.lang]; $('zSub').textContent=zn[1][T.lang]; }
   if(!zn && lastZone!==tx('zValleyN')){ lastZone=tx('zValleyN');
     $('zName').textContent=tx('zValleyN'); $('zSub').textContent=tx('zValleyS'); }
+  /* 暴雨跟随 */
+  if(weather==='rain'&&rainPts){ rainPts.visible=true; rainMat.opacity=Math.min(0.55,rainMat.opacity+dt*0.5);
+    rainPts.position.set(pP.x,pP.y+8,pP.z);
+    const rp=rainGeo.attributes.position;
+    for(let i=0;i<RAIN_N;i++){ let ry=rp.getY(i)-dt*(16+fract(i*7.3)*8);
+      if(ry<-6) ry=20+Math.random()*4; rp.setY(i,ry); }
+    rp.needsUpdate=true;
+    scene.fog.density=Math.min(0.028,scene.fog.density+dt*0.003);
+  } else if(rainPts){ rainMat.opacity=Math.max(0,rainMat.opacity-dt*0.5);
+    if(rainMat.opacity<=0){ rainPts.visible=false; scene.fog.density=Math.max(0.0088,scene.fog.density-dt*0.003); } }
+  /* 天气触发 */
+  weatherT-=dt;
+  if(weatherT<=0){ weatherT=55+Math.random()*45;
+    if(weather==='clear'&&fract(now*0.003)>0.3){ weather='rain'; weatherT=16+Math.random()*10;
+      toast(hasUmb?tx('wUmb'):tx('wNoUmb')); }
+    else if(weather==='rain'){ weather='clear'; } }
   /* 烽火燃动 */
   if(lit){ beaconFlame.rotation.y+=dt*3; beaconLight.intensity=2.2+Math.sin(now*11)*0.5;
     beaconFlame.scale.setScalar(1+Math.sin(now*9)*0.08); }
