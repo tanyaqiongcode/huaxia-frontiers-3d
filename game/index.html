@@ -737,7 +737,7 @@ let weather='clear', weatherT=0;
 let hasUmb=false, hasTorch=false;
 let beastState='patrol', beastA=88, beastT=35;
 
-let stepT=0.2, padYaw=0, padPitch=0, padB0=false, padB2=false, plGain=null, dustT=1, steps=0, walkT0=0;
+let stepT=0.2, padYaw=0, padPitch=0, padB0=false, padB2=false, plGain=null, dustT=1, steps=0, walkT0=0, camPos=new THREE.Vector3();
 /* ---- 输入 ---- */
 const keys={};
 addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
