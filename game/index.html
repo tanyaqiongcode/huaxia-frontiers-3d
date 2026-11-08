@@ -313,8 +313,8 @@ en:'<kbd>W A S D</kbd> move · <kbd>Space</kbd> jump · <kbd>⇧</kbd> sprint ·
  ftT:{zh:'快速移动 · FAST TRAVEL',en:'FAST TRAVEL'},
  invUmb:{zh:'雨伞',en:'Umbrella'}, invTorch:{zh:'火把',en:'Torch'},
  wRain:{zh:'暴雨来袭',en:'Rain approaching'}, wUmb:{zh:'雨伞为你遮挡',en:'Your umbrella shields you'}, wNoUmb:{zh:'没有雨伞——在雨中行走',en:'No umbrella — walking in the rain'},
- bNear:{zh:'灌木丛中有野兽出没',en:'Something stirs in the brush'}, bTorch:{zh:'火把的光让野兽退却',en:'Your torch keeps the beast at bay'},
- bCaught:{zh:'野兽逼近——你退回了谷口',en:'The beast drove you back'},
+ bNear:{zh:'墙外是牧场：耕与牧，是两种生计，也是两种边界。',en:'Beyond the wall, pasture: farming and herding — two livelihoods, two kinds of boundary.'},
+ bTorch:{zh:'拾得火把——典范历史只照亮木棍的一端；把火把转向边缘。',en:'A torch — official history lights only one end of the stick; turn it toward the margin.'},
  ftT:{zh:'快速移动 · FAST TRAVEL',en:'FAST TRAVEL'},
  tLine:{zh:'见证边界线移动',en:'See the boundary line move'},
  actTpl:{zh:'按 E · 倾听 {n}',en:'Press E · hear {n}'},
@@ -464,15 +464,6 @@ for(let i=0;i<RAIN_N;i++){ rainArr[i*3]=(Math.random()-0.5)*36; rainArr[i*3+1]=M
 rainGeo.setAttribute('position', new THREE.Float32BufferAttribute(rainArr,3));
 const rainMat=new THREE.PointsMaterial({color:0xb8cce8,size:0.12,sizeAttenuation:true,transparent:true,opacity:0});
 const rainPts=new THREE.Points(rainGeo,rainMat); rainPts.visible=false; scene.add(rainPts);
-/* 鳄鱼眼 */
-const crocEyes=new THREE.Group();
-{ const em=new THREE.MeshBasicMaterial({color:0x2a2a20});
-  const e1=new THREE.Mesh(new THREE.SphereGeometry(0.055,6,4),em); e1.position.x=-0.09;
-  const e2=e1.clone(); e2.position.x=0.09;
-  const snout=new THREE.Mesh(new THREE.BoxGeometry(0.35,0.06,0.14),new THREE.MeshStandardMaterial({color:0x3a4038}));
-  snout.position.y=-0.02;
-  crocEyes.add(e1,e2,snout); }
-scene.add(crocEyes); crocEyes.position.copy(P(-20,11,0.02));
 /* 星空 */
 { const g=new THREE.BufferGeometry(); const v=[];
   for(let i=0;i<1700;i++){ const th=Math.random()*Math.PI*2, ph=Math.acos(Math.random()*0.92);
@@ -559,37 +550,33 @@ mesh(new THREE.BoxGeometry(0.5,1.15,0.06),matRed,-105,13.5,1.95);
 [[-103,11.5],[-107,15],[-100,15.5]].forEach(([a,t])=>{
   mesh(new THREE.CylinderGeometry(0.05,0.07,2.6,6),matWood,a,t,1.3);
   mesh(new THREE.BoxGeometry(0.6,0.8,0.03),matRed,a,t,2.2); });
-/* 蝎子 */
-const scorpG=new THREE.Group();
-{ const M3=c=>new THREE.MeshStandardMaterial({color:c,roughness:.9});
-  const sb=new THREE.Mesh(new THREE.BoxGeometry(0.32,0.1,0.16),M3(0x4a3038)); scorpG.add(sb);
-  [[0.18,0.06],[0.18,-0.06]].forEach(([cx,cz])=>{
-    const cl=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.06,0.07),M3(0x3a2530)); cl.position.set(cx,0,cz); scorpG.add(cl); });
-  for(let ii=0;ii<4;ii++){ const seg=new THREE.Mesh(new THREE.SphereGeometry(0.05-ii*0.008,5,4),M3(0x3a2530));
-    seg.position.set(-0.16-ii*0.07,0.04+ii*0.07,0); scorpG.add(seg); }
-  const sting=new THREE.Mesh(new THREE.ConeGeometry(0.03,0.06,4),M3(0xa33b2e));
-  sting.rotation.z=Math.PI/2.5; sting.position.set(-0.4,0.28,0); scorpG.add(sting);
-  scorpG.traverse(x=>{ if(x.isMesh) x.castShadow=true; }); }
-scene.add(scorpG);
-scorpG.position.copy(P(-55,16,0));
 /* 道具（雨伞/火把） */
-const matUmb=new THREE.MeshBasicMaterial({color:0x4a9e9e,transparent:true,opacity:.9});
-const matTor=new THREE.MeshBasicMaterial({color:0xcc7733,transparent:true,opacity:.9});
-const itemUmb=new THREE.Mesh(new THREE.OctahedronGeometry(0.45),matUmb);
+/* 收拢的油纸伞、未点燃的火把：用本色，不再用发光多面体 */
+const itemUmb=new THREE.Group();
+{ const cloth=new THREE.MeshStandardMaterial({color:0x4a3b2e,emissive:0x4a3b2e,emissiveIntensity:.3,roughness:.8});
+  const wood=new THREE.MeshStandardMaterial({color:0x6b4a2a,emissive:0x6b4a2a,emissiveIntensity:.25,roughness:.8});
+  const c=new THREE.Mesh(new THREE.ConeGeometry(0.16,0.75,8),cloth); c.position.y=0.15; itemUmb.add(c);
+  const h=new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.025,0.4,6),wood); h.position.y=-0.4; itemUmb.add(h); }
 itemUmb.position.copy(P(-18,8,1.2)); itemUmb.userData={type:'umb',got:false}; scene.add(itemUmb);
-const itemTor=new THREE.Mesh(new THREE.OctahedronGeometry(0.45),matTor);
+const itemTor=new THREE.Group();
+{ const wood=new THREE.MeshStandardMaterial({color:0x5a3a22,emissive:0x5a3a22,emissiveIntensity:.25,roughness:.85});
+  const pitch=new THREE.MeshStandardMaterial({color:0x2a201a,emissive:0xb0642a,emissiveIntensity:.35,roughness:.9});
+  const st=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.05,0.8,6),wood); itemTor.add(st);
+  const hd=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.07,0.2,7),pitch); hd.position.y=0.45; itemTor.add(hd); }
 itemTor.position.copy(P(68,27,1.2)); itemTor.userData={type:'torch',got:false}; scene.add(itemTor);
-/* 猛兽（低模狼） */
+/* 墙外牧场的牦牛（只吃草缓行，不与人冲突） */
 const beastG=new THREE.Group();
-{ const bm=M=>new THREE.MeshStandardMaterial({color:0x3a3a3a,roughness:.95});
-  const body=new THREE.Mesh(new THREE.BoxGeometry(1.1,0.45,0.4),bm()); body.position.y=0.45; beastG.add(body);
-  const head=new THREE.Mesh(new THREE.BoxGeometry(0.35,0.3,0.3),bm()); head.position.set(0.65,0.62,0); beastG.add(head);
-  const snout=new THREE.Mesh(new THREE.ConeGeometry(0.1,0.25,5),bm()); snout.rotation.z=-Math.PI/2; snout.position.set(0.88,0.56,0); beastG.add(snout);
-  [[-0.35,0.15],[0.35,0.15],[-0.35,-0.15],[0.35,-0.15]].forEach(([lx,lz])=>{
-    const leg=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.05,0.45,5),bm()); leg.position.set(lx,0.22,lz); beastG.add(leg); });
-  const tail=new THREE.Mesh(new THREE.ConeGeometry(0.06,0.4,5),bm()); tail.rotation.z=Math.PI/2.4; tail.position.set(-0.65,0.55,0); beastG.add(tail);
-  const eyeM=new THREE.MeshBasicMaterial({color:0xcccc44});
-  [[0.78,0.08],[0.78,-0.08]].forEach(([ex,ez])=>{ const e=new THREE.Mesh(new THREE.SphereGeometry(0.035,5,4),eyeM); e.position.set(ex,0.66,ez); beastG.add(e); });
+{ const bm=()=>new THREE.MeshStandardMaterial({color:0x2e2620,roughness:.95});
+  const body=new THREE.Mesh(new THREE.BoxGeometry(1.15,0.55,0.55),bm()); body.position.y=0.55; beastG.add(body);
+  const hump=new THREE.Mesh(new THREE.BoxGeometry(0.4,0.22,0.5),bm()); hump.position.set(0.28,0.88,0); beastG.add(hump);
+  const skirt=new THREE.Mesh(new THREE.BoxGeometry(1.0,0.18,0.6),bm()); skirt.position.y=0.28; beastG.add(skirt);
+  const head=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.3,0.32),bm()); head.position.set(0.72,0.5,0); beastG.add(head);
+  const hornM=new THREE.MeshStandardMaterial({color:0xd8ccb0,roughness:.6});
+  [0.2,-0.2].forEach(hz=>{ const h=new THREE.Mesh(new THREE.ConeGeometry(0.04,0.26,5),hornM);
+    h.position.set(0.72,0.72,hz); h.rotation.x=hz>0?-0.7:0.7; beastG.add(h); });
+  [[-0.38,0.18],[0.38,0.18],[-0.38,-0.18],[0.38,-0.18]].forEach(([lx,lz])=>{
+    const leg=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.06,0.4,5),bm()); leg.position.set(lx,0.2,lz); beastG.add(leg); });
+  const tail=new THREE.Mesh(new THREE.ConeGeometry(0.07,0.42,5),bm()); tail.rotation.z=Math.PI/1.6; tail.position.set(-0.66,0.5,0); beastG.add(tail);
 }
 beastG.traverse(x=>{ if(x.isMesh) x.castShadow=true; });
 scene.add(beastG); beastG.position.copy(P(88,35,0));
@@ -672,7 +659,7 @@ const TOASTS=[
  {zh:'近代华夏边缘再造：从帝国到国族，边缘被重新描绘。',en:'Re-making the modern edge: from empire to nation-state, the margin was drawn anew.'},
  {zh:'民族识别：1950年代的调查，把称呼写进了册页。',en:'The classification of the 1950s: what people called themselves entered the registers as nationalities.'},
  {zh:'资源竞争、历史记忆与族群认同：三者交织，决定边界画在哪里。',en:'Resources, memory and identity: together they decide where the boundary is drawn.'},
- {zh:'北川的案例：灾后重建让“羌”成为一座县城的公共身份。',en:"Beichuan: after the quake, being Qiang became a whole county’s public project."},
+ {zh:'北川的案例：许多人家改报羌族，“羌”成为一座县城的公共身份。',en:"Beichuan: as family after family registered as Qiang, being Qiang became a whole county’s public identity."},
  {zh:'称呼会移动：“羌”从殷商的牧羊人，一路变成今日的自称。',en:'Names on the move: “Qiang” has travelled from Shang-dynasty herders to a self-chosen name today.'}];
 
 const SHARD_POS=[
@@ -768,16 +755,16 @@ const NPCS=[
  {a:-135,t:23,name:{zh:'返乡青年',en:'Returned youth'},done:false,lines:{
   zh:['你是走着来的？现在班车通到县里，公路一直修到沟口。',
       '五十年代搞民族识别，工作队来登记。我奶奶只会说自己“尔玛”，表格上写的是“羌族”。后来娃娃们在学校里就学这个。',
-      '我去成都打过工，又回来了。当羌族、当中国人——不是一堵你生在里头的墙，是一个你一直在讲的故事。'],
+      '我去成都打过工，又回来了。羌族是我，中国人也是我——这不是两堵墙，是一段一直在讲下去的历史。'],
   en:['You walked here? The bus now runs to the county town, and the road goes all the way up the valley.',
       'In the 1950s the classification teams came through. My grandmother could only say she was “Rma”; the form wrote down “Qiang”, a nationality. Children learn it in school now.',
-      'I worked in Chengdu for a while, then came back. Being Qiang, being Chinese — it isn’t a wall you happen to be born inside. It’s a story you keep telling.']}},
+      'I worked in Chengdu for a while, then came back. I am Qiang, and I am Chinese — not two walls, but one history that keeps being told.']}},
  {a:-105,t:13,name:{zh:'尔玛阿姐',en:'Rma elder sister'},pitch:1.1,done:false,lines:{
-  zh:['汶川地震之后，外面来了很多人帮我们重建。也就在那几年，大家开始说：我们是尔玛，是羌人。',
-      '我小时候只会讲汉话。现在孙子在学堂里学羌语，回家教我。',
+  zh:['我们这一带，老辈人多说自己是汉人。后来越来越多人家登记成羌族，北川也成了羌族自治县。',
+      '我小时候只会讲汉话。地震以后，羌绣、羌语课多了起来，现在孙子在学堂里学羌语，回家教我。',
       '认同这个东西，不是血脉里带来的，是日子里长出来的。北川是这样，别处也是。'],
-  en:['After the 2008 earthquake, many outsiders came to help us rebuild. That was when people here began to say: we are Rma, we are Qiang.',
-      'As a girl I only spoke the Han way. Now my grandson learns Qiang at school and comes home to teach me.',
+  en:['Around here, the old folks mostly called themselves Han. Over the years more and more families registered as Qiang, and Beichuan became a Qiang autonomous county.',
+      'As a girl I only spoke the Han way. After the earthquake, Qiang embroidery and Qiang classes spread; now my grandson learns Qiang at school and comes home to teach me.',
       'Identity is not carried in the blood. It grows out of daily life. Beichuan is proof — and so is everywhere else.']}}];
 const matSkin=new THREE.MeshStandardMaterial({color:0xd9c6ad,roughness:.9});
 /* 关节人形工厂：比例·服饰·配件（o={jacket,trouser,boot,skin,hair,hat,hatC,scarf,satchel,robe,robeC,apron,staff}） */
@@ -849,7 +836,7 @@ pGroup.position.copy(P(player.a,player.t,0)); scene.add(pGroup);
 let walkPhase=0, vy=0, jumpOff=0, lit=false, beaconHinted=false, prevSide='in', crossT=0, fpsN=0, fpsT=0, started=false, actx=null, master=null, muted=false, humGain=null, isMoveGlobal=false, idleT=0, headTurn=0, camPos=new THREE.Vector3(), lastZone='';
 let weather='clear', weatherT=0;
 let hasUmb=false, hasTorch=false;
-let beastState='patrol', beastA=88, beastT=35;
+let beastA=88, beastT=35, yakSeen=false;
 
 let stepT=0.2, padYaw=0, padPitch=0, padB0=false, padB2=false, plGain=null, dustT=1, steps=0, walkT0=0;
 let rollT=-1, rollDir=0;
@@ -1113,27 +1100,14 @@ function loop(){
   $('actBtn').style.display=(near&&!dlgNpc)?'block':'none';
   if(near) $('actBtn').textContent=tx('actTpl').replace('{n}',near.name[T.lang]);
   NPCS.forEach((n,i)=>{ if(n.fig) n.fig.body.rotation.z=Math.sin(now*1.1+i*2.1)*0.035; });
-  /* 猛兽AI */
+  /* 牦牛：沿墙外牧场缓步吃草；第一次走近时给一句提示 */
   if(beastG){
     const bP=beastG.position;
-    const p1d=planarDist(pP,bP), p2d=p2?planarDist(p2.grp.position,bP):999;
-    const nearD=Math.min(p1d,p2d);
-    if(beastState==='patrol'){
-      beastA+=dt*0.3;
-      const bp=P(beastA,beastT,0); bP.copy(bp);
-      if(nearD<10&&!hasTorch){ beastState='chase'; toast(tx('bNear')); }
-      if(nearD<12&&hasTorch){ const away=bP.clone().sub(pP).normalize(); bP.addScaledVector(away,dt*5); }
-    } else if(beastState==='chase'){
-      const target=p1d<p2d?pP:(p2?p2.grp.position:pP);
-      const dir=target.clone().sub(bP); dir.y=0; dir.normalize();
-      bP.addScaledVector(dir,7.2*dt); bP.setLength(R+elev(Math.atan2(bP.z,bP.x)/D2R,Math.acos(Math.max(-1,Math.min(1,bP.y/bP.length())))/D2R));
-      if(nearD<1.6){ /* 被追上 */
-        pGroup.position.copy(P(0,34,0)); if(p2) p2.grp.position.copy(P(2,34,0));
-        beastState='patrol'; }
-      if(nearD>16||hasTorch){ beastState='patrol'; }
-    }
+    bP.copy(P(beastA+6*Math.sin(now*0.04),beastT+1.5*Math.sin(now*0.07),0));
+    if(!yakSeen && planarDist(pP,bP)<8){ yakSeen=true; toast(tx('bNear')); }
     const upB=bP.clone().normalize();
     beastG.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),upB);
+    beastG.children[3].rotation.z=-0.35+Math.sin(now*0.9)*0.25;   /* 低头吃草 */
   }
   /* 云影漂移 */
   for(let ci=0;ci<3;ci++){ const cs=window['__cloudShadow'+ci]; if(!cs) continue;
@@ -1161,20 +1135,13 @@ function loop(){
     it.rotation.y+=dt*1.6;
     if(planarDist(pP,it.position)<1.6){ it.userData.got=true; it.visible=false;
       if(it.userData.type==='umb'){ hasUmb=true; $('inv').innerHTML+='<span data-i18n="invUmb">'+tx('invUmb')+'</span>'; }
-      if(it.userData.type==='torch'){ hasTorch=true; $('inv').innerHTML+='<span data-i18n="invTorch">'+tx('invTorch')+'</span>'; }
+      if(it.userData.type==='torch'){ hasTorch=true; $('inv').innerHTML+='<span data-i18n="invTorch">'+tx('invTorch')+'</span>'; toast(tx('bTorch')); }
       playCollect(); } });
   document.querySelectorAll('#zoneTabs a').forEach(a=>{ a.onclick=()=>{
     const zz={'village':[0,10],'hehuang':[-72,26],'wall':[75,30],'modern':[-135,24],'beichuan':[-105,13]};
     const z=zz[a.dataset.z]; if(!z) return;
     pGroup.position.copy(P(z[0],z[1],0)); if(p2) p2.grp.position.copy(P(z[0]+2,z[1]+2,0));
     document.getElementById('tasks').classList.remove('show'); }; });
-  scorpG.rotation.y=Math.sin(now*0.4)*0.4;
-  scorpG.position.x+=Math.sin(now*0.7)*dt*1.2;
-  if(planarDist(pGroup.position,scorpG.position)<1.2){
-    const push=pGroup.position.clone().sub(scorpG.position); push.y=0; push.normalize();
-    pGroup.position.addScaledVector(push,dt*8); }
-  crocEyes.position.y=R+elev(-20,11)+0.03+Math.sin(now*0.7)*0.04;
-  crocEyes.rotation.y=Math.atan2(camera.position.z-crocEyes.position.z,camera.position.x-crocEyes.position.x);
     /* 区域标签高亮+单元跳转 */
   if(lastZone){ const zMap={'羌寨 · 岷江上游':'village','Valley · upper Min River':'village','河湟遗址 · 四千年前':'hehuang','Hehuang sites · 4000 BP':'hehuang','长城边缘 · 资源界线':'wall','Wall margin · the resource line':'wall','现代羌寨 · 国道边上':'modern','Modern village · by the highway':'modern','北川 · 尔玛人家':'beichuan','Beichuan · the Rma home':'beichuan'};
     const zid=zMap[lastZone];
