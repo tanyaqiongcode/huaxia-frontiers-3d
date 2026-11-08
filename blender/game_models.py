@@ -37,7 +37,10 @@ COLORS = {
     "hide": (0.52, 0.34, 0.20, 1),      # 黄牛
     "horse": (0.36, 0.24, 0.16, 1),
     "gravel": (0.55, 0.52, 0.46, 1),
+    "leafcard": (0.45, 0.58, 0.32, 1),  # 阔叶叶片卡（游戏里换成带透明的叶片贴图）
+    "needlecard": (0.20, 0.32, 0.22, 1),  # 冷杉枝叶卡
 }
+CARD_MATS = {"leafcard", "needlecard"}
 
 
 def reset():
@@ -83,7 +86,50 @@ def stone_ball(r, x, y, z):
     return finish(o, "white")
 
 
-def bake_and_export(name):
+def _modifier(o, kind, **kw):
+    m = o.modifiers.new(kind.lower(), kind)
+    for k, v in kw.items():
+        setattr(m, k, v)
+    bpy.context.view_layer.objects.active = o
+    bpy.ops.object.modifier_apply(modifier=m.name)
+
+
+def _soften(objs, organic):
+    """硬质构件倒小圆角（边缘能接住光）；牲畜等有机体做细分圆滑；叶片卡不动。"""
+    for o in objs:
+        mats = {m.name.split(".")[0] for m in o.data.materials if m}
+        if mats & CARD_MATS:
+            continue
+        if organic:
+            _modifier(o, "SUBSURF", levels=1, render_levels=1)
+        else:
+            d = min(x for x in o.dimensions if x > 1e-4)
+            _modifier(o, "BEVEL", width=min(0.045, d * 0.18), segments=2 if d > 0.25 else 1, limit_method="ANGLE",
+                      angle_limit=math.radians(35), harden_normals=False)
+
+
+def _bake_ao(o, distance):
+    """用 Cycles 把环境光遮蔽烘焙进顶点色（墙角、接地处、树冠内部自然变暗），运行时零开销。"""
+    sc = bpy.context.scene
+    sc.render.engine = "CYCLES"
+    sc.cycles.device = "CPU"
+    sc.cycles.samples = 24
+    if sc.world is None:
+        sc.world = bpy.data.worlds.new("w")
+    sc.world.light_settings.distance = distance
+    bpy.ops.mesh.primitive_plane_add(size=60, location=(0, 0, -0.005))   # 地面：让底部也有接地暗影（不导出）
+    ground = bpy.context.active_object
+    ca = o.data.color_attributes.new("AO", "BYTE_COLOR", "POINT")
+    o.data.color_attributes.active_color = ca
+    bpy.ops.object.select_all(action="DESELECT")
+    o.select_set(True)
+    bpy.context.view_layer.objects.active = o
+    sc.render.bake.target = "VERTEX_COLORS"
+    bpy.ops.object.bake(type="AO")
+    bpy.data.objects.remove(ground, do_unlink=True)
+
+
+def bake_and_export(name, organic=False, ao=0.9):
     objs = [o for o in bpy.context.scene.objects if o.type == "MESH"]
     bpy.ops.object.select_all(action="DESELECT")
     for o in objs:
@@ -91,21 +137,45 @@ def bake_and_export(name):
     bpy.context.view_layer.objects.active = objs[0]
     # 位置也一起应用：合并后原点就是世界原点，模型底面正好在高度 0
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+    _soften(objs, organic)
+    bpy.ops.object.select_all(action="DESELECT")
+    for o in objs:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = objs[0]
     bpy.ops.object.join()
     o = bpy.context.active_object
     o.name = name
-    # 按世界尺度做立方投影 UV，石纹在各个面上大小一致
+    # 按世界尺度做立方投影 UV，石纹在各个面上大小一致（叶片卡另行展开为整张 0..1）
     bpy.ops.object.mode_set(mode="EDIT")
     bpy.ops.mesh.select_all(action="SELECT")
     bpy.ops.uv.cube_project(cube_size=2.0)
     bpy.ops.object.mode_set(mode="OBJECT")
-    bpy.ops.object.shade_flat()
+    _card_uvs(o)
+    try:
+        bpy.ops.object.shade_smooth_by_angle(angle=math.radians(40))
+    except Exception:
+        bpy.ops.object.shade_smooth()
+    _bake_ao(o, ao)
     path = os.path.join(OUT, name + ".glb")
-    bpy.ops.export_scene.gltf(filepath=path, export_format="GLB", use_selection=True,
-                              export_apply=True, export_yup=True, export_normals=True,
-                              export_texcoords=True, export_materials="EXPORT")
+    opts = dict(filepath=path, export_format="GLB", use_selection=True, export_apply=True, export_yup=True,
+                export_normals=True, export_texcoords=True, export_materials="EXPORT")
+    try:
+        bpy.ops.export_scene.gltf(**opts, export_vertex_color="ACTIVE")
+    except TypeError:
+        bpy.ops.export_scene.gltf(**opts, export_colors=True)
     tris = sum(len(p.vertices) - 2 for p in o.data.polygons)
     print("exported", path, os.path.getsize(path), "bytes,", tris, "triangles")
+
+
+def _card_uvs(o):
+    """叶片卡（四边形）各自铺满整张贴图。"""
+    uv = o.data.uv_layers.active.data
+    idx = {i for i, m in enumerate(o.data.materials) if m and m.name.split(".")[0] in CARD_MATS}
+    corners = [(0, 0), (1, 0), (1, 1), (0, 1)]
+    for p in o.data.polygons:
+        if p.material_index in idx and len(p.loop_indices) == 4:
+            for k, li in enumerate(p.loop_indices):
+                uv[li].uv = corners[k]
 
 
 # ---------------- 碉楼：八角收分、三道木梁层带、小窗、顶部女儿墙与白石 ----------------
@@ -298,27 +368,61 @@ def build_hehuang_site():
     bake_and_export("hehuang_site")
 
 
-# ---------------- 树：岷江冷杉、白杨、核桃（阔叶） ----------------
+# ---------------- 树：岷江冷杉、白杨、核桃——树干＋叶片卡（贴透明叶片图后接近真树的轮廓） ----------------
+def card(cx, cy, cz, w, h, yaw, pitch, material):
+    """以 (cx, cy, cz) 为根、朝 yaw 方向伸出的一张叶片卡，pitch 为下垂角。"""
+    bpy.ops.mesh.primitive_plane_add(size=1, location=(0, 0, 0))
+    o = bpy.context.active_object
+    o.scale = (h, w, 1)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    for v in o.data.vertices:                     # 根部对齐原点、向 +X 伸出
+        v.co.x += h / 2
+    o.rotation_euler = (0, pitch, yaw)
+    o.location = (cx, cy, cz)
+    return finish(o, material)
+
+
+def trunk(r0, r1, h, material="bark", x=0, y=0, z=0, tilt=(0, 0)):
+    bpy.ops.mesh.primitive_cone_add(vertices=10, radius1=r0, radius2=r1, depth=h, location=(x, y, z + h / 2))
+    o = bpy.context.active_object
+    o.rotation_euler = (tilt[0], tilt[1], 0)
+    return finish(o, material)
+
+
 def build_trees():
-    reset()
-    cyl(0.16, 1.4, 0, 0, 0.7, "bark", 7)
-    for k, (z, r, h) in enumerate(((1.0, 1.25, 1.7), (2.0, 1.0, 1.5), (2.9, 0.75, 1.3), (3.7, 0.48, 1.1))):
-        prism(8, r, 0.05, h, z, "needle", 0.06 * jitter(k, 8), 0.06 * jitter(k, 9))
-    bake_and_export("tree_fir")
+    reset()                                        # 冷杉：层层下垂的枝叶，越往上越短
+    trunk(0.2, 0.04, 5.6, "bark")
+    tiers = 11
+    for k in range(tiers):
+        z = 0.9 + k * 0.44
+        r = 1.6 * (1 - k / tiers) + 0.25
+        n = 7 if k < 8 else 5
+        for m in range(n):
+            yaw = m * 2 * math.pi / n + k * 0.55 + 0.2 * jitter(k * 9 + m, 1)
+            card(0.05 * math.cos(yaw), 0.05 * math.sin(yaw), z, 0.75 * r + 0.15, r, yaw, math.radians(16 + 10 * jitter(k + m, 2)), "needlecard")
+    card(0, 0, 5.3, 0.35, 0.6, 0, -math.pi / 2, "needlecard")
+    bake_and_export("tree_fir", ao=1.4)
 
-    reset()
-    cyl(0.12, 3.0, 0, 0, 1.5, "bark_w", 7)
-    blob(0.9, 0, 0, 3.6, 0.85, 0.85, 2.3, "leaf", 2)
-    blob(0.55, 0.25, 0.1, 2.4, 0.9, 0.9, 1.6, "leaf", 1)
-    bake_and_export("tree_poplar")
+    reset()                                        # 白杨：灰白树干、向上收拢的窄长树冠
+    trunk(0.15, 0.05, 6.4, "bark_w")
+    for m in range(46):
+        z = 1.9 + 4.4 * (m + 0.5) / 46
+        k = math.sin(math.pi * (z - 1.9) / 4.6)
+        yaw = m * 2.4
+        card(0.06 * math.cos(yaw), 0.06 * math.sin(yaw), z, 0.7, 0.55 + 0.45 * k, yaw, math.radians(-55 + 15 * jitter(m, 3)), "leafcard")
+    bake_and_export("tree_poplar", ao=1.2)
 
-    reset()
-    cyl(0.18, 1.8, 0, 0, 0.9, "bark", 7)
-    cyl(0.08, 1.0, 0.35, 0, 2.0, "bark", 6, ry=0.6)
-    cyl(0.08, 1.0, -0.3, 0.1, 2.0, "bark", 6, ry=-0.6)
-    for k, (x, y, z, r) in enumerate(((0, 0, 2.7, 1.25), (0.8, 0.3, 2.4, 0.85), (-0.75, -0.2, 2.45, 0.9), (0.1, -0.7, 2.9, 0.8), (-0.1, 0.6, 3.2, 0.75))):
-        blob(r, x, y, z, 1, 1, 0.82, "leaf2", 1)
-    bake_and_export("tree_walnut")
+    reset()                                        # 核桃：粗短主干分三杈，圆阔树冠
+    trunk(0.22, 0.12, 2.0, "bark")
+    for k, (rx, ry) in enumerate(((0.45, 0.1), (-0.4, 0.3), (0.05, -0.5))):
+        trunk(0.1, 0.05, 1.6, "bark", 0, 0, 1.8, (rx, ry))
+    for m in range(70):
+        u = (m + 0.5) / 70
+        th, ph = m * 2.399963, math.acos(1 - 2 * u)
+        r = 1.15 + 0.25 * jitter(m, 4)
+        x, y, z = r * math.sin(ph) * math.cos(th), r * math.sin(ph) * math.sin(th), 3.0 + 0.8 * r * math.cos(ph)
+        card(x * 0.55, y * 0.55, z, 0.95, 1.0, th, math.radians(-25 + 50 * jitter(m, 5)), "leafcard")
+    bake_and_export("tree_walnut", ao=1.2)
 
 
 # ---------------- 牲畜：绵羊、黄牛、马（朝 +X） ----------------
@@ -334,7 +438,7 @@ def build_animals():
     box(0.24, 0.2, 0.24, 0.56, 0, 0.66, "dark")
     blob(0.13, 0.5, 0, 0.8, 1, 1.1, 0.8, "wool", 1)
     legs((-0.25, 0.25), (-0.15, 0.15), 0.36, 0.045, "dark")
-    bake_and_export("sheep")
+    bake_and_export("sheep", organic=True, ao=0.5)
 
     reset()
     box(1.35, 0.55, 0.6, 0, 0, 0.62, "hide")
@@ -345,7 +449,7 @@ def build_animals():
         cyl(0.03, 0.22, 0.86, sy * 0.19, 1.1, "white", 5, rx=sy * 0.8)
     legs((-0.5, 0.48), (-0.18, 0.18), 0.62, 0.07, "hide")
     cyl(0.03, 0.6, -0.72, 0, 0.85, "hide", 5, ry=0.35)
-    bake_and_export("cow")
+    bake_and_export("cow", organic=True, ao=0.5)
 
     reset()
     box(1.4, 0.45, 0.55, 0, 0, 0.98, "horse")
@@ -354,7 +458,7 @@ def build_animals():
     box(0.06, 0.08, 0.8, 0.58, 0, 1.3, "dark").rotation_euler[1] = 0.6
     legs((-0.55, 0.52), (-0.15, 0.15), 0.98, 0.055, "horse")
     cyl(0.05, 0.7, -0.82, 0, 0.98, "dark", 5, ry=0.5)
-    bake_and_export("horse")
+    bake_and_export("horse", organic=True, ao=0.5)
 
 
 build_diaolou()
