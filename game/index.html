@@ -11,6 +11,9 @@
     --line:rgba(201,164,92,.25); --glass:rgba(16,20,32,.78);
     --fserif:"ZhPunct","Times New Roman","Songti SC","STSong","Noto Serif SC","SimSun",serif;
   }
+  /* 字体规范：中文文字与标点宋体，西文Times New Roman——ZhPunct 劫持 TNR 会抢走的弯引号/省略号/破折号/间隔号 */
+  @font-face{font-family:"ZhPunct";src:local("Songti SC"),local("STSong"),local("Noto Serif SC"),local("SimSun");
+    unicode-range:U+2018-201D,U+2026,U+00B7,U+3001,U+3002,U+FF0C,U+FF1A,U+FF1B,U+FF1F,U+FF01,U+FF08,U+FF09,U+2014,U+300A,U+300B;}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{height:100%;overflow:hidden;background:var(--bg)}
   body{font-family:var(--fserif);color:var(--ink)}
@@ -1329,6 +1332,22 @@ function loadGame(){ try{ const raw=localStorage.getItem('walkSaveV2'); if(!raw)
   if(d.p) pGroup.position.copy(new THREE.Vector3(d.p[0],d.p[1],d.p[2])).setLength(R);
   updHUD(); return d.g.some(v=>v) || d.n.some(v=>v); }catch(e){ return false; } }
 document.getElementById('btnNew').addEventListener('click',()=>{ try{localStorage.removeItem('walkSaveV2');}catch(e){} location.reload(); });
+/* 字体规范（canvas 版）：canvas 不支持 unicode-range 劫持，按字符切字体——CJK/全角/中文标点走宋体，西文走 TNR */
+function _isCjk(ch){ return /[\u2E80-\u9FFF\uF900-\uFAFF\uFF01-\uFF60\u3000-\u303F\u2018-\u201D\u2014\u2026\u00B7]/.test(ch); }
+function fillMixed(c, str, x, y, font){
+  const fT='"Times New Roman","Times",serif', fS='"Songti SC","STSong","Noto Serif SC","SimSun",serif';
+  const runs=[]; let cur='', curC=null;
+  for(const ch of str){ const cj=_isCjk(ch);
+    if(curC===null){ cur=ch; curC=cj; }
+    else if(cj===curC){ cur+=ch; }
+    else { runs.push([cur,curC]); cur=ch; curC=cj; } }
+  if(cur) runs.push([cur,curC]);
+  const prev=c.textAlign; c.textAlign='left';
+  const ws=runs.map(function(r){ c.font=font+' '+(r[1]?fS:fT); return c.measureText(r[0]).width; });
+  let cx=x-ws.reduce(function(a,b){return a+b;},0)/2;
+  runs.forEach(function(r,i){ c.font=font+' '+(r[1]?fS:fT); c.fillText(r[0],cx,y); cx+=ws[i]; });
+  c.textAlign=prev;
+}
 function makeCard(){
   const cv=document.createElement('canvas'); cv.width=900; cv.height=1200; const c=cv.getContext('2d');
   const g=c.createLinearGradient(0,0,0,1200);
@@ -1339,32 +1358,32 @@ function makeCard(){
   for(let i=0;i<110;i++){ c.fillStyle='rgba(214,222,238,'+(0.12+Math.random()*0.5)+')';
     c.fillRect(44+Math.random()*812, 52+Math.random()*420, 1.6, 1.6); }
   c.textAlign='center';
-  c.fillStyle='#e8cf96'; c.font='600 62px "Times New Roman","Songti SC","STSong",serif';
-  c.fillText('边 缘 行 走', 450, 205);
-  c.fillStyle='#8b8474'; c.font='21px "Times New Roman","Songti SC",serif';
-  c.fillText('《华夏边缘：历史记忆与族群认同》· 互动行走', 450, 252);
+  c.fillStyle='#e8cf96';
+  fillMixed(c, '边 缘 行 走', 450, 205, '600 62px');
+  c.fillStyle='#8b8474';
+  fillMixed(c, '《华夏边缘：历史记忆与族群认同》· 互动行走', 450, 252, '21px');
   c.strokeStyle='rgba(201,164,92,.5)'; c.lineWidth=1.5;
   c.beginPath(); c.moveTo(70,540); c.lineTo(388,540); c.stroke();
   c.beginPath(); c.moveTo(512,540); c.lineTo(830,540); c.stroke();
   c.beginPath(); c.arc(450,540,62,Math.PI*1.22,Math.PI*1.78); c.stroke();
   const ns=shards.filter(x=>x.userData.got).length, nn=NPCS.filter(x=>x.done).length;
   const mins=Math.max(1,Math.round((Date.now()-walkT0)/60000));
-  c.fillStyle='#e8dfc8'; c.font='34px "Times New Roman","Songti SC",serif';
-  c.fillText('记忆碎片 '+ns+' / 17 · 倾听讲述 '+nn+' / 5', 450, 640);
-  c.fillStyle='#8b8474'; c.font='19px "Times New Roman","Songti SC",serif';
-  c.fillText('行走 '+mins+' 分钟 · 足迹 '+steps+' 步'+(lit?' · 烽火已燃':''), 450, 688);
+  c.fillStyle='#e8dfc8';
+  fillMixed(c, '记忆碎片 '+ns+' / 17 · 倾听讲述 '+nn+' / 5', 450, 640, '34px');
+  c.fillStyle='#8b8474';
+  fillMixed(c, '行走 '+mins+' 分钟 · 足迹 '+steps+' 步'+(lit?' · 烽火已燃':''), 450, 688, '19px');
   const Q=[['边界不在墙上，在脚上。','The boundary is not on a wall — it walks with you.'],
            ['读懂边缘，才读懂“什么是中国人”。','To read the edge is to read what is Chinese.'],
            ['什么是中国人？这个问题没有终点。','Who counts as Chinese? The question has no end.']];
   const q=Q[Math.floor(Math.random()*Q.length)];
-  c.fillStyle='#c9a45c'; c.font='27px "Times New Roman","Songti SC",serif';
-  c.fillText(q[0], 450, 810);
+  c.fillStyle='#c9a45c';
+  fillMixed(c, q[0], 450, 810, '27px');
   c.fillStyle='#8b8474'; c.font='16px "Times New Roman",serif';
   c.fillText(q[1], 450, 848);
   c.fillStyle='#c9a45c'; c.font='17px "Times New Roman",serif';
   c.fillText('tanyaqiongcode.github.io/huaxia-frontiers-3d/game/', 450, 1108);
-  c.fillStyle='#8b8474'; c.font='13px "Times New Roman","Songti SC",serif';
-  c.fillText('WALKING THE EDGE · 华夏边缘 · 17 碎片 · 5 讲述 · 5 区域', 450, 1140);
+  c.fillStyle='#8b8474';
+  fillMixed(c, 'WALKING THE EDGE · 华夏边缘 · 17 碎片 · 5 讲述 · 5 区域', 450, 1140, '13px');
   const url=cv.toDataURL('image/png');
   const prev=document.getElementById('cardPrev');
   prev.innerHTML='<img src="'+url+'" alt="walk card" style="width:100%;max-width:420px;border-radius:10px;border:1px solid var(--line);display:block;margin:0 auto 10px">'
