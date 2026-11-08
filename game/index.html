@@ -225,6 +225,7 @@
 <script>const __DBG=(location.hostname==="127.0.0.1"||location.hostname==="localhost");window.addEventListener("error",e=>{if(__DBG)document.title="ERR:"+e.message+" @"+e.lineno;});</script>
 <script src="../assets/game-textures.js"></script>
 <script src="../assets/three.min.js"></script>
+<script src="../assets/GLTFLoader.js"></script>
 <script>
 /* ============ 边缘行走 · 小行星球面行走 ============ */
 /* WebGL 可用性预检：不可用则给出文字版出口并阻断主脚本 */
@@ -512,16 +513,41 @@ function mesh(g,m,a,t,h,ry,blk){ const o=new THREE.Mesh(g,m); o.position.copy(P(
   if(blk!==false) camBlockers.push(o);
   scene.add(o); return o; }
 /* 碉楼（八角收分石塔）×3 */
-[[-8,8,11],[2,12,8.5],[10,7,9.5]].forEach(([a,t,h])=>{
+const TOWERS=[[-8,8,11],[2,12,8.5],[10,7,9.5]], HOUSES=[[-15,14,0.4],[-3,16,-0.3],[8,15,0.9],[16,12,-0.8],[-20,9,1.6]];
+const _procTowers=[], _procHouses=[];
+TOWERS.forEach(([a,t,h])=>{
   const g=new THREE.CylinderGeometry(1.1,1.7,h,8,3); addCol(a,t,2.3);
-  const tw=mesh(g,matStone,a,t,h/2); tw.rotateZ(0); 
+  _procTowers.push(mesh(g,matStone,a,t,h/2));
 });
 /* 羌寨房屋 */
-[[-15,14],[-3,16],[8,15],[16,12],[-20,9]].forEach(([a,t])=>{
+HOUSES.forEach(([a,t])=>{
   addCol(a,t,2.1);
-  mesh(new THREE.BoxGeometry(2.6,1.8,2.2),matStone2,a,t,0.9);
-  mesh(new THREE.ConeGeometry(2.2,1.2,4),matRoof,a,t,2.4);
+  _procHouses.push(mesh(new THREE.BoxGeometry(2.6,1.8,2.2),matStone2,a,t,0.9));
+  _procHouses.push(mesh(new THREE.ConeGeometry(2.2,1.2,4),matRoof,a,t,2.4));
 });
+/* Blender 建模的碉楼与平顶石屋（blender/game_models.py 生成）：加载成功后替换上面的简模；失败则保留简模 */
+(function loadGameModels(){
+  if(!THREE.GLTFLoader) return;
+  const matDark=new THREE.MeshStandardMaterial({color:0x1c1a17,roughness:1});
+  const matWhite=new THREE.MeshStandardMaterial({color:0xeeeae0,roughness:.8,emissive:0x2a2822});
+  const MAP={stone:matStone, earth:matStone2, wood:matWood, dark:matDark, white:matWhite};
+  const loader=new THREE.GLTFLoader();
+  function place(src,a,t,scale,ry){
+    const o=src.clone(true); o.position.copy(P(a,t,-0.08));
+    o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),o.position.clone().normalize());
+    if(ry) o.rotateY(ry); o.scale.setScalar(scale);
+    o.traverse(m=>{ if(m.isMesh){ m.castShadow=true; m.receiveShadow=true; camBlockers.push(m); } });
+    scene.add(o); }
+  function retire(list){ list.forEach(m=>{ scene.remove(m); const i=camBlockers.indexOf(m); if(i>=0) camBlockers.splice(i,1); }); }
+  function prep(gltf){ const root=gltf.scene;
+    root.traverse(m=>{ if(m.isMesh){ const ms=Array.isArray(m.material)?m.material:[m.material];
+      const mapped=ms.map(x=>MAP[(x.name||'').split('.')[0]]||matStone); m.material=Array.isArray(m.material)?mapped:mapped[0]; } });
+    return root; }
+  loader.load('../assets/models/diaolou.glb', g=>{ const src=prep(g);
+    TOWERS.forEach(([a,t,h],i)=>place(src,a,t,h/10.45,i*0.7)); retire(_procTowers); }, undefined, ()=>{});
+  loader.load('../assets/models/qiang_house.glb', g=>{ const src=prep(g);
+    HOUSES.forEach(([a,t,ry])=>place(src,a,t,0.95,ry)); retire(_procHouses); }, undefined, ()=>{});
+})();
 /* 河湟遗址石圈 + 残墙 */
 [[-70,24],[-76,27],[-65,29],[-80,22]].forEach(([a,t])=>{ addCol(a,t,1.2);
   mesh(new THREE.BoxGeometry(1.6,0.9,0.7),matStone,a,t,0.45); });
