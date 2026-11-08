@@ -63,6 +63,10 @@
   .ftG a:hover{color:var(--gold-hi);border-color:var(--gold)}
   .ftT{font-size:11px;color:var(--dim);letter-spacing:.18em;margin-top:14px}
   #cardPrev img{width:100%;max-width:420px;border-radius:10px;border:1px solid var(--line);display:block;margin:0 auto 10px}
+.zoneTabs{position:fixed;bottom:58px;left:50%;transform:translateX(-50%);z-index:5;display:flex;gap:5px}
+  .zoneTabs a{font-size:10.5px;letter-spacing:.08em;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:5px 12px;cursor:pointer;background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));backdrop-filter:blur(8px);transition:.3s;text-decoration:none}
+  .zoneTabs a:hover{color:var(--gold-hi);border-color:var(--gold)}
+  .zoneTabs a.on{color:var(--gold-hi);border-color:var(--gold);background:rgba(201,164,92,.15)}
   #compass{position:fixed;left:50%;bottom:122px;transform:translateX(-50%);z-index:5;display:none;align-items:center;gap:9px;pointer-events:none;color:var(--gold-hi);font-size:11.5px;letter-spacing:.14em}
   #cA{display:inline-block;transition:transform .12s linear;font-size:13px}
 
@@ -131,6 +135,9 @@
 <div class="vignette"></div><div class="grain"></div>
 <div class="bar" id="barT"></div><div class="bar" id="barB"></div>
 <div id="compass"><span id="cA">▲</span><span id="cTxt"></span></div>
+<div class="zoneTabs" id="zoneTabs">
+  <a data-z="village" class="on">羌寨</a><a data-z="hehuang">河湟</a><a data-z="wall">长城</a><a data-z="modern">现代</a><a data-z="beichuan">北川</a>
+</div>
 <div class="mark" title="Huaxia Frontier"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="#c9a45c" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="#c9a45c"/></svg></div>
 <button class="langBtn" id="btnLang">EN</button>
 
@@ -404,7 +411,7 @@ const rainGeo=new THREE.BufferGeometry();
 const rainArr=new Float32Array(RAIN_N*3);
 for(let i=0;i<RAIN_N;i++){ rainArr[i*3]=(Math.random()-0.5)*36; rainArr[i*3+1]=Math.random()*22; rainArr[i*3+2]=(Math.random()-0.5)*36; }
 rainGeo.setAttribute('position', new THREE.Float32BufferAttribute(rainArr,3));
-const rainMat=new THREE.PointsMaterial({color:0x9db4d6,size:0.07,sizeAttenuation:true,transparent:true,opacity:0});
+const rainMat=new THREE.PointsMaterial({color:0xb8cce8,size:0.12,sizeAttenuation:true,transparent:true,opacity:0});
 const rainPts=new THREE.Points(rainGeo,rainMat); rainPts.visible=false; scene.add(rainPts);
 /* 鳄鱼眼 */
 const crocEyes=new THREE.Group();
@@ -509,7 +516,7 @@ const scorpG=new THREE.Group();
   sting.rotation.z=Math.PI/2.5; sting.position.set(-0.4,0.28,0); scorpG.add(sting);
   scorpG.traverse(x=>{ if(x.isMesh) x.castShadow=true; }); }
 scene.add(scorpG);
-scorpG.position.copy(P(-58,18,0));
+scorpG.position.copy(P(-55,16,0));
 /* 道具（雨伞/火把） */
 const matUmb=new THREE.MeshBasicMaterial({color:0x4a9e9e,transparent:true,opacity:.9});
 const matTor=new THREE.MeshBasicMaterial({color:0xcc7733,transparent:true,opacity:.9});
@@ -560,6 +567,9 @@ for(let i=0;i<8;i++){ const b=new THREE.Group();
 const dust=new THREE.Mesh(new THREE.RingGeometry(0.32,0.46,26),
   new THREE.MeshBasicMaterial({color:0xcfc9b4,transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false}));
 scene.add(dust);
+/* 倒木（跳跃障碍） */
+addCol(-25,12,1.0); colliders[colliders.length-1].h=0.7;
+mesh(new THREE.CylinderGeometry(0.28,0.32,3.2,7),matWood,-25,12,0.3,1.2);
 /* 松树 */
 [[-30,6],[24,16],[-26,18],[30,8],[-58,16],[52,20],[-40,30],[40,26],[-88,20],[98,26]].forEach(([a,t])=>{
   addCol(a,t,0.8);
@@ -597,10 +607,16 @@ const TOASTS=[
  {zh:'北川的案例：灾后重建让“羌”成为一座县城的公共身份。',en:"Beichuan: after the quake, being Qiang became a whole county’s public project."},
  {zh:'称呼会移动：“羌”从殷商的牧羊人，一路变成今日的自称。',en:'Names on the move: “Qiang” has travelled from Shang-dynasty herders to a self-chosen name today.'}];
 
-const SHARD_POS=[[-5,7],[5,9],[-12,11],[-68,25],[-78,28],[-62,31],[66,30],[78,32],[90,33],[-30,16],[-50,22],[30,12],[-131,22],[-138,26],[-133,28],[-101,12],[-108,15]];
+const SHARD_POS=[
+ [-5,7,0],[5,9,0],[-12,11,0],
+ [-68,25,0],[-78,28,2.3],[-62,31,0],
+ [66,30,2.4],[78,32,0],[90,33,0],
+ [-30,16,0],[-50,22,0],[30,12,0],
+ [-131,22,0],[-138,26,0],[-133,28,0],
+ [-101,12,0],[-108,15,1.8]];
 const shards=[]; const matShard=new THREE.MeshBasicMaterial({color:0xffd98a,transparent:true,opacity:.92});
 SHARD_POS.forEach(([a,t],i)=>{ const m=new THREE.Mesh(new THREE.OctahedronGeometry(0.42),matShard.clone());
-  m.position.copy(P(a,t,1.1)); m.userData={a,t,got:false,ph:i}; scene.add(m); shards.push(m); });
+  const sh=SHARD_POS[i][2]||0; m.position.copy(P(a,t,sh+0.5)); m.userData={a,t,got:false,ph:i,h:sh}; scene.add(m); shards.push(m); });
 
 let lineMesh=null, prog=0;
 function aLine(tDeg){ const base=36+16*prog; return base + 5*Math.sin(tDeg*0.09+0.5); }
@@ -727,7 +743,7 @@ const keys={};
 addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
   if(p2 && k.startsWith('arrow')) P2KEY[k]=true;
   if(k==='e'){ tryTalk(); tryBeacon(); }
-  if(k===' ' && jumpOff<=0 && vy===0){ vy=7.4; }
+  if(k===' ' && jumpOff<=0 && vy===0){ vy=9.8; playJumpSfx(); }
   if(k==='enter' && p2) tryTalkP2();
   if(k==='g') toggleP2();
   if(k==='v') toggleVoice();
@@ -819,12 +835,11 @@ const Z={
  modern:{n:{zh:'现代羌寨 · 国道边上',en:'Modern village · by the highway'},s:{zh:'认同在表格与课堂里，被重新讲述。',en:'Identity, retold in registers and classrooms.'}},
  beichuan:{n:{zh:'北川 · 尔玛人家',en:'Beichuan · the Rma home'},s:{zh:'认同是可以重新学习的。',en:'Identity can be learned anew.'}}};
 const clock=new THREE.Clock();
-let camPos=new THREE.Vector3(), lastZone='';
+  /* 移动输入 */
 function loop(){
   requestAnimationFrame(loop);
   const dt=Math.min(0.05,clock.getDelta()), now=clock.elapsedTime;
   pollPad();
-  /* 移动输入 */
   let mx=((keys['d']?1:0)-(keys['a']?1:0)) + ((!p2&&keys['arrowright'])?1:0) - ((!p2&&keys['arrowleft'])?1:0) + joy.x;
   let mf=((keys['w']?1:0)-(keys['s']?1:0)) + ((!p2&&keys['arrowup'])?1:0) - ((!p2&&keys['arrowdown'])?1:0) + joy.f;
   mf=Math.max(-1,Math.min(1,mf)); mx=Math.max(-1,Math.min(1,mx));
@@ -833,8 +848,10 @@ function loop(){
   camS.dir.addScaledVector(up,-camS.dir.dot(up)); if(camS.dir.lengthSq()<1e-6) camS.dir.set(0,0,-1); camS.dir.normalize();
   const right=new THREE.Vector3().crossVectors(camS.dir,up).normalize();
   const mv=camS.dir.clone().multiplyScalar(mf).addScaledVector(right,mx);
-  /* 跳跃物理（每帧·独立于移动） */
-  if(jumpOff>0||vy!==0){ jumpOff+=vy*dt; vy-=21*dt;
+  /* 跳跃物理（马里奥式可变高度） */
+  if(jumpOff>0||vy!==0){
+    const grav = vy>0 ? (keys[' ']?15:26) : 28;
+    jumpOff += vy*dt; vy -= grav*dt;
     if(jumpOff<=0){ jumpOff=0; vy=0; playStep(); dustT=0; } }
   if(mv.lengthSq()>0.001){
     mv.normalize();
@@ -844,9 +861,9 @@ function loop(){
     /* 世界边界 */
     const tDeg=Math.acos(Math.max(-1,Math.min(1,pP.y/Math.max(1,pP.length()))))/D2R;
     if(tDeg<3||tDeg>58){ pP.copy(old); setOnGround(pP); }
-    /* 碰撞 */
+    /* 碰撞（跳跃可跨越低障碍） */
     colliders.forEach(c=>{ const cP=P(c.a,c.t,0); const d=planarDist(pP,cP);
-      if(d<c.r+0.5){ const push=pP.clone().sub(cP); push.addScaledVector(up,-push.dot(up));
+      if(d<c.r+0.5 && jumpOff<(c.h||99)){ const push=pP.clone().sub(cP); push.addScaledVector(up,-push.dot(up));
         if(push.lengthSq()<1e-6) push.set(0,1,0); push.normalize();
         pP.addScaledVector(push,(c.r+0.5-d)); setOnGround(pP); } });
     /* 朝向 */
@@ -932,8 +949,10 @@ function loop(){
   camera.up.copy(upF); camera.lookAt(focus.clone().addScaledVector(upF,1.3));
   /* 碎片 */
   shards.forEach(s=>{ if(s.userData.got) return;
-    s.rotation.y+=dt*1.4; s.position.copy(P(s.userData.a,s.userData.t,1.1+Math.sin(now*1.8+s.userData.ph)*0.18));
-    const nearP = planarDist(pP,s.position)<1.6 || (p2 && planarDist(p2.grp.position,s.position)<1.6);
+    s.rotation.y+=dt*1.4; s.position.copy(P(s.userData.a,s.userData.t,(s.userData.h||0)+0.5+Math.sin(now*1.8+s.userData.ph)*0.18));
+    const d3P = pP.distanceTo(s.position) < 1.9;
+    const d3P2 = p2 && p2.grp.position.distanceTo(s.position) < 1.9;
+    const nearP = d3P || d3P2;
     if(nearP){ s.userData.got=true; s.visible=false;
       toast(tx('shardPre')+TOASTS[shards.indexOf(s)][T.lang]+' —— '+PART_N[PART_IX[shards.indexOf(s)]][T.lang]); playCollect(); updHUD(); } });
   /* NPC */
@@ -1000,6 +1019,10 @@ function loop(){
     pGroup.position.addScaledVector(push,dt*8); }
   crocEyes.position.y=R+elev(-20,11)+0.03+Math.sin(now*0.7)*0.04;
   crocEyes.rotation.y=Math.atan2(camera.position.z-crocEyes.position.z,camera.position.x-crocEyes.position.x);
+    /* 区域标签高亮+单元跳转 */
+  if(lastZone){ const zMap={'羌寨 · 岷江上游':'village','Valley · upper Min River':'village','河湟遗址 · 四千年前':'hehuang','Hehuang sites · 4000 BP':'hehuang','长城边缘 · 资源界线':'wall','Wall margin · the resource line':'wall','现代羌寨 · 国道边上':'modern','Modern village · by the highway':'modern','北川 · 尔玛人家':'beichuan','Beichuan · the Rma home':'beichuan'};
+    const zid=zMap[lastZone];
+    document.querySelectorAll('#zoneTabs a').forEach(a=>a.classList.toggle('on',a.dataset.z===zid)); }
     /* 罗盘指引 */
   { let cS=null,cD=1e9;
     shards.forEach(sh=>{ if(sh.userData.got) return; const d=planarDist(pGroup.position,sh.position); if(d<cD){cD=d;cS=sh;} });
@@ -1035,8 +1058,8 @@ function loop(){
     if(rainMat.opacity<=0){ rainPts.visible=false; scene.fog.density=Math.max(0.0088,scene.fog.density-dt*0.003); } }
   /* 天气触发 */
   weatherT-=dt;
-  if(weatherT<=0){ weatherT=55+Math.random()*45;
-    if(weather==='clear'&&fract(now*0.003)>0.3){ weather='rain'; weatherT=16+Math.random()*10;
+  if(weatherT<=0){ weatherT=weather==='clear'?(fract(now*0.001)>0.5?18:45):40;
+    if(weather==='clear'&&fract(now*0.003)>0.15){ weather='rain'; weatherT=18+Math.random()*12;
       toast(hasUmb?tx('wUmb'):tx('wNoUmb')); }
     else if(weather==='rain'){ weather='clear'; } }
   /* 烽火燃动 */
@@ -1094,6 +1117,11 @@ function tone(freq,t0,dur,vol){ if(!actx||muted) return;
   g.gain.exponentialRampToValueAtTime(0.0001,t0+dur); o.connect(g); g.connect(master); o.start(t0); o.stop(t0+dur+0.05); }
 function playCollect(){ if(!actx||muted) return; const t0=actx.currentTime;
   tone(660,t0,0.35,0.10); tone(990,t0+0.09,0.5,0.08); }
+function playJumpSfx(){ if(!actx||muted) return; const t0=actx.currentTime;
+  const o=actx.createOscillator(); o.type='sine';
+  o.frequency.setValueAtTime(330,t0); o.frequency.exponentialRampToValueAtTime(660,t0+0.12);
+  const g=actx.createGain(); g.gain.setValueAtTime(0.07,t0); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.18);
+  o.connect(g); g.connect(master); o.start(t0); o.stop(t0+0.2); }
 function playHear(){ if(!actx||muted) return; const t0=actx.currentTime;
   tone(523,t0,0.4,0.07); tone(784,t0+0.12,0.6,0.06); }
 function playEnd(){ if(!actx||muted) return; const t0=actx.currentTime;
