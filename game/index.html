@@ -250,8 +250,8 @@ const T={lang: localStorage.getItem('walkLang')||'zh', dict:{
  hudCnt:{zh:'记忆碎片 <b id="cShard">0</b>/17<br>倾听讲述 <b id="cNpc">0</b>/5',en:'Memory shards <b id="cShard">0</b>/17<br>Tellings heard <b id="cNpc">0</b>/5'},
  posHud:{zh:'你现在：<b id="posTxt">边缘之上</b>',en:'You are: <b id="posTxt">on the edge</b>'},
  posIn:{zh:'华夏之内',en:'within Huaxia'}, posEdge:{zh:'边缘之上',en:'on the edge'}, posOut:{zh:'华夏之外',en:'beyond the edge'},
- hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · <kbd>空格</kbd> 跳跃 · <kbd>⇧</kbd> 疾行 · <kbd>C/X</kbd> 翻滚 · <kbd>B/N</kbd> 劈叉<br><kbd>E</kbd> 对话 · <kbd>G</kbd> 同行 · <kbd>V</kbd> 配音 · <kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务',
-  en:'<kbd>W A S D</kbd> move · <kbd>⇧</kbd> hurry · drag orbit · <kbd>E</kbd> talk<br><kbd>G</kbd> companion · <kbd>V</kbd> voice · <kbd>T</kbd> day · <kbd>M</kbd> sound · <kbd>J</kbd> tasks'},
+ hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · <kbd>空格</kbd> 跳跃 · <kbd>⇧</kbd> 疾行 · <kbd>C/X</kbd> 翻滚 · <kbd>B/N</kbd> 劈叉180°<br><kbd>F</kbd> 马步冲拳 · <kbd>R</kbd> 旋风脚360° · <kbd>E</kbd> 对话 · <kbd>G</kbd> 同行 · <kbd>V</kbd> 配音 · <kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务',
+  en:'<kbd>W A S D</kbd> move · <kbd>Space</kbd> jump · <kbd>⇧</kbd> hurry · <kbd>C/X</kbd> roll · <kbd>B/N</kbd> splits 180°<br><kbd>F</kbd> horse-stance punches · <kbd>R</kbd> tornado kick · <kbd>E</kbd> talk · <kbd>G</kbd> companion · <kbd>V</kbd> voice · <kbd>T</kbd> day · <kbd>M</kbd> sound · <kbd>J</kbd> tasks'},
  tasksT:{zh:'行走任务',en:'Walking tasks'},
  tShardTpl:{zh:'拾取 17 枚记忆碎片（{n}/17）',en:'Collect 17 memory shards ({n}/17)'},
  tNpc1:{zh:'倾听 寨老阿爷 的讲述',en:'Hear the village elder'},
@@ -779,7 +779,7 @@ let hasUmb=false, hasTorch=false;
 let beastState='patrol', beastA=88, beastT=35;
 
 let stepT=0.2, padYaw=0, padPitch=0, padB0=false, padB2=false, plGain=null, dustT=1, steps=0, walkT0=0;
-let rollT=-1, rollDir=0, splitT=-1, splitType=0;
+let rollT=-1, rollDir=0, splitT=-1, splitType=0, punchT=-1, spinT=-1, spinYaw0=0;
 const bursts=[];
 /* ---- 输入 ---- */
 const keys={};
@@ -790,8 +790,11 @@ addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
   if(k==='enter' && p2) tryTalkP2();
   if(k==='g') toggleP2();
   if(k==='v') toggleVoice();
-  if((k==='c'||k==='x')&&rollT<0){ rollT=0; rollDir=(k==='c')?1:-1; playRollSfx(k==='x'); }
-  if((k==='b'||k==='n')&&splitT<0){ splitT=0; splitType=(k==='b')?1:2; playSplitSfx(); }
+  const busy=rollT>=0||splitT>=0||punchT>=0||spinT>=0;
+  if((k==='c'||k==='x')&&!busy){ rollT=0; rollDir=(k==='c')?1:-1; playRollSfx(k==='x'); }
+  if((k==='b'||k==='n')&&!busy){ splitT=0; splitType=(k==='b')?1:2; playSplitSfx(); }
+  if(k==='f'&&!busy){ punchT=0; playPunchCombo(); }
+  if(k==='r'&&!busy){ spinYaw0=figP.yawG.rotation.y; spinT=0; playTornadoSfx(); }
   if(k==='t'){ themeIx=(themeIx+1)%THEMES.length; applyTheme(); }
   if(k==='m') toggleSound();
   if(k==='j') document.getElementById('tasks').classList.toggle('show');
@@ -946,13 +949,52 @@ function loop(){
       setOnGround(pGroup.position);
     }
   }
-  if(splitT>=0){ splitT+=dt*0.5;
+  /* 劈叉（北京舞蹈学院级：每腿90°·总展开180°·沉髋贴地） */
+  if(splitT>=0){ splitT+=dt*0.55;
     if(splitT>=1){ splitT=-1; figP.legL.rotation.z=0; figP.legR.rotation.z=0;
-      figP.legL.rotation.x=0; figP.legR.rotation.x=0; }
+      figP.legL.rotation.x=0; figP.legR.rotation.x=0;
+      figP.armL.rotation.z=0; figP.armR.rotation.z=0; figP.yawG.position.y=0; }
     else {
-      const sp=Math.sin(splitT*Math.PI)*0.65;
-      if(splitType===1){ figP.legL.rotation.z=sp; figP.legR.rotation.z=-sp; }
-      else { figP.legL.rotation.x=-sp*1.2; figP.legR.rotation.x=sp*1.2; }
+      const k=Math.sin(splitT*Math.PI);
+      const sink=Math.max(0,(k-0.3)/0.7);
+      figP.yawG.position.y=-0.34*sink;
+      const FULL=Math.PI/2;
+      if(splitType===1){ figP.legL.rotation.z=FULL*k; figP.legR.rotation.z=-FULL*k; }
+      else { figP.legL.rotation.x=-FULL*k; figP.legR.rotation.x=FULL*k; }
+      figP.armL.rotation.z=0.55*k; figP.armR.rotation.z=-0.55*k;
+    }
+  }
+  /* 少林马步三连冲拳（F） */
+  if(punchT>=0){ punchT+=dt; const DUR=1.9;
+    if(punchT>=DUR){ punchT=-1; figP.armL.rotation.x=0; figP.armR.rotation.x=0;
+      figP.legL.rotation.z=0; figP.legR.rotation.z=0; figP.yawG.position.y=0;
+      figP.body.rotation.z=0; }
+    else {
+      const stance=punchT<0.25?punchT/0.25:(punchT>DUR-0.4?(DUR-punchT)/0.4:1);
+      figP.legL.rotation.z=0.55*stance; figP.legR.rotation.z=-0.55*stance;
+      figP.yawG.position.y=-0.16*stance;
+      const pk=[0.45,0.87,1.29]; let ext=0, rArm=true, lean=0;
+      for(let pi=0;pi<3;pi++){ const pt=punchT-pk[pi];
+        if(pt>=0&&pt<0.2){ ext=Math.sin(pt/0.2*Math.PI); rArm=(pi%2===0); lean=0.12*ext; } }
+      figP.body.rotation.z=lean;
+      if(rArm){ figP.armR.rotation.x=-1.57*ext; figP.armL.rotation.x=-0.3*ext; }
+      else { figP.armL.rotation.x=-1.57*ext; figP.armR.rotation.x=-0.3*ext; }
+    }
+  }
+  /* 旋风脚（R：腾空360°转身+横扫踢） */
+  if(spinT>=0){ spinT+=dt; const DUR=1.05;
+    if(spinT>=DUR){ spinT=-1; figP.yawG.rotation.y=spinYaw0;
+      figP.legR.rotation.x=0; figP.legL.rotation.x=0;
+      figP.armL.rotation.x=0; figP.armR.rotation.x=0; figP.yawG.position.y=0; dustT=0; }
+    else {
+      const k2=spinT/DUR;
+      const ease=k2<0.5?2*k2*k2:1-Math.pow(-2*k2+2,2)/2;
+      figP.yawG.rotation.y=spinYaw0+ease*Math.PI*2;
+      const jk=spinT<0.15?spinT/0.15:(spinT>0.85?(1-spinT)/0.15:1);
+      figP.yawG.position.y=Math.sin(jk*Math.PI)*0.55;
+      const sw=Math.sin(jk*Math.PI);
+      figP.legR.rotation.x=-1.9*sw; figP.legL.rotation.x=0.3*sw;
+      figP.armL.rotation.x=-1.2*jk; figP.armR.rotation.x=-0.4*jk;
     }
   }
   setOnGround(pP);
@@ -1230,6 +1272,21 @@ function playSplitSfx(){ if(!actx||muted||!window.__stepBuf) return; const t0=ac
   const g=actx.createGain(); g.gain.setValueAtTime(0.0001,t0);
   g.gain.linearRampToValueAtTime(0.09,t0+0.12); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.7);
   src.connect(f); f.connect(g); g.connect(master); src.start(t0); src.stop(t0+0.75); }
+function playPunchCombo(){ if(!actx||muted||!window.__stepBuf) return; const t0=actx.currentTime;
+  [0.45,0.87,1.29].forEach(dl=>{ const ts=t0+dl;
+    const src=actx.createBufferSource(); src.buffer=window.__stepBuf; src.playbackRate.value=1.8;
+    const f=actx.createBiquadFilter(); f.type='bandpass'; f.Q.value=1.4;
+    f.frequency.setValueAtTime(1300,ts); f.frequency.exponentialRampToValueAtTime(340,ts+0.09);
+    const g=actx.createGain(); g.gain.setValueAtTime(0.0001,ts);
+    g.gain.exponentialRampToValueAtTime(0.15,ts+0.015); g.gain.exponentialRampToValueAtTime(0.0001,ts+0.11);
+    src.connect(f); f.connect(g); g.connect(master); src.start(ts); src.stop(ts+0.13); }); }
+function playTornadoSfx(){ if(!actx||muted||!window.__stepBuf) return; const t0=actx.currentTime;
+  const src=actx.createBufferSource(); src.buffer=window.__stepBuf; src.playbackRate.value=1.2;
+  const f=actx.createBiquadFilter(); f.type='bandpass'; f.Q.value=2.2;
+  f.frequency.setValueAtTime(320,t0); f.frequency.exponentialRampToValueAtTime(1700,t0+0.55);
+  const g=actx.createGain(); g.gain.setValueAtTime(0.0001,t0);
+  g.gain.exponentialRampToValueAtTime(0.13,t0+0.3); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.62);
+  src.connect(f); f.connect(g); g.connect(master); src.start(t0); src.stop(t0+0.65); }
 function playHear(){ if(!actx||muted) return; const t0=actx.currentTime;
   tone(523,t0,0.4,0.07); tone(784,t0+0.12,0.6,0.06); }
 function playEnd(){ if(!actx||muted) return; const t0=actx.currentTime;
