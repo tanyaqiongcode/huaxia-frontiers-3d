@@ -794,7 +794,8 @@ addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
   if(k==='g') toggleP2();
   if(k==='v') toggleVoice();
   const busy=rollT>=0||splitT>=0||punchT>=0||spinT>=0;
-  if((k==='c'||k==='x')&&!busy){ rollT=0; rollDir=(k==='c')?1:-1; playRollSfx(k==='x'); }
+  if((k==='c'||k==='x')&&!busy){ rollT=0; rollDir=(k==='c')?1:-1; playRollSfx(k==='x');
+    figP.yawG.rotation.y=Math.atan2(camS.dir.x,camS.dir.z); }
   if((k==='b'||k==='n')&&!busy){ splitT=0; splitType=(k==='b')?1:2; playSplitSfx(); }
   if(k==='f'&&!busy){ punchT=0; playPunchCombo(); }
   if(k==='r'&&!busy){ spinYaw0=figP.yawG.rotation.y; spinT=0; playTornadoSfx(); }
@@ -940,15 +941,22 @@ function loop(){
   } else { isMoveGlobal=false; stepT=0.15; }
   /* 技能动画（前滚翻C·后滚翻X·横叉B·竖叉N） */
   if(rollT>=0){ rollT+=dt*2;
-    if(rollT>=1){ rollT=-1; figP.body.rotation.x=0; figP.body.position.y=0;
+    if(rollT>=1){ rollT=-1; figP.yawG.rotation.x=0; figP.yawG.position.set(0,0,0);
+      figP.body.rotation.x=0; figP.body.position.y=0;
       figP.legL.rotation.x=0; figP.legR.rotation.x=0; figP.armL.rotation.x=0; figP.armR.rotation.x=0; }
     else {
-      figP.body.rotation.x=rollT*Math.PI*2*rollDir;
-      figP.body.position.y=0.3+Math.sin(rollT*Math.PI)*0.25;
-      figP.legL.rotation.x=-1.6; figP.legR.rotation.x=-1.6;
-      figP.armL.rotation.x=-2.4; figP.armR.rotation.x=-2.4;
-      const fd=camS.dir.clone(); fd.y=0; fd.normalize();
-      pGroup.position.addScaledVector(fd,dt*4*rollDir);
+      /* 整体翻滚：yawG绕质心转体（YXZ序=先朝向后侧翻），全身含背包一体 */
+      figP.yawG.rotation.order='YXZ';
+      const ang=rollT*Math.PI*2*rollDir, HC=0.86, yw=figP.yawG.rotation.y;
+      const sn=-HC*Math.sin(ang);
+      figP.yawG.rotation.x=ang;
+      figP.yawG.position.y=HC*(1-Math.cos(ang));
+      figP.yawG.position.x=sn*Math.sin(yw); figP.yawG.position.z=sn*Math.cos(yw);
+      figP.body.rotation.x=0; figP.body.position.y=0;
+      figP.legL.rotation.x=-1.7; figP.legR.rotation.x=-1.7;
+      figP.armL.rotation.x=-2.5; figP.armR.rotation.x=-2.5;
+      const fd=new THREE.Vector3(Math.sin(yw),0,Math.cos(yw));
+      pGroup.position.addScaledVector(fd,dt*4.5*rollDir);
       setOnGround(pGroup.position);
     }
   }
@@ -956,7 +964,7 @@ function loop(){
   if(splitT>=0){ splitT+=dt*0.55;
     if(splitT>=1){ splitT=-1; figP.legL.rotation.z=0; figP.legR.rotation.z=0;
       figP.legL.rotation.x=0; figP.legR.rotation.x=0;
-      figP.armL.rotation.z=0; figP.armR.rotation.z=0; figP.yawG.position.y=0; }
+      figP.armL.rotation.z=0; figP.armR.rotation.z=0; figP.yawG.position.set(0,0,0); }
     else {
       const k=Math.sin(splitT*Math.PI);
       const sink=Math.max(0,(k-0.3)/0.7);
@@ -970,7 +978,7 @@ function loop(){
   /* 少林马步三连冲拳（F） */
   if(punchT>=0){ punchT+=dt; const DUR=1.9;
     if(punchT>=DUR){ punchT=-1; figP.armL.rotation.x=0; figP.armR.rotation.x=0;
-      figP.legL.rotation.z=0; figP.legR.rotation.z=0; figP.yawG.position.y=0;
+      figP.legL.rotation.z=0; figP.legR.rotation.z=0; figP.yawG.position.set(0,0,0);
       figP.body.rotation.z=0; }
     else {
       const stance=punchT<0.25?punchT/0.25:(punchT>DUR-0.4?(DUR-punchT)/0.4:1);
@@ -988,7 +996,7 @@ function loop(){
   if(spinT>=0){ spinT+=dt; const DUR=1.05;
     if(spinT>=DUR){ spinT=-1; figP.yawG.rotation.y=spinYaw0;
       figP.legR.rotation.x=0; figP.legL.rotation.x=0;
-      figP.armL.rotation.x=0; figP.armR.rotation.x=0; figP.yawG.position.y=0; dustT=0; }
+      figP.armL.rotation.x=0; figP.armR.rotation.x=0; figP.yawG.position.set(0,0,0); dustT=0; }
     else {
       const k2=spinT/DUR;
       const ease=k2<0.5?2*k2*k2:1-Math.pow(-2*k2+2,2)/2;
