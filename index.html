@@ -335,9 +335,11 @@
   html.no3d .reveal{opacity:1!important;transform:none!important}
   html.no3d canvas,html.no3d #veilChip,html.no3d .apanel,html.no3d .vOuter{display:none!important}
   html.no3d #hero{min-height:92vh}
-  html.no3d #hero::after{content:'';position:absolute;left:50%;bottom:-2%;width:min(40vw,300px);aspect-ratio:1;
+  html.no3d #hero::after{content:'';position:absolute;left:50%;bottom:-8%;width:min(40vw,300px);aspect-ratio:1;
     transform:translateX(-50%);pointer-events:none;opacity:.55;
     background:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Ccircle cx='24' cy='24' r='19' stroke='%23c9a45c' stroke-width='1.2' stroke-dasharray='103 17' stroke-linecap='round' transform='rotate(-58 24 24)' opacity='.8'/%3E%3Ccircle cx='40.5' cy='9.5' r='2.2' fill='%23c9a45c'/%3E%3C/svg%3E")}
+  /* ≥1100px 内容轴因书封避让左移143px（padding-right:310/padding-left:24），环心随之对齐书名 */
+  @media(min-width:1100px){html.no3d #hero::after{left:calc(50% - 143px)}}
 </style>
 </head>
 <body>
