@@ -49,3 +49,8 @@ blender --background --factory-startup --python build_scene.py
 
 ## Credits
 Planet textures: [Solar System Scope](https://www.solarsystemscope.com/textures/) (CC BY 4.0) · Earth & Moon imagery: NASA (via three.js examples) · Built on [three.js](https://threejs.org) (MIT) · Infographics & SVG figures: the editorial team.
+
+## Credits
+
+- 材质纹理：[Poly Haven](https://polyhaven.com)（CC0）——forrest_ground_01 / rock_wall / brown_mud_dry / weathered_planks（512px 漫反射，assets/game-textures.js）
+- three.js r128（MIT）· 行星贴图 NASA / Solar System Scope（CC BY 4.0）
