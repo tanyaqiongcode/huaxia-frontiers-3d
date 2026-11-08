@@ -1008,7 +1008,7 @@ function loop(){
       if(it.userData.type==='umb'){ hasUmb=true; $('inv').innerHTML+='<span data-i18n="invUmb">'+tx('invUmb')+'</span>'; }
       if(it.userData.type==='torch'){ hasTorch=true; $('inv').innerHTML+='<span data-i18n="invTorch">'+tx('invTorch')+'</span>'; }
       playCollect(); } });
-  document.querySelectorAll('#ftG a').forEach(a=>{ a.onclick=()=>{
+  document.querySelectorAll('#zoneTabs a').forEach(a=>{ a.onclick=()=>{
     const zz={'village':[0,10],'hehuang':[-72,26],'wall':[75,30],'modern':[-135,24],'beichuan':[-105,13]};
     const z=zz[a.dataset.z]; if(!z) return;
     pGroup.position.copy(P(z[0],z[1],0)); if(p2) p2.grp.position.copy(P(z[0]+2,z[1]+2,0));
@@ -1024,6 +1024,12 @@ function loop(){
   if(lastZone){ const zMap={'羌寨 · 岷江上游':'village','Valley · upper Min River':'village','河湟遗址 · 四千年前':'hehuang','Hehuang sites · 4000 BP':'hehuang','长城边缘 · 资源界线':'wall','Wall margin · the resource line':'wall','现代羌寨 · 国道边上':'modern','Modern village · by the highway':'modern','北川 · 尔玛人家':'beichuan','Beichuan · the Rma home':'beichuan'};
     const zid=zMap[lastZone];
     document.querySelectorAll('#zoneTabs a').forEach(a=>a.classList.toggle('on',a.dataset.z===zid)); }
+    document.getElementById('zoneTabs').addEventListener('click',e=>{
+    const a=e.target.closest('a'); if(!a) return;
+    const zz={'village':[0,10],'hehuang':[-72,26],'wall':[75,30],'modern':[-135,24],'beichuan':[-105,13]};
+    const z=zz[a.dataset.z]; if(!z) return;
+    pGroup.position.copy(P(z[0],z[1],0)); if(p2) p2.grp.position.copy(P(z[0]+2,z[1]+2,0));
+    document.querySelectorAll('#zoneTabs a').forEach(x=>x.classList.toggle('on',x===a)); });
     /* 罗盘指引 */
   { let cS=null,cD=1e9;
     shards.forEach(sh=>{ if(sh.userData.got) return; const d=planarDist(pGroup.position,sh.position); if(d<cD){cD=d;cS=sh;} });
