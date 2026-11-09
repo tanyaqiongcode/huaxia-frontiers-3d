@@ -44,7 +44,7 @@
   .sceneCard i{display:block;font-style:normal;font-size:11.5px;color:var(--dim);letter-spacing:.1em;margin-top:6px;line-height:1.7}
 
   /* 右上进度 */
-  .hudR{position:fixed;top:18px;right:158px;z-index:5;display:flex;align-items:center;gap:14px;pointer-events:none;
+  .hudR{position:fixed;top:18px;right:244px;z-index:5;display:flex;align-items:center;gap:14px;pointer-events:none;
     background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));border:1px solid var(--line);border-radius:12px;padding:10px 16px;backdrop-filter:blur(8px)}
   .ring{width:44px;height:44px;position:relative}
   .ring svg{transform:rotate(-90deg)}
@@ -62,7 +62,7 @@
   /* 右下提示 */
   .hint{position:fixed;right:18px;bottom:18px;z-index:5;font-size:11px;color:var(--dim);letter-spacing:.12em;text-align:right;line-height:1.9;pointer-events:none}
   .hint kbd{border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:10px;font-family:var(--fserif)}
-  .langBtn{position:fixed;top:20px;right:76px;z-index:5;border:1px solid var(--line);border-radius:99px;background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));color:var(--dim);padding:8px 16px;font-size:12px;letter-spacing:.16em;cursor:pointer;font-family:var(--fserif);backdrop-filter:blur(8px)}
+  .langBtn{position:fixed;top:20px;right:70px;z-index:5;border:1px solid var(--line);border-radius:99px;background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));color:var(--dim);padding:8px 16px;font-size:12px;letter-spacing:.16em;cursor:pointer;font-family:var(--fserif);backdrop-filter:blur(8px)}
   .langBtn:hover{color:var(--gold-hi);border-color:var(--gold)}
   .bar{position:fixed;left:0;right:0;height:0;background:#04060a;z-index:8;transition:height .9s cubic-bezier(.4,0,.2,1)}
   #barT{top:0}#barB{bottom:0} body.cine .bar{height:11vh}
@@ -127,14 +127,15 @@
     background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.8));border:1px solid var(--line);border-radius:12px;padding:12px 16px;backdrop-filter:blur(8px)}
   .keysPanel.show{display:block}
   .keysPanel kbd{border:1px solid var(--line);border-radius:4px;padding:0 6px;font-size:10.5px;font-family:var(--fserif);color:var(--gold-hi)}
-  .lockTip{position:fixed;left:50%;top:128px;transform:translateX(-50%);z-index:5;pointer-events:none;font-size:11.5px;letter-spacing:.12em;
-    color:var(--dim);display:none;background:rgba(8,10,18,.45);border-radius:99px;padding:4px 14px}
+  .lockTip{position:fixed;left:18px;top:90px;z-index:5;pointer-events:none;font-size:12px;letter-spacing:.1em;
+    color:var(--gold-hi);display:none;background:rgba(8,10,18,.62);border:1px solid var(--line);border-radius:99px;padding:5px 16px}
+  .lockTip kbd{border:1px solid var(--gold);border-radius:4px;padding:0 6px;margin:0 3px;font-size:11px;font-family:var(--fserif)}
   .lockTip.show{display:block}
 
   /* toast */
-  .toast{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:7;pointer-events:none;
+  .toast{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:7;pointer-events:none;line-height:1.8;width:max-content;
     background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.7));border:1px solid var(--line);border-radius:99px;
-    padding:9px 22px;font-size:12.5px;letter-spacing:.08em;color:var(--ink);opacity:0;transition:opacity .4s;max-width:88vw;text-align:center}
+    padding:9px 22px;font-size:12.5px;letter-spacing:.08em;color:var(--ink);opacity:0;transition:opacity .4s;max-width:min(620px,calc(100vw - 480px));text-align:center}
   .toast.show{opacity:1}
 
   /* 任务清单 */
@@ -176,7 +177,7 @@
   .veil .go:hover{background:var(--gold);color:#100c04}
   #end{display:none}
   #end .card p{text-align:center}
-  .xlinks{position:fixed;top:20px;right:64px;z-index:6;display:flex;gap:6px}
+  .xlinks{position:fixed;top:20px;right:132px;z-index:6;display:flex;gap:6px}
   .xlinks a{font-size:10px;letter-spacing:.1em;color:var(--dim);text-decoration:none;border:1px solid var(--line);
     border-radius:99px;padding:4px 9px;background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.6));backdrop-filter:blur(8px);transition:.3s}
   .xlinks a:hover{color:var(--gold-hi);border-color:var(--gold)}
@@ -196,6 +197,7 @@
     .inv{bottom:96px}
     .posHUD{bottom:8px}
     #mmap{top:128px;right:12px;width:104px;height:104px}
+    .toast{max-width:88vw;top:276px}
     .mark{display:none}
     .sceneCard{top:66px;left:12px;max-width:calc(100vw - 200px);padding:10px 12px}
     .sceneCard b{font-size:14px;letter-spacing:.08em}
@@ -347,8 +349,8 @@ const T={lang: (function(){try{return localStorage.getItem('walkLang')||'zh'}cat
  hudCnt:{zh:'史料 <b id="cShard">0</b>/17<br>倾听讲述 <b id="cNpc">0</b>/5',en:'Sources <b id="cShard">0</b>/17<br>Tellings heard <b id="cNpc">0</b>/5'},
  posHud:{zh:'你现在：<b id="posTxt">边缘之上</b>',en:'You are: <b id="posTxt">on the edge</b>'},
  posIn:{zh:'华夏之内',en:'within Huaxia'}, posEdge:{zh:'边缘之上',en:'on the edge'}, posOut:{zh:'华夏之外',en:'beyond the edge'},
-hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · 鼠标 视角 · <kbd>E</kbd> 交谈/查看 · <kbd>J</kbd> 任务 · <kbd>H</kbd> 全部按键',
-en:'<kbd>W A S D</kbd> move · mouse look · <kbd>E</kbd> talk/look · <kbd>J</kbd> tasks · <kbd>H</kbd> all keys'},
+hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · 鼠标 视角 · <kbd>Esc</kbd> 退出视角 · <kbd>E</kbd> 交谈/查看 · <kbd>J</kbd> 任务 · <kbd>H</kbd> 全部按键',
+en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E</kbd> talk/look · <kbd>J</kbd> tasks · <kbd>H</kbd> all keys'},
  tasksT:{zh:'行走任务',en:'Walking tasks'},
  tShardTpl:{zh:'拾得 17 件史料（{n}/17）',en:'Find 17 historical sources ({n}/17)'},
  tCardTpl:{zh:'读书卡 {n}/5',en:'Reading cards {n}/5'},
@@ -363,8 +365,8 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>E</kbd> talk/look · <kbd>J</k
  poiAct:{zh:'按 E · 查看 {n}',en:'Press E · look at {n}'},
  poiTap:{zh:'查看 · {n}',en:'Look at {n}'},
  poiClose:{zh:'E · 关闭',en:'E · close'},
- lockOn:{zh:'移动鼠标转视角 · Esc 显示鼠标',en:'Move the mouse to look · Esc shows the cursor'},
- lockOff:{zh:'点一下画面：之后移动鼠标就能转视角',en:'Click the scene, then just move the mouse to look'},
+ lockOn:{zh:'鼠标视角中 · 按 <kbd>Esc</kbd> 退出视角、显示鼠标',en:'Mouse look on · press <kbd>Esc</kbd> to exit and show the cursor'},
+ lockOff:{zh:'已退出鼠标视角 · 点一下画面重新进入',en:'Mouse look off · click the scene to turn it back on'},
  keysAll:{zh:'<kbd>W A S D</kbd> / 方向键 移动　<kbd>空格</kbd> 跳跃　<kbd>Shift</kbd> 疾行<br>鼠标 转视角（<kbd>Esc</kbd> 显示鼠标，点画面恢复）　滚轮 远近<br><kbd>E</kbd> 交谈 / 查看建筑和物件　<kbd>J</kbd> 任务与读书卡<br><kbd>1</kbd>–<kbd>5</kbd> 快速移动到五个场景　<kbd>C</kbd> / <kbd>X</kbd> 翻滚<br><kbd>T</kbd> 晨昏　<kbd>M</kbd> 声音　<kbd>L</kbd> 中 / 英<br><kbd>G</kbd> 双人同行（第二人用方向键移动、<kbd>Enter</kbd> 交谈）<br><kbd>H</kbd> 关闭本说明',
    en:'<kbd>W A S D</kbd> / arrows move　<kbd>Space</kbd> jump　<kbd>Shift</kbd> sprint<br>Mouse looks around (<kbd>Esc</kbd> shows the cursor, click to resume)　wheel zooms<br><kbd>E</kbd> talk / look at buildings and objects　<kbd>J</kbd> tasks and cards<br><kbd>1</kbd>–<kbd>5</kbd> travel to the five places　<kbd>C</kbd> / <kbd>X</kbd> roll<br><kbd>T</kbd> time of day　<kbd>M</kbd> sound　<kbd>L</kbd> language<br><kbd>G</kbd> second walker (arrows to move, <kbd>Enter</kbd> to talk)<br><kbd>H</kbd> close this'},
  tNpc1:{zh:'倾听 寨老阿爷 的讲述',en:'Hear the village elder'},
@@ -1104,36 +1106,77 @@ BEICHUAN_HOUSES.forEach(([a,t])=>addCol(a,t,2.1));
 
 /* 可以按 E 查看的建筑与物件（说明是导读用的简介） */
 var POIS=[
- {a:-8,t:8,r:4.4,n:{zh:'碉楼',en:'Watchtower'},
+ {a:-8,t:8,r:4.4,h:12,n:{zh:'碉楼',en:'Watchtower'},
   d:{zh:'岷江上游羌寨里的石砌碉楼，层层向上收分。它既用来防御、瞭望，也是一个寨子在山沟里最醒目的标记。',
      en:'A dry-stone watchtower of the upper Min River, tapering as it rises. It served for defence and lookout, and marks a village from far down the gully.'}},
- {a:-15,t:14,r:3.8,n:{zh:'平顶石屋',en:'Flat-roofed stone house'},
+ {a:-15,t:14,r:3.8,h:4.6,n:{zh:'平顶石屋',en:'Flat-roofed stone house'},
   d:{zh:'岷江上游常见的平顶石屋：底层多圈养牲畜，上层住人，屋顶平台用来晾晒粮食。屋顶四角供着白石——羌人有敬奉白石的习俗。',
      en:'A flat-roofed stone house of the upper Min: livestock below, family above, grain dried on the roof terrace. White stones sit on the roof corners — the Qiang revere white stones.'}},
- {a:-12,t:11,r:3.6,n:{zh:'索桥',en:'Rope bridge'},
+ {a:-12,t:11,r:3.6,h:2.6,n:{zh:'索桥',en:'Rope bridge'},
   d:{zh:'沟谷两岸靠索桥往来。走得通的地方，就有通婚、交换和共同的故事——“弟兄祖先”的范围，常常就是往来的范围。',
      en:'Rope bridges join the two banks. Where people can cross, there are marriages, exchange and shared stories — the circle of “brother ancestors” is often the circle of visiting.'}},
- {a:-67,t:29.5,r:4.4,n:{zh:'半地穴房址',en:'Semi-subterranean house site'},
+ {a:-67,t:29.5,r:4.4,h:2.6,n:{zh:'半地穴房址',en:'Semi-subterranean house site'},
   d:{zh:'仿照河湟地区约四千年前的半地穴式房址：屋子一半挖进地下，中间是火塘，旁边放着彩陶罐。此后气候变冷变干，这一带的农业人群逐渐减少。',
      en:'Modelled on Hehuang house sites of about 4,000 years ago: half dug into the ground, a hearth in the middle, painted jars nearby. As the climate grew colder and drier, farming here declined.'}},
- {a:74,t:28.5+(74-56)/36*4,r:4,n:{zh:'夯土长城',en:'Rammed-earth wall'},
+ {a:74,t:28.5+(74-56)/36*4,r:4,h:4.4,n:{zh:'夯土长城',en:'Rammed-earth wall'},
   d:{zh:'仿照汉代河西一带的夯土长城：一层黄土、一层芦苇或红柳，层层夯筑。墙内宜耕、墙外宜牧，它也是两种生计之间的界线。',
      en:'Modelled on Han rammed-earth walls of the Hexi corridor: a layer of earth, a layer of reeds or tamarisk, tamped in turn. Fields inside, pasture outside — a line between two livelihoods.'}},
- {a:95,t:33,r:4.8,n:{zh:'烽燧',en:'Beacon tower'},
+ {a:95,t:33,r:4.8,h:8.5,n:{zh:'烽燧',en:'Beacon tower'},
   d:{zh:'长城沿线报警用的烽燧：白天放烟，夜里举火。拾齐全部史料、听完五段讲述以后，回到这里按 E 点燃烽火。',
      en:'A signal tower of the Wall: smoke by day, fire by night. Once you have every source and every story, come back here and press E to light it.'}},
- {a:-135,t:24,r:3.6,n:{zh:'村口石碑',en:'Village stele'},
+ {a:-135,t:24,r:3.6,h:3.6,n:{zh:'村口石碑',en:'Village stele'},
   d:{zh:'现代羌寨村口的石碑，刻着村名和介绍。村名、民族名称和介绍文字，正是认同被写下来、被讲述出来的地方。',
      en:'A stele at the village entrance, carved with its name and a short history. Names and introductions like these are where identity gets written down and told.'}},
- {a:-147,t:23,r:4,n:{zh:'国道',en:'The highway'},
+ {a:-147,t:23,r:4,h:2.2,n:{zh:'国道',en:'The highway'},
   d:{zh:'国道把山沟和城市连在一起。外出打工、读书、旅游的人来来往往，“我们是谁”的说法也在路上被重新讲述。',
      en:'The highway links the gullies to the cities. People leave to work, study and travel, and the story of “who we are” is retold on the road.'}},
- {a:RMA[0],t:RMA[1],r:4.6,n:{zh:'尔玛人家',en:'A Rma home'},
+ {a:RMA[0],t:RMA[1],r:4.6,h:7.6,n:{zh:'尔玛人家',en:'A Rma home'},
   d:{zh:'“尔玛”是羌人的自称。这座石屋连着一座小碉，屋顶和碉顶供着白石，门楣上挂着羌红——这些都是今天北川人家表达羌族身份时常用的标志。',
      en:'“Rma” is what the Qiang call themselves. This stone house joins a small tower; white stones crown the roof and tower, and Qiang red hangs over the door — signs Beichuan families use today to show they are Qiang.'}},
- {a:-98,t:10,r:3.8,n:{zh:'北川新居',en:'New Beichuan house'},
+ {a:-78.5,t:22.5,r:4.2,h:2.2,n:{zh:'彩陶罐',en:'Painted jars'},
+  d:{zh:'仿照齐家文化一类的红陶彩陶罐：泥条盘筑，再画上黑彩纹样。陶罐说明这里曾经定居、种粮、储粮——这是农业人群留下的痕迹。',
+     en:'Modelled on red painted pottery of the Qijia kind: coiled clay with black-painted patterns. Jars like these mean settled life, grain and storage — traces left by farmers.'}},
+ {a:-69,t:31.5,r:5,h:1.6,n:{zh:'羊群',en:'Flock of sheep'},
+  d:{zh:'气候变干变冷以后，养羊、游动放牧比种地更能活下去。同一片谷地，生计从农业转向了畜牧。',
+     en:'Once the climate grew drier and colder, herding sheep on the move was a surer living than farming. The same valley turned from fields to pasture.'}},
+ {a:70.4,t:28.5+(70.4-56)/36*4,r:4,h:2.4,n:{zh:'城墙豁口',en:'Gap in the wall'},
+  d:{zh:'城墙并不是处处完整。豁口处人和牲畜都能往来——边界从来不只是隔开，也是交换与通行的地方。',
+     en:'The wall is not whole everywhere. Through gaps like this, people and herds passed — a boundary divides, but it is also where exchange happens.'}},
+ {a:-133,t:22.6,r:3.4,h:3.2,n:{zh:'村里的宣传栏',en:'Village notice board'},
+  d:{zh:'宣传栏上贴着村务、政策和民族文化介绍。哪些故事被写上去、怎么写，也在影响大家怎样理解“我们是谁”。',
+     en:'Village affairs, policies and introductions to ethnic culture are posted here. Which stories go up, and how they are written, shapes how people understand who they are.'}},
+ {a:-132,t:22,r:3,h:3.2,n:{zh:'太阳能路灯',en:'Solar street lamp'},
+  d:{zh:'新修的路灯、硬化的路面和通到寨子里的国道，让山沟和外面的世界连得更紧。',
+     en:'New lamps, paved paths and the highway into the village tie the gully ever closer to the world outside.'}},
+ {a:-103,t:11.5,r:3,h:2.8,n:{zh:'羌红挂牌',en:'Qiang red banner'},
+  d:{zh:'红布在羌族习俗里叫“羌红”，常用来迎宾、祝福。北川街头和院落里的羌红、白石与羊角装饰，是今天人们表达羌族身份的常见方式。',
+     en:'Red cloth, “Qiang red”, is used to welcome guests and give blessings. Qiang red, white stones and ram’s-horn ornaments are common ways people in Beichuan show they are Qiang today.'}},
+ {a:-98,t:10,r:3.8,h:4.8,n:{zh:'北川新居',en:'New Beichuan house'},
   d:{zh:'白墙、红褐木作，再加上羌式的檐口和装饰。地震后的重建里，许多房屋特意做成羌族风格，让“羌”成为看得见的公共身份。',
      en:'White walls, red-brown woodwork, Qiang-style eaves and ornament. In the post-earthquake rebuilding many houses were made deliberately Qiang, so that being Qiang became a visible public identity.'}}];
+
+/* ---- 互动标记：哪些东西可以按 E ---- */
+function markTex(kind){ const c=document.createElement('canvas'); c.width=c.height=128; const g=c.getContext('2d');
+  g.fillStyle='rgba(12,14,20,.72)'; g.strokeStyle='#e8cf96'; g.lineWidth=7;
+  if(kind==='talk'){ g.beginPath(); g.ellipse(64,56,50,38,0,0,Math.PI*2); g.fill(); g.stroke();
+    g.beginPath(); g.moveTo(44,88); g.lineTo(36,116); g.lineTo(66,92); g.fillStyle='#e8cf96'; g.fill();
+    g.fillStyle='#ffe3a6'; [40,64,88].forEach(x=>{ g.beginPath(); g.arc(x,56,7,0,Math.PI*2); g.fill(); }); }
+  else { g.beginPath(); g.arc(64,64,52,0,Math.PI*2); g.fill(); g.stroke();
+    g.fillStyle='#ffe3a6'; g.beginPath(); g.arc(64,38,9,0,Math.PI*2); g.fill(); g.fillRect(56,54,16,44); }
+  const t=new THREE.CanvasTexture(c); t.encoding=THREE.sRGBEncoding; return t; }
+const _mkMat={info:new THREE.SpriteMaterial({map:markTex('info'),depthTest:false,transparent:true,fog:false}),
+              talk:new THREE.SpriteMaterial({map:markTex('talk'),depthTest:false,transparent:true,fog:false})};
+const markers=[];
+POIS.forEach(o=>{ const sp=new THREE.Sprite(_mkMat.info.clone()); sp.scale.setScalar(0.85); sp.renderOrder=20;
+  sp.position.copy(P(o.a,o.t,(o.h||3)+0.5)); sp.userData={poi:o,base:sp.position.clone()}; scene.add(sp); markers.push(sp); });
+NPCS.forEach(n=>{ const sp=new THREE.Sprite(_mkMat.talk.clone()); sp.scale.setScalar(0.8); sp.renderOrder=20;
+  sp.position.copy(P(n.a,n.t,2.45)); sp.userData={npc:n,base:sp.position.clone()}; scene.add(sp); markers.push(sp); });
+function updMarkers(now){ markers.forEach((sp,i)=>{ const u=sp.userData;
+  if(u.npc && u.npc.done){ sp.visible=false; return; }
+  const d=planarDist(pGroup.position,u.base); sp.visible=started && d<30 && d>(u.npc?1.2:1.6) && !(poiCur&&poiCur===u.poi);
+  if(!sp.visible) return;
+  const up=u.base.clone().normalize(); sp.position.copy(u.base).addScaledVector(up,Math.sin(now*2+i)*0.12);
+  sp.material.opacity=Math.min(1,(30-d)/8); }); }
 
 /* ---- 小地图：以玩家为中心、视线朝上；远处的场景贴在边上 ---- */
 let frameN=0, curGoal=null;
@@ -1391,7 +1434,7 @@ function grabLock(){ if(!canLock||!started||locked()||$('rcard').classList.conta
   try{ const r=cv.requestPointerLock(); if(r&&r.catch) r.catch(()=>{}); }catch(e){} }
 function releaseLock(){ if(locked()) try{ document.exitPointerLock(); }catch(e){} }
 function updLockTip(){ const el=$('lockTip'); if(!canLock||!started){ el.classList.remove('show'); return; }
-  el.textContent=tx(locked()?'lockOn':'lockOff'); el.classList.add('show'); }
+  el.innerHTML=tx(locked()?'lockOn':'lockOff'); el.classList.add('show'); }
 document.addEventListener('pointerlockchange',updLockTip);
 cv.addEventListener('click',()=>{ if(locked()){ if(dlgNpc) tryTalk(); else if(poiCur) closePoi(); return; } grabLock(); });
 addEventListener('mousemove',e=>{ if(!locked()) return;
@@ -1443,8 +1486,12 @@ function advanceDlg(){ const n=dlgNpc;
   if('speechSynthesis' in window) speechSynthesis.cancel();
   if(!n.done){ n.done=true; updHUD(); buildLine(); toast(n.name[T.lang]+tx('heardSuf')); playHear(); } }
 let toastT=null;
-function toast(s){ const t=$('toast'); t.textContent=s; t.classList.add('show');
-  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2600); }
+let toastUntil=0, toastPrio=0; const toastQ=[];
+function toast(s,ms,prio){ ms=ms||2600; prio=prio||0;
+  if(Date.now()<toastUntil && prio<toastPrio){ toastQ.push([s,ms,prio]); return; }
+  const t=$('toast'); t.textContent=s; t.classList.add('show'); toastUntil=Date.now()+ms; toastPrio=prio;
+  clearTimeout(toastT); toastT=setTimeout(()=>{ t.classList.remove('show'); toastUntil=0; toastPrio=0;
+    if(toastQ.length) setTimeout(()=>toast(...toastQ.shift()),450); },ms); }
 
 /* ---- HUD ---- */
 function updHUD(){ const ns=shards.filter(s=>s.userData.got).length, nn=NPCS.filter(n=>n.done).length;
@@ -1693,11 +1740,12 @@ function loop(){
     if(B.t>0.9){ scene.remove(B.pts); B.pts.geometry.dispose(); B.pts.material.dispose(); bursts.splice(bi,1); } }
   shards.forEach(s=>{ if(s.userData.got) return;
     s.rotation.y+=dt*1.4; s.position.copy(P(s.userData.a,s.userData.t,(s.userData.h||0)+0.5+Math.sin(now*1.8+s.userData.ph)*0.18));
-    const d3P = pP.distanceTo(s.position) < 1.9;
-    const d3P2 = p2 && p2.grp.position.distanceTo(s.position) < 1.9;
+    const d3P = pP.distanceTo(s.position) < 3.0;
+    const d3P2 = p2 && p2.grp.position.distanceTo(s.position) < 3.0;
     const nearP = d3P || d3P2;
     if(nearP){ s.userData.got=true; s.visible=false;
-      toast(tx('shardPre')+SOURCES[shards.indexOf(s)].n[T.lang]+' · '+TOASTS[shards.indexOf(s)][T.lang]+' —— '+PART_N[PART_IX[shards.indexOf(s)]][T.lang]); playCollect(); burst(s.position,s.userData.col); updHUD(); } });
+      { const msg=tx('shardPre')+SOURCES[shards.indexOf(s)].n[T.lang]+' · '+TOASTS[shards.indexOf(s)][T.lang]+' —— '+PART_N[PART_IX[shards.indexOf(s)]][T.lang];
+        toast(msg,Math.min(12000,Math.max(6500,msg.length*(T.lang==='zh'?170:60))),2); } playCollect(); burst(s.position,s.userData.col); updHUD(); } });
   /* NPC */
   let near=nearNpc(pGroup.position);
   if(p2 && !near){ const n2=nearNpc(p2.grp.position); if(n2) near=n2; }
@@ -1774,7 +1822,7 @@ function loop(){
       const t2=g.txt+' · '+Math.round(gd)+' m'; if($('cTxt').textContent!==t2) $('cTxt').textContent=t2;
     } else comp.style.display='none';
     const gt=g?g.txt:''; if($('tGoal').textContent!==gt) $('tGoal').textContent=gt; }
-  drawMinimap();
+  drawMinimap(); updMarkers(clock.elapsedTime);
   /* 落地尘土 */
   if(dustT<0.55){ dustT+=dt; const u=Math.min(1,dustT/0.55);
     const upD=pGroup.position.clone().normalize();
