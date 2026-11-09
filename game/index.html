@@ -2077,10 +2077,8 @@ function makeCard(){
   fillMixed(c, q[0], 450, 810, '27px');
   c.fillStyle='#8b8474'; c.font='16px "Times New Roman",serif';
   c.fillText(q[1], 450, 848);
-  c.fillStyle='#c9a45c'; c.font='17px "Times New Roman",serif';
-  c.fillText('tanyaqiongcode.github.io/huaxia-frontiers-3d/game/', 450, 1108);
   c.fillStyle='#8b8474';
-  fillMixed(c, 'WALKING THE EDGE · 华夏边缘 · 17 碎片 · 5 讲述 · 5 区域', 450, 1140, '13px');
+  fillMixed(c, 'WALKING THE EDGE · 华夏边缘 · 17 件史料 · 5 段讲述 · 5 个场景', 450, 1124, '15px');
   const url=cv.toDataURL('image/jpeg',0.86);
   albumAdd(url); openViewer(url,'边缘行走_纪念卡.jpg'); renderAlbum();
 }
@@ -2131,8 +2129,7 @@ function makeCardsImage(){
       yy+=22; c.fillStyle='#c9a45c'; _mxLeft(c,tx('rcQh'),x0+IN,yy,'22px'); yy+=48;
       c.fillStyle='#f2d9a0'; b.qb.forEach(l=>{ _mxLeft(c,l,x0+IN,yy,FQ); yy+=LH; }); }
     y+=b.h+34; });
-  c.fillStyle='#8b8474'; fillMixed(c,tx('cardsNote'),W/2,H-112,'21px');
-  c.fillStyle='#c9a45c'; c.font='22px "Times New Roman",serif'; c.fillText('tanyaqiongcode.github.io/huaxia-frontiers-3d/game/',W/2,H-70);
+  c.fillStyle='#8b8474'; fillMixed(c,tx('cardsNote'),W/2,H-92,'21px');
   const url=cv.toDataURL('image/png');
   openViewer(url,'边缘行走_读书卡.png'); }
 $('btnCardsImg').addEventListener('click',makeCardsImage);

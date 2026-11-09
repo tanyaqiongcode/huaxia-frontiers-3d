@@ -5,7 +5,7 @@
 
 默认输出到仓库上一级目录：华夏边缘_边缘行走_单文件版.html
 做法：把 three.js、GLTFLoader 直接内联；11 个 GLB 模型、21 张 PBR 贴图和月面贴图转成 data: URI；
-返回主站、阅读版的相对链接改成线上地址。线上的 game/index.html 本身不改。
+分享版不放任何外链（去掉主站、阅读版按钮和带网址的分享预览标签）。线上的 game/index.html 本身不改。
 """
 import base64
 import os
@@ -13,7 +13,6 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE = "https://tanyaqiongcode.github.io/huaxia-frontiers-3d/"
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(ROOT), "华夏边缘_边缘行走_单文件版.html")
 
 
@@ -36,9 +35,13 @@ def replace_once(old, new):
     html = html.replace(old, new)
 
 
+LIBS = []
+
+
 def inline_script(src_attr, rel):
     # 内联脚本里不能出现 </script>，转义一下
     code = read(rel).replace("</script", "<\\/script")
+    LIBS.append(code)
     replace_once('<script src="%s"></script>' % src_attr, "<script>\n%s\n</script>" % code)
 
 
@@ -59,12 +62,21 @@ replace_once("loader.load('../assets/models/diaolou.glb',", "loader.load(window.
 replace_once("loader.load('../assets/models/qiang_house.glb',", "loader.load(window.__MODEL_DATA.qiang_house,")
 replace_once("new THREE.TextureLoader().load('../assets/book/moon.jpg')", "new THREE.TextureLoader().load('%s')" % data_uri("assets/book/moon.jpg", "image/jpeg"))
 
-# 返回主站、阅读版：改成线上地址（离线时点了会去网上）
-html = re.sub(r'href="\.\./reading/"', 'href="%sreading/"' % SITE, html)
-html = re.sub(r'href="\.\./"', 'href="%s"' % SITE, html)
+# 分享版不放任何外链：去掉"主站 / 阅读版"按钮、无 WebGL 时的跳转按钮，以及带网址的分享预览标签
+replace_once('<a href="../">主站</a><a href="../reading/">阅读版</a>', '')
+replace_once("""      +'<p style="line-height:2">此设备无法运行 3D 互动行走。<br>欢迎阅读文字与图片版：</p>'
+      +'<p style="margin-top:14px"><a class="go" style="display:inline-block;text-decoration:none;margin:0 8px" href="../reading/">阅 读 版 ↗</a>'
+      +'<a class="go" style="display:inline-block;text-decoration:none;margin:0 8px" href="../">返 回 主 站 ↗</a></p></div>';""",
+             """      +'<p style="line-height:2">此设备的浏览器无法运行 3D 互动导读。<br>请换用电脑上的 Chrome、Edge 或 Safari 打开这个文件。</p></div>';""")
+html = re.sub(r'<meta (property|name)="(og:url|og:image|twitter:image)"[^>]*>\n?', '', html)
 
 left = [x for x in re.findall(r"""['"]\.\./[^'"]*['"]""", html) if x not in ("'../assets/models/'", "'../assets/tex/'")]  # 这两个只是内联数据缺失时的后备路径
 assert not left, "还有没处理的相对路径：%s" % left
+own = html
+for code in LIBS:          # three.js、GLTFLoader 自带的注释不算
+    own = own.replace(code, '')
+assert not re.search(r'href=["\']https?://', own), "分享版里还有外链"
+assert 'github' not in own.lower(), "分享版里还有 GitHub 网址"
 
 with open(OUT, "w", encoding="utf-8") as f:
     f.write(html)
