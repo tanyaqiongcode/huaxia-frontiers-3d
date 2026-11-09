@@ -342,6 +342,9 @@
   [data-theme="light"] footer .en{color:#6b5124}
   footer .zh{color:var(--dim);font-size:14px;margin-top:14px;letter-spacing:.12em;line-height:2}
   footer .springer{margin-top:26px;color:var(--dim);font-size:12px;letter-spacing:.24em}
+  footer .sister{margin:22px auto 0;padding-top:14px;border-top:1px solid var(--line);max-width:320px}
+  footer .sister a{color:var(--dim);opacity:.8;text-decoration:none;font-size:10.5px;letter-spacing:.14em;border-bottom:1px dotted var(--line)}
+  footer .sister a:hover{color:var(--gold-hi);opacity:1}
   footer .credits{margin-top:14px;color:var(--dim);opacity:.75;font-size:10.5px;letter-spacing:.08em;font-family:"Times New Roman",serif}
   /* —— no3d 静态回退（WebGL 不可用） —— */
   html.no3d .reveal{opacity:1!important;transform:none!important}
@@ -573,8 +576,8 @@
       <div class="springer" data-i18n="springer">英译本 · 译事进行中</div>
       <div style="margin-top:14px"><a href="reading/" style="color:var(--dim);text-decoration:none;border-bottom:1px dotted var(--line);font-size:11px;letter-spacing:.14em">阅读版 · Reading edition ↗</a></div>
       <div style="margin-top:14px"><a href="game/" style="color:var(--dim);text-decoration:none;border-bottom:1px dotted var(--line);font-size:11px;letter-spacing:.14em">边缘行走 · 互动导读：边走边读全书 17 个概念 ↗</a></div>
-      <div style="margin-top:14px"><a href="https://tanyaqiongcode.github.io/foucault-3d/" style="color:var(--dim);text-decoration:none;border-bottom:1px dotted var(--line);font-size:11px;letter-spacing:.14em">福柯 · 全景敞视 3D 站 ↗</a></div>
       <div class="credits">Planet textures: Solar System Scope (CC BY 4.0) · Earth &amp; Moon imagery: NASA · Built on three.js (MIT) · SVG graphics: the editors</div>
+      <div class="sister"><a href="https://tanyaqiongcode.github.io/foucault-3d/" data-i18n="sisterSite">姊妹站 · 福柯《规训与惩罚》3D 导读 ↗</a></div>
     </div>
   </footer>
 
@@ -738,6 +741,7 @@ const T = { lang:'zh', dict:{
  trTitle:{zh:'边缘之外',en:'Beyond the <em>margins</em>'},
  trLead:{zh:'边缘，是华夏最早的记忆，也是它最新的提问。三千年间，这条线在草原、雪山与河谷之间移动；今天，它移到了一种语言的边界上——而这部书的英译，已经在路上，即将抵达。',
  en:'The edge is Huaxia'+String.fromCharCode(39)+'s oldest memory — and its newest question. For three thousand years it has drifted across steppe, snowline and river valley; today it arrives at the border of a language — and the English translation of this book is underway.'},
+ sisterSite:{zh:'姊妹站 · 福柯《规训与惩罚》3D 导读 ↗',en:'Sister site · Foucault, Discipline and Punish — a 3D reading guide ↗'},
  ftZh:{zh:'华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）',en:'Huaxia Frontier · Historical Memory and Ethnic Identity<br>by Wang Ming-ke · Shanghai People'+String.fromCharCode(39)+'s Publishing House / Century Wenjing'}
 }};
 function tx(o){ return o ? (o[T.lang] || o.zh || '') : ''; }
