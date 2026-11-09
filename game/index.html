@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>边缘行走 · 华夏边缘</title>
-<meta property="og:title" content="边缘行走 · Huaxia Frontier">
+<meta property="og:title" content="边缘行走 · Huaxia Frontiers">
 <meta property="og:description" content="《华夏边缘》互动导读：边走边读全书 17 个概念、5 段讲述，看边界线随脚步移动。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://tanyaqiongcode.github.io/huaxia-frontiers-3d/game/">
@@ -257,10 +257,10 @@
 <div class="zoneTabs" id="zoneTabs">
   <a data-z="village" class="on"><svg class="zg" viewBox="0 0 12 12"><path d="M4.2 1.2 L7.8 1.2 L8.6 10.8 L3.4 10.8 Z M5.2 8 h1.6 v2.8"/></svg>羌寨</a><a data-z="hehuang"><svg class="zg" viewBox="0 0 12 12"><path d="M2.2 5.2 A4.6 4.6 0 0 1 9.8 5.2 M3 8.6 h6 M5 5.6 L7 7.4"/></svg>河湟</a><a data-z="wall"><svg class="zg" viewBox="0 0 12 12"><path d="M2 10.5 V4.5 h2 v1.8 h1.7 V4.5 h1.8 v1.8 h1.7 V4.5 h2 v6 Z"/></svg>长城</a><a data-z="modern"><svg class="zg" viewBox="0 0 12 12"><path d="M6 11 V5.4 M3.4 5.4 h5.2 L7.5 2.6 h-3 Z M9.6 11 H2.4"/></svg>现代</a><a data-z="beichuan"><svg class="zg" viewBox="0 0 12 12"><path d="M6 1.4 L10.6 6 L6 10.6 L1.4 6 Z"/><circle cx="6" cy="6" r="1.3"/></svg>北川</a>
 </div>
-<div class="mark" title="Huaxia Frontier"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="#c9a45c" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="#c9a45c"/></svg></div>
-<div class="xlinks"><a href="#" id="btnAlbum" data-i18n="albumBtn">卡册</a><a href="../">主站</a><a href="../reading/">阅读版</a></div>
+<div class="mark" title="Huaxia Frontiers"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="#c9a45c" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="#c9a45c"/></svg></div>
+<div class="xlinks"><a href="#" id="btnAlbum" data-i18n="albumBtn">卡册</a><a href="../" data-i18n="lnkMain">主站</a><a href="../reading/" data-i18n="lnkRead">阅读版</a></div>
 <button class="langBtn" id="btnLang">EN</button>
-<button id="btnJump">跳跃</button>
+<button id="btnJump" data-i18n="btnJump">跳跃</button>
 
 <div class="sceneCard"><b id="zName">河谷 · 岷江上游</b><i id="zSub">沿河谷行走，边缘在脚下移动。</i></div>
 <div class="hudR">
@@ -289,14 +289,14 @@
   </div>
   </div>
 <canvas id="mmap" width="300" height="300"></canvas>
-<div class="dlg" id="dlg"><div class="who" id="dlgWho"></div><div class="txt" id="dlgTxt"></div><div class="more" id="dlgMore">E · 继续</div></div>
+<div class="dlg" id="dlg"><div class="who" id="dlgWho"></div><div class="txt" id="dlgTxt"></div><div class="more" id="dlgMore" data-i18n="moreCont">E · 继续</div></div>
 <div class="toast" id="toast"></div>
 <button class="actBtn" id="actBtn">按 E · 倾听</button>
-<div class="dlg" id="poi"><div class="who" id="poiWho"></div><div class="txt" id="poiTxt"></div><div class="more" id="poiMore">E · 关闭</div></div>
+<div class="dlg" id="poi"><div class="who" id="poiWho"></div><div class="txt" id="poiTxt"></div><div class="more" id="poiMore" data-i18n="poiClose">E · 关闭</div></div>
 <div class="keysPanel" id="keysPanel" data-i18n-html="keysAll"></div>
 <div class="lockTip" id="lockTip"></div>
 <div class="cardsOut" id="cardsOut"><div class="row"><a id="cardsDl" download="边缘行走_读书卡.png" data-i18n="cardsDl">下载图片</a><button id="cardsClose" data-i18n="cardsClose">关闭</button></div>
-  <div class="tip" data-i18n="cardsTip">手机上长按图片即可保存或转发</div><img id="cardsImg" alt="读书卡"></div>
+  <div class="tip" data-i18n="cardsTip">手机上长按图片即可保存或转发</div><img id="cardsImg" alt="读书卡" data-i18n-alt="rcAlt"></div>
 <div class="rcard" id="rcard"><div class="in">
   <div class="k" id="rcK"></div><h3 id="rcT"></h3><div class="pt" id="rcP"></div>
   <div class="h" data-i18n="rcKey">导读要点</div><p id="rcB"></p>
@@ -333,7 +333,7 @@
 <div class="album" id="album"><div class="in">
   <button class="xClose" id="albumClose" title="关闭">✕</button>
   <h2 data-i18n="albumT">卡 册</h2>
-  <div class="h"><b id="albRcT">读书卡</b><a id="albRcImg" data-i18n="cardsImg">生成读书卡图片</a></div>
+  <div class="h"><b id="albRcT">读书卡 0/5</b><a id="albRcImg" data-i18n="cardsImg">生成读书卡图片</a></div>
   <div class="rc" id="albRc"></div>
   <div class="h"><b id="albMcT">行走纪念卡</b><a id="albMcNew" data-i18n="eCard">生成行走纪念卡</a></div>
   <div class="mc" id="albMc"></div>
@@ -348,10 +348,13 @@
 if(!(function(){ try{ const c=document.createElement('canvas');
   return !!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl'))); }catch(e){ return false; } })()){
   (function(){ const el=document.getElementById('intro'); if(!el) return;
-    el.innerHTML='<div class="card"><h1>边缘行走</h1><div class="sub">《华夏边缘：历史记忆与族群认同》· 互动行走</div>'
-      +'<p style="line-height:2">此设备无法运行 3D 互动行走。<br>欢迎阅读文字与图片版：</p>'
-      +'<p style="margin-top:14px"><a class="go" style="display:inline-block;text-decoration:none;margin:0 8px" href="../reading/">阅 读 版 ↗</a>'
-      +'<a class="go" style="display:inline-block;text-decoration:none;margin:0 8px" href="../">返 回 主 站 ↗</a></p></div>';
+    let en=false; try{ en=localStorage.getItem('walkLang')==='en'; }catch(e){}
+    if(en) document.documentElement.lang='en';
+    el.innerHTML='<div class="card"><h1>'+(en?'Walking the Edge':'边缘行走')+'</h1><div class="sub">'
+      +(en?'Huaxia Frontiers: Historical Memories and Ethnic Identities · an interactive walk':'《华夏边缘：历史记忆与族群认同》· 互动行走')+'</div>'
+      +'<p style="line-height:2">'+(en?'This device cannot run the 3D walk.<br>The text-and-image edition is open to you:':'此设备无法运行 3D 互动行走。<br>欢迎阅读文字与图片版：')+'</p>'
+      +'<p style="margin-top:14px"><a class="go" style="display:inline-block;text-decoration:none;margin:0 8px" href="../reading/">'+(en?'Reading edition ↗':'阅 读 版 ↗')+'</a>'
+      +'<a class="go" style="display:inline-block;text-decoration:none;margin:0 8px" href="../">'+(en?'Main site ↗':'返 回 主 站 ↗')+'</a></p></div>';
   })();
   throw new Error('WebGL unavailable');
 }
@@ -392,8 +395,8 @@ function fract(x){ return x - Math.floor(x); }
 /* ---- 双语 ---- */
 const T={lang: (function(){try{return localStorage.getItem('walkLang')||'zh'}catch(e){return 'zh'}})(), dict:{
  gTitle:{zh:'边缘行走',en:'Walking the Edge'},
- gSub:{zh:'《华夏边缘：历史记忆与族群认同》· 互动导读',en:'Huaxia Frontier: Historical Memory and Ethnic Identity · an interactive reading guide'},
- gNote:{zh:'本作为《华夏边缘》的阅读辅助：场景与讲述者均为虚构，不代表任何真实人物或群体；书中观点请以原著为准。',en:'A reading aid for Huaxia Frontier. Scenes and speakers are fictional and do not represent any real person or community; for the book’s arguments, please read the original.'},
+ gSub:{zh:'《华夏边缘：历史记忆与族群认同》· 互动导读',en:'Huaxia Frontiers: Historical Memories and Ethnic Identities · an interactive reading guide'},
+ gNote:{zh:'本作为《华夏边缘》的阅读辅助：场景与讲述者均为虚构，不代表任何真实人物或群体；书中观点请以原著为准。',en:'A reading aid for Huaxia Frontiers. Scenes and speakers are fictional and do not represent any real person or community; for the book’s arguments, please read the original.'},
  gIntro:{zh:'你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十七件史料散落在谷地里——族谱、竹简、甲骨、羌绣、田野笔记……每一件对应书中的一个概念；五段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。<br>每个场景听完讲述、拾齐那里的史料，会得到一张<b style=\"color:var(--gold-hi)\">读书卡</b>（要点 + 讨论题）。右上角的小地图和画面下方的箭头会提示下一步去哪里。',
   en:'You are a walker, dropped onto the small planet of the Huaxia world. The Hehuang sites, the Qiang villages of the Min River, the beacon towers of the Wall — seventeen historical sources lie scattered in the valley — genealogies, bamboo slips, oracle bones, Qiang embroidery, field notes — each tied to one idea in the book; five tellings wait to be heard.<br>Collect them, and watch the golden <b style="color:var(--gold-hi)">boundary line</b> move with your steps. It is not in the wall, nor in the genealogy — it lives in resources, memory, and every meeting between people.<br>In each place, hear the speaker and gather the sources there to earn a <b style="color:var(--gold-hi)">reading card</b> (notes + a question to discuss). The minimap and the arrow below show where to go next.<br>Or press <b style="color:var(--gold-hi)">G</b> to invite a companion and walk together on one screen.'},
  gKeys:{zh:'<kbd>W A S D</kbd> 移动 · 鼠标 转视角（<kbd>Esc</kbd> 显示鼠标）· 滚轮 远近<br><kbd>E</kbd> 交谈 / 查看 · <kbd>J</kbd> 任务与读书卡 · <kbd>H</kbd> 全部按键',
@@ -405,6 +408,10 @@ const T={lang: (function(){try{return localStorage.getItem('walkLang')||'zh'}cat
   en:'You gathered the scattered memories and heard the five tellings.<br>The boundary moved beneath your feet — it is not in the wall, nor in the genealogy,<br>but in resources, memory, and every meeting between people.<br><br>Who counts as Chinese? The question has no end —<br>the edge, after all, keeps moving.'},
  eGo:{zh:'重 新 行 走',en:'Walk again'}, eBack:{zh:'继 续 行 走',en:'Keep walking'},
  albumBtn:{zh:'卡册',en:'Cards'}, albumOpen:{zh:'打开卡册',en:'Open the album'}, albumT:{zh:'卡 册',en:'CARD ALBUM'}, hudMore:{zh:'任务 ›',en:'tasks ›'},
+ lnkMain:{zh:'主站',en:'Main site'}, lnkRead:{zh:'阅读版',en:'Reading edition'}, btnJump:{zh:'跳跃',en:'Jump'},
+ rcAlt:{zh:'读书卡',en:'Reading cards'}, xClose:{zh:'关闭',en:'Close'}, fnCard:{zh:'边缘行走_纪念卡.jpg',en:'walking-the-edge_walk-card.jpg'},
+ fnRc:{zh:'边缘行走_读书卡.png',en:'walking-the-edge_reading-cards.png'},
+ docTitle:{zh:'边缘行走 · 华夏边缘',en:'Walking the Edge · Huaxia Frontiers'},
  albRcT:{zh:'读书卡 {n}/5',en:'Reading cards {n}/5'}, albMcT:{zh:'行走纪念卡 {n}',en:'Walk cards {n}'},
  albLock:{zh:'未解锁 · 听完讲述、拾齐史料',en:'Locked — hear the speaker, gather the sources'},
  albMcEmpty:{zh:'还没有纪念卡。点上面的“生成行走纪念卡”，会记下此刻的史料、讲述和步数；生成过的都会留在这里。',en:'No walk cards yet. Press “Make a walk card” above to record your sources, stories and steps so far; every card you make stays here.'},
@@ -442,7 +449,7 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  tNpc2:{zh:'倾听 河湟考古者 的讲述',en:'Hear the Hehuang archaeologist'},
  tNpc3:{zh:'倾听 长城戍卒 的讲述',en:'Hear the soldier of the Wall'},
  tNpc4:{zh:'倾听 返乡青年 的讲述',en:'Hear the returned youth'},
- tNpc5:{zh:'倾听 尔玛阿姐 的讲述',en:'Hear the Rma elder sister'},
+ tNpc5:{zh:'倾听 尔玛阿姐 的讲述',en:'Hear the Erma elder sister'},
  gContinue:{zh:'继 续 行 走',en:'Continue walking'},
  gNew:{zh:'重 新 开 始',en:'Start over'},
  p2On:{zh:'同伴已加入 · 方向键行走 · 回车对话',en:'Companion joined · arrows to walk · Enter to talk'},
@@ -456,7 +463,7 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  invUmb:{zh:'雨伞',en:'Umbrella'}, invTorch:{zh:'火把',en:'Torch'},
  wRain:{zh:'暴雨来袭',en:'Rain approaching'}, wUmb:{zh:'雨伞为你遮挡',en:'Your umbrella shields you'}, wNoUmb:{zh:'没有雨伞——在雨中行走',en:'No umbrella — walking in the rain'},
  bNear:{zh:'墙外是牧场：耕与牧，是两种生计，也是两种边界。',en:'Beyond the wall, pasture: farming and herding — two livelihoods, two kinds of boundary.'},
- bTorch:{zh:'拾得火把——典范历史只照亮木棍的一端；把火把转向边缘。',en:'A torch — official history lights only one end of the stick; turn it toward the margin.'},
+ bTorch:{zh:'拾得火把——典范历史只照亮木棍的一端；把火把转向边缘。',en:'A torch — canonical history lights only one end of the stick; turn it toward the margin.'},
  ftT:{zh:'快速移动 · FAST TRAVEL',en:'FAST TRAVEL'},
  tLine:{zh:'见证边界线移动',en:'See the boundary line move'},
  actTpl:{zh:'按 E · 倾听 {n}',en:'Press E · hear {n}'}, actTap:{zh:'倾听 · {n}',en:'Hear {n}'},
@@ -470,13 +477,23 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
 }};
 function tx(k){ const v=T.dict[k]; return v?(v[T.lang]||v.zh):''; }
 function toggleLang(){ T.lang=T.lang==='zh'?'en':'zh'; applyLang(); }
+const ZLBL={village:{zh:'羌寨',en:'Qiang village'},hehuang:{zh:'河湟',en:'Hehuang'},wall:{zh:'长城',en:'The Wall'},
+ modern:{zh:'现代',en:'Today'},beichuan:{zh:'北川',en:'Beichuan'}};
+const ZLBL_FT={village:{zh:'羌寨',en:'Qiang village'},hehuang:{zh:'河湟遗址',en:'Hehuang sites'},wall:{zh:'长城边缘',en:'The Wall frontier'},
+ modern:{zh:'现代羌寨',en:'Qiang village today'},beichuan:{zh:'北川',en:'Beichuan'}};
 function applyLang(){
+  document.title = tx('docTitle');
+  document.querySelectorAll('#zoneTabs a[data-z]').forEach(a=>{ const t=[...a.childNodes].find(n=>n.nodeType===3); const l=ZLBL[a.dataset.z]; if(t&&l) t.nodeValue=l[T.lang]; });
+  document.querySelectorAll('#ftG a[data-z]').forEach(a=>{ const l=ZLBL_FT[a.dataset.z]; if(l) a.textContent=l[T.lang]; });
+  document.querySelectorAll('.xClose').forEach(b=>b.title=tx('xClose'));
+  document.querySelectorAll('[data-i18n-alt]').forEach(el=>el.alt=tx(el.dataset.i18nAlt));
   document.documentElement.lang = T.lang==='zh'?'zh-CN':'en';
   try{ localStorage.setItem('walkLang',T.lang); }catch(e){}
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const v=T.dict[el.dataset.i18n]; if(v) el.textContent=v[T.lang]||v.zh; });
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const v=T.dict[el.dataset.i18nHtml]; if(v) el.innerHTML=v[T.lang]||v.zh; });
   const b=document.getElementById('btnLang'); if(b) b.textContent = T.lang==='zh'?'EN':'中文';
   if(typeof updHUD==='function') updHUD();
+  if(typeof renderAlbum==='function') try{ renderAlbum(); }catch(e){}
   if(typeof dlgNpc!=='undefined' && dlgNpc) showLine();
   if(typeof lastZone!=='undefined') lastZone='';
 }
@@ -845,14 +862,14 @@ const TOASTS=[
  {zh:'边缘视角：不问“华夏有什么”，而问“华夏的边界在哪里”。',en:'The margin view: don’t ask what Huaxia has — ask where its boundary lies.'},
  {zh:'族群如俱乐部：入会资格由边界决定，而非成员的内在特征。',en:'Ethnicity as a club: the boundary decides who belongs, not the members’ inner traits.'},
  {zh:'结构性失忆：忘记什么，与记得什么同样重要。',en:'Structural amnesia: what a group forgets matters as much as what it remembers.'},
- {zh:'英雄祖先与弟兄祖先：两种记忆方式，两种社会形态。',en:'Hero ancestors and brother ancestors: two ways of remembering, two kinds of society.'},
+ {zh:'英雄祖先与弟兄祖先：两种记忆方式，两种社会形态。',en:'Heroic ancestors and ancestral brothers: two kinds of historical mentality, two kinds of society.'},
  {zh:'满天星斗到月明星稀：边缘退场，核心才亮起来。',en:'From a sky full of stars to one bright moon: as the margins empty, the centre lights up.'},
  {zh:'西辽河的夏家店上层：农牧混合带的兴衰。',en:'Upper Xiajiadian on the west Liao River: the rise and fall of a farming-and-herding belt.'},
  {zh:'吴太伯的故事：边缘人群借祖先记忆，走进华夏。',en:'The story of Wu Taibo: peoples at the margin used ancestral memory to walk into Huaxia.'},
  {zh:'羌人概念的西移：被称作“羌”的人群，不断向西漂移。',en:'The westward drift of “Qiang”: the name kept moving, people by people, valley by valley.'},
  {zh:'汉代的四方意象：西戎、北狄、东夷、南蛮。',en:'Han images of the four quarters: the Rong of the west, the Di of the north, the Yi of the east, the Man of the south.'},
- {zh:'北川羌族的尔玛认同：认同，可以重新学习。',en:'Beichuan Qiang learning to say “Rma”: identity can be learned anew.'},
- {zh:'湘西革屯运动：边缘的变迁，自有其微观过程。',en:'The Xiangxi garrison-abolition movement: change at the margin has its own micro-processes.'},
+ {zh:'北川羌族的尔玛认同：认同，可以重新学习。',en:'Beichuan Qiang learning to say “Erma”: identity can be learned anew.'},
+ {zh:'湘西革屯运动：边缘的变迁，自有其微观过程。',en:'The movement against the military-colony system in western Hunan: change at the margin has its own micro-level processes.'},
  {zh:'反思性国族认同：多元一体，是过程而非答案。',en:'A reflexive national identity: pluralistic unity is a process, not an answer.'},
  {zh:'近代华夏边缘再造：从帝国到国族，边缘被重新描绘。',en:'Re-making the modern edge: from empire to nation-state, the margin was drawn anew.'},
  {zh:'民族识别：1950年代的调查，把称呼写进了册页。',en:'The classification of the 1950s: what people called themselves entered the registers as nationalities.'},
@@ -955,9 +972,9 @@ const NPCS=[
       '五十年代搞民族识别，工作队来登记。我奶奶只会说自己“尔玛”，表格上写的是“羌族”。后来娃娃们在学校里就学这个。',
       '我去成都打过工，又回来了。羌族是我，中国人也是我——这不是两堵墙，是一段一直在讲下去的历史。'],
   en:['You walked here? The bus now runs to the county town, and the road goes all the way up the valley.',
-      'In the 1950s the classification teams came through. My grandmother could only say she was “Rma”; the form wrote down “Qiang”, a nationality. Children learn it in school now.',
+      'In the 1950s the classification teams came through. My grandmother could only say she was “Erma”; the form wrote down “Qiang”, a nationality. Children learn it in school now.',
       'I worked in Chengdu for a while, then came back. I am Qiang, and I am Chinese — not two walls, but one history that keeps being told.']}},
- {a:-105,t:13,name:{zh:'尔玛阿姐',en:'Rma elder sister'},pitch:1.1,done:false,lines:{
+ {a:-105,t:13,name:{zh:'尔玛阿姐',en:'Erma elder sister'},pitch:1.1,done:false,lines:{
   zh:['我们这一带，老辈人多说自己是汉人。后来越来越多人家登记成羌族，北川也成了羌族自治县。',
       '我小时候只会讲汉话。地震以后，羌绣、羌语课多了起来，现在孙子在学堂里学羌语，回家教我。',
       '认同这个东西，不是血脉里带来的，是日子里长出来的。北川是这样，别处也是。'],
@@ -1199,9 +1216,9 @@ var POIS=[
  {a:-147,t:23,r:4,h:2.2,n:{zh:'国道',en:'The highway'},
   d:{zh:'国道把山沟和城市连在一起。外出打工、读书、旅游的人来来往往，“我们是谁”的说法也在路上被重新讲述。',
      en:'The highway links the gullies to the cities. People leave to work, study and travel, and the story of “who we are” is retold on the road.'}},
- {a:RMA[0],t:RMA[1],r:4.6,h:7.6,n:{zh:'尔玛人家',en:'A Rma home'},
+ {a:RMA[0],t:RMA[1],r:4.6,h:7.6,n:{zh:'尔玛人家',en:'An Erma home'},
   d:{zh:'“尔玛”是羌人的自称。这座石屋连着一座小碉，屋顶和碉顶供着白石，门楣上挂着羌红——这些都是今天北川人家表达羌族身份时常用的标志。',
-     en:'“Rma” is what the Qiang call themselves. This stone house joins a small tower; white stones crown the roof and tower, and Qiang red hangs over the door — signs Beichuan families use today to show they are Qiang.'}},
+     en:'“Erma” is what the Qiang call themselves. This stone house joins a small tower; white stones crown the roof and tower, and Qiang red hangs over the door — signs Beichuan families use today to show they are Qiang.'}},
  {a:-78.5,t:22.5,r:4.2,h:2.2,n:{zh:'彩陶罐',en:'Painted jars'},
   d:{zh:'仿照齐家文化一类的红陶彩陶罐：泥条盘筑，再画上黑彩纹样。陶罐说明这里曾经定居、种粮、储粮——这是农业人群留下的痕迹。',
      en:'Modelled on red painted pottery of the Qijia kind: coiled clay with black-painted patterns. Jars like these mean settled life, grain and storage — traces left by farmers.'}},
@@ -1609,7 +1626,7 @@ const CARDS={
      en:'Once a name is written into a register, how does it change the way people see themselves? Can you give an example from the book or from life?'}},
  beichuan:{part:3,
   key:{zh:'在北川，许多人家改报为羌族，“尔玛”这个自称被重新学习、重新表达。认同不只是与生俱来的血统，也是可以变化的选择和实践。',
-       en:'In Beichuan, many families re-registered as Qiang, and the self-name “Rma” was learned and spoken anew. Identity is not only inherited descent; it is also a choice and a practice that can change.'},
+       en:'In Beichuan, many families re-registered as Qiang, and the self-name “Erma” was learned and spoken anew. Identity is not only inherited descent; it is also a choice and a practice that can change.'},
   q:{zh:'如果认同可以重新学习，它还算“真”的吗？你怎么看“真实”与“建构”之间的关系？',
      en:'If identity can be learned anew, is it still “real”? How do you see the relation between “authentic” and “constructed”?'}}};
 let cardSeen={};
@@ -1664,7 +1681,7 @@ const Z={
  hehuang:{n:{zh:'河湟遗址 · 四千年前',en:'Hehuang sites · 4000 BP'},s:{zh:'气候转干，农业让出谷地。',en:'The climate turns dry; farming yields the valley.'}},
  wall:{n:{zh:'长城边缘 · 资源界线',en:'Wall margin · the resource line'},s:{zh:'墙里墙外，两种生计。',en:'Inside the wall: farming. Outside: herding.'}},
  modern:{n:{zh:'现代羌寨 · 国道边上',en:'Modern village · by the highway'},s:{zh:'认同在表格与课堂里，被重新讲述。',en:'Identity, retold in registers and classrooms.'}},
- beichuan:{n:{zh:'北川 · 尔玛人家',en:'Beichuan · the Rma home'},s:{zh:'认同是可以重新学习的。',en:'Identity can be learned anew.'}}};
+ beichuan:{n:{zh:'北川 · 尔玛人家',en:'Beichuan · the Erma home'},s:{zh:'认同是可以重新学习的。',en:'Identity can be learned anew.'}}};
 const clock=new THREE.Clock();
   /* 移动输入 */
 function loop(){
@@ -1871,7 +1888,7 @@ function loop(){
     pGroup.position.copy(P(z[0],z[1],0)); if(p2) p2.grp.position.copy(P(z[0]+2,z[1]+2,0));
     document.getElementById('tasks').classList.remove('show'); }; });
     /* 区域标签高亮+单元跳转 */
-  if(lastZone){ const zMap={'羌寨 · 岷江上游':'village','Valley · upper Min River':'village','河湟遗址 · 四千年前':'hehuang','Hehuang sites · 4000 BP':'hehuang','长城边缘 · 资源界线':'wall','Wall margin · the resource line':'wall','现代羌寨 · 国道边上':'modern','Modern village · by the highway':'modern','北川 · 尔玛人家':'beichuan','Beichuan · the Rma home':'beichuan'};
+  if(lastZone){ const zMap={'羌寨 · 岷江上游':'village','Valley · upper Min River':'village','河湟遗址 · 四千年前':'hehuang','Hehuang sites · 4000 BP':'hehuang','长城边缘 · 资源界线':'wall','Wall margin · the resource line':'wall','现代羌寨 · 国道边上':'modern','Modern village · by the highway':'modern','北川 · 尔玛人家':'beichuan','Beichuan · the Erma home':'beichuan'};
     const zid=zMap[lastZone];
     document.querySelectorAll('#zoneTabs a').forEach(a=>a.classList.toggle('on',a.dataset.z===zid));
     document.querySelector('.sceneCard').style.setProperty('--zc', ZCOL[zid]||'#c9a45c'); }
@@ -2056,9 +2073,10 @@ function makeCard(){
     c.fillRect(44+Math.random()*812, 52+Math.random()*420, 1.6, 1.6); }
   c.textAlign='center';
   c.fillStyle='#e8cf96';
-  fillMixed(c, '边 缘 行 走', 450, 205, '600 62px');
+  const EN=T.lang==='en';
+  fillMixed(c, EN?'Walking the Edge':'边 缘 行 走', 450, 205, '600 62px');
   c.fillStyle='#8b8474';
-  fillMixed(c, '《华夏边缘：历史记忆与族群认同》· 互动行走', 450, 252, '21px');
+  fillMixed(c, EN?'Huaxia Frontiers: Historical Memories and Ethnic Identities':'《华夏边缘：历史记忆与族群认同》· 互动行走', 450, 252, '21px');
   c.strokeStyle='rgba(201,164,92,.5)'; c.lineWidth=1.5;
   c.beginPath(); c.moveTo(70,540); c.lineTo(388,540); c.stroke();
   c.beginPath(); c.moveTo(512,540); c.lineTo(830,540); c.stroke();
@@ -2066,21 +2084,22 @@ function makeCard(){
   const ns=shards.filter(x=>x.userData.got).length, nn=NPCS.filter(x=>x.done).length;
   const mins=Math.max(1,Math.round((Date.now()-walkT0)/60000));
   c.fillStyle='#e8dfc8';
-  fillMixed(c, '史料 '+ns+' / 17 · 倾听讲述 '+nn+' / 5', 450, 640, '34px');
+  fillMixed(c, EN?'Sources '+ns+' / 17 · Tellings heard '+nn+' / 5':'史料 '+ns+' / 17 · 倾听讲述 '+nn+' / 5', 450, 640, '34px');
   c.fillStyle='#8b8474';
-  fillMixed(c, '行走 '+mins+' 分钟 · 足迹 '+steps+' 步'+(lit?' · 烽火已燃':''), 450, 688, '19px');
+  fillMixed(c, EN?'Walked '+mins+' min · '+steps+' steps'+(lit?' · beacon lit':''):'行走 '+mins+' 分钟 · 足迹 '+steps+' 步'+(lit?' · 烽火已燃':''), 450, 688, '19px');
   const Q=[['边界不在墙上，在脚上。','The boundary is not on a wall — it walks with you.'],
-           ['读懂边缘，才读懂“什么是中国人”。','To read the edge is to read what is Chinese.'],
+           ['读懂边缘，才读懂“什么是中国人”。','Read the edge, and you begin to see who counts as Chinese.'],
            ['什么是中国人？这个问题没有终点。','Who counts as Chinese? The question has no end.']];
   const q=Q[Math.floor(Math.random()*Q.length)];
   c.fillStyle='#c9a45c';
-  fillMixed(c, q[0], 450, 810, '27px');
+  if(EN){ fillMixed(c, q[1], 450, 820, '27px'); }
+  else { fillMixed(c, q[0], 450, 810, '27px');
   c.fillStyle='#8b8474'; c.font='16px "Times New Roman",serif';
-  c.fillText(q[1], 450, 848);
+  c.fillText(q[1], 450, 848); }
   c.fillStyle='#8b8474';
-  fillMixed(c, 'WALKING THE EDGE · 华夏边缘 · 17 件史料 · 5 段讲述 · 5 个场景', 450, 1124, '15px');
+  fillMixed(c, EN?'WALKING THE EDGE · HUAXIA FRONTIERS · 17 SOURCES · 5 TELLINGS · 5 SCENES':'WALKING THE EDGE · 华夏边缘 · 17 件史料 · 5 段讲述 · 5 个场景', 450, 1124, '15px');
   const url=cv.toDataURL('image/jpeg',0.86);
-  albumAdd(url); openViewer(url,'边缘行走_纪念卡.jpg'); renderAlbum();
+  albumAdd(url); openViewer(url,tx('fnCard')); renderAlbum();
 }
 document.getElementById('btnCard').addEventListener('click',makeCard);
 
@@ -2111,7 +2130,7 @@ function makeCardsImage(){
   c.strokeStyle='rgba(201,164,92,.55)'; c.lineWidth=2; c.strokeRect(26,26,W-52,H-52);
   c.textAlign='center'; c.textBaseline='alphabetic';
   c.fillStyle='#e8cf96'; fillMixed(c,tx('cardsHead'),W/2,150,'600 64px');
-  c.fillStyle='#8b8474'; fillMixed(c,T.lang==='zh'?'边缘行走 · 《华夏边缘：历史记忆与族群认同》互动导读':'Walking the Edge · an interactive reading guide to Huaxia Frontier',W/2,210,'26px');
+  c.fillStyle='#8b8474'; fillMixed(c,T.lang==='zh'?'边缘行走 · 《华夏边缘：历史记忆与族群认同》互动导读':'Walking the Edge · an interactive reading guide to Huaxia Frontiers',W/2,210,'26px');
   const nDone=blocks.filter(b=>b.done).length;
   c.fillStyle='#c9a45c'; fillMixed(c,(T.lang==='zh'?'已解锁 ':'Unlocked ')+nDone+' / 5',W/2,262,'26px');
   let y=330;
@@ -2131,7 +2150,7 @@ function makeCardsImage(){
     y+=b.h+34; });
   c.fillStyle='#8b8474'; fillMixed(c,tx('cardsNote'),W/2,H-92,'21px');
   const url=cv.toDataURL('image/png');
-  openViewer(url,'边缘行走_读书卡.png'); }
+  openViewer(url,tx('fnRc')); }
 $('btnCardsImg').addEventListener('click',makeCardsImage);
 $('btnCardsEnd').addEventListener('click',makeCardsImage);
 $('cardsClose').addEventListener('click',()=>$('cardsOut').classList.remove('show'));
@@ -2164,7 +2183,7 @@ $('albMcNew').addEventListener('click',()=>makeCard());
 $('albRc').addEventListener('click',e=>{ const d=e.target.closest('div[data-z]'); if(!d||d.classList.contains('lock')) return; closeAlbum(); showCard(d.dataset.z); });
 $('albMc').addEventListener('click',e=>{ const del=e.target.closest('a[data-del]');
   if(del){ if(!confirm(tx('albDelQ'))) return; const list=albumGet(); list.splice(+del.dataset.del,1); albumSet(list); renderAlbum(); return; }
-  const f=e.target.closest('figure[data-k]'); if(f){ const it=albumGet()[+f.dataset.k]; if(it) openViewer(it.img,'边缘行走_纪念卡.jpg'); } });
+  const f=e.target.closest('figure[data-k]'); if(f){ const it=albumGet()[+f.dataset.k]; if(it) openViewer(it.img,tx('fnCard')); } });
 /* 结尾页：可以关掉回到世界里继续走，也可以重新开始 */
 function closeEnd(){ $('end').style.display='none'; }
 $('endClose').addEventListener('click',closeEnd);

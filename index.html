@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>华夏边缘 · Huaxia Frontier</title>
+<title>华夏边缘 · Huaxia Frontiers</title>
 <meta name="description" content="王明珂《华夏边缘：历史记忆与族群认同》3D沉浸式主题站——边缘如何造就华夏。Bilingual 中文/English.">
 <meta name="theme-color" content="#06070d">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Huaxia Frontier · 华夏边缘">
-<meta property="og:title" content="华夏边缘 · Huaxia Frontier">
+<meta property="og:site_name" content="Huaxia Frontiers · 华夏边缘">
+<meta property="og:title" content="华夏边缘 · Huaxia Frontiers">
 <meta property="og:description" content="王明珂《华夏边缘：历史记忆与族群认同》3D沉浸式主题站——边缘如何造就华夏。Bilingual 中文/English.">
 <meta property="og:url" content="https://tanyaqiongcode.github.io/huaxia-frontiers-3d/">
 <meta property="og:image" content="https://tanyaqiongcode.github.io/huaxia-frontiers-3d/assets/og-cover.jpg">
@@ -17,7 +17,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="华夏边缘 · Huaxia Frontier">
+<meta name="twitter:title" content="华夏边缘 · Huaxia Frontiers">
 <meta name="twitter:description" content="王明珂《华夏边缘》3D沉浸式主题站——边缘如何造就华夏。">
 <meta name="twitter:image" content="https://tanyaqiongcode.github.io/huaxia-frontiers-3d/assets/og-cover.jpg">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Ccircle cx='24' cy='24' r='19' stroke='%23c9a45c' stroke-width='2.5' stroke-dasharray='103 17' stroke-linecap='round' transform='rotate(-58 24 24)'/%3E%3Ccircle cx='40.5' cy='9.5' r='3' fill='%23c9a45c'/%3E%3C/svg%3E">
@@ -365,13 +365,13 @@
 <div class="grain"></div>
 
 <div class="cmdbar">
-  <div class="pill" id="btnLang" role="button" aria-pressed="false" aria-label="切换中英文">A/文 <kbd>L</kbd></div>
+  <div class="pill" id="btnLang" role="button" aria-pressed="false" aria-label="切换中英文" data-i18n-aria="aLang">A/文 <kbd>L</kbd></div>
   <div class="pill" id="btnMenu" role="button" aria-expanded="false"><span data-i18n="mMenu">目录</span></div>
   <div id="tooltray">
-    <div class="pill" id="btnSound" role="button" aria-pressed="false" aria-label="环境配乐">♪ <kbd>S</kbd></div>
-    <div class="pill" id="btnPause" role="button" aria-pressed="false" aria-label="暂停渲染">⏸ <kbd>P</kbd></div>
-    <div class="pill" id="btnTheme" role="button" aria-pressed="false" aria-label="明暗主题">◐ <kbd>T</kbd></div>
-    <div class="pill" id="btnHide" role="button" aria-pressed="false" aria-label="隐藏界面">⊘ <kbd>H</kbd></div>
+    <div class="pill" id="btnSound" role="button" aria-pressed="false" aria-label="环境配乐" data-i18n-aria="aSound">♪ <kbd>S</kbd></div>
+    <div class="pill" id="btnPause" role="button" aria-pressed="false" aria-label="暂停渲染" data-i18n-aria="aPause">⏸ <kbd>P</kbd></div>
+    <div class="pill" id="btnTheme" role="button" aria-pressed="false" aria-label="明暗主题" data-i18n-aria="aTheme">◐ <kbd>T</kbd></div>
+    <div class="pill" id="btnHide" role="button" aria-pressed="false" aria-label="隐藏界面" data-i18n-aria="aHide">⊘ <kbd>H</kbd></div>
   </div>
   <div class="pill trayToggle" id="btnTray" role="button" aria-expanded="false">⚙ <span data-i18n="mTray">设置</span></div>
 </div>
@@ -384,10 +384,10 @@
   <a href="#maker" data-i18n="nMaker">3D 造物记</a>
   <a href="#praise" data-i18n="nPraise">读者回响</a>
   <a href="#translation" data-i18n="nTr">译程</a>
-  <a href="game/" style="color:var(--gold-hi)">边缘行走 · 互动导读 ↗</a>
+  <a href="game/" style="color:var(--gold-hi)" data-i18n="lnkGameNav">边缘行走 · 互动导读 ↗</a>
 </div>
-<div class="restore" id="btnRestore" role="button" aria-pressed="false" title="恢复界面 (H)" aria-label="恢复界面">◎</div>
-<div class="mark" title="Huaxia Frontier" role="img" aria-label="华夏边缘印记 · 不闭合的圆环"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="currentColor"/></svg></div>
+<div class="restore" id="btnRestore" role="button" aria-pressed="false" title="恢复界面 (H)" aria-label="恢复界面" data-i18n-aria="aRestore" data-i18n-title="aRestoreT">◎</div>
+<div class="mark" title="Huaxia Frontiers" role="img" aria-label="华夏边缘印记 · 不闭合的圆环" data-i18n-aria="aMark"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="currentColor"/></svg></div>
 
 <div class="apanel" id="apanel">
   <div class="hd" id="apHead" role="button" aria-expanded="true"><b data-i18n="apT">氛围</b><i>NO.01</i></div>
@@ -399,7 +399,7 @@
       <span data-v="moonlit"><i class="dot" style="background:#9fb8ff"></i><span data-i18n="scMo2">月夜</span></span>
       <span data-v="neon"><i class="dot" style="background:#7affd4"></i><span data-i18n="scNe">霓虹</span></span>
     </div>
-    <div class="fogrow"><span data-i18n="pMist">雾</span><input type="range" id="fogR" min="0" max="100" value="50" aria-label="雾浓度"></div>
+    <div class="fogrow"><span data-i18n="pMist">雾</span><input type="range" id="fogR" min="0" max="100" value="50" aria-label="雾浓度" data-i18n-aria="aFog"></div>
     <label><span data-i18n="pDen">画质</span>
       <span class="seg" id="segQ"><span data-v="auto" class="on" data-i18n="qAuto">自动</span><span data-v="high" data-i18n="qHigh">典藏</span><span data-v="mid" data-i18n="qMid">均衡</span><span data-v="low" data-i18n="qLow">轻量</span></span></label>
   </div>
@@ -408,14 +408,14 @@
 <main>
   <section id="hero">
     <div class="zh" data-i18n="heroZh">华夏边缘</div>
-    <div class="en" data-i18n="ensub">Historical Memory and Ethnic Identity</div>
+    <div class="en" data-i18n="ensub">Historical Memories and Ethnic Identities</div>
     <div class="quote" data-i18n-html="quote">“当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b><br>让它看起来像个圆形。”<br><span style="font-size:12.5px;color:var(--dim)">—— 王明珂</span></div>
     <div class="cta">
       <a class="btn" href="#story" data-i18n="ctaMain">从岷江上游读起</a>
       <a class="btn ghost" href="#media" data-i18n="ctaMedia">影像与访谈</a>
     </div>
     <div class="scrollhint" data-i18n="hint">SCROLL · 向下进入边缘</div>
-    <div class="heroBook" role="button" tabindex="0" aria-label="打开《华夏边缘》书籍简介"><img src="assets/book/cover.jpg" alt="华夏边缘 · 世纪文景2020"><div class="hbCue"><span class="hbPing"></span><span class="hbTxt" data-i18n="hbCue">点击读简介</span></div></div>
+    <div class="heroBook" role="button" tabindex="0" aria-label="打开《华夏边缘》书籍简介" data-i18n-aria="aBook"><img src="assets/book/cover.jpg" alt="华夏边缘 · 世纪文景2020" data-i18n-alt="aCover"><div class="hbCue"><span class="hbPing"></span><span class="hbTxt" data-i18n="hbCue">点击读简介</span></div></div>
   </section>
 
   <div id="descend">
@@ -477,7 +477,7 @@
       <div class="rule"></div>
       <p class="lead" data-i18n="pLead">两张主题图，把书中的范式之争与认同之变收进一方画面。</p></div>
     <div class="plates">
-      <figure class="plate reveal" data-lang="zh"><a href="assets/plates/huaxia-identity-zh.svg" target="_blank" rel="noopener" aria-label="《华夏边缘》族群认同图解（打开矢量原图）"><img src="assets/plates/huaxia-identity-zh.svg" alt="《华夏边缘》族群认同图解" loading="lazy"></a><figcaption><b data-i18n="pl1a">图版一</b><span data-i18n="pl1b">何为华夏边缘 · 身份认同如何形成</span></figcaption></figure>
+      <figure class="plate reveal" data-lang="zh"><a href="assets/plates/huaxia-identity-zh.svg" target="_blank" rel="noopener" aria-label="《华夏边缘》族群认同图解（打开矢量原图）" data-i18n-aria="aPlate"><img src="assets/plates/huaxia-identity-zh.svg" alt="《华夏边缘》族群认同图解" data-i18n-alt="aPlateImg" loading="lazy"></a><figcaption><b data-i18n="pl1a">图版一</b><span data-i18n="pl1b">何为华夏边缘 · 身份认同如何形成</span></figcaption></figure>
       <figure class="plate reveal" data-lang="en"><a href="assets/plates/huaxia-identity-en.svg" target="_blank" rel="noopener" aria-label="Reading identity from the margins (open full vector)"><img src="assets/plates/huaxia-identity-en.svg" alt="The Margins of Huaxia" loading="lazy"></a><figcaption><b>PLATE 3</b><span>The Margins of Huaxia — how boundaries shape identity</span></figcaption></figure>
     </div>
   </section>
@@ -490,9 +490,9 @@
       <div class="ltrack" id="ltrack">
         <div class="lcap"><span data-i18n="ls1a">4000 BP</span><i data-i18n="ls1b">气候变动 · 农业边缘化</i></div>
         <img class="lsvg paper" src="assets/book/svg/fig-104.svg" alt="p.104">
-        <div class="lcap"><span data-i18n="ls2a">1046 BC</span><i data-i18n="ls2b">周人族源 · 西周记忆</i></div>
+        <div class="lcap"><span data-i18n="ls2a">1046 BCE</span><i data-i18n="ls2b">周人族源 · 西周记忆</i></div>
         <img class="lsvg" src="assets/book/svg/transparent/fig-099.svg" alt="p.99">
-        <div class="lcap"><span data-i18n="ls3a">221 BC — 1840</span><i data-i18n="ls3b">汉代凝练 · 长城资源界线</i></div>
+        <div class="lcap"><span data-i18n="ls3a">221 BCE — 1840</span><i data-i18n="ls3b">汉代凝练 · 长城资源界线</i></div>
         <img class="lsvg" src="assets/book/svg/transparent/fig-113.svg" alt="p.113">
         <div class="lcap"><span data-i18n="ls4a">1950s</span><i data-i18n="ls4b">民族识别 · 学术知识建构</i></div>
         <img class="lsvg" src="assets/book/svg/transparent/fig-127.svg" alt="p.127">
@@ -571,11 +571,11 @@
 
   <footer>
     <div class="inner">
-      <div class="en">An English translation of Wang Ming-ke's <i>Huaxia Frontier</i><br>is in preparation.</div>
+      <div class="en">An English translation of Wang Ming-ke's <i>Huaxia Frontiers</i><br>is in preparation.</div>
       <div class="zh" data-i18n="ftZh">华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）</div>
       <div class="springer" data-i18n="springer">英译本 · 译事进行中</div>
-      <div style="margin-top:14px"><a href="reading/" style="color:var(--dim);text-decoration:none;border-bottom:1px dotted var(--line);font-size:11px;letter-spacing:.14em">阅读版 · Reading edition ↗</a></div>
-      <div style="margin-top:14px"><a href="game/" style="color:var(--dim);text-decoration:none;border-bottom:1px dotted var(--line);font-size:11px;letter-spacing:.14em">边缘行走 · 互动导读：边走边读全书 17 个概念 ↗</a></div>
+      <div style="margin-top:14px"><a href="reading/" style="color:var(--dim);text-decoration:none;border-bottom:1px dotted var(--line);font-size:11px;letter-spacing:.14em" data-i18n="lnkReading">阅读版 · Reading edition ↗</a></div>
+      <div style="margin-top:14px"><a href="game/" style="color:var(--dim);text-decoration:none;border-bottom:1px dotted var(--line);font-size:11px;letter-spacing:.14em" data-i18n="lnkGameFt">边缘行走 · 互动导读：边走边读全书 17 个概念 ↗</a></div>
       <div class="credits">Planet textures: Solar System Scope (CC BY 4.0) · Earth &amp; Moon imagery: NASA · Built on three.js (MIT) · SVG graphics: the editors</div>
       <div class="sister"><a href="https://tanyaqiongcode.github.io/foucault-3d/" data-i18n="sisterSite">姊妹站 · 福柯《规训与惩罚》3D 导读 ↗</a></div>
     </div>
@@ -589,7 +589,7 @@
     <div style="flex:1;min-width:260px">
       <div style="font-size:11px;letter-spacing:.3em;color:var(--gold);margin-bottom:12px" data-i18n="ovKick">BOOK · 世纪文景 2020</div>
       <div style="font-size:30px;letter-spacing:.12em;color:var(--ink);margin-bottom:8px" data-i18n="ovTitle">华夏边缘：历史记忆与族群认同</div>
-      <div style="font-family:var(--fserif);font-style:italic;color:var(--dim);font-size:13.5px;margin-bottom:18px" data-i18n="ovEn">Huaxia Frontier: Historical Memory and Ethnic Identity</div>
+      <div style="font-family:var(--fserif);font-style:italic;color:var(--dim);font-size:13.5px;margin-bottom:18px" data-i18n="ovEn">Huaxia Frontiers: Historical Memories and Ethnic Identities</div>
       <div style="font-size:14.5px;line-height:2.1;color:var(--ink);opacity:.88" data-i18n="ovBody">为什么我们自称“中国人”？华夏从何处来，边界又在哪里？王明珂以考古、文献与多年羌族田野，画出一条随资源竞争与历史记忆不断移动的边界——华夏因边缘而凝聚，也因边缘而改变。读懂边缘，才读懂“什么是中国人”。</div>
       <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;font-size:11.5px;color:var(--dim);letter-spacing:.1em">
         <span style="border:1px solid var(--line);border-radius:99px;padding:5px 14px" data-i18n="ovM1">豆瓣 9.1</span>
@@ -617,11 +617,11 @@ const CARDS = [
  {k:'01',lat:{zh:'De Finibus — 论边界',en:'Belonging'},h:{zh:'什么是中国人',en:'Who counts as one of us?'},p:{zh:'不问“华夏有什么”，而问“华夏的边界在哪里”。边缘视角取代定义式民族研究。',en:'When someone says “we Huaxia”, whom does that include? Wang begins with the people who draw that distinction.'}},
  {k:'02',lat:{zh:'De Club — 论会员制',en:'Membership'},h:{zh:'族群像高尔夫俱乐部',en:'Who can join the club?'},p:{zh:'族群认同如俱乐部会员制：入会资格由边界决定，而非由成员的内在特征决定。',en:'Two people can play the same game while only one belongs to the club. The analogy directs our attention to who decides membership.'}},
  {k:'03',lat:{zh:'De Oblivione — 论遗忘',en:'Memory'},h:{zh:'结构性失忆',en:'Structural amnesia'},p:{zh:'族群靠“记得什么、忘记什么”维系自身——失忆与记忆同样是建构边界的工程。',en:'Some ancestors recur in family stories. Others gradually disappear. What a group forgets can tell us as much about its present ties as what it remembers.'}},
- {k:'04',lat:{zh:'De Primis Ancestoribus — 论祖先',en:'Ancestry'},h:{zh:'英雄祖先与弟兄祖先',en:'Heroes and brothers'},p:{zh:'两种历史心性：阶序化的英雄叙事，与对等合作的弟兄叙事，对应两种社会形态。',en:'Some accounts trace a line of descent to a single hero. Others tell of brothers who founded neighbouring villages. Each gives a different shape to the ties among their descendants.'}},
+ {k:'04',lat:{zh:'De Primis Ancestoribus — 论祖先',en:'Ancestry'},h:{zh:'英雄祖先与弟兄祖先',en:'Heroic ancestors and ancestral brothers'},p:{zh:'两种历史心性：阶序化的英雄叙事，与对等合作的弟兄叙事，对应两种社会形态。',en:'Some accounts trace a line of descent to a single hero. Others tell of brothers who founded neighbouring villages. Wang calls these two kinds of historical mentality, and each gives a different shape to the ties among their descendants.'}},
  {k:'05',lat:{zh:'De Vallibus — 论河谷',en:'Village life'},h:{zh:'一截骂一截',en:'Names along the river'},p:{zh:'岷江上游的人群按河谷上下“一截骂一截”——认同在边缘处逐级滑动，没有铁板一块。',en:'On the upper Min River, people in one village might look down on their upstream neighbours, only to hear much the same judgement from the village downstream.'}},
  {k:'06',lat:{zh:'De Faces — 论火把',en:'Historical writing'},h:{zh:'燃烧的木棍',en:'What the torch illuminates'},p:{zh:'火把照亮的只是木棍一端：典范历史照亮中心，边缘沉在黑暗里——研究就是把火把转向边缘。',en:'A stick burns at one end while the other stays dark. Wang uses this image to ask whose lives familiar histories bring into view, and whose remain in shadow.'}},
  {k:'07',lat:{zh:'De Oecologia — 论生态',en:'Ecology'},h:{zh:'人类生态',en:'Who shares the pasture?'},p:{zh:'华夏是长程历史中的人类生态：资源竞争与分配环境，塑造了边界的形成与变迁。',en:'Access to fields, pasture and water draws some households together and sets others apart. As livelihoods change, the boundaries of a community can shift.'}},
- {k:'08',lat:{zh:'De Methodo — 论方法',en:'Method'},h:{zh:'边缘研究法',en:'History from the margins'},p:{zh:'从周人族源、羌人身份到太伯奔吴——用边缘人群的史料，重写中心的历史。',en:'Accounts of Zhou ancestry, stories of Taibo in Wu and changing uses of the name Qiang bring different histories of Huaxia into view.'}}
+ {k:'08',lat:{zh:'De Methodo — 论方法',en:'Method'},h:{zh:'边缘研究法',en:'Studying the margins'},p:{zh:'从周人族源、羌人身份到太伯奔吴——用边缘人群的史料，重写中心的历史。',en:'Accounts of Zhou ancestry, stories of Taibo in Wu and changing uses of the name Qiang bring different histories of Huaxia into view.'}}
 ];
 const QUOTES = [
  {p:{zh:'我们要探讨什么叫中华民族，最好的方法，不是正面地去对“中国人”下一个定义，而是想办法透过“中国人”这个族群的边界，来找它大概的意思。',en:'To understand what it means to be Chinese, the best way is not to define “the Chinese” outright, but to approach its meaning through the boundaries of this community.'},w:{zh:'梁文道',en:'Liang Wendao'},s:{zh:'· 凤凰卫视《开卷八分钟》整期推介',en:'· The Open Book, Phoenix TV'}},
@@ -634,7 +634,7 @@ const AULIST = [
  {zh:'哈佛大学东亚系博士（1992）',en:'Ph.D., Harvard University (1992)'},
  {zh:'北京大学历史学系客座讲席教授',en:'Visiting Chair Professor, Peking University'},
  {zh:'长期在川西羌族地区进行历史人类学田野',en:'Decades of fieldwork among the Qiang'},
- {zh:'代表作：《华夏边缘》《羌在汉藏之间》《游牧者的抉择》《毒药猫理论》',en:'Works: Huaxia Frontier; Between Han and Tibetan; Nomads'+String.fromCharCode(39)+' Choices; The Poison Cat Theory'}
+ {zh:'代表作：《华夏边缘》《羌在汉藏之间》《游牧者的抉择》《毒药猫理论》',en:'Works: Huaxia Frontiers; Between Han and Tibetan; Nomads'+String.fromCharCode(39)+' Choices; The Poison Cat Theory'}
 ];
 const TL = [
  {y:'1997',b:{zh:'台北允晨文化 · 繁体初版',en:'Taipei: Yunchen Culture'},s:{zh:'作者成名作，震动台湾学界',en:'The breakthrough work'}},
@@ -650,19 +650,19 @@ const MEDIA = [
  {p:'Bilibili',c:{zh:'《月明星稀——中原与其边缘的形成》',en:'A Bright Moon, Sparse Stars — How the Central Plain and Its Borderlands Took Shape'},ch:{zh:'i 讲座',en:'i Lectures'},h:'5,433',u:'https://www.bilibili.com/video/BV1xv4y1E7Sm'},
  {p:'YouTube',c:{zh:'第十六届余英时先生历史讲座（王明珂教授）',en:'16th Yu Ying-shih Lecture in History (Prof. Wang Ming-ke)'},ch:{zh:'中大新亚书院',en:'New Asia College, CUHK'},h:{zh:'官方录像',en:'Official'},act:'watch',u:'https://www.youtube.com/watch?v=GDL2BfBySjk'},
  {p:'YouTube',c:{zh:'我們為何在乎歷史？｜王明珂院士（2014 知識饗宴）',en:'Why do we care about history? | Academia Sinica lecture (2014)'},ch:{zh:'中研院 Academia Sinica',en:'Academia Sinica'},h:{zh:'9.6万播放 · 2014',en:'96K views · 2014'},act:'watch',u:'https://www.youtube.com/watch?v=INM02TtiQmQ'},
- {p:'凤凰卫视',c:{zh:'《开卷八分钟》梁文道整期推介本书（2008）',en:'The Open Book: full episode on this book (2008)'},ch:{zh:'凤凰网',en:'ifeng'},h:{zh:'文字实录',en:'Transcript'},act:'read',u:'http://phtv.ifeng.com/program/kjbfz/200807/0729_1699_682542.shtml'}
+ {p:{zh:'凤凰卫视',en:'Phoenix TV'},c:{zh:'《开卷八分钟》梁文道整期推介本书（2008）',en:'The Open Book: full episode on this book (2008)'},ch:{zh:'凤凰网',en:'ifeng'},h:{zh:'文字实录',en:'Transcript'},act:'read',u:'http://phtv.ifeng.com/program/kjbfz/200807/0729_1699_682542.shtml'}
 ];
 const SOC = [
- {n:'Bilibili',u:'https://search.bilibili.com/all?keyword=%E7%8E%8B%E6%98%8E%E7%8F%82%20%E5%8D%8E%E5%A4%8F%E8%BE%B9%E7%BC%98&order=totalrank',d:{zh:'王明珂《华夏边缘》· 讲座与解读',en:'Wang Ming-ke, Huaxia Frontier · lectures & readings'}},
+ {n:'Bilibili',u:'https://search.bilibili.com/all?keyword=%E7%8E%8B%E6%98%8E%E7%8F%82%20%E5%8D%8E%E5%A4%8F%E8%BE%B9%E7%BC%98&order=totalrank',d:{zh:'王明珂《华夏边缘》· 讲座与解读',en:'Wang Ming-ke, Huaxia Frontiers · lectures & readings'}},
  {n:'YouTube',u:'https://www.youtube.com/results?search_query=%E7%8E%8B%E6%98%8E%E7%8F%82',d:{zh:'王明珂 · 讲座与访谈',en:'Wang Ming-ke · talks'}},
  {n:'Reddit',u:'https://www.reddit.com/r/AskHistorians/',d:{zh:'游牧边疆与族群边界 · 学术问答社区',en:'Nomadic frontiers & ethnic boundaries · Q&A'}},
- {n:'小红书rednote',u:'https://www.xiaohongshu.com/search_result?keyword=%E7%8E%8B%E6%98%8E%E7%8F%82',d:{zh:'王明珂 · 中文笔记',en:'Wang Ming-ke · notes'}},
- {n:'中研院史语所',u:'https://www1.ihp.sinica.edu.tw/Fellows/Ming-ke_Wang',d:{zh:'王明珂研究员页面 · 官方',en:'Official fellow page, IHP'}}
+ {n:{zh:'小红书',en:'Xiaohongshu (RedNote)'},u:'https://www.xiaohongshu.com/search_result?keyword=%E7%8E%8B%E6%98%8E%E7%8F%82',d:{zh:'王明珂 · 中文笔记',en:'Wang Ming-ke · notes'}},
+ {n:{zh:'中研院史语所',en:'IHP, Academia Sinica'},u:'https://www1.ihp.sinica.edu.tw/Fellows/Ming-ke_Wang',d:{zh:'王明珂研究员页面 · 官方',en:'Official fellow page, IHP'}}
 ];
 const T = { lang:'zh', dict:{
  prLead:{zh:'当代华语世界最具范式意义的历史人类学经典之一',en:'One of the most paradigm-shifting works of historical anthropology in the Chinese-speaking world'},
  ps1:{zh:'微信读书 · 人在读（2026-11-02 记录）',en:'WeRead readers on record · Nov 2, 2026'},
- ctaMain:{zh:'从岷江上游读起',en:'Begin upstream, in the Minjiang valley'},
+ ctaMain:{zh:'从岷江上游读起',en:'Begin upstream, on the Min River'},
  ctaMedia:{zh:'影像与访谈',en:'Watch the talks'},
  mMenu:{zh:'目录',en:'Menu'}, mTray:{zh:'设置',en:'Settings'},
  springer:{zh:'英译本 · 译事进行中',en:'ENGLISH TRANSLATION IN PROGRESS'},
@@ -680,7 +680,7 @@ const T = { lang:'zh', dict:{
  ls3b:{zh:'汉代凝练 · 长城资源界线',en:'Han consolidation · the Great Wall line'},
  ls4b:{zh:'民族识别 · 学术知识建构',en:'Ethnic classification · the making of knowledge'},
  lsNote:{zh:'注：BP 为距今（以 1950 年为测年基准），BC 为公元前，未标注年份为公元纪年。地图据原书第 104、99、113、127 页插图重绘。',en:'Note: BP = before present (1950 baseline); BC = before Christ; unmarked years are CE. Maps redrawn from the book, pp. 104, 99, 113, 127.'},
- ls5b:{zh:'边缘重构 · 多元一体',en:'The edge remade · unity in diversity'},
+ ls5b:{zh:'边缘重构 · 多元一体',en:'The edge remade · diversity in unity'},
  apT:{zh:'氛围',en:'ATMOSPHERE'},
  pScene:{zh:'场景',en:'SCENE'}, pMist:{zh:'雾',en:'MIST'}, pDen:{zh:'画质',en:'QUALITY'},
  stMo:{zh:'晨光漂流 · 清透大气',en:'Morning drift · clear air'},
@@ -697,10 +697,10 @@ const T = { lang:'zh', dict:{
  qAuto:{zh:'自动',en:'Auto'}, qHigh:{zh:'典藏',en:'Ultra'}, qMid:{zh:'均衡',en:'Balanced'}, qLow:{zh:'轻量',en:'Lite'},
  veilTxt:{zh:'正文已可用 · 3D 正在进入现场',en:'Text is ready · the 3D scene is arriving'},
  skipTxt:{zh:'跳到正文',en:'Skip to content'},
- sidesign:{zh:'华夏边缘 · 历史记忆与族群认同',en:'HUAXIA FRONTIER · Historical Memory & Ethnic Identity'},
- metaline:{zh:'田野坐标 北纬31°06′ 东经103°51′ · 岷江上游 · 田野期一九九〇至二〇〇〇年代 · 研究编号 01',en:'FIELD SITE 31°06′N 103°51′E · UPPER MINJIANG · FIELDWORK 1990s—2000s · STUDY No.01'},
- ensub:{zh:'',en:'Historical Memory and Ethnic Identity'},
- heroZh:{zh:'华夏边缘',en:'Huaxia Frontier'},
+ sidesign:{zh:'华夏边缘 · 历史记忆与族群认同',en:'HUAXIA FRONTIERS · Historical Memories & Ethnic Identities'},
+ metaline:{zh:'田野坐标 北纬31°06′ 东经103°51′ · 岷江上游 · 田野期一九九〇至二〇〇〇年代 · 研究编号 01',en:'FIELD SITE 31°06′N 103°51′E · UPPER MIN RIVER · FIELDWORK 1990s—2000s · STUDY No.01'},
+ ensub:{zh:'',en:'Historical Memories and Ethnic Identities'},
+ heroZh:{zh:'华夏边缘',en:'Huaxia Frontiers'},
  quote:{zh:'“当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b><br>让它看起来像个圆形。”<br><span style="font-size:12.5px;color:var(--dim)">—— 王明珂</span>',en:'"Draw a circle on a sheet of paper: it is its <b>outline</b><br>that makes it a circle."<br><span style="font-size:12.5px;color:var(--dim)">—— Wang Ming-ke</span>'},
  st1:{zh:'LIVE · 人在读',en:'LIVE · READING'}, st2:{zh:'豆瓣评分',en:'Douban'}, st3:{zh:'微信读书推荐值',en:'WeRead Score'}, st4:{zh:'豆瓣书评',en:'Reviews'},
  cta0:{zh:'影像里的边缘',en:'Watch the talks'}, cta1:{zh:'进入边缘 · 概念八章',en:'Explore eight ideas'}, cta2:{zh:'观看 3D 造物记',en:'See how the scene was built'},
@@ -717,7 +717,7 @@ const T = { lang:'zh', dict:{
  pTitle:{zh:'信息图 · <em>族群认同图解</em>',en:'Reading identity <em>from the margins</em>'},
  pLead:{zh:'一张图解：范式如何转换、边界如何形成、认同如何变迁——全书的提问与回答，收进一方画面。',en:'One infographic: how paradigms shift, how boundaries form, how identity changes — the book'+String.fromCharCode(39)+'s questions and answers in a single frame.'},
  pl1a:{zh:'图版',en:'PLATE'}, pl1b:{zh:'《华夏边缘》族群认同图解 · 全书核心逻辑一图读懂',en:'The Margins of Huaxia — how boundaries shape identity'},
- pl2a:{zh:'图版贰',en:'PLATE Ⅱ'}, pl2b:{zh:'从客观特征到主观认同 · 范式之变',en:'From objective traits to subjective identity — a paradigm shift'},
+ pl2a:{zh:'图版贰',en:'PLATE Ⅱ'}, pl2b:{zh:'从客观特征到主观认同 · 范式之变',en:'From objective traits to subjective identification — a paradigm shift'},
 
 
 
@@ -730,8 +730,8 @@ const T = { lang:'zh', dict:{
  mkLead:{zh:'与本书同构的 3D 隐喻——发光的内核是“华夏”，青铜巨环是“边缘”，环绕的碎片是被记起与被遗忘的记忆，双碉楼矗立在羌族田野的边缘。下面的影像，从一片空白开始，一块一块把它搭起来——每一步都可以重新走一遍。',en:'Light falls through a bronze ring. Fragments turn around it. Two watchtowers bring western Sichuan into view. The film follows the scene from its first shapes to the finished model.'},
  mkChip1:{zh:'⬇ 下载 Blender 工程文件',en:'⬇ Download the Blender file'},
  ovKick:{zh:'书籍 · 世纪文景 2020',en:'BOOK · CENTURY WENJING 2020'},
- ovTitle:{zh:'华夏边缘：历史记忆与族群认同',en:'Huaxia Frontier: Historical Memory and Ethnic Identity'},
- ovEn:{zh:'Huaxia Frontier: Historical Memory and Ethnic Identity',en:'by Wang Ming-ke'},
+ ovTitle:{zh:'华夏边缘：历史记忆与族群认同',en:'Huaxia Frontiers: Historical Memories and Ethnic Identities'},
+ ovEn:{zh:'Huaxia Frontiers: Historical Memories and Ethnic Identities',en:'by Wang Ming-ke'},
  ovBody:{zh:'为什么我们自称“中国人”？华夏从何处来，边界又在哪里？王明珂以考古、文献与多年羌族田野，画出一条随资源竞争与历史记忆不断移动的边界——华夏因边缘而凝聚，也因边缘而改变。读懂边缘，才读懂“什么是中国人”。',en:'Who counted as Huaxia, and who decided? Drawing on archaeological finds, historical texts and years of fieldwork in Qiang communities, Wang Ming-ke traces how people drew boundaries around land, ancestry and belonging.'},
  ovM1:{zh:'豆瓣 9.1',en:'Douban 9.1'}, ovM2:{zh:'微信读书推荐值 91.9%',en:'WeRead 91.9%'}, ovM3:{zh:'王明珂 · 历史人类学',en:'Wang Ming-ke · Historical Anthropology'},
  hbCue:{zh:'点击读简介',en:'Click to read'},
@@ -741,11 +741,24 @@ const T = { lang:'zh', dict:{
  trTitle:{zh:'边缘之外',en:'Beyond the <em>margins</em>'},
  trLead:{zh:'边缘，是华夏最早的记忆，也是它最新的提问。三千年间，这条线在草原、雪山与河谷之间移动；今天，它移到了一种语言的边界上——而这部书的英译，已经在路上，即将抵达。',
  en:'The edge is Huaxia'+String.fromCharCode(39)+'s oldest memory — and its newest question. For three thousand years it has drifted across steppe, snowline and river valley; today it arrives at the border of a language — and the English translation of this book is underway.'},
+ ls5a:{zh:'此刻',en:'Today'},
+ lnkGameNav:{zh:'边缘行走 · 互动导读 ↗',en:'Walking the Edge · reading guide ↗'},
+ lnkReading:{zh:'阅读版 · Reading edition ↗',en:'Reading edition ↗'},
+ lnkGameFt:{zh:'边缘行走 · 互动导读：边走边读全书 17 个概念 ↗',en:'Walking the Edge · walk through 17 ideas from the book ↗'},
+ aLang:{zh:'切换中英文',en:'Switch language'}, aSound:{zh:'环境配乐',en:'Ambient music'}, aPause:{zh:'暂停渲染',en:'Pause animation'},
+ aTheme:{zh:'明暗主题',en:'Light or dark theme'}, aHide:{zh:'隐藏界面',en:'Hide interface'}, aRestore:{zh:'恢复界面',en:'Show interface'},
+ aRestoreT:{zh:'恢复界面 (H)',en:'Show interface (H)'}, aMark:{zh:'华夏边缘印记 · 不闭合的圆环',en:'Huaxia Frontiers emblem · an unclosed circle'},
+ aFog:{zh:'雾浓度',en:'Mist density'}, aBook:{zh:'打开《华夏边缘》书籍简介',en:'Open the book overview'},
+ aCover:{zh:'华夏边缘 · 世纪文景2020',en:'Cover of Huaxia Frontiers, Shiji Wenjing edition (2020)'},
+ aPlate:{zh:'《华夏边缘》族群认同图解（打开矢量原图）',en:'Diagram of ethnic identity in Huaxia Frontiers (opens the full-size vector image)'},
+ aPlateImg:{zh:'《华夏边缘》族群认同图解',en:'Diagram of ethnic identity in Huaxia Frontiers'},
  sisterSite:{zh:'姊妹站 · 福柯《规训与惩罚》3D 导读 ↗',en:'Sister site · Foucault, Discipline and Punish — a 3D reading guide ↗'},
- ftZh:{zh:'华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）',en:'Huaxia Frontier · Historical Memory and Ethnic Identity<br>by Wang Ming-ke · Shanghai People'+String.fromCharCode(39)+'s Publishing House / Century Wenjing'}
+ ftZh:{zh:'华夏边缘 · 历史记忆与族群认同<br>王明珂 著 · 上海人民出版社 / 世纪文景（中文通行版）',en:'Huaxia Frontiers · Historical Memories and Ethnic Identities<br>by Wang Ming-ke · Shanghai People'+String.fromCharCode(39)+'s Publishing House / Century Wenjing'}
 }};
 function tx(o){ return o ? (o[T.lang] || o.zh || '') : ''; }
 function applyLang(){
+  document.querySelectorAll('[data-i18n-aria],[data-i18n-alt],[data-i18n-title]').forEach(el=>{
+    [['i18nAria','aria-label'],['i18nAlt','alt'],['i18nTitle','title']].forEach(([k,a])=>{ const d=T.dict[el.dataset[k]]; if(d) el.setAttribute(a,tx(d)); }); });
   document.documentElement.lang = T.lang==='zh' ? 'zh-CN' : 'en';
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const v = T.dict[el.dataset.i18n]; if(v) el.innerHTML = tx(v); });
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const v = T.dict[el.dataset.i18nHtml]; if(v) el.innerHTML = tx(v); });
@@ -757,35 +770,35 @@ function applyLang(){
   document.getElementById('tlList').innerHTML = TL.map(r=>
    `<div class="row"><div class="yr">${r.y}</div><div class="ds"><b>${tx(r.b)}</b><span>${tx(r.s)}</span></div></div>`).join('');
   document.getElementById('mediaRows').innerHTML = MEDIA.map(m=>
-   `<tr><td class="n">${m.p}</td><td>${tx(m.c)}</td><td>${tx(m.ch)}</td><td class="n">${typeof m.h==='string'?m.h+(T.lang==='zh'?' 播放':''):tx(m.h)}</td><td><a href="${m.u}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">${m.act==='read'?(T.lang==='zh'?'阅读 ↗':'Read ↗'):(T.lang==='zh'?'观看 ↗':'Watch ↗')}</a></td></tr>`).join('');
+   `<tr><td class="n">${typeof m.p==='string'?m.p:tx(m.p)}</td><td>${tx(m.c)}</td><td>${tx(m.ch)}</td><td class="n">${typeof m.h==='string'?m.h+(T.lang==='zh'?' 播放':''):tx(m.h)}</td><td><a href="${m.u}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">${m.act==='read'?(T.lang==='zh'?'阅读 ↗':'Read ↗'):(T.lang==='zh'?'观看 ↗':'Watch ↗')}</a></td></tr>`).join('');
   document.getElementById('socLinks').innerHTML = SOC.map(s=>
-   `<a href="${s.u}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><b>${s.n}</b><span>${tx(s.d)}</span></a>`).join('');
+   `<a href="${s.u}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><b>${typeof s.n==='string'?s.n:tx(s.n)}</b><span>${tx(s.d)}</span></a>`).join('');
   renderMap();
   document.getElementById('btnLang').innerHTML = (T.lang==='zh' ? 'EN' : '中文') + ' <kbd>L</kbd>';
   io2.observe();
 }
 
 /* ================= 思维导图（中英） ================= */
-const MAP = { r:{zh:'华夏边缘：历史记忆与族群认同',en:'Huaxia Frontier'}, br:[
+const MAP = { r:{zh:'华夏边缘：历史记忆与族群认同',en:'Huaxia Frontiers'}, br:[
  {zh:'边缘与内涵',en:'Edge and Essence', ch:[
    {zh:'当代社会人类学族群理论',en:'Ethnicity theory', ch:[
      {zh:'客观特征论的困境',en:'The objective-traits dilemma'},
      {zh:'主观认同下的族群与边界',en:'Subjective ethnic boundaries'},
      {zh:'工具论与根基论之争',en:'Instrumentalism vs primordialism'}]},
    {zh:'记忆、历史与族群本质',en:'Memory, history, essence', ch:[
-     {zh:'结构性失忆与集体记忆',en:'Amnesia and collective memory'},
+     {zh:'结构性失忆与集体记忆',en:'Structural amnesia and collective memory'},
      {zh:'文化亲近性与家族记忆',en:'Kinship and family memory'},
      {zh:'族群本质与历史记忆选择',en:'Essence and chosen memory'}]},
    {zh:'民族史研究的边缘理论',en:'A margin approach to history', ch:[
      {zh:'民族溯源研究的限制',en:'The limits of origin-tracing'},
-     {zh:'民族史边缘研究取向',en:'Ethnic history from the margin'},
-     {zh:'生态考古与文献社会记忆',en:'Ecological archaeology and texts'}]}]},
+     {zh:'民族史边缘研究取向',en:'Ethnic history: studying the margins'},
+     {zh:'生态考古与文献社会记忆',en:'Ecological archaeology and social memory in texts'}]}]},
  {zh:'华夏生态边界的形成',en:'The ecological boundary', ch:[
    {zh:'气候变迁与人类生态',en:'Climate and human ecology', ch:[
      {zh:'距今4000年前后干冷化',en:'The cold-dry shift at 4000 BP'},
      {zh:'满天星斗到月明星稀',en:'From many stars to one moon'}]},
    {zh:'区域游牧社会的形成',en:'Pastoral societies form', ch:[
-     {zh:'青海河湟地区游牧社会',en:'Hehuang pastoral society'},
+     {zh:'青海河湟地区游牧社会',en:'Pastoral society in the Hehuang region'},
      {zh:'鄂尔多斯及邻近地区',en:'Ordos and neighbours'},
      {zh:'西辽河地区夏家店上层文化',en:'Upper Xiajiadian culture'}]},
    {zh:'华夏与周边资源的竞争',en:'Competing for resources', ch:[
@@ -797,21 +810,21 @@ const MAP = { r:{zh:'华夏边缘：历史记忆与族群认同',en:'Huaxia Fron
      {zh:'周人与戎人的互动与认同',en:'Zhou and Rong interactions'}]},
    {zh:'华夏的记忆与失忆',en:'Memory and forgetting', ch:[
      {zh:'西周金文与战国文献差异',en:'Bronze inscriptions vs texts'},
-     {zh:'华夏认同形成后的历史重整',en:'Re-ordering the past'}]},
+     {zh:'华夏认同形成后的历史重整',en:'Re-ordering history once Huaxia identity took shape'}]},
    {zh:'边缘人群华夏化与边缘漂移',en:'Sinicization and drift', ch:[
      {zh:'吴太伯故事与边缘华夏化',en:'The Wu Taibo legend'},
      {zh:'羌人概念的西移与演变',en:'The westward drift of Qiang'},
      {zh:'汉代华夏对四方异族的多元意象',en:'How Han writers portrayed others'}]}]},
  {zh:'华夏边缘的延续与变迁',en:'Continuity and change', ch:[
-   {zh:'近代华夏边缘再造',en:'The modern re-making', ch:[
+   {zh:'近代华夏边缘再造',en:'The contemporary reconstructing of Huaxia frontiers', ch:[
      {zh:'传统帝国到国族国家转变',en:'From empire to nation-state'},
-     {zh:'近代华夏边缘再造的微观过程',en:'Micro-processes of re-making'}]},
+     {zh:'近代华夏边缘再造的微观过程',en:'The microscopic processes of that reconstructing'}]},
    {zh:'边缘延续与变迁的案例',en:'Cases of change', ch:[
-     {zh:'湘西革屯运动与土著民族',en:'Xiangxi anti-garrison movement'},
-     {zh:'北川羌族的尔玛认同变迁',en:'Beichuan Qiang identity'}]},
+     {zh:'湘西革屯运动与土著民族',en:'Western Hunan: the movement against the military-colony system'},
+     {zh:'北川羌族的尔玛认同变迁',en:'Beichuan Qiang and Erma identity'}]},
    {zh:'结语与反思性国族认同',en:'Conclusion: reflexive identity', ch:[
      {zh:'资源竞争、历史记忆与族群认同',en:'Competition, memory, identity'},
-     {zh:'反思性国族认同与多元一体格局',en:'Reflexive nationhood'}]}]}
+     {zh:'反思性国族认同与多元一体格局',en:'Reflexive national identity and diversity in unity'}]}]}
 ]};
 MAP.r.ch = MAP.br; /* 归一化：五大分支挂到根节点ch上——此前数据在MAP.br而渲染只认r.ch，导图永远是孤点 */
 const MAPR = {};
@@ -1292,7 +1305,7 @@ const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main
 
 applyLang();
 setScene('morning');
-console.info('Huaxia Frontier site — v37 (2026-11-08) | quality tiers · progressive entry · a11y');
+console.info('Huaxia Frontiers site — v37 (2026-11-08) | quality tiers · progressive entry · a11y');
 document.documentElement.setAttribute('data-scene','morning');
 </script>
 </body>

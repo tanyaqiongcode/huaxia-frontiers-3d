@@ -1,4 +1,4 @@
-# 华夏边缘 · Huaxia Frontier
+# 华夏边缘 · Huaxia Frontiers
 
 为王明珂《华夏边缘：历史记忆与族群认同》而建的一座 3D 主题站。
 
