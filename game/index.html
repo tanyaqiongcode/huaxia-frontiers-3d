@@ -122,6 +122,17 @@
   .endQs{text-align:left;font-size:13px;line-height:1.85;margin:4px 0 16px;color:var(--ink)}
   .endQs b{display:block;color:var(--gold);font-size:11px;letter-spacing:.2em;font-weight:400;margin-bottom:4px}
   .endQs div{margin-top:6px}
+  .tasks .cardsBtn{display:none;margin-top:8px;font-size:11.5px;letter-spacing:.14em;color:var(--gold-hi);border:1px solid var(--gold);border-radius:99px;
+    padding:5px 14px;background:rgba(201,164,92,.08);cursor:pointer;font-family:inherit}
+  .tasks .cardsBtn.on{display:inline-block}
+  .cardsOut{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;
+    background:rgba(6,8,14,.95);overflow:auto;padding:24px 12px 40px}
+  .cardsOut.show{display:flex}
+  .cardsOut img{width:min(520px,94vw);border-radius:10px;border:1px solid var(--line)}
+  .cardsOut .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .cardsOut a,.cardsOut button{color:var(--gold-hi);text-decoration:none;font-size:12.5px;letter-spacing:.16em;border:1px solid var(--gold);border-radius:99px;
+    padding:9px 24px;background:rgba(201,164,92,.08);cursor:pointer;font-family:inherit}
+  .cardsOut .tip{font-size:11.5px;color:var(--dim);letter-spacing:.1em;text-align:center}
   /* 按键说明（H） */
   .keysPanel{position:fixed;right:18px;bottom:52px;z-index:7;display:none;width:min(360px,92vw);font-size:12px;line-height:2.05;color:var(--ink);
     background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.8));border:1px solid var(--line);border-radius:12px;padding:12px 16px;backdrop-filter:blur(8px)}
@@ -240,6 +251,7 @@
   <li id="tLine" data-i18n="tLine">见证边界线移动</li>
 </ul>
   <div class="cardList" id="tCards"></div>
+  <button class="cardsBtn" id="btnCardsImg" data-i18n="cardsImg">生成读书卡图片</button>
   <div class="memo" id="tMemo"></div>
   <div class="ftT" data-i18n="ftT">快速移动 · FAST TRAVEL</div>
   <div class="ftG" id="ftG">
@@ -253,6 +265,8 @@
 <div class="dlg" id="poi"><div class="who" id="poiWho"></div><div class="txt" id="poiTxt"></div><div class="more" id="poiMore">E · 关闭</div></div>
 <div class="keysPanel" id="keysPanel" data-i18n-html="keysAll"></div>
 <div class="lockTip" id="lockTip"></div>
+<div class="cardsOut" id="cardsOut"><div class="row"><a id="cardsDl" download="边缘行走_读书卡.png" data-i18n="cardsDl">下载图片</a><button id="cardsClose" data-i18n="cardsClose">关闭</button></div>
+  <div class="tip" data-i18n="cardsTip">手机上长按图片即可保存或转发</div><img id="cardsImg" alt="读书卡"></div>
 <div class="rcard" id="rcard"><div class="in">
   <div class="k" id="rcK"></div><h3 id="rcT"></h3><div class="pt" id="rcP"></div>
   <div class="h" data-i18n="rcKey">导读要点</div><p id="rcB"></p>
@@ -275,6 +289,7 @@
   <h1 data-i18n="eTitle">行至边缘</h1><div class="sub" data-i18n="eSub">WALKED TO THE MARGIN</div>
   <p data-i18n-html="eBody">你拾起了散落的记忆，也听完了五段讲述。<br>边界在你脚下移动过——它不在墙上，不在族谱里，<br>而在资源、记忆，与每一次往来之间。<br><br>什么是中国人？这个问题没有终点，<br>正如边缘，一直在移动。</p>
   <div class="endQs" id="endQs"></div>
+  <button class="go" id="btnCardsEnd" style="margin-bottom:12px" data-i18n="cardsImgEnd">把五张读书卡生成一张图片</button><br>
   <button class="go" id="btnCard" style="margin-bottom:12px" data-i18n="eCard">生成行走纪念卡</button>
   <div id="cardPrev"></div>
   <button class="go" onclick="location.reload()" data-i18n="eGo">重 新 行 走</button>
@@ -354,6 +369,10 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  tasksT:{zh:'行走任务',en:'Walking tasks'},
  tShardTpl:{zh:'拾得 17 件史料（{n}/17）',en:'Find 17 historical sources ({n}/17)'},
  tCardTpl:{zh:'读书卡 {n}/5',en:'Reading cards {n}/5'},
+ cardsImg:{zh:'生成读书卡图片',en:'Make an image of my cards'}, cardsImgEnd:{zh:'把五张读书卡生成一张图片',en:'Put all five cards into one image'},
+ cardsDl:{zh:'下载图片',en:'Download image'}, cardsClose:{zh:'关闭',en:'Close'}, cardsTip:{zh:'手机上长按图片即可保存或转发',en:'On a phone, press and hold the image to save or share it'},
+ cardsHead:{zh:'读 书 卡',en:'READING CARDS'}, cardsLocked:{zh:'尚未解锁 · 去{z}走走：听完讲述、拾齐史料',en:'Not yet unlocked — walk {z}: hear the speaker, gather the sources'},
+ cardsNote:{zh:'要点是导读者的概括，不是原书引文；书中观点请以原著为准。',en:'Notes are a reader’s summary, not quotations; the book itself is the authority.'},
  rcKey:{zh:'导读要点',en:'Reading notes'}, rcQh:{zh:'讨论题',en:'For discussion'},
  rcNote:{zh:'要点是导读者的概括，不是原书引文；书中观点请以原著为准。',en:'These notes are a reader’s summary, not quotations from the book; the book itself is the authority.'},
  rcOk:{zh:'收 好 · 继 续 行 走',en:'Keep it · walk on'},
@@ -1506,6 +1525,7 @@ function updHUD(){ const ns=shards.filter(s=>s.userData.got).length, nn=NPCS.fil
   const nc=ZORDER.filter(cardDone).length;
   $('tCard').textContent=tx('tCardTpl').replace('{n}',nc); $('tCard').classList.toggle('done',nc===5);
   $('tCards').innerHTML=ZORDER.filter(cardDone).map(z=>'<a data-card="'+z+'">'+ZSHORT[z][T.lang]+'</a>').join('');
+  $('btnCardsImg').classList.toggle('on',nc>0);
   checkCards(); }
 
 /* ---- 读书卡：每个场景听完讲述、拾齐该处史料，解锁一张（要点 + 讨论题） ---- */
@@ -2016,6 +2036,59 @@ function makeCard(){
   prev.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 document.getElementById('btnCard').addEventListener('click',makeCard);
+
+/* ---- 五张读书卡合成一张长图（要点 + 讨论题；未解锁的写明去哪里） ---- */
+function _mxTokens(str){ const out=[]; let w='';
+  for(const ch of str){ if(_isCjk(ch)){ if(w){out.push(w);w='';} out.push(ch); }
+    else if(ch===' '){ w+=' '; out.push(w); w=''; } else w+=ch; }
+  if(w) out.push(w); return out; }
+function _mxWidth(c,str,font){ const fT='"Times New Roman","Times",serif', fS='"Songti SC","STSong","Noto Serif SC","SimSun",serif'; let wd=0;
+  for(const ch of str){ c.font=font+' '+(_isCjk(ch)?fS:fT); wd+=c.measureText(ch).width; } return wd; }
+function _mxLeft(c,str,x,y,font){ const fT='"Times New Roman","Times",serif', fS='"Songti SC","STSong","Noto Serif SC","SimSun",serif';
+  const prev=c.textAlign; c.textAlign='left'; let cx=x;
+  for(const ch of str){ c.font=font+' '+(_isCjk(ch)?fS:fT); c.fillText(ch,cx,y); cx+=c.measureText(ch).width; } c.textAlign=prev; }
+function _wrap(c,str,maxW,font){ const lines=[]; let line='';
+  _mxTokens(str).forEach(t=>{ if(line && _mxWidth(c,line+t,font)>maxW && !/^[，。、；：？！”’）》]/.test(t)){ lines.push(line.replace(/\s+$/,'')); line=t.replace(/^\s+/,''); } else line+=t; });
+  if(line) lines.push(line); return lines; }
+function makeCardsImage(){
+  const W=1080, PAD=70, IN=40, TW=W-PAD*2-IN*2, cv=document.createElement('canvas'), c=cv.getContext('2d');
+  const FB='31px', FQ='31px', LH=52;
+  /* 先排版、算高度 */
+  const blocks=ZORDER.map((z,i)=>{ const done=cardDone(z), cd=CARDS[z];
+    if(!done) return {z,i,done,lines:_wrap(c,tx('cardsLocked').replace('{z}',ZSHORT[z][T.lang]),TW,'27px'),h:150};
+    const kb=_wrap(c,cd.key[T.lang],TW,FB), qb=_wrap(c,cd.q[T.lang],TW,FQ);
+    return {z,i,done,kb,qb,h:150+kb.length*LH+70+qb.length*LH+40}; });
+  const H=330+blocks.reduce((a,b)=>a+b.h+34,0)+170;
+  cv.width=W; cv.height=H;
+  const g=c.createLinearGradient(0,0,0,H); g.addColorStop(0,'#0d1526'); g.addColorStop(1,'#0a0d16'); c.fillStyle=g; c.fillRect(0,0,W,H);
+  c.strokeStyle='rgba(201,164,92,.55)'; c.lineWidth=2; c.strokeRect(26,26,W-52,H-52);
+  c.textAlign='center'; c.textBaseline='alphabetic';
+  c.fillStyle='#e8cf96'; fillMixed(c,tx('cardsHead'),W/2,150,'600 64px');
+  c.fillStyle='#8b8474'; fillMixed(c,T.lang==='zh'?'边缘行走 · 《华夏边缘：历史记忆与族群认同》互动导读':'Walking the Edge · an interactive reading guide to Huaxia Frontier',W/2,210,'26px');
+  const nDone=blocks.filter(b=>b.done).length;
+  c.fillStyle='#c9a45c'; fillMixed(c,(T.lang==='zh'?'已解锁 ':'Unlocked ')+nDone+' / 5',W/2,262,'26px');
+  let y=330;
+  blocks.forEach(b=>{ const x0=PAD, x1=W-PAD, col=ZCOL[b.z]||'#c9a45c';
+    c.fillStyle=b.done?'rgba(255,255,255,.035)':'rgba(255,255,255,.015)'; c.fillRect(x0,y,x1-x0,b.h);
+    c.strokeStyle=b.done?'rgba(201,164,92,.45)':'rgba(201,164,92,.16)'; c.lineWidth=1.5; c.strokeRect(x0,y,x1-x0,b.h);
+    c.fillStyle=col; c.fillRect(x0,y,6,b.h);
+    c.fillStyle=b.done?'#e8cf96':'#6f6a5e'; _mxLeft(c,(b.i+1)+' · '+Z[b.z].n[T.lang],x0+IN,y+62,'600 36px');
+    c.fillStyle='#8b8474'; _mxLeft(c,PART_N[CARDS[b.z].part][T.lang],x0+IN,y+106,'24px');
+    let yy=y+150;
+    if(!b.done){ c.fillStyle='#6f6a5e'; b.lines.forEach((l,k)=>_mxLeft(c,l,x0+IN,yy+k*42+4,'27px')); }
+    else {
+      c.fillStyle='#c9a45c'; _mxLeft(c,tx('rcKey'),x0+IN,yy,'22px'); yy+=48;
+      c.fillStyle='#e8dfc8'; b.kb.forEach(l=>{ _mxLeft(c,l,x0+IN,yy,FB); yy+=LH; });
+      yy+=22; c.fillStyle='#c9a45c'; _mxLeft(c,tx('rcQh'),x0+IN,yy,'22px'); yy+=48;
+      c.fillStyle='#f2d9a0'; b.qb.forEach(l=>{ _mxLeft(c,l,x0+IN,yy,FQ); yy+=LH; }); }
+    y+=b.h+34; });
+  c.fillStyle='#8b8474'; fillMixed(c,tx('cardsNote'),W/2,H-112,'21px');
+  c.fillStyle='#c9a45c'; c.font='22px "Times New Roman",serif'; c.fillText('tanyaqiongcode.github.io/huaxia-frontiers-3d/game/',W/2,H-70);
+  const url=cv.toDataURL('image/png');
+  $('cardsImg').src=url; $('cardsDl').href=url; $('tasks').classList.remove('show'); $('cardsOut').classList.add('show'); $('cardsOut').scrollTop=0; releaseLock(); }
+$('btnCardsImg').addEventListener('click',makeCardsImage);
+$('btnCardsEnd').addEventListener('click',makeCardsImage);
+$('cardsClose').addEventListener('click',()=>$('cardsOut').classList.remove('show'));
 document.getElementById('btnGo').addEventListener('click',()=>{
   started=true; walkT0=Date.now(); setInterval(saveGame,4000);
   document.body.classList.add('playing'); grabLock(); updLockTip(); setTimeout(checkCards,3000);
