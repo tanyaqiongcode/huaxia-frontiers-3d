@@ -2159,11 +2159,16 @@ function openViewer(url,name){ $('cardsImg').src=url; $('cardsDl').href=url; $('
 
 /* ---- 卡册：读书卡（随进度解锁）+ 生成过的行走纪念卡（存在本机浏览器里） ---- */
 const ALB_KEY='walkAlbumV1'; let albumMem=null;
-function albumGet(){ if(albumMem) return albumMem; try{ return JSON.parse(localStorage.getItem(ALB_KEY)||'[]'); }catch(e){ return []; } }
+/* 纪念卡版本：旧版生成的卡片印有网址，读取时丢弃没有版本号的旧卡 */
+const ALB_VER=2;
+function albumGet(){ if(albumMem) return albumMem; try{
+  const all=JSON.parse(localStorage.getItem(ALB_KEY)||'[]'), keep=all.filter(x=>x&&x.v>=ALB_VER);
+  if(keep.length!==all.length) localStorage.setItem(ALB_KEY,JSON.stringify(keep));
+  return keep; }catch(e){ return []; } }
 function albumSet(list){ albumMem=null;
   for(let k=0;k<4;k++){ try{ localStorage.setItem(ALB_KEY,JSON.stringify(list)); return; }catch(e){ if(list.length>1) list=list.slice(1); } }
   albumMem=list; toast(tx('albFull'),4000); }
-function albumAdd(url){ const list=albumGet(); list.push({t:Date.now(),img:url}); albumSet(list.slice(-8)); }
+function albumAdd(url){ const list=albumGet(); list.push({t:Date.now(),img:url,v:ALB_VER}); albumSet(list.slice(-8)); }
 function renderAlbum(){
   const nc=ZORDER.filter(cardDone).length; $('albRcT').textContent=tx('albRcT').replace('{n}',nc);
   $('albRc').innerHTML=ZORDER.map(z=>{ const on=cardDone(z);
