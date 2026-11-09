@@ -97,6 +97,40 @@
   .dlg .txt{font-size:15px;line-height:2;color:var(--ink);min-height:30px}
   .dlg .more{text-align:right;font-size:10.5px;color:var(--dim);letter-spacing:.2em;margin-top:8px}
 
+  /* 小地图 */
+  #mmap{position:fixed;right:18px;top:74px;width:168px;height:168px;z-index:5;pointer-events:none;display:none;border-radius:50%;
+    box-shadow:0 4px 18px rgba(0,0,0,.35)}
+  body.playing #mmap{display:block}
+  .tasks.show ~ #mmap{display:none !important}
+  /* 读书卡 */
+  .rcard{position:fixed;inset:0;z-index:9;display:none;align-items:center;justify-content:center;background:rgba(6,8,14,.55);backdrop-filter:blur(3px)}
+  .rcard.show{display:flex}
+  .rcard .in{width:min(520px,92vw);max-height:88vh;overflow:auto;background:linear-gradient(160deg,rgba(28,26,22,.96),rgba(12,13,18,.96));
+    border:1px solid rgba(201,164,92,.55);border-radius:16px;padding:24px 26px 20px;color:var(--ink)}
+  .rcard .k{font-size:11px;color:var(--gold);letter-spacing:.24em}
+  .rcard h3{font-size:20px;margin:8px 0 2px;color:var(--gold-hi);font-weight:600;letter-spacing:.08em}
+  .rcard .pt{font-size:12px;color:var(--dim);letter-spacing:.12em;margin-bottom:14px}
+  .rcard .h{font-size:11px;color:var(--gold);letter-spacing:.2em;margin-top:12px}
+  .rcard p{font-size:14.5px;line-height:1.95;margin-top:6px}
+  .rcard p.q{color:var(--gold-hi)}
+  .rcard .n{font-size:11px;color:var(--dim);margin-top:14px;line-height:1.7}
+  .rcard .go{margin-top:18px;width:100%;border:1px solid var(--gold);border-radius:99px;color:var(--gold-hi);background:transparent;padding:11px 0;font-family:inherit;font-size:13px;letter-spacing:.3em;cursor:pointer}
+  .rcard .go:hover{background:var(--gold);color:#100c04}
+  .tasks .goalT{font-size:12px;color:var(--gold-hi);margin-top:8px;line-height:1.7}
+  .tasks .cardList{margin-top:8px;display:flex;flex-wrap:wrap;gap:5px}
+  .tasks .cardList a{font-size:11px;border:1px solid var(--line);border-radius:99px;padding:2px 9px;color:var(--gold-hi);cursor:pointer}
+  .endQs{text-align:left;font-size:13px;line-height:1.85;margin:4px 0 16px;color:var(--ink)}
+  .endQs b{display:block;color:var(--gold);font-size:11px;letter-spacing:.2em;font-weight:400;margin-bottom:4px}
+  .endQs div{margin-top:6px}
+  /* 按键说明（H） */
+  .keysPanel{position:fixed;right:18px;bottom:52px;z-index:7;display:none;width:min(360px,92vw);font-size:12px;line-height:2.05;color:var(--ink);
+    background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.8));border:1px solid var(--line);border-radius:12px;padding:12px 16px;backdrop-filter:blur(8px)}
+  .keysPanel.show{display:block}
+  .keysPanel kbd{border:1px solid var(--line);border-radius:4px;padding:0 6px;font-size:10.5px;font-family:var(--fserif);color:var(--gold-hi)}
+  .lockTip{position:fixed;left:50%;top:128px;transform:translateX(-50%);z-index:5;pointer-events:none;font-size:11.5px;letter-spacing:.12em;
+    color:var(--dim);display:none;background:rgba(8,10,18,.45);border-radius:99px;padding:4px 14px}
+  .lockTip.show{display:block}
+
   /* toast */
   .toast{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:7;pointer-events:none;
     background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.7));border:1px solid var(--line);border-radius:99px;
@@ -161,6 +195,14 @@
     .zoneTabs a .zg{width:9px;height:9px}
     .inv{bottom:96px}
     .posHUD{bottom:8px}
+    #mmap{top:128px;right:12px;width:104px;height:104px}
+    .mark{display:none}
+    .sceneCard{top:66px;left:12px;max-width:calc(100vw - 200px);padding:10px 12px}
+    .sceneCard b{font-size:14px;letter-spacing:.08em}
+    .sceneCard i{font-size:10.5px}
+    #compass{bottom:auto;top:244px;font-size:10.5px;white-space:nowrap;letter-spacing:.06em}
+    .actBtn{bottom:196px}
+    .lockTip{display:none !important}
   }
 </style>
 </head>
@@ -185,7 +227,8 @@
 <div class="inv" id="inv"></div>
 <div class="posHUD" id="posHUD" data-i18n-html="posHud">你现在：<b id="posTxt">边缘之上</b></div>
 <div class="hint" id="hint" data-i18n-html="hintTxt"><kbd>W A S D</kbd> 移动 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务</div>
-<div class="tasks" id="tasks"><b data-i18n="tasksT">行走任务</b><ul>
+<div class="tasks" id="tasks"><b data-i18n="tasksT">行走任务</b><div class="goalT" id="tGoal"></div><ul>
+  <li id="tCard">读书卡 0/5</li>
   <li id="tShard">拾得 17 件史料（0/17）</li>
   <li id="tNpc1" data-i18n="tNpc1">倾听 寨老阿爷 的讲述</li>
   <li id="tNpc2" data-i18n="tNpc2">倾听 河湟考古者 的讲述</li>
@@ -194,15 +237,27 @@
   <li id="tNpc5" data-i18n="tNpc5">倾听 尔玛阿姐 的讲述</li>
   <li id="tLine" data-i18n="tLine">见证边界线移动</li>
 </ul>
+  <div class="cardList" id="tCards"></div>
   <div class="memo" id="tMemo"></div>
   <div class="ftT" data-i18n="ftT">快速移动 · FAST TRAVEL</div>
   <div class="ftG" id="ftG">
     <a data-z="village">羌寨</a><a data-z="hehuang">河湟遗址</a><a data-z="wall">长城边缘</a><a data-z="modern">现代羌寨</a><a data-z="beichuan">北川</a>
   </div>
   </div>
+<canvas id="mmap" width="300" height="300"></canvas>
 <div class="dlg" id="dlg"><div class="who" id="dlgWho"></div><div class="txt" id="dlgTxt"></div><div class="more" id="dlgMore">E · 继续</div></div>
 <div class="toast" id="toast"></div>
 <button class="actBtn" id="actBtn">按 E · 倾听</button>
+<div class="dlg" id="poi"><div class="who" id="poiWho"></div><div class="txt" id="poiTxt"></div><div class="more" id="poiMore">E · 关闭</div></div>
+<div class="keysPanel" id="keysPanel" data-i18n-html="keysAll"></div>
+<div class="lockTip" id="lockTip"></div>
+<div class="rcard" id="rcard"><div class="in">
+  <div class="k" id="rcK"></div><h3 id="rcT"></h3><div class="pt" id="rcP"></div>
+  <div class="h" data-i18n="rcKey">导读要点</div><p id="rcB"></p>
+  <div class="h" data-i18n="rcQh">讨论题</div><p class="q" id="rcQ"></p>
+  <div class="n" data-i18n="rcNote">要点是导读者的概括，不是原书引文；书中观点请以原著为准。</div>
+  <button class="go" id="rcOk" data-i18n="rcOk">收 好 · 继 续 行 走</button>
+</div></div>
 <div class="joy" id="joy"><div class="base"></div><div class="stick" id="stick"></div></div>
 
 <div class="veil" id="intro"><div class="card">
@@ -217,6 +272,7 @@
 <div class="veil" id="end"><div class="card">
   <h1 data-i18n="eTitle">行至边缘</h1><div class="sub" data-i18n="eSub">WALKED TO THE MARGIN</div>
   <p data-i18n-html="eBody">你拾起了散落的记忆，也听完了五段讲述。<br>边界在你脚下移动过——它不在墙上，不在族谱里，<br>而在资源、记忆，与每一次往来之间。<br><br>什么是中国人？这个问题没有终点，<br>正如边缘，一直在移动。</p>
+  <div class="endQs" id="endQs"></div>
   <button class="go" id="btnCard" style="margin-bottom:12px" data-i18n="eCard">生成行走纪念卡</button>
   <div id="cardPrev"></div>
   <button class="go" onclick="location.reload()" data-i18n="eGo">重 新 行 走</button>
@@ -277,10 +333,10 @@ const T={lang: (function(){try{return localStorage.getItem('walkLang')||'zh'}cat
  gTitle:{zh:'边缘行走',en:'Walking the Edge'},
  gSub:{zh:'《华夏边缘：历史记忆与族群认同》· 互动导读',en:'Huaxia Frontier: Historical Memory and Ethnic Identity · an interactive reading guide'},
  gNote:{zh:'本作为《华夏边缘》的阅读辅助：场景与讲述者均为虚构，不代表任何真实人物或群体；书中观点请以原著为准。',en:'A reading aid for Huaxia Frontier. Scenes and speakers are fictional and do not represent any real person or community; for the book’s arguments, please read the original.'},
- gIntro:{zh:'你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十七件史料散落在谷地里——族谱、竹简、甲骨、羌绣、田野笔记……每一件对应书中的一个概念；五段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。',
-  en:'You are a walker, dropped onto the small planet of the Huaxia world. The Hehuang sites, the Qiang villages of the Min River, the beacon towers of the Wall — seventeen historical sources lie scattered in the valley — genealogies, bamboo slips, oracle bones, Qiang embroidery, field notes — each tied to one idea in the book; five tellings wait to be heard.<br>Collect them, and watch the golden <b style="color:var(--gold-hi)">boundary line</b> move with your steps. It is not in the wall, nor in the genealogy — it lives in resources, memory, and every meeting between people.<br>Or press <b style="color:var(--gold-hi)">G</b> to invite a companion and walk together on one screen.'},
- gKeys:{zh:'<kbd>W A S D</kbd> 移动 · 鼠标拖拽 视角 · 滚轮 远近<br><kbd>E</kbd> 对话 · <kbd>T</kbd> 晨昏切换 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务清单',
-  en:'<kbd>W A S D</kbd> move · drag to orbit · scroll to zoom<br><kbd>E</kbd> talk · <kbd>T</kbd> time of day · <kbd>M</kbd> sound · <kbd>J</kbd> tasks'},
+ gIntro:{zh:'你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十七件史料散落在谷地里——族谱、竹简、甲骨、羌绣、田野笔记……每一件对应书中的一个概念；五段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。<br>每个场景听完讲述、拾齐那里的史料，会得到一张<b style=\"color:var(--gold-hi)\">读书卡</b>（要点 + 讨论题）。右上角的小地图和画面下方的箭头会提示下一步去哪里。',
+  en:'You are a walker, dropped onto the small planet of the Huaxia world. The Hehuang sites, the Qiang villages of the Min River, the beacon towers of the Wall — seventeen historical sources lie scattered in the valley — genealogies, bamboo slips, oracle bones, Qiang embroidery, field notes — each tied to one idea in the book; five tellings wait to be heard.<br>Collect them, and watch the golden <b style="color:var(--gold-hi)">boundary line</b> move with your steps. It is not in the wall, nor in the genealogy — it lives in resources, memory, and every meeting between people.<br>In each place, hear the speaker and gather the sources there to earn a <b style="color:var(--gold-hi)">reading card</b> (notes + a question to discuss). The minimap and the arrow below show where to go next.<br>Or press <b style="color:var(--gold-hi)">G</b> to invite a companion and walk together on one screen.'},
+ gKeys:{zh:'<kbd>W A S D</kbd> 移动 · 鼠标 转视角（<kbd>Esc</kbd> 显示鼠标）· 滚轮 远近<br><kbd>E</kbd> 交谈 / 查看 · <kbd>J</kbd> 任务与读书卡 · <kbd>H</kbd> 全部按键',
+ en:'<kbd>W A S D</kbd> move · mouse to look (<kbd>Esc</kbd> shows the cursor) · wheel zooms<br><kbd>E</kbd> talk / look · <kbd>J</kbd> tasks and cards · <kbd>H</kbd> all keys'},
  gGo:{zh:'开 始 行 走',en:'Start walking'},
  eTitle:{zh:'行至边缘',en:'Walked to the Margin'},
  eSub:{zh:'行至边缘之外',en:'WALKED TO THE MARGIN'},
@@ -291,10 +347,26 @@ const T={lang: (function(){try{return localStorage.getItem('walkLang')||'zh'}cat
  hudCnt:{zh:'史料 <b id="cShard">0</b>/17<br>倾听讲述 <b id="cNpc">0</b>/5',en:'Sources <b id="cShard">0</b>/17<br>Tellings heard <b id="cNpc">0</b>/5'},
  posHud:{zh:'你现在：<b id="posTxt">边缘之上</b>',en:'You are: <b id="posTxt">on the edge</b>'},
  posIn:{zh:'华夏之内',en:'within Huaxia'}, posEdge:{zh:'边缘之上',en:'on the edge'}, posOut:{zh:'华夏之外',en:'beyond the edge'},
-hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · <kbd>空格</kbd> 跳跃 · <kbd>⇧</kbd> 疾行 · <kbd>E</kbd> 对话 · <kbd>G</kbd> 同行 · <kbd>J</kbd> 任务 · <kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>C/X</kbd> 翻滚 · <kbd>V</kbd> 配音',
-en:'<kbd>W A S D</kbd> move · <kbd>Space</kbd> jump · <kbd>⇧</kbd> sprint · <kbd>E</kbd> talk · <kbd>G</kbd> companion · <kbd>J</kbd> tasks · <kbd>T</kbd> day · <kbd>M</kbd> sound · <kbd>C/X</kbd> roll · <kbd>V</kbd> voice'},
+hintTxt:{zh:'<kbd>W A S D</kbd> 移动 · 鼠标 视角 · <kbd>E</kbd> 交谈/查看 · <kbd>J</kbd> 任务 · <kbd>H</kbd> 全部按键',
+en:'<kbd>W A S D</kbd> move · mouse look · <kbd>E</kbd> talk/look · <kbd>J</kbd> tasks · <kbd>H</kbd> all keys'},
  tasksT:{zh:'行走任务',en:'Walking tasks'},
  tShardTpl:{zh:'拾得 17 件史料（{n}/17）',en:'Find 17 historical sources ({n}/17)'},
+ tCardTpl:{zh:'读书卡 {n}/5',en:'Reading cards {n}/5'},
+ rcKey:{zh:'导读要点',en:'Reading notes'}, rcQh:{zh:'讨论题',en:'For discussion'},
+ rcNote:{zh:'要点是导读者的概括，不是原书引文；书中观点请以原著为准。',en:'These notes are a reader’s summary, not quotations from the book; the book itself is the authority.'},
+ rcOk:{zh:'收 好 · 继 续 行 走',en:'Keep it · walk on'},
+ rcKTpl:{zh:'读书卡 · {n}/5',en:'Reading card · {n}/5'},
+ endQsT:{zh:'读书卡上的讨论题',en:'Questions from your reading cards'},
+ gTalk:{zh:'下一步：倾听 {n}',en:'Next: hear {n}'},
+ gFind:{zh:'下一步：拾起{z}的史料（还剩 {n} 件）',en:'Next: find the sources at {z} ({n} left)'},
+ gBeacon:{zh:'下一步：去长城东头的烽燧，按 E 点燃烽火',en:'Next: go to the beacon at the east end of the Wall and press E'},
+ poiAct:{zh:'按 E · 查看 {n}',en:'Press E · look at {n}'},
+ poiTap:{zh:'查看 · {n}',en:'Look at {n}'},
+ poiClose:{zh:'E · 关闭',en:'E · close'},
+ lockOn:{zh:'移动鼠标转视角 · Esc 显示鼠标',en:'Move the mouse to look · Esc shows the cursor'},
+ lockOff:{zh:'点一下画面：之后移动鼠标就能转视角',en:'Click the scene, then just move the mouse to look'},
+ keysAll:{zh:'<kbd>W A S D</kbd> / 方向键 移动　<kbd>空格</kbd> 跳跃　<kbd>Shift</kbd> 疾行<br>鼠标 转视角（<kbd>Esc</kbd> 显示鼠标，点画面恢复）　滚轮 远近<br><kbd>E</kbd> 交谈 / 查看建筑和物件　<kbd>J</kbd> 任务与读书卡<br><kbd>1</kbd>–<kbd>5</kbd> 快速移动到五个场景　<kbd>C</kbd> / <kbd>X</kbd> 翻滚<br><kbd>T</kbd> 晨昏　<kbd>M</kbd> 声音　<kbd>L</kbd> 中 / 英<br><kbd>G</kbd> 双人同行（第二人用方向键移动、<kbd>Enter</kbd> 交谈）<br><kbd>H</kbd> 关闭本说明',
+   en:'<kbd>W A S D</kbd> / arrows move　<kbd>Space</kbd> jump　<kbd>Shift</kbd> sprint<br>Mouse looks around (<kbd>Esc</kbd> shows the cursor, click to resume)　wheel zooms<br><kbd>E</kbd> talk / look at buildings and objects　<kbd>J</kbd> tasks and cards<br><kbd>1</kbd>–<kbd>5</kbd> travel to the five places　<kbd>C</kbd> / <kbd>X</kbd> roll<br><kbd>T</kbd> time of day　<kbd>M</kbd> sound　<kbd>L</kbd> language<br><kbd>G</kbd> second walker (arrows to move, <kbd>Enter</kbd> to talk)<br><kbd>H</kbd> close this'},
  tNpc1:{zh:'倾听 寨老阿爷 的讲述',en:'Hear the village elder'},
  tNpc2:{zh:'倾听 河湟考古者 的讲述',en:'Hear the Hehuang archaeologist'},
  tNpc3:{zh:'倾听 长城戍卒 的讲述',en:'Hear the soldier of the Wall'},
@@ -302,7 +374,6 @@ en:'<kbd>W A S D</kbd> move · <kbd>Space</kbd> jump · <kbd>⇧</kbd> sprint ·
  tNpc5:{zh:'倾听 尔玛阿姐 的讲述',en:'Hear the Rma elder sister'},
  gContinue:{zh:'继 续 行 走',en:'Continue walking'},
  gNew:{zh:'重 新 开 始',en:'Start over'},
- voOn:{zh:'配音 · 已开',en:'Voice-over · on'}, voOff:{zh:'配音 · 已静',en:'Voice-over · muted'},
  p2On:{zh:'同伴已加入 · 方向键行走 · 回车对话',en:'Companion joined · arrows to walk · Enter to talk'},
  p2Off:{zh:'同伴已离开',en:'Companion left'},
  memoEmpty:{zh:'还没有拾得史料。',en:'No sources found yet.'},
@@ -317,7 +388,7 @@ en:'<kbd>W A S D</kbd> move · <kbd>Space</kbd> jump · <kbd>⇧</kbd> sprint ·
  bTorch:{zh:'拾得火把——典范历史只照亮木棍的一端；把火把转向边缘。',en:'A torch — official history lights only one end of the stick; turn it toward the margin.'},
  ftT:{zh:'快速移动 · FAST TRAVEL',en:'FAST TRAVEL'},
  tLine:{zh:'见证边界线移动',en:'See the boundary line move'},
- actTpl:{zh:'按 E · 倾听 {n}',en:'Press E · hear {n}'},
+ actTpl:{zh:'按 E · 倾听 {n}',en:'Press E · hear {n}'}, actTap:{zh:'倾听 · {n}',en:'Hear {n}'},
  moreCont:{zh:'E · 继续',en:'E · continue'}, moreBye:{zh:'E · 告辞',en:'E · farewell'},
  shardPre:{zh:'拾得史料 · ',en:'Source found · '},
  heardSuf:{zh:'的讲述，已听见。',en:' — heard.'},
@@ -353,7 +424,7 @@ function tryBeacon(){ if(lit || prog<1) return;
   beaconLight.intensity=2.4;
   lineMesh.material.color.setHex(0xffb35c); lineMesh.material.opacity=1;
   toast(tx('beaconLit')); playEnd();
-  setTimeout(()=>{ $('end').style.display='flex'; },2600); }
+  setTimeout(()=>{ fillEndQs(); releaseLock(); $('end').style.display='flex'; },2600); }
 document.getElementById('btnLang').addEventListener('click',toggleLang);
 let p2=null; const P2KEY={};
 function toggleP2(){
@@ -600,8 +671,9 @@ mesh(new THREE.BoxGeometry(2.3,0.3,0.8),matStone2,-135,24,2.55);
 mesh(new THREE.CylinderGeometry(0.05,0.07,3.0,6),matWood,-133,22.6,1.5);
 mesh(new THREE.BoxGeometry(0.7,0.9,0.03),matRed,-133,22.6,2.6);
 /* 北川 · 尔玛人家 */
-addCol(-105,13.5,1.7); mesh(new THREE.SphereGeometry(1.15,10,8),matStone2,-105,13.5,0.7);
-mesh(new THREE.BoxGeometry(0.5,1.15,0.06),matRed,-105,13.5,1.95);
+/* 尔玛人家：Blender 碉房（石屋连小碉，供白石，门挂羌红）；模型没加载出来时用一块简单石屋顶替 */
+const RMA=[-105,15.4]; addCol(RMA[0],RMA[1],2.3);
+const _procRma=[mesh(new THREE.BoxGeometry(2.9,3.0,2.2),matStone,RMA[0],RMA[1],1.5)];
 [[-103,11.5],[-107,15],[-100,15.5]].forEach(([a,t])=>{
   mesh(new THREE.CylinderGeometry(0.05,0.07,2.6,6),matWood,a,t,1.3);
   mesh(new THREE.BoxGeometry(0.6,0.8,0.03),matRed,a,t,2.2); });
@@ -723,7 +795,7 @@ const SHARD_POS=[
  [66,30,2.4],[78,32,0],[90,33,0],
  [-30,16,0],[-50,22,0],[30,12,0],
  [-131,22,0],[-138,26,0],[-133,28,0],
- [-101,12,0],[-108,15,1.8]];
+ [-101,12,0],[-110,16.5,0]];
 const shards=[];
 /* 17 件史料：每件对应一个概念，取土、铜、竹、纸的本色，微光便于寻找 */
 const SOURCES=[
@@ -1030,8 +1102,87 @@ HEHUANG_SITES.forEach(([a,t])=>addCol(a,t,2.6));
 const BEICHUAN_HOUSES=[[-98,10,0.4],[-112,11,2.0],[-109,20,-0.7]];
 BEICHUAN_HOUSES.forEach(([a,t])=>addCol(a,t,2.1));
 
+/* 可以按 E 查看的建筑与物件（说明是导读用的简介） */
+var POIS=[
+ {a:-8,t:8,r:4.4,n:{zh:'碉楼',en:'Watchtower'},
+  d:{zh:'岷江上游羌寨里的石砌碉楼，层层向上收分。它既用来防御、瞭望，也是一个寨子在山沟里最醒目的标记。',
+     en:'A dry-stone watchtower of the upper Min River, tapering as it rises. It served for defence and lookout, and marks a village from far down the gully.'}},
+ {a:-15,t:14,r:3.8,n:{zh:'平顶石屋',en:'Flat-roofed stone house'},
+  d:{zh:'岷江上游常见的平顶石屋：底层多圈养牲畜，上层住人，屋顶平台用来晾晒粮食。屋顶四角供着白石——羌人有敬奉白石的习俗。',
+     en:'A flat-roofed stone house of the upper Min: livestock below, family above, grain dried on the roof terrace. White stones sit on the roof corners — the Qiang revere white stones.'}},
+ {a:-12,t:11,r:3.6,n:{zh:'索桥',en:'Rope bridge'},
+  d:{zh:'沟谷两岸靠索桥往来。走得通的地方，就有通婚、交换和共同的故事——“弟兄祖先”的范围，常常就是往来的范围。',
+     en:'Rope bridges join the two banks. Where people can cross, there are marriages, exchange and shared stories — the circle of “brother ancestors” is often the circle of visiting.'}},
+ {a:-67,t:29.5,r:4.4,n:{zh:'半地穴房址',en:'Semi-subterranean house site'},
+  d:{zh:'仿照河湟地区约四千年前的半地穴式房址：屋子一半挖进地下，中间是火塘，旁边放着彩陶罐。此后气候变冷变干，这一带的农业人群逐渐减少。',
+     en:'Modelled on Hehuang house sites of about 4,000 years ago: half dug into the ground, a hearth in the middle, painted jars nearby. As the climate grew colder and drier, farming here declined.'}},
+ {a:74,t:28.5+(74-56)/36*4,r:4,n:{zh:'夯土长城',en:'Rammed-earth wall'},
+  d:{zh:'仿照汉代河西一带的夯土长城：一层黄土、一层芦苇或红柳，层层夯筑。墙内宜耕、墙外宜牧，它也是两种生计之间的界线。',
+     en:'Modelled on Han rammed-earth walls of the Hexi corridor: a layer of earth, a layer of reeds or tamarisk, tamped in turn. Fields inside, pasture outside — a line between two livelihoods.'}},
+ {a:95,t:33,r:4.8,n:{zh:'烽燧',en:'Beacon tower'},
+  d:{zh:'长城沿线报警用的烽燧：白天放烟，夜里举火。拾齐全部史料、听完五段讲述以后，回到这里按 E 点燃烽火。',
+     en:'A signal tower of the Wall: smoke by day, fire by night. Once you have every source and every story, come back here and press E to light it.'}},
+ {a:-135,t:24,r:3.6,n:{zh:'村口石碑',en:'Village stele'},
+  d:{zh:'现代羌寨村口的石碑，刻着村名和介绍。村名、民族名称和介绍文字，正是认同被写下来、被讲述出来的地方。',
+     en:'A stele at the village entrance, carved with its name and a short history. Names and introductions like these are where identity gets written down and told.'}},
+ {a:-147,t:23,r:4,n:{zh:'国道',en:'The highway'},
+  d:{zh:'国道把山沟和城市连在一起。外出打工、读书、旅游的人来来往往，“我们是谁”的说法也在路上被重新讲述。',
+     en:'The highway links the gullies to the cities. People leave to work, study and travel, and the story of “who we are” is retold on the road.'}},
+ {a:RMA[0],t:RMA[1],r:4.6,n:{zh:'尔玛人家',en:'A Rma home'},
+  d:{zh:'“尔玛”是羌人的自称。这座石屋连着一座小碉，屋顶和碉顶供着白石，门楣上挂着羌红——这些都是今天北川人家表达羌族身份时常用的标志。',
+     en:'“Rma” is what the Qiang call themselves. This stone house joins a small tower; white stones crown the roof and tower, and Qiang red hangs over the door — signs Beichuan families use today to show they are Qiang.'}},
+ {a:-98,t:10,r:3.8,n:{zh:'北川新居',en:'New Beichuan house'},
+  d:{zh:'白墙、红褐木作，再加上羌式的檐口和装饰。地震后的重建里，许多房屋特意做成羌族风格，让“羌”成为看得见的公共身份。',
+     en:'White walls, red-brown woodwork, Qiang-style eaves and ornament. In the post-earthquake rebuilding many houses were made deliberately Qiang, so that being Qiang became a visible public identity.'}}];
+
+/* ---- 小地图：以玩家为中心、视线朝上；远处的场景贴在边上 ---- */
+let frameN=0, curGoal=null;
+const mm=document.getElementById('mmap'), mg=mm.getContext('2d');
+function drawMinimap(){ if(!started || frameN%3) return;
+  const W=mm.width, c=W/2, Rr=c-6, S=Rr/46, up=pGroup.position.clone().normalize();
+  const fw=camS.dir.clone().addScaledVector(up,-camS.dir.dot(up)).normalize(), rt=fw.clone().cross(up);
+  const toMap=q=>{ const v=q.clone().sub(pGroup.position); v.addScaledVector(up,-v.dot(up)); const L=v.length()||1e-6;
+    const k=planarDist(pGroup.position,q)*S/L, x=v.dot(rt)*k, y=-v.dot(fw)*k, r=Math.hypot(x,y);
+    return {x:c+x,y:c+y,r,ex:c+x*(Rr-16)/(r||1),ey:c+y*(Rr-16)/(r||1)}; };
+  mg.clearRect(0,0,W,W); mg.save();
+  mg.beginPath(); mg.arc(c,c,Rr,0,Math.PI*2); mg.fillStyle='rgba(12,14,20,.68)'; mg.fill(); mg.clip();
+  mg.strokeStyle='rgba(201,164,92,.16)'; mg.lineWidth=2; [Rr*0.5].forEach(r=>{ mg.beginPath(); mg.arc(c,c,r,0,Math.PI*2); mg.stroke(); });
+  /* 长城 */
+  mg.strokeStyle='rgba(198,127,78,.85)'; mg.lineWidth=5; mg.beginPath();
+  for(let a=56;a<=92;a+=2){ const m=toMap(P(a,wallT(a),0)); a===56?mg.moveTo(m.x,m.y):mg.lineTo(m.x,m.y); } mg.stroke();
+  /* 建筑 */
+  mg.fillStyle='rgba(210,200,180,.55)';
+  colliders.forEach(o=>{ if(o.r<2) return; const m=toMap(o.p||(o.p=P(o.a,o.t,0))); if(m.r<Rr) mg.fillRect(m.x-4,m.y-4,8,8); });
+  /* 史料 */
+  shards.forEach(s=>{ if(s.userData.got) return; const m=toMap(s.position); if(m.r>Rr) return;
+    mg.fillStyle='#f0d898'; mg.beginPath(); mg.arc(m.x,m.y,4,0,Math.PI*2); mg.fill(); });
+  /* 讲述者 */
+  NPCS.forEach(n=>{ const m=toMap(P(n.a,n.t,0)); if(m.r>Rr) return;
+    mg.save(); mg.translate(m.x,m.y); mg.rotate(Math.PI/4);
+    if(n.done){ mg.strokeStyle='rgba(200,200,200,.6)'; mg.lineWidth=2; mg.strokeRect(-6,-6,12,12); }
+    else { mg.fillStyle='#e8cf96'; mg.fillRect(-7,-7,14,14); } mg.restore(); });
+  /* 下一步目标：脉动圆圈（在范围外就贴在边上） */
+  if(curGoal){ const m=toMap(curGoal.pos), gx=m.r>Rr-16?m.ex:m.x, gy=m.r>Rr-16?m.ey:m.y, pr=9+3*Math.sin(Date.now()/250);
+    mg.strokeStyle='#ffcf6e'; mg.lineWidth=3; mg.beginPath(); mg.arc(gx,gy,pr,0,Math.PI*2); mg.stroke(); }
+  mg.restore();
+  /* 场景名：近的写在原处，远的贴边 */
+  mg.font='600 19px "Songti SC","STSong","Noto Serif SC",serif'; mg.textAlign='center'; mg.textBaseline='middle';
+  const EN=['Village','Hehuang','Wall','Modern','Beichuan'], placed=[];
+  ZORDER.map(z=>{ const m=toMap(P(ZPOS[z][0],ZPOS[z][1],0)); return {z,m,far:m.r>Rr-30,ang:Math.atan2(m.y-c,m.x-c)}; })
+   .sort((A,B)=>A.m.r-B.m.r).forEach(L=>{ const {z,m}=L; let x,y;
+    if(!L.far){ x=m.x; y=m.y-18; }
+    else { let rr=Rr-26;   /* 贴边的名字方向太近时，往里错开一层 */
+      while(placed.some(q=>Math.abs(Math.atan2(Math.sin(q.ang-L.ang),Math.cos(q.ang-L.ang)))<0.42 && Math.abs(q.rr-rr)<20) && rr>Rr*0.45) rr-=24;
+      placed.push({ang:L.ang,rr}); x=c+Math.cos(L.ang)*rr; y=c+Math.sin(L.ang)*rr; }
+    const label=(T.lang==='zh'?['羌寨','河湟','长城','现代','北川']:EN)[ZORDER.indexOf(z)];
+    mg.lineWidth=4; mg.strokeStyle='rgba(8,10,16,.85)'; mg.strokeText(label,x,y);
+    mg.fillStyle=cardDone(z)?'#8fcf9c':(ZCOL[z]||'#e8cf96'); mg.fillText(label,x,y); });
+  /* 边框 + 玩家 */
+  mg.strokeStyle='rgba(201,164,92,.7)'; mg.lineWidth=3; mg.beginPath(); mg.arc(c,c,Rr,0,Math.PI*2); mg.stroke();
+  mg.fillStyle='#ffffff'; mg.beginPath(); mg.moveTo(c,c-13); mg.lineTo(c+9,c+10); mg.lineTo(c,c+5); mg.lineTo(c-9,c+10); mg.closePath(); mg.fill(); }
+
 const animals=[], eagles=[];
-Promise.all(['hangtu_wall','fengsui','hehuang_site','tree_fir','tree_poplar','tree_walnut','sheep','cow','horse','qiang_house'].map(loadModel)).then(()=>{
+Promise.all(['hangtu_wall','fengsui','hehuang_site','tree_fir','tree_poplar','tree_walnut','sheep','cow','horse','qiang_house','rma_home'].map(loadModel)).then(()=>{
   if(_mdl.hangtu_wall){ _procWall.forEach(m=>scene.remove(m));
     WALL_A.forEach(a=>{ const t=wallT(a), fwd=P(a+1,wallT(a+1),0).sub(P(a-1,wallT(a-1),0));
       placeOne(_mdl.hangtu_wall,a,t,{fwd,s:1.0,h:-0.12}); }); }
@@ -1041,6 +1192,10 @@ Promise.all(['hangtu_wall','fengsui','hehuang_site','tree_fir','tree_poplar','tr
     const plaster=pbr('plaster',1.0,{vertexColors:true,color:0xf2eee6});
     const redwood=pbr('wood',1.0,{vertexColors:true,color:0xb0503c});
     BEICHUAN_HOUSES.forEach(([a,t,yaw])=>placeOne(_mdl.qiang_house,a,t,{yaw,s:1.0,mat:{earth:plaster,wood:redwood}})); }
+  if(_mdl.rma_home){ _procRma.forEach(m=>scene.remove(m));
+    /* 门（Blender +Y，导出后是 -Z）朝向尔玛阿姐站的地方：x = d×up 时 z = -d */
+    const c=P(RMA[0],RMA[1],0), up=c.clone().normalize(), d=P(-105,13,0).sub(c); d.addScaledVector(up,-d.dot(up)).normalize();
+    placeOne(_mdl.rma_home,RMA[0],RMA[1],{fwd:d.clone().cross(up),h:-0.08}); }
   /* 树：按地理分区 */
   const fir=[], poplar=[], walnut=[];
   if(_mdl.tree_fir){ _procPines.forEach(m=>scene.remove(m));
@@ -1201,17 +1356,18 @@ function worldTick(dt,now){
 const keys={};
 addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
   if(p2 && k.startsWith('arrow')) P2KEY[k]=true;
-  if(k==='e'){ tryTalk(); tryBeacon(); }
+  if(k==='e') interact();
+  if(k==='h') $('keysPanel').classList.toggle('show');
+  if(k>='1' && k<='5' && started){ const a=document.querySelector('#zoneTabs a[data-z='+ZORDER[+k-1]+']'); if(a) a.click(); }
   if(k===' ' && jumpOff<=0 && vy===0){ vy=9.8; playJumpSfx(); }
   if(k==='enter' && p2) tryTalkP2();
   if(k==='g') toggleP2();
-  if(k==='v') toggleVoice();
   const busy=rollT>=0;
   if((k==='c'||k==='x')&&!busy){ rollT=0; rollDir=(k==='c')?1:-1; playRollSfx(k==='x');
     figP.yawG.rotation.y=Math.atan2(camS.dir.x,camS.dir.z); }
   if(k==='t'){ themeIx=(themeIx+1)%THEMES.length; applyTheme(); }
   if(k==='m') toggleSound();
-  if(k==='j') document.getElementById('tasks').classList.toggle('show');
+  if(k==='j'){ const on=document.getElementById('tasks').classList.toggle('show'); if(on) releaseLock(); }
   if(k==='l') toggleLang();
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault(); });
 addEventListener('keyup',e=>{ const k=e.key.toLowerCase(); keys[k]=false; if(p2 && k.startsWith('arrow')) P2KEY[k]=false; });
@@ -1229,7 +1385,20 @@ function pollPad(){ if(!started) return;
 const camS={dir:new THREE.Vector3(0,0,-1), dist:9, pitch:0.34};
 let dragging=false,lx=0,ly=0;
 const cv=document.getElementById('gl');
-cv.addEventListener('pointerdown',e=>{ dragging=true; lx=e.clientX; ly=e.clientY; });
+const canLock=!('ontouchstart' in window) && !!cv.requestPointerLock;
+function locked(){ return document.pointerLockElement===cv; }
+function grabLock(){ if(!canLock||!started||locked()||$('rcard').classList.contains('show')) return;
+  try{ const r=cv.requestPointerLock(); if(r&&r.catch) r.catch(()=>{}); }catch(e){} }
+function releaseLock(){ if(locked()) try{ document.exitPointerLock(); }catch(e){} }
+function updLockTip(){ const el=$('lockTip'); if(!canLock||!started){ el.classList.remove('show'); return; }
+  el.textContent=tx(locked()?'lockOn':'lockOff'); el.classList.add('show'); }
+document.addEventListener('pointerlockchange',updLockTip);
+cv.addEventListener('click',()=>{ if(locked()){ if(dlgNpc) tryTalk(); else if(poiCur) closePoi(); return; } grabLock(); });
+addEventListener('mousemove',e=>{ if(!locked()) return;
+  const up=pGroup.position.clone().normalize();
+  camS.dir.applyAxisAngle(up,-(e.movementX||0)*0.0026);
+  camS.pitch=Math.max(0.06,Math.min(0.95,camS.pitch+(e.movementY||0)*0.0022)); });
+cv.addEventListener('pointerdown',e=>{ if(locked()) return; dragging=true; lx=e.clientX; ly=e.clientY; });
 addEventListener('pointermove',e=>{ if(!dragging) return;
   const dx=e.clientX-lx, dy=e.clientY-ly; lx=e.clientX; ly=e.clientY;
   const up=pGroup.position.clone().normalize();
@@ -1247,7 +1416,7 @@ if('ontouchstart' in window){ document.body.classList.add('touch');
     joy.x=dx; joy.f=-dy; stick.style.transform=`translate(calc(-50% + ${dx*30}px), calc(-50% + ${dy*30}px))`; } },{passive:true});
   joyEl.addEventListener('touchend',()=>{ joyId=null; joy.x=0; joy.f=0; stick.style.transform='translate(-50%,-50%)'; },{passive:true});
 }
-document.getElementById('actBtn').addEventListener('click',tryTalk);
+document.getElementById('actBtn').addEventListener('click',interact);
 
 /* ---- 讲述/状态 ---- */
 const $=id=>document.getElementById(id);
@@ -1269,7 +1438,7 @@ function showLine(){ const n=dlgNpc;
   speak(txt, T.lang, dlgNpc.pitch||1);
   $('dlgMore').textContent = (dlgIx<n.lines[T.lang].length-1)?tx('moreCont'):tx('moreBye'); }
 function advanceDlg(){ const n=dlgNpc;
-  if(dlgIx<n.lines.length-1){ dlgIx++; showLine(); return; }
+  if(dlgIx<n.lines[T.lang].length-1){ dlgIx++; showLine(); return; }
   $('dlg').classList.remove('show'); dlgNpc=null;
   if('speechSynthesis' in window) speechSynthesis.cancel();
   if(!n.done){ n.done=true; updHUD(); buildLine(); toast(n.name[T.lang]+tx('heardSuf')); playHear(); } }
@@ -1280,13 +1449,92 @@ function toast(s){ const t=$('toast'); t.textContent=s; t.classList.add('show');
 /* ---- HUD ---- */
 function updHUD(){ const ns=shards.filter(s=>s.userData.got).length, nn=NPCS.filter(n=>n.done).length;
   $('cShard').textContent=ns; $('cNpc').textContent=nn;
-  $('tShard').textContent=tx('tShardTpl').replace('{n}',ns); $('tShard').classList.toggle('done',ns===12);
+  $('tShard').textContent=tx('tShardTpl').replace('{n}',ns); $('tShard').classList.toggle('done',ns===17);
   ['tNpc1','tNpc2','tNpc3','tNpc4','tNpc5'].forEach((id,i)=>$(id).classList.toggle('done',NPCS[i].done));
   renderMemo();
   const p=ns/17*0.7+nn/5*0.3;
   $('ringFg').style.strokeDashoffset=113*(1-p); $('pct').textContent=Math.round(p*100)+'%';
   if(prog!==p){ prog=p; buildLine(); }
-  if(ns===17 && nn===5 && !beaconHinted){ beaconHinted=true; toast(tx('beaconGo')); } }
+  if(ns===17 && nn===5 && !beaconHinted){ beaconHinted=true; toast(tx('beaconGo')); }
+  const nc=ZORDER.filter(cardDone).length;
+  $('tCard').textContent=tx('tCardTpl').replace('{n}',nc); $('tCard').classList.toggle('done',nc===5);
+  $('tCards').innerHTML=ZORDER.filter(cardDone).map(z=>'<a data-card="'+z+'">'+ZSHORT[z][T.lang]+'</a>').join('');
+  checkCards(); }
+
+/* ---- 读书卡：每个场景听完讲述、拾齐该处史料，解锁一张（要点 + 讨论题） ---- */
+const ZORDER=['village','hehuang','wall','modern','beichuan'];
+const ZPOS={village:[0,10],hehuang:[-72,26],wall:[75,30],modern:[-135,24],beichuan:[-105,13]};
+const ZSHORT={village:{zh:'羌寨',en:'the village'},hehuang:{zh:'河湟遗址',en:'Hehuang'},wall:{zh:'长城边缘',en:'the Wall'},modern:{zh:'现代羌寨',en:'the modern village'},beichuan:{zh:'北川',en:'Beichuan'}};
+const ZSH={village:[0,1,2,9,11],hehuang:[3,4,5,10],wall:[6,7,8],modern:[12,13,14],beichuan:[15,16]};
+const ZNPC={village:0,hehuang:1,wall:2,modern:3,beichuan:4};
+const CARDS={
+ village:{part:0,
+  key:{zh:'山沟里的人讲祖先，常说“从前有几个弟兄”。把哪些寨子算作弟兄，和今天谁与谁来往密切有关——祖先故事讲的是过去，也在划定今天的“我们”。',
+       en:'In the gullies, people tell of their ancestors as “once there were some brothers”. Which villages count as brothers depends on who visits whom today: an ancestor story speaks of the past, and also draws today’s “us”.'},
+  q:{zh:'你家或你熟悉的群体，有没有一个“我们从哪里来”的故事？它把谁算了进来，又把谁留在了外面？',
+     en:'Does your family, or a group you know, have a “where we came from” story? Whom does it include, and whom does it leave out?'}},
+ hehuang:{part:1,
+  key:{zh:'约四千年前气候转干转冷，河湟一带的农业人群逐渐转向更依赖畜牧的生活。生态与生计的边界先出现，族群的边界随后才被讲述出来。',
+       en:'Around four thousand years ago the climate turned drier and colder, and farming groups around Hehuang moved toward a more pastoral life. The boundary of ecology and livelihood came first; the boundary between peoples was told afterwards.'},
+  q:{zh:'生计方式变了，人们对“我们是谁”的说法会不会跟着变？你觉得书中哪条证据最能说明这一点？',
+     en:'When the way of making a living changes, does the answer to “who are we” change with it? Which evidence in the book shows this best, in your view?'}},
+ wall:{part:2,
+  key:{zh:'长城一线大致也是农耕与游牧两种生计的分界。秦汉以后，华夏的边界在资源竞争中被划定、守护，也被一再改写。',
+       en:'The line of the Wall roughly divides two livelihoods, farming and herding. From the Qin and Han on, the Huaxia boundary was drawn and guarded in competition over resources — and redrawn again and again.'},
+  q:{zh:'一道墙既是防御工事，也是身份的边界。今天还有哪些“看不见的长城”在区分“我们”和“他们”？',
+     en:'A wall is both a fortification and a boundary of identity. What “invisible walls” still separate “us” from “them” today?'}},
+ modern:{part:3,
+  key:{zh:'1950 年代的民族识别把人们的称呼写进了表格；学校、文件和公共叙事又让这些名称被下一代学习和使用。',
+       en:'The ethnic classification of the 1950s wrote what people were called into registers; schools, documents and public narratives then taught those names to the next generation.'},
+  q:{zh:'一个名称被写进表格以后，会怎样改变人们对自己的认识？能举出书里或身边的一个例子吗？',
+     en:'Once a name is written into a register, how does it change the way people see themselves? Can you give an example from the book or from life?'}},
+ beichuan:{part:3,
+  key:{zh:'在北川，许多人家改报为羌族，“尔玛”这个自称被重新学习、重新表达。认同不只是与生俱来的血统，也是可以变化的选择和实践。',
+       en:'In Beichuan, many families re-registered as Qiang, and the self-name “Rma” was learned and spoken anew. Identity is not only inherited descent; it is also a choice and a practice that can change.'},
+  q:{zh:'如果认同可以重新学习，它还算“真”的吗？你怎么看“真实”与“建构”之间的关系？',
+     en:'If identity can be learned anew, is it still “real”? How do you see the relation between “authentic” and “constructed”?'}}};
+let cardSeen={};
+function cardDone(z){ return NPCS[ZNPC[z]].done && ZSH[z].every(i=>shards[i].userData.got); }
+function checkCards(){ if(!started || $('rcard').classList.contains('show')) return;
+  for(const z of ZORDER){ if(cardDone(z) && !cardSeen[z]){ cardSeen[z]=1; showCard(z); saveGame(); return; } } }
+function showCard(z){ const c=CARDS[z];
+  $('rcK').textContent=tx('rcKTpl').replace('{n}',ZORDER.filter(cardDone).length);
+  $('rcT').textContent=Z[z].n[T.lang]; $('rcP').textContent=PART_N[c.part][T.lang];
+  $('rcB').textContent=c.key[T.lang]; $('rcQ').textContent=c.q[T.lang];
+  $('rcard').classList.add('show'); releaseLock(); }
+function closeCard(){ $('rcard').classList.remove('show'); setTimeout(checkCards,400); }
+$('rcOk').addEventListener('click',closeCard);
+$('tCards').addEventListener('click',e=>{ const a=e.target.closest('a[data-card]'); if(a) showCard(a.dataset.card); });
+function fillEndQs(){ const zs=ZORDER.filter(cardDone);
+  $('endQs').innerHTML=zs.length?'<b>'+tx('endQsT')+'</b>'+zs.map(z=>'<div>· '+CARDS[z].q[T.lang]+'</div>').join(''):''; }
+
+/* ---- 下一步指引：先完成脚下这个场景，再按顺序去下一个 ---- */
+function zoneHere(){ let best='village',bd=1e9;
+  for(const z of ZORDER){ const d=planarDist(pGroup.position,P(ZPOS[z][0],ZPOS[z][1],0)); if(d<bd){bd=d;best=z;} } return best; }
+function currentGoal(){
+  const here=zoneHere(), order=[here].concat(ZORDER.filter(z=>z!==here));
+  for(const z of order){ if(cardDone(z)) continue;
+    const n=NPCS[ZNPC[z]];
+    if(!n.done) return {pos:P(n.a,n.t,0), txt:tx('gTalk').replace('{n}',n.name[T.lang])};
+    let best=null,bd=1e9;
+    ZSH[z].forEach(i=>{ const s=shards[i]; if(s.userData.got) return; const d=planarDist(pGroup.position,s.position); if(d<bd){bd=d;best=s;} });
+    if(best) return {pos:best.position, txt:tx('gFind').replace('{z}',ZSHORT[z][T.lang]).replace('{n}',ZSH[z].filter(i=>!shards[i].userData.got).length)}; }
+  if(!lit) return {pos:P(95,33,0), txt:tx('gBeacon')};
+  return null; }
+
+/* ---- 查看：关键建筑与物件 ---- */
+var poiCur=null;   /* POIS 在场景摆放处定义 */
+function nearPoi(){ let best=null,bd=1e9;
+  POIS.forEach(o=>{ const d=planarDist(pGroup.position,P(o.a,o.t,0)); if(d<o.r && d<bd){bd=d;best=o;} }); return best; }
+function openPoi(o){ poiCur=o; $('poiWho').textContent=o.n[T.lang]; $('poiTxt').textContent=o.d[T.lang]; $('poiMore').textContent=tx('poiClose'); $('poi').classList.add('show'); }
+function closePoi(){ poiCur=null; $('poi').classList.remove('show'); }
+$('poi').addEventListener('click',closePoi);
+function interact(){
+  if($('rcard').classList.contains('show')){ closeCard(); return; }
+  if(poiCur){ closePoi(); return; }
+  if(dlgNpc || nearNpc(pGroup.position)){ tryTalk(); return; }
+  if(!lit && prog>=1 && planarDist(pGroup.position,P(95,33,0))<=6.5){ tryBeacon(); return; }
+  const o=nearPoi(); if(o) openPoi(o); }
 
 /* 五区主题色 */
 const ZCOL={village:'#7fae9e',hehuang:'#c2a36b',wall:'#c67f4e',modern:'#8a9bb0',beichuan:'#c05a5a'};
@@ -1454,7 +1702,10 @@ function loop(){
   let near=nearNpc(pGroup.position);
   if(p2 && !near){ const n2=nearNpc(p2.grp.position); if(n2) near=n2; }
   $('actBtn').style.display=(near&&!dlgNpc)?'block':'none';
-  if(near) $('actBtn').textContent=tx('actTpl').replace('{n}',near.name[T.lang]);
+  if(near) $('actBtn').textContent=tx(document.body.classList.contains('touch')?'actTap':'actTpl').replace('{n}',near.name[T.lang]);
+  else if(!dlgNpc){ const o=poiCur?null:nearPoi();
+    if(o){ $('actBtn').style.display='block'; $('actBtn').textContent=tx(document.body.classList.contains('touch')?'poiTap':'poiAct').replace('{n}',o.n[T.lang]); } }
+  if(poiCur && planarDist(pGroup.position,P(poiCur.a,poiCur.t,0))>poiCur.r+3) closePoi();
   NPCS.forEach((n,i)=>{ if(n.fig) n.fig.body.rotation.z=Math.sin(now*1.1+i*2.1)*0.035; });
   /* 牦牛：沿墙外牧场缓步吃草；第一次走近时给一句提示 */
   if(beastG){
@@ -1511,17 +1762,19 @@ function loop(){
     pGroup.position.copy(P(z[0],z[1],0)); if(p2) p2.grp.position.copy(P(z[0]+2,z[1]+2,0));
     document.querySelectorAll('#zoneTabs a').forEach(x=>x.classList.toggle('on',x===a));
     document.querySelector('.sceneCard').style.setProperty('--zc', ZCOL[a.dataset.z]||'#c9a45c'); });
-    /* 罗盘指引 */
-  { let cS=null,cD=1e9;
-    shards.forEach(sh=>{ if(sh.userData.got) return; const d=planarDist(pGroup.position,sh.position); if(d<cD){cD=d;cS=sh;} });
-    const comp=$('compass');
-    if(cS && cD>7 && started){ comp.style.display='flex';
-      const to=cS.position.clone().sub(pGroup.position); to.addScaledVector(up,-to.dot(up)).normalize();
+    /* 下一步指引：罗盘箭头 + 文字；同时画小地图 */
+  if(started && (frameN++%6===0)) curGoal=currentGoal();
+  { const comp=$('compass'), g=curGoal;
+    const gd=g?planarDist(pGroup.position,g.pos):0;
+    if(g && started && gd>3.5 && !dlgNpc && !poiCur){ comp.style.display='flex';
+      const to=g.pos.clone().sub(pGroup.position); to.addScaledVector(up,-to.dot(up)).normalize();
       const cr=new THREE.Vector3().crossVectors(camS.dir,to).dot(up);
       const ag=Math.atan2(cr,camS.dir.dot(to));
       $('cA').style.transform='rotate('+(-ag*57.3)+'deg)';
-      $('cTxt').textContent=Math.round(cD)+' m';
-    } else comp.style.display='none'; }
+      const t2=g.txt+' · '+Math.round(gd)+' m'; if($('cTxt').textContent!==t2) $('cTxt').textContent=t2;
+    } else comp.style.display='none';
+    const gt=g?g.txt:''; if($('tGoal').textContent!==gt) $('tGoal').textContent=gt; }
+  drawMinimap();
   /* 落地尘土 */
   if(dustT<0.55){ dustT+=dt; const u=Math.min(1,dustT/0.55);
     const upD=pGroup.position.clone().normalize();
@@ -1642,32 +1895,17 @@ function burst(pos,hex){ const N=26; const g=new THREE.BufferGeometry();
   g.setAttribute('position',new THREE.Float32BufferAttribute(arr,3));
   const m=new THREE.PointsMaterial({color:hex,size:0.17,transparent:true,opacity:1,blending:THREE.AdditiveBlending,depthWrite:false});
   const pts=new THREE.Points(g,m); scene.add(pts); bursts.push({pts,vel,t:0}); }
-let voiceOn=true, voices=[];
-function refreshVoices(){ try{ voices=speechSynthesis.getVoices(); }catch(e){} }
-if('speechSynthesis' in window){ refreshVoices(); speechSynthesis.addEventListener('voiceschanged',refreshVoices); }
-function toggleVoice(){ voiceOn=!voiceOn;
-  if(!voiceOn && 'speechSynthesis' in window) speechSynthesis.cancel();
-  toast(tx(voiceOn?'voOn':'voOff')); }
-function speak(text,lang,pitch){ if(!voiceOn || muted || !('speechSynthesis' in window)) return;
-  try{ speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang = lang==='zh'?'zh-CN':'en-US'; u.rate=0.95; u.pitch=pitch||1;
-    const vs=voices.length?voices:speechSynthesis.getVoices();
-    const PREF={'zh-CN':['Tingting','婷婷','Yunyan','Xiaoxiao','晓晓','Huihui','Meijia'],'en-US':['Samantha','Ava','Daniel','Karen','Moira']};
-    const lc=x=>x.lang.replace('_','-').slice(0,5);
-    let v=vs.find(x=>lc(x)===u.lang && PREF[u.lang].some(nm=>x.name.indexOf(nm)>=0));
-    if(!v) v=vs.find(x=>lc(x)===u.lang && x.localService);
-    if(!v) v=vs.find(x=>lc(x)===u.lang);
-    if(v) u.voice=v;
-    speechSynthesis.speak(u); }catch(e){} }
+/* 讲述只用文字，不用机器朗读 */
+function speak(){}
 function saveGame(){ try{ if(!started) return;
   localStorage.setItem('walkSaveV2', JSON.stringify({
-    g: shards.map(x=>x.userData.got?1:0), n: NPCS.map(x=>x.done?1:0),
+    g: shards.map(x=>x.userData.got?1:0), n: NPCS.map(x=>x.done?1:0), c: cardSeen,
     p: pGroup.position.toArray(), lang: T.lang })); }catch(e){} }
 function loadGame(){ try{ const raw=localStorage.getItem('walkSaveV2'); if(!raw) return false;
   const d=JSON.parse(raw); if(!d||!d.g) return false;
   d.g.forEach((v,i)=>{ if(v&&shards[i]){ shards[i].userData.got=true; shards[i].visible=false; } });
   d.n.forEach((v,i)=>{ if(v&&NPCS[i]) NPCS[i].done=true; });
+  if(d.c) cardSeen=d.c; else ZORDER.forEach(z=>{ if(cardDone(z)) cardSeen[z]=1; });   /* 旧存档：已完成的场景不再补弹 */
   if(d.p) pGroup.position.copy(new THREE.Vector3(d.p[0],d.p[1],d.p[2])).setLength(R);
   updHUD(); return d.g.some(v=>v) || d.n.some(v=>v); }catch(e){ return false; } }
 document.getElementById('btnNew').addEventListener('click',()=>{ try{localStorage.removeItem('walkSaveV2');}catch(e){} location.reload(); });
@@ -1732,6 +1970,7 @@ function makeCard(){
 document.getElementById('btnCard').addEventListener('click',makeCard);
 document.getElementById('btnGo').addEventListener('click',()=>{
   started=true; walkT0=Date.now(); setInterval(saveGame,4000);
+  document.body.classList.add('playing'); grabLock(); updLockTip(); setTimeout(checkCards,3000);
   document.getElementById('intro').style.display='none';
   document.body.classList.add('cine');
   setTimeout(()=>{ document.body.classList.remove('cine'); },2600);

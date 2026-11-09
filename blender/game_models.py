@@ -37,6 +37,7 @@ COLORS = {
     "hide": (0.52, 0.34, 0.20, 1),      # 黄牛
     "horse": (0.36, 0.24, 0.16, 1),
     "gravel": (0.55, 0.52, 0.46, 1),
+    "qianghong": (0.62, 0.10, 0.09, 1),  # 羌红：挂在门楣上的红布
     "leafcard": (0.45, 0.58, 0.32, 1),  # 阔叶叶片卡（游戏里换成带透明的叶片贴图）
     "needlecard": (0.20, 0.32, 0.22, 1),  # 冷杉枝叶卡
 }
@@ -461,6 +462,66 @@ def build_animals():
     bake_and_export("horse", organic=True, ao=0.5)
 
 
+def build_rma_home():
+    """北川·尔玛人家：两层平顶石屋连一座四层小碉，屋顶与碉顶供白石，门楣挂羌红。正面朝 +Y。"""
+    reset()
+    W, D = 2.9, 2.2
+    box(W, D, 1.55, 0, 0, 0, "stone")                                  # 一层
+    box(W + 0.08, D + 0.08, 0.1, 0, 0, 1.55, "wood")                   # 楼层木梁出头
+    box(W - 0.1, D - 0.1, 1.35, 0, 0, 1.65, "stone")                   # 二层
+    box(W, D, 0.08, 0, 0, 3.0, "earth")                                # 平顶（黄泥）
+    for sy in (-1, 1):                                                 # 女儿墙
+        box(W, 0.12, 0.3, 0, sy * (D / 2 - 0.06), 3.08, "stone")
+    for sx in (-1, 1):
+        box(0.12, D - 0.24, 0.3, sx * (W / 2 - 0.06), 0, 3.08, "stone")
+    for sx, sy in ((1, 1), (1, -1)):
+        stone_ball(0.12, sx * (W / 2 - 0.1), sy * (D / 2 - 0.1), 3.38)
+    # 屋顶小罩楼
+    box(0.85, 0.65, 0.55, 0.55, -0.3, 3.08, "wood")
+    box(1.0, 0.8, 0.06, 0.55, -0.3, 3.63, "dark")
+    # 小碉：连在左后角，逐层收分
+    tx, ty = -W / 2 + 0.55, -D / 2 + 0.55
+    z = 0
+    for i, (w, h) in enumerate(((1.25, 1.6), (1.15, 1.4), (1.05, 1.3), (0.96, 1.2))):
+        box(w, w, h, tx, ty, z, "stone")
+        if i:
+            box(0.08, 0.04, 0.32, tx, ty + w / 2, z + h * 0.45, "dark")   # 射孔（正面）
+            box(0.04, 0.08, 0.32, tx - w / 2, ty, z + h * 0.45, "dark")   # 射孔（侧面）
+        z += h
+    box(1.04, 1.04, 0.08, tx, ty, z, "wood")
+    for sy in (-1, 1):
+        box(1.0, 0.1, 0.26, tx, ty + sy * 0.45, z + 0.08, "stone")
+    for sx in (-1, 1):
+        box(0.1, 0.8, 0.26, tx + sx * 0.45, ty, z + 0.08, "stone")
+    stone_ball(0.2, tx, ty, z + 0.1)                                   # 碉顶白石
+    # 门、门楣、羌红
+    dx = 0.45
+    box(0.62, 0.08, 1.15, dx, D / 2, 0, "dark")
+    box(0.86, 0.12, 0.1, dx, D / 2 + 0.02, 1.15, "wood")
+    box(0.86, 0.04, 0.22, dx, D / 2 + 0.08, 0.98, "qianghong")
+    for sx in (-1, 1):
+        box(0.1, 0.03, 0.45, dx + sx * 0.36, D / 2 + 0.09, 0.62, "qianghong")   # 两头垂下
+    stone_ball(0.08, dx, D / 2 + 0.02, 1.25)                           # 门楣上的小白石
+    # 木窗：一层小窗，二层大窗（带窗框）
+    box(0.34, 0.06, 0.4, -0.65 + 0.25, D / 2, 0.8, "dark")
+    for x in (-0.3, 0.75):
+        box(0.5, 0.06, 0.55, x, D / 2 - 0.05, 2.05, "dark")
+        box(0.6, 0.08, 0.07, x, D / 2 - 0.03, 2.6, "wood")
+        box(0.6, 0.08, 0.07, x, D / 2 - 0.03, 1.98, "wood")
+    for sx in (-1, 1):
+        box(0.06, 0.3, 0.36, sx * (W / 2), 0.35, 2.1, "dark")
+    # 门边柴垛
+    for i in range(3):
+        for j in range(3 - i):
+            cyl(0.07, 0.75, W / 2 - 0.25 - j * 0.15 - i * 0.075, D / 2 + 0.25, 0.07 + i * 0.13, "bark", verts=6, ry=math.pi / 2)
+    # 院坝：前面一圈矮石墙，留出门口
+    for x0, x1 in ((-W / 2 - 0.3, dx - 0.6), (dx + 0.6, W / 2 + 0.3)):
+        box(x1 - x0, 0.22, 0.5, (x0 + x1) / 2, D / 2 + 1.3, 0, "stone")
+    for sx in (-1, 1):
+        box(0.22, 1.3, 0.5, sx * (W / 2 + 0.2), D / 2 + 0.65, 0, "stone")
+    bake_and_export("rma_home")
+
+
 build_diaolou()
 build_house()
 build_hangtu_wall()
@@ -468,3 +529,4 @@ build_fengsui()
 build_hehuang_site()
 build_trees()
 build_animals()
+build_rma_home()
