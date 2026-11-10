@@ -71,10 +71,18 @@
   .resumeOv.show{display:flex}
   .resumeOv .rc{text-align:center;border:1px solid var(--line);border-radius:16px;padding:36px 44px;background:rgba(8,10,16,.8)}
   .resumeOv b{display:block;font-size:20px;letter-spacing:.3em;color:var(--gold-hi);margin-bottom:18px}
+  .resumeOv .go{display:inline-block;font:600 16px/1 inherit;letter-spacing:.24em;color:var(--gold-hi);
+    background:rgba(201,164,92,.16);border:1px solid rgba(201,164,92,.55);border-radius:99px;
+    padding:16px 38px;min-height:48px;min-width:150px;cursor:pointer;-webkit-appearance:none;appearance:none}
+  .resumeOv .go:hover{background:rgba(201,164,92,.28)}
   .walkRec{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;text-align:left}
   .walkRec>b{display:block;font-size:11px;letter-spacing:.24em;color:var(--gold-hi);margin-bottom:4px}
   .walkRec div{display:flex;justify-content:space-between;gap:14px;padding:6px 0;border-top:1px solid rgba(232,228,218,.12);font-size:12.5px}
   .walkRec dt{color:var(--dim)} .walkRec dd{color:#e8e4da;margin:0}
+  .wxRow{margin:10px 0 2px;display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+  .wxRow b{font-size:11px;letter-spacing:.2em;color:var(--gold-hi);font-weight:600}
+  .wxRow a{font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:4px 11px;cursor:pointer;text-decoration:none}
+  .wxRow a.on{color:var(--gold-hi);border-color:var(--gold-hi);background:rgba(201,164,92,.12)}
   @media (prefers-reduced-motion: reduce){
     #locCard.show b{animation:none;clip-path:none}
     #enterFade{transition:none}
@@ -274,6 +282,7 @@
     .zoneTabs a{font-size:9px;padding:4px 7px 4px 6px;gap:3px}
     .zoneTabs a .zg{width:9px;height:9px}
     .inv{bottom:96px}
+    #objTrack{display:none}
     .posHUD{bottom:8px}
     #mmap{top:128px;right:12px;width:104px;height:104px}
     .toast{max-width:88vw;top:276px}
@@ -312,7 +321,10 @@
 <div class="inv" id="inv"></div>
 <div class="posHUD" id="posHUD" data-i18n-html="posHud">你现在：<b id="posTxt">边缘之上</b></div>
 <div class="hint" id="hint" data-i18n-html="hintTxt"><kbd>W A S D</kbd> 移动 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务</div>
-<div class="tasks" id="tasks"><button class="xClose tClose" id="tasksClose" title="关闭">✕</button><b data-i18n="tasksT">行走任务</b><div class="goalT" id="tGoal"></div><ul>
+<div class="tasks" id="tasks"><button class="xClose tClose" id="tasksClose" title="关闭">✕</button><b data-i18n="tasksT">行走任务</b><div class="goalT" id="tGoal"></div>
+  <div class="wxRow"><b data-i18n="wxT">天气</b><span id="wxBtns">
+    <a data-w="auto" class="on" data-i18n="wxAuto">自动</a><a data-w="sunny" data-i18n="wxSun">晴</a><a data-w="rain" data-i18n="wxRain">雨</a><a data-w="snow" data-i18n="wxSnow">雪</a><a data-w="gust" data-i18n="wxWind">风</a><a data-w="dust" data-i18n="wxDust">尘</a>
+  </span></div><ul>
   <li id="tCard">读书卡 0/5</li>
   <li id="tShard">拾得 17 件史料（0/17）</li>
   <li id="tNpc1" data-i18n="tNpc1">倾听 寨老阿爷 的讲述</li>
@@ -428,6 +440,7 @@ scene.add(sun.target);
 scene.add(new THREE.AmbientLight(0x22262e,.35));
 const THEMES=[
  {fog:0x141b2a,bg:0x141b2a,sun:0xffd9a0,si:1.6,hemi:0xaec4e4,name:{zh:'晨光',en:'Morning'}},
+ {fog:0x8db6d9,bg:0x9ec6e8,sun:0xfff2d0,si:2.0,hemi:0xcfe2f4,name:{zh:'正午',en:'Noon'}},
  {fog:0x1a1210,bg:0x150e0a,sun:0xff9a5c,si:1.0,hemi:0xd6a08a,name:{zh:'暮色',en:'Dusk'}},
  {fog:0x0a0e18,bg:0x080c16,sun:0xb9c8ff,si:.7,hemi:0x8a9cd6,name:{zh:'月夜',en:'Moonlit'}}];
 let themeIx=0;
@@ -517,7 +530,13 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  qDegrade:{zh:'画质 · 已自动调低',en:'Quality · auto-reduced'},
  ftT:{zh:'快速移动 · FAST TRAVEL',en:'FAST TRAVEL'},
  invUmb:{zh:'雨伞',en:'Umbrella'}, invTorch:{zh:'火把',en:'Torch'},
- wRain:{zh:'暴雨来袭',en:'Rain approaching'}, wUmb:{zh:'雨伞为你遮挡',en:'Your umbrella shields you'}, wNoUmb:{zh:'没有雨伞——在雨中行走',en:'No umbrella — walking in the rain'},
+ wRain:{zh:'暴雨来袭',en:'Rain approaching'},
+ wRainHint:{zh:'下雨了——羌寨入口的桩子上挂着一把伞',en:'It is raining — an umbrella hangs by the village gate'},
+ wSnow:{zh:'雪落高原',en:'Snow drifts over the plateau'},
+ wxT:{zh:'天气',en:'Weather'}, wxAuto:{zh:'自动',en:'Auto'}, wxSun:{zh:'晴',en:'Sunny'},
+ wxRain:{zh:'雨',en:'Rain'}, wxSnow:{zh:'雪',en:'Snow'}, wxWind:{zh:'风',en:'Wind'}, wxDust:{zh:'尘',en:'Dust'},
+ wSun2:{zh:'日头正好 · 风吹草低',en:'High sun — wind in the grass'},
+ wClear:{zh:'天放晴了',en:'The sky is clearing'}, wUmb:{zh:'雨伞为你遮挡',en:'Your umbrella shields you'}, wNoUmb:{zh:'没有雨伞——在雨中行走',en:'No umbrella — walking in the rain'},
  bNear:{zh:'墙外是牧场：耕与牧，是两种生计，也是两种边界。',en:'Beyond the wall, pasture: farming and herding — two livelihoods, two kinds of boundary.'},
  bTorch:{zh:'拾得火把——典范历史只照亮木棍的一端；把火把转向边缘。',en:'A torch — canonical history lights only one end of the stick; turn it toward the margin.'},
  ftT:{zh:'快速移动 · FAST TRAVEL',en:'FAST TRAVEL'},
@@ -697,22 +716,32 @@ const gGeo = new THREE.SphereGeometry(R, GWS, GHS, 0, Math.PI*2, 0, 1.12);
   const groundMesh=new THREE.Mesh(gGeo, gm);
   groundMesh.receiveShadow=true; scene.add(groundMesh); }
 
-/* 岷江：贴河床的变宽水面 + 自写水着色器（波纹流动/菲涅尔天光/岸边白浪/深浅渐变） */
-{ const pts=[];
-  for(const [a,t] of riverPts){ const aR=a*D2R,tR=t*D2R;
-    const rr=R-1.9-1.3*smoothstep(6,0,riverDist(a,t))+0.1;
-    pts.push(new THREE.Vector3(rr*Math.sin(tR)*Math.cos(aR), rr*Math.cos(tR), rr*Math.sin(tR)*Math.sin(aR))); }
+/* 岷江：贴河床的变宽水面 + 自写水着色器（CatmullRom细分190段，逐点贴当地地形） */
+{ const base3=riverPts.map(([a,t])=>{ const aR=a*D2R,tR=t*D2R;
+    const rr=R-1.9-1.3*smoothstep(6,0,riverDist(a,t));
+    return new THREE.Vector3(rr*Math.sin(tR)*Math.cos(aR), rr*Math.cos(tR), rr*Math.sin(tR)*Math.sin(aR)); });
+  const curve=new THREE.CatmullRomCurve3(base3);
+  const SEG=190, pts=[];
+  const groundAt=(a,t)=>R-1.9-1.3*smoothstep(6,0,riverDist(a,t));
+  for(let i=0;i<=SEG;i++){ const p=curve.getPoint(i/SEG);
+    const len=p.length();
+    const a=Math.atan2(p.z,p.x)/D2R, t=Math.acos(Math.max(-1,Math.min(1,p.y/len)))/D2R;
+    p.setLength(groundAt(a,t)+0.09); pts.push(p); }
   const n=pts.length, vpos=[], uvs=[], idx=[];
   for(let i=0;i<n;i++){ const p=pts[i];
     const pv=pts[Math.max(0,i-1)], nx=pts[Math.min(n-1,i+1)];
     const tg=nx.clone().sub(pv).normalize();
     const up=p.clone().normalize();
     const sd=new THREE.Vector3().crossVectors(up,tg).normalize();
-    const w=(4.5+2.6*Math.sin(i*0.9+1.2))*0.5;
-    const pl=p.clone().addScaledVector(sd,w); pl.setLength(p.length());
-    const pr=p.clone().addScaledVector(sd,-w); pr.setLength(p.length());
+    const w=(4.5+2.6*Math.sin(i*0.09+1.2))*0.5;
+    const pl=p.clone().addScaledVector(sd,w);
+    { const l2=pl.length(), a2=Math.atan2(pl.z,pl.x)/D2R, t2=Math.acos(Math.max(-1,Math.min(1,pl.y/l2)))/D2R;
+      pl.setLength(groundAt(a2,t2)+0.03); }
+    const pr=p.clone().addScaledVector(sd,-w);
+    { const l3=pr.length(), a3=Math.atan2(pr.z,pr.x)/D2R, t3=Math.acos(Math.max(-1,Math.min(1,pr.y/l3)))/D2R;
+      pr.setLength(groundAt(a3,t3)+0.03); }
     vpos.push(pl.x,pl.y,pl.z, pr.x,pr.y,pr.z);
-    uvs.push(0,i*0.22, 1,i*0.22); }
+    uvs.push(0,i*0.09, 1,i*0.09); }
   for(let i=0;i<n-1;i++){ const k=i*2; idx.push(k,k+1,k+2, k+1,k+3,k+2); }
   const wg=new THREE.BufferGeometry();
   wg.setAttribute('position',new THREE.Float32BufferAttribute(vpos,3));
@@ -734,12 +763,14 @@ const gGeo = new THREE.SphereGeometry(R, GWS, GHS, 0, Math.PI*2, 0, 1.12);
         float w2=(uLQ>0.5)?0.0:(vn(vec2(vUv.y*3.1-uTime*0.92, vUv.x*11.0+3.0))*2.0-1.0);
         float wn=w1*0.65+w2*0.35;
         float cx=abs(vUv.x-0.5)*2.0;
-        vec3 col=mix(vec3(0.13,0.21,0.24), vec3(0.30,0.36,0.32), cx*0.85);
+        vec3 col=mix(vec3(0.11,0.19,0.20), vec3(0.26,0.33,0.29), cx*0.7);
         vec3 V=normalize(uCam-vW);
-        float fr=pow(1.0-clamp(V.y,0.0,1.0),2.2);
+        float fr=pow(1.0-clamp(dot(V,normalize(vW)),0.0,1.0),2.2);
         vec3 sky=mix(vec3(0.45,0.55,0.62), vec3(0.10,0.13,0.22), uNight);
-        col=mix(col,sky,fr*0.55);
-        col*=0.92+wn*0.10;
+        col=mix(col,sky,fr*(0.3+0.3*fr));
+        float st=vn(vec2(vUv.x*4.0, vUv.y*2.5-uTime*0.5));
+        col*=0.82+st*0.3;
+        col*=0.9+wn*0.22;
         col*=(1.0-uNight*0.42);
         float fm=vn(vec2(vUv.y*9.0-uTime*1.15, vUv.x*15.0));
         float fe=smoothstep(0.66,0.98,cx+fm*0.22);
@@ -765,6 +796,23 @@ for(let i=0;i<RAIN_N;i++){ rainArr[i*3]=(Math.random()-0.5)*36; rainArr[i*3+1]=M
 rainGeo.setAttribute('position', new THREE.Float32BufferAttribute(rainArr,3));
 const rainMat=new THREE.PointsMaterial({color:0xb8cce8,size:0.12,sizeAttenuation:true,transparent:true,opacity:0});
 const rainPts=new THREE.Points(rainGeo,rainMat); rainPts.visible=false; scene.add(rainPts);
+/* 雪粒子 */
+const SNOW_N=240;
+const snowGeo=new THREE.BufferGeometry();
+const snowArr=new Float32Array(SNOW_N*3);
+for(let i=0;i<SNOW_N;i++){ snowArr[i*3]=(Math.random()-0.5)*34; snowArr[i*3+1]=Math.random()*20; snowArr[i*3+2]=(Math.random()-0.5)*34; }
+snowGeo.setAttribute('position', new THREE.Float32BufferAttribute(snowArr,3));
+const snowMat=new THREE.PointsMaterial({color:0xffffff,size:0.16,sizeAttenuation:true,transparent:true,opacity:0,depthWrite:false});
+const snowPts=new THREE.Points(snowGeo,snowMat); snowPts.visible=false; scene.add(snowPts);
+/* 天气色调函数 */
+function weatherTint(c,mode){
+  if(mode==='rain'){ const l=c.r*0.3+c.g*0.5+c.b*0.2; c.setRGB(l*0.62,l*0.66,l*0.72); }
+  else if(mode==='snow'){ const l=c.r*0.3+c.g*0.5+c.b*0.2;
+    c.setRGB(l+(0.80-l)*0.5, l+(0.82-l)*0.5, l+(0.86-l)*0.5); }
+  else if(mode==='sunny'){ c.r=Math.min(1,c.r*1.32); c.g=Math.min(1,c.g*1.28); c.b=Math.min(1,c.b*1.18); }
+  else if(mode==='dust'){ const l=c.r*0.35+c.g*0.4+c.b*0.25;
+    c.setRGB(l+(0.72-l)*0.5, l+(0.6-l)*0.5, l+(0.42-l)*0.5); }
+  else if(mode==='gust'){ c.r=Math.min(1,c.r*1.12); c.g=Math.min(1,c.g*1.1); } }
 /* 星空 */
 { const g=new THREE.BufferGeometry(); const v=[];
   for(let i=0;i<1700;i++){ const th=Math.random()*Math.PI*2, ph=Math.acos(Math.random()*0.92);
@@ -875,12 +923,13 @@ const _procRma=[mesh(new THREE.BoxGeometry(2.9,3.0,2.2),matStone,RMA[0],RMA[1],1
   mesh(new THREE.BoxGeometry(0.6,0.8,0.03),matRed,a,t,2.2); });
 /* 道具（雨伞/火把） */
 /* 收拢的油纸伞、未点燃的火把：用本色，不再用发光多面体 */
-const itemUmb=new THREE.Group();
+const itemUmb=null; /* 伞已随行走者自带 */
+const _dead=null; if(false){ const itemUmb=new THREE.Group();
 { const cloth=new THREE.MeshStandardMaterial({color:0x4a3b2e,emissive:0x4a3b2e,emissiveIntensity:.3,roughness:.8});
   const wood=new THREE.MeshStandardMaterial({color:0x6b4a2a,emissive:0x6b4a2a,emissiveIntensity:.25,roughness:.8});
   const c=new THREE.Mesh(new THREE.ConeGeometry(0.16,0.75,8),cloth); c.position.y=0.15; itemUmb.add(c);
   const h=new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.025,0.4,6),wood); h.position.y=-0.4; itemUmb.add(h); }
-itemUmb.position.copy(P(-18,8,1.2)); itemUmb.userData={type:'umb',got:false}; scene.add(itemUmb);
+itemUmb.position.copy(P(-18,8,1.2)); itemUmb.userData={type:'umb',got:false}; scene.add(itemUmb); }
 const itemTor=new THREE.Group();
 { const wood=new THREE.MeshStandardMaterial({color:0x5a3a22,emissive:0x5a3a22,emissiveIntensity:.25,roughness:.85});
   const pitch=new THREE.MeshStandardMaterial({color:0x2a201a,emissive:0xb0642a,emissiveIntensity:.35,roughness:.9});
@@ -1171,12 +1220,13 @@ pGroup.add(figP.yawG);
 pGroup.position.copy(P(player.a,player.t,0)); scene.add(pGroup);
 let walkPhase=0, vy=0, jumpOff=0, lit=false, beaconHinted=false, prevSide='in', crossT=0, fpsN=0, fpsT=0, started=false, actx=null, master=null, muted=false, humGain=null, isMoveGlobal=false, idleT=0, headTurn=0, camPos=new THREE.Vector3(), lastZone='';
 let weather='clear', weatherT=0;
-let hasUmb=false, hasTorch=false;
+let hasUmb=true, hasTorch=false;
 let beastA=88, beastT=35, yakSeen=false;
 
 let stepT=0.2, padYaw=0, padPitch=0, padB0=false, padB2=false, plGain=null, dustT=1, steps=0, walkT0=0;
 let playSec=0, hardPaused=false, charging=false, chargeT=0, lastZoneKey='', lastNs=-1, lastNn=-1;
 const CHARGE_T=1.2, zoneSeen=new Set(), narFlags={shard1:false,story1:false,all17:false};
+let wxFix=null, lastWeather='sunny';
 const REDUCE_MOTION=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 let rollT=-1, rollDir=0;
 const bursts=[];
@@ -1198,7 +1248,7 @@ function zoneWeights(v){ const u=v.clone().normalize(); let sum=0;
 
 /* ---- 天色与雾：按所在场景平滑过渡，再叠加晨光/暮色/月夜 ---- */
 const _c=[new THREE.Color(),new THREE.Color(),new THREE.Color(),new THREE.Color()], _t=new THREE.Color();
-const THEME_MOD=[c=>c, c=>c.lerp(_t.setHex(0x8a4a2a),.32), c=>c.multiplyScalar(.5).lerp(_t.setHex(0x16203a),.3)];
+const THEME_MOD=[c=>c, c=>c.lerp(_t.setHex(0xbfe0f6),0.4).multiplyScalar(1.28), c=>c.lerp(_t.setHex(0x8a4a2a),.32), c=>c.multiplyScalar(.5).lerp(_t.setHex(0x16203a),.3)];
 function skyTarget(pos){ const {w,sum}=zoneWeights(pos); const base=Math.max(0,1-sum);
   const out=[0,1,2].map(i=>new THREE.Color(SKY_BASE.sky[i]).multiplyScalar(base));
   const fog=new THREE.Color(SKY_BASE.fog).multiplyScalar(base); let den=SKY_BASE.den*base, tot=base;
@@ -1560,16 +1610,24 @@ function recompileAll(){ scene.traverse(o=>{ if(o.material) (Array.isArray(o.mat
 function worldTick(dt,now){
   const pP=pGroup.position, up=pP.clone().normalize();
   const tg=skyTarget(pP), k=Math.min(1,dt*1.2);
+  const wMode=(weather==='rain'||weather==='snow'||weather==='sunny')?weather:'';
+  if(wMode){ weatherTint(tg.out[0],wMode); weatherTint(tg.out[1],wMode); weatherTint(tg.out[2],wMode); weatherTint(tg.fog,wMode); }
+  const denF=wMode==='rain'?1.7:wMode==='snow'?1.55:wMode==='sunny'?0.72:1;
   if(window.__skyMat){ const u=window.__skyMat.uniforms; u.cTop.value.lerp(tg.out[0],k); u.cMid.value.lerp(tg.out[1],k); u.cLow.value.lerp(tg.out[2],k); }
   scene.fog.color.lerp(tg.fog,k); scene.background.copy(scene.fog.color);
-  if(weather!=='rain' && rainMat.opacity<=0) scene.fog.density+=(tg.den-scene.fog.density)*k;
-  window.__fogBase=tg.den;
+  scene.fog.density+=(tg.den*denF-scene.fog.density)*k;
+  window.__fogBase=tg.den*denF;
+  sun.intensity=THEMES[themeIx].si*(wMode==='sunny'?1.3:wMode==='rain'?0.5:wMode==='snow'?0.85:1);
+  if(window.__clouds){ const cf=wMode==='rain'?0.85:wMode==='snow'?0.8:wMode==='sunny'?0.34:0.5;
+    const cc=wMode==='rain'?0x8a8f98:wMode==='snow'?0xdfe4ea:0xffffff;
+    window.__clouds.children.forEach(cm=>{ const m=cm.material;
+      m.opacity+=(cf-m.opacity)*k*0.5; m.color.lerp(new THREE.Color(cc),k*0.5); }); }
   if(grass.uni) grass.uni.uTime.value=now;
   /* 月亮：一轮低悬在东边地平线上的大月亮（镜头略向下看，太高就看不到） */
   const east=new THREE.Vector3(0,1,0).cross(up); if(east.lengthSq()<1e-4) east.set(1,0,0); east.normalize();
   const md=east.clone().multiplyScalar(Math.cos(0.03)).addScaledVector(up,Math.sin(0.03)).normalize();
   moon.position.copy(camera.position).addScaledVector(md,380); moon.lookAt(camera.position); moonGlow.position.copy(moon.position);
-  const night=themeIx===2?1:themeIx===1?0.7:0.5; moon.material.color.setScalar(0.65+0.35*night); moonGlow.material.opacity=0.6+0.4*night;
+  const night=themeIx===3?1:themeIx===2?0.7:themeIx===1?0.3:0.5; moon.material.color.setScalar(0.65+0.35*night); moonGlow.material.opacity=0.6+0.4*night;
   twinkle.material.opacity=0.45+0.3*Math.sin(now*2.3)*Math.sin(now*0.7+1.3);
   /* 流星 */
   meteor.next-=dt;
@@ -1719,12 +1777,13 @@ function showLocCard(instant){ const zk=zoneHere(), z=Z[zk]||Z.village;
 function beaconReady(){ return !lit && prog>=1 && planarDist(pGroup.position,P(95,33,0))<=6.5; }
 function startCharge(){ if(charging||lit) return; charging=true; chargeT=0; $('charge').classList.add('on'); }
 function cancelCharge(){ charging=false; chargeT=0; $('charge').classList.remove('on'); }
-let fatalShown=false;
+let fatalShown=false, loopErrN=0;
 function showFatal(){ if(fatalShown) return; fatalShown=true;
   const d=document.createElement('div');
   d.style.cssText='position:fixed;inset:0;z-index:99;display:flex;align-items:center;justify-content:center;background:rgba(5,7,12,.93);color:#e8dfc8;font:14px/2 serif;text-align:center;padding:24px';
-  d.textContent=tx('errFatal'); document.body.appendChild(d); }
-window.addEventListener('error',e=>{ if(!e.target||!e.target.tagName){ if(!started) showFatal(); } },true);
+  d.innerHTML=tx('errFatal')+'<br><br><button class="go" id="fatalClose" style="display:inline-block;padding:10px 26px">✕</button>';
+  document.body.appendChild(d);
+  document.getElementById('fatalClose').onclick=()=>d.remove(); }
 function fillWalkRec(){
   try{
   const mm=Math.max(1,Math.floor(playSec/60)), ss=Math.floor(playSec%60);
@@ -1901,7 +1960,8 @@ function loop(){
       figP.elbR.rotation.x=(0.3+Math.max(0,Math.sin(walkPhase))*0.3)*mv; }
     figP.armL.rotation.x=-sw*0.6; figP.armR.rotation.x=sw*0.6;
     figP.body.position.y=Math.abs(Math.cos(walkPhase))*0.04*(isMove?1:0);
-    figP.body.rotation.x=0.055*(isMove?1:0);
+    figP.body.rotation.x=(keys['shift']?0.09:0.055)*(isMove?1:0);
+    figP.body.position.x=Math.sin(walkPhase)*0.02*(isMove?1:0);
     figP.body.rotation.y=Math.sin(walkPhase)*0.075*(isMove?1:0);
     if(!isMove){ walkPhase=0; figP.legL.rotation.x*=0.8; figP.legR.rotation.x*=0.8;
       if(figP.kneeL){ figP.kneeL.rotation.x*=0.8; figP.kneeR.rotation.x*=0.8;
@@ -2048,9 +2108,10 @@ function loop(){
   }
   worldTick(dt,now);
   /* 水面着色器驱动 + 漂浮物顺流 */
+  try{
   if(window.__waterMat){ const W=window.__waterMat.uniforms;
     W.uTime.value=now; W.uCam.value.copy(camera.position);
-    W.uNight.value=themeIx===2?1:themeIx===1?0.7:0.35; }
+    W.uNight.value=themeIx===3?1:themeIx===2?0.7:themeIx===1?0.12:0.35; }
   if(window.__debris){ const C=window.__riverCtr, nC=C.length;
     const pa=window.__debris.geometry.attributes.position;
     window.__drift.forEach((d,i)=>{ d.s+=d.sp*dt; if(d.s>=1) d.s-=1;
@@ -2062,6 +2123,7 @@ function loop(){
       p.addScaledVector(sd,d.o).addScaledVector(up,0.06+Math.sin(now*2+i)*0.03);
       pa.setXYZ(i,p.x,p.y,p.z); });
     pa.needsUpdate=true; }
+  }catch(e){}
   /* 云影漂移 */
   for(let ci=0;ci<3;ci++){ const cs=window['__cloudShadow'+ci]; if(!cs) continue;
     cs.position.x+=cs.userData.driftX*dt; cs.position.z+=cs.userData.driftZ*dt;
@@ -2084,7 +2146,7 @@ function loop(){
   else { headTurn=0; idleT=now; }
   if(figP && figP.head) figP.head.rotation.y=headTurn;
   /* 道具拾取 */
-  [itemUmb,itemTor].forEach(it=>{ if(it.userData.got) return;
+  [itemTor].forEach(it=>{ if(it.userData.got) return;
     it.rotation.y+=dt*1.6;
     if(planarDist(pP,it.position)<1.6){ it.userData.got=true; it.visible=false;
       if(it.userData.type==='umb'){ hasUmb=true; $('inv').innerHTML+='<span data-i18n="invUmb">'+tx('invUmb')+'</span>'; }
@@ -2116,14 +2178,14 @@ function loop(){
       const cr=new THREE.Vector3().crossVectors(camS.dir,to).dot(up);
       const ag=Math.atan2(cr,camS.dir.dot(to));
       $('cA').style.transform='rotate('+(-ag*57.3)+'deg)';
-      const t2=g.txt+' · '+Math.round(gd)+' m'; if($('cTxt').textContent!==t2) $('cTxt').textContent=t2;
+      const t2=Math.round(gd)+' m'; if($('cTxt').textContent!==t2) $('cTxt').textContent=t2;
     } else comp.style.display='none';
     const gt=g?g.txt:''; if($('tGoal').textContent!==gt) $('tGoal').textContent=gt;
     if(started){ $('objTxt').textContent=gt;
       const zk=zoneHere();
       if(zk!==lastZoneKey){ lastZoneKey=zk;
         if(!zoneSeen.has(zk)){ zoneSeen.add(zk); if(zoneSeen.size>1) saySubRaw(Z[zk].s[T.lang]); } } } }
-  drawMinimap(); updMarkers(clock.elapsedTime);
+  try{ drawMinimap(); }catch(e){} try{ updMarkers(clock.elapsedTime); }catch(e){}
   /* 落地尘土 */
   if(dustT<0.55){ dustT+=dt; const u=Math.min(1,dustT/0.55);
     const upD=pGroup.position.clone().normalize();
@@ -2137,6 +2199,7 @@ function loop(){
   if(!zn && lastZone!==tx('zValleyN')){ lastZone=tx('zValleyN');
     $('zName').textContent=tx('zValleyN'); $('zSub').textContent=tx('zValleyS'); }
   /* 暴雨跟随 */
+  try{
   if(weather==='rain'&&rainPts){ rainPts.visible=true; rainMat.opacity=Math.min(0.55,rainMat.opacity+dt*0.5);
     rainPts.position.set(pP.x,pP.y+8,pP.z);
     const rp=rainGeo.attributes.position;
@@ -2145,13 +2208,40 @@ function loop(){
     rp.needsUpdate=true;
     scene.fog.density=Math.min(0.028,scene.fog.density+dt*0.003);
   } else if(rainPts){ rainMat.opacity=Math.max(0,rainMat.opacity-dt*0.5);
-    if(rainMat.opacity<=0){ rainPts.visible=false; scene.fog.density=Math.max(window.__fogBase||0.0088,scene.fog.density-dt*0.003); } }
+    if(rainMat.opacity<=0){ rainPts.visible=false; } }
+  /* 雪跟随 */
+  if(weather==='snow'&&snowPts){ snowPts.visible=true; snowMat.opacity=Math.min(0.85,snowMat.opacity+dt*0.6);
+    snowPts.position.set(pP.x,pP.y+8,pP.z);
+    const sp=snowGeo.attributes.position;
+    for(let i=0;i<SNOW_N;i++){ let ry=sp.getY(i)-dt*(1.6+fract(i*5.7)*1.2);
+      if(ry<-6){ ry=18+Math.random()*4; sp.setX(i,(Math.random()-0.5)*34); }
+      sp.setY(i,ry); }
+    sp.needsUpdate=true;
+  } else if(snowPts){ snowMat.opacity=Math.max(0,snowMat.opacity-dt*0.6);
+    if(snowMat.opacity<=0) snowPts.visible=false; }
+  }catch(e){}
   /* 天气触发 */
   weatherT-=dt;
-  if(weatherT<=0){ weatherT=weather==='clear'?(fract(now*0.001)>0.5?18:45):40;
-    if(weather==='clear'&&fract(now*0.003)>0.15){ weather='rain'; weatherT=18+Math.random()*12;
-      toast(hasUmb?tx('wUmb'):tx('wNoUmb')); }
-    else if(weather==='rain'){ weather='clear'; } }
+  if(weatherT<=0 && !wxFix){
+    const zk=zoneHere();
+    const TBL={ village:[['sunny',.45],['rain',.35],['snow',.2]],
+      modern:[['sunny',.55],['rain',.3],['snow',.15]],
+      beichuan:[['sunny',.45],['rain',.25],['snow',.3]],
+      wall:[['sunny',.62],['gust',.38]],
+      hehuang:[['sunny',.55],['gust',.22],['dust',.23]] };
+    const tbl=TBL[zk]||TBL.village, roll=Math.random();
+    let acc=0, pick='sunny';
+    for(const [w2,p2] of tbl){ acc+=p2; if(roll<acc){ pick=w2; break; } }
+    if(pick!==weather){
+      weather=pick;
+      const DUR={sunny:[40,70],rain:[14,22],snow:[16,26],gust:[8,14],dust:[10,16]}[pick];
+      weatherT=DUR[0]+Math.random()*(DUR[1]-DUR[0]);
+      const say={rain:'wUmb',snow:'wSnow',gust:'wGust',dust:'wDust'}[pick];
+      if(say) toast(tx(say));
+      if(pick==='sunny' && lastWeather!=='sunny') toast(tx('wClear'));
+      lastWeather=pick;
+    } else weatherT=20; }
+  else if(wxFix && weather!==wxFix){ weather=wxFix; }
   /* 烽火燃动 */
   if(lit){ beaconFlame.rotation.y+=dt*3; beaconLight.intensity=2.2+Math.sin(now*11)*0.5;
     beaconFlame.scale.setScalar(1+Math.sin(now*9)*0.08); }
@@ -2172,6 +2262,8 @@ function loop(){
     humGain.gain.value+=(hT-humGain.gain.value)*0.04; }
   if(window.__amb){ const A=window.__amb, zk=zoneHere();
     let tw=0.05,tq=0.03,tw3=0;
+    if(weather==='gust'){ tw=Math.min(0.15,tw+0.07); }
+    else if(weather==='dust'){ tw=Math.min(0.1,tw+0.04); }
     if(zk==='hehuang'){tw=0.08;tq=0.006;tw3=0.02;} else if(zk==='wall'){tw=0.065;tq=0;tw3=0.05;}
     else if(zk==='modern'){tw=0.028;tq=0.02;tw3=0;} else if(zk==='village'){tw=0.035;tq=0.05;tw3=0;}
     /* 水声随离河远近增强 */
@@ -2184,10 +2276,12 @@ function loop(){
   if(plGain) plGain.gain.value+=((muted?0:0.045+prog*0.07)-plGain.gain.value)*0.01;
   sun.position.set(pP.x+34,pP.y+52,pP.z+22); sun.target.position.copy(pP); sun.target.updateMatrixWorld();
   fpsN++; fpsT+=dt; if(fpsT>2){ const f=fpsN/fpsT;
-    if(f<42 && sun.castShadow){ sun.castShadow=false; renderer.setPixelRatio(1); recompileAll(); toast(tx('qDegrade')); }
+    if(f<42 && sun.castShadow){ sun.castShadow=false; renderer.setPixelRatio(1); recompileAll();
+      if(window.__waterMat) window.__waterMat.uniforms.uLQ.value=1; toast(tx('qDegrade')); }
     fpsN=0; fpsT=0; }
   renderer.render(scene,camera);
-  }catch(e){ if(__DBG) document.title='LOOP ERR: '+e.message+' @'+(e.stack||'').split('\n')[1]; }
+  }catch(e){ loopErrN++; if(__DBG) document.title='LOOP ERR: '+e.message+' @'+(e.stack||'').split('\n')[1];
+    if(loopErrN>3 && !fatalShown) showFatal(); }
 }
 /* 手机开场文案替换 */
 if('ontouchstart' in window){
@@ -2414,6 +2508,12 @@ $('btnAlbumEnd').addEventListener('click',openAlbum);
 /* 进度框：点一下打开任务面板（手机上没有 J 键） */
 $('tasksClose').addEventListener('click',()=>$('tasks').classList.remove('show'));
 document.querySelector('.hudR').addEventListener('click',()=>{ const on=$('tasks').classList.toggle('show'); if(on) releaseLock(); });
+{ const wxB=document.getElementById('wxBtns');
+  if(wxB) wxB.addEventListener('click',e=>{ const a=e.target.closest('a'); if(!a) return;
+    const w=a.dataset.w; wxFix=(w==='auto')?null:w;
+    wxB.querySelectorAll('a').forEach(x=>x.classList.toggle('on',x===a));
+    if(wxFix){ weather=wxFix; weatherT=9999; }
+    else { weatherT=8; } }); }
 document.getElementById('resumeGo').addEventListener('click',()=>{
   hardPaused=false; $('resumeOv').classList.remove('show');
   if(actx) actx.resume(); try{ clock.getDelta(); }catch(e){} });
