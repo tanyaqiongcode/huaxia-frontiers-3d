@@ -697,16 +697,66 @@ const gGeo = new THREE.SphereGeometry(R, GWS, GHS, 0, Math.PI*2, 0, 1.12);
   const groundMesh=new THREE.Mesh(gGeo, gm);
   groundMesh.receiveShadow=true; scene.add(groundMesh); }
 
-/* 岷江 */
-{ const pts=riverPts.map(([a,t])=>{ const aR=a*D2R,tR=t*D2R;
-    const rr=R-1.9-1.3*smoothstep(6,0,riverDist(a,t))+0.22;
-    return new THREE.Vector3(rr*Math.sin(tR)*Math.cos(aR), rr*Math.cos(tR), rr*Math.sin(tR)*Math.sin(aR)); });
-  const ribbon=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),110,0.6,6,false),
-    new THREE.MeshStandardMaterial({color:0x21384a,roughness:.18,metalness:.15,transparent:true,opacity:.93}));
-  ribbon.receiveShadow=true; scene.add(ribbon);
-  const hl=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p=>p.clone().add(new THREE.Vector3(0,0.16,0)))),110,0.16,5,false),
-    new THREE.MeshBasicMaterial({color:0xaac6e4,transparent:true,opacity:.5}));
-  scene.add(hl); window.__water=ribbon; window.__waterHL=hl; }
+/* 岷江：贴河床的变宽水面 + 自写水着色器（波纹流动/菲涅尔天光/岸边白浪/深浅渐变） */
+{ const pts=[];
+  for(const [a,t] of riverPts){ const aR=a*D2R,tR=t*D2R;
+    const rr=R-1.9-1.3*smoothstep(6,0,riverDist(a,t))+0.1;
+    pts.push(new THREE.Vector3(rr*Math.sin(tR)*Math.cos(aR), rr*Math.cos(tR), rr*Math.sin(tR)*Math.sin(aR))); }
+  const n=pts.length, vpos=[], uvs=[], idx=[];
+  for(let i=0;i<n;i++){ const p=pts[i];
+    const pv=pts[Math.max(0,i-1)], nx=pts[Math.min(n-1,i+1)];
+    const tg=nx.clone().sub(pv).normalize();
+    const up=p.clone().normalize();
+    const sd=new THREE.Vector3().crossVectors(up,tg).normalize();
+    const w=(4.5+2.6*Math.sin(i*0.9+1.2))*0.5;
+    const pl=p.clone().addScaledVector(sd,w); pl.setLength(p.length());
+    const pr=p.clone().addScaledVector(sd,-w); pr.setLength(p.length());
+    vpos.push(pl.x,pl.y,pl.z, pr.x,pr.y,pr.z);
+    uvs.push(0,i*0.22, 1,i*0.22); }
+  for(let i=0;i<n-1;i++){ const k=i*2; idx.push(k,k+1,k+2, k+1,k+3,k+2); }
+  const wg=new THREE.BufferGeometry();
+  wg.setAttribute('position',new THREE.Float32BufferAttribute(vpos,3));
+  wg.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));
+  wg.setIndex(idx); wg.computeVertexNormals();
+  const wm=new THREE.ShaderMaterial({ transparent:true, depthWrite:false, side:THREE.DoubleSide,
+    uniforms:{ uTime:{value:0}, uNight:{value:0.35}, uLQ:{value:0}, uCam:{value:new THREE.Vector3()} },
+    vertexShader:`varying vec2 vUv; varying vec3 vW;
+      void main(){ vUv=uv; vec4 w=modelMatrix*vec4(position,1.0); vW=w.xyz;
+        gl_Position=projectionMatrix*viewMatrix*w; }`,
+    fragmentShader:`uniform float uTime,uNight,uLQ; uniform vec3 uCam;
+      varying vec2 vUv; varying vec3 vW;
+      float h21(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+      float vn(vec2 p){ vec2 i=floor(p),f=fract(p); f=f*f*(3.0-2.0*f);
+        return mix(mix(h21(i),h21(i+vec2(1,0)),f.x),mix(h21(i+vec2(0,1)),h21(i+vec2(1,1)),f.x),f.y); }
+      void main(){
+        vec2 f1=vec2(vUv.y*2.2-uTime*0.55, vUv.x*7.0);
+        float w1=vn(f1)*2.0-1.0;
+        float w2=(uLQ>0.5)?0.0:(vn(vec2(vUv.y*3.1-uTime*0.92, vUv.x*11.0+3.0))*2.0-1.0);
+        float wn=w1*0.65+w2*0.35;
+        float cx=abs(vUv.x-0.5)*2.0;
+        vec3 col=mix(vec3(0.13,0.21,0.24), vec3(0.30,0.36,0.32), cx*0.85);
+        vec3 V=normalize(uCam-vW);
+        float fr=pow(1.0-clamp(V.y,0.0,1.0),2.2);
+        vec3 sky=mix(vec3(0.45,0.55,0.62), vec3(0.10,0.13,0.22), uNight);
+        col=mix(col,sky,fr*0.55);
+        col*=0.92+wn*0.10;
+        col*=(1.0-uNight*0.42);
+        float fm=vn(vec2(vUv.y*9.0-uTime*1.15, vUv.x*15.0));
+        float fe=smoothstep(0.66,0.98,cx+fm*0.22);
+        col=mix(col, vec3(0.82,0.87,0.87), fe*0.6);
+        float gl=pow(max(0.0,1.0-abs(vUv.x-0.5-wn*0.05)*3.0),3.0)*(0.35+wn*0.2);
+        vec3 sc=mix(vec3(1.0,0.9,0.7), vec3(0.85,0.9,1.0), uNight);
+        col+=sc*gl*(0.5-0.38*uNight);
+        gl_FragColor=vec4(col,0.94); }` });
+  const water=new THREE.Mesh(wg,wm); water.receiveShadow=true; scene.add(water);
+  window.__water=water; window.__waterMat=wm; window.__riverCtr=pts;
+  /* 顺流漂浮物：泡沫点与落叶 */
+  const DN=26, dpos=new Float32Array(DN*3); const drift=[];
+  for(let i=0;i<DN;i++) drift.push({s:Math.random(),o:(Math.random()-0.5)*0.7,sp:0.018+Math.random()*0.03});
+  const dg=new THREE.BufferGeometry(); dg.setAttribute('position',new THREE.Float32BufferAttribute(dpos,3));
+  const dm=new THREE.PointsMaterial({color:0xdfe8ea,size:0.16,transparent:true,opacity:.8,sizeAttenuation:true,depthWrite:false});
+  const dr=new THREE.Points(dg,dm); scene.add(dr);
+  window.__debris=dr; window.__drift=drift; }
 /* 暴雨粒子 */
 const RAIN_N=420;
 const rainGeo=new THREE.BufferGeometry();
@@ -1051,25 +1101,35 @@ function makeFigure(o){
   const torso=new THREE.Mesh(RB(0.33,0.5,0.2),M(o.jacket)); torso.position.y=1.13; body.add(torso);
   const hip=new THREE.Mesh(RB(0.3,0.15,0.19),M(o.trouser)); hip.position.y=0.8; body.add(hip);
   const neck=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.06,0.09,6),M(o.skin)); neck.position.y=1.42; body.add(neck);
-  const head=new THREE.Mesh(new THREE.SphereGeometry(0.115,12,10),M(o.skin)); head.position.y=1.585; body.add(head);
-  const eyeL=new THREE.Mesh(new THREE.SphereGeometry(0.018,6,5),M(0x1a1a1e)); eyeL.position.set(-0.042,1.605,0.095); body.add(eyeL);
-  const eyeR=eyeL.clone(); eyeR.position.x=0.042; body.add(eyeR);
-  const hair=new THREE.Mesh(new THREE.SphereGeometry(0.122,12,10,0,Math.PI*2,0,1.55),M(o.hair)); hair.position.y=1.605; body.add(hair);
-  if(o.hat==='brim'){ const cr=new THREE.Mesh(new THREE.CylinderGeometry(0.115,0.128,0.095,10),M(o.hatC)); cr.position.y=1.705; body.add(cr);
-    const br=new THREE.Mesh(new THREE.CylinderGeometry(0.205,0.215,0.02,12),M(o.hatC)); br.position.y=1.662; body.add(br); }
-  if(o.hat==='wrap'){ const w=new THREE.Mesh(new THREE.CylinderGeometry(0.126,0.132,0.11,10),M(o.hatC)); w.position.y=1.672; body.add(w); }
+  /* 头部组：头骨/五官/头发/帽全挂在 headG 下，转头整体动 */
+  const head=new THREE.Group(); head.position.y=1.5; body.add(head);
+  const skull=new THREE.Mesh(new THREE.SphereGeometry(0.115,14,12),M(o.skin)); skull.position.y=0.085; head.add(skull);
+  const nose=new THREE.Mesh(new THREE.ConeGeometry(0.016,0.05,6),M(o.skin)); nose.position.set(0,0.075,0.112); nose.rotation.x=Math.PI/2.15; head.add(nose);
+  const eyeL=new THREE.Mesh(new THREE.SphereGeometry(0.017,8,6),M(0x1a1a1e)); eyeL.position.set(-0.042,0.105,0.098); head.add(eyeL);
+  const eyeR=eyeL.clone(); eyeR.position.x=0.042; head.add(eyeR);
+  const brM=M(o.hair);
+  const browL=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.009,0.012),brM); browL.position.set(-0.041,0.134,0.1); head.add(browL);
+  const browR=browL.clone(); browR.position.x=0.041; head.add(browR);
+  const mouth=new THREE.Mesh(new THREE.BoxGeometry(0.042,0.011,0.01),M(0x6e4a44)); mouth.position.set(0,0.026,0.1); head.add(mouth);
+  const hair=new THREE.Mesh(new THREE.SphereGeometry(0.122,14,12,0,Math.PI*2,0,1.55),M(o.hair)); hair.position.y=0.12; head.add(hair);
+  if(o.hat==='brim'){ const cr=new THREE.Mesh(new THREE.CylinderGeometry(0.115,0.128,0.095,12),M(o.hatC)); cr.position.y=0.205; head.add(cr);
+    const br=new THREE.Mesh(new THREE.CylinderGeometry(0.205,0.215,0.02,14),M(o.hatC)); br.position.y=0.162; head.add(br); }
+  if(o.hat==='wrap'){ const w=new THREE.Mesh(new THREE.CylinderGeometry(0.126,0.132,0.11,12),M(o.hatC)); w.position.y=0.172; head.add(w); }
   if(o.scarf){ const sc=new THREE.Mesh(new THREE.BoxGeometry(0.23,0.28,0.11),M(0xa33b2e)); sc.position.set(0,1.3,0.015); body.add(sc); }
   function arm(sd){ const a=new THREE.Group(); a.position.set(0.205*sd,1.33,0);
     const up=new THREE.Mesh(RB(0.09,0.3,0.1),M(o.jacket)); up.position.y=-0.15; a.add(up);
-    const lo=new THREE.Mesh(RB(0.075,0.25,0.085),M(o.skin)); lo.position.y=-0.41; a.add(lo);
-    body.add(a); return a; }
-  const armL=arm(-1), armR=arm(1);
+    const el=new THREE.Group(); el.position.y=-0.31; a.add(el);
+    const lo=new THREE.Mesh(RB(0.07,0.24,0.08),M(o.skin)); lo.position.y=-0.11; el.add(lo);
+    const hd=new THREE.Mesh(new THREE.SphereGeometry(0.048,10,8),M(o.skin)); hd.position.y=-0.25; el.add(hd);
+    body.add(a); return {a,el}; }
+  const aL=arm(-1), aR=arm(1);
   function leg(sd){ const l=new THREE.Group(); l.position.set(0.088*sd,0.82,0);
     const th=new THREE.Mesh(RB(0.12,0.4,0.13),M(o.trouser)); th.position.y=-0.2; l.add(th);
-    const ca=new THREE.Mesh(RB(0.1,0.32,0.11),M(o.trouser)); ca.position.y=-0.55; l.add(ca);
-    const bt=new THREE.Mesh(new THREE.SphereGeometry(0.1,12,8).scale(0.55,0.45,1.05),M(o.boot||0x2a241e)); bt.position.set(0,-0.75,0.035); l.add(bt);
-    yawG.add(l); return l; }
-  const legL=leg(-1), legR=leg(1);
+    const kn=new THREE.Group(); kn.position.y=-0.42; l.add(kn);
+    const ca=new THREE.Mesh(RB(0.1,0.32,0.11),M(o.trouser)); ca.position.y=-0.14; kn.add(ca);
+    const bt=new THREE.Mesh(new THREE.SphereGeometry(0.1,12,8).scale(0.55,0.45,1.05),M(o.boot||0x2a241e)); bt.position.set(0,-0.33,0.035); kn.add(bt);
+    yawG.add(l); return {l,kn}; }
+  const lL=leg(-1), lR=leg(1);
   if(o.robe){ const rb=new THREE.Mesh(new THREE.ConeGeometry(0.35,o.robe,10),M(o.robeC)); rb.position.y=o.robe/2+0.66; yawG.add(rb); }
   if(o.apron){ const ap=new THREE.Mesh(new THREE.BoxGeometry(0.26,0.34,0.035),M(o.apron)); ap.position.set(0,0.6,0.115); yawG.add(ap); }
   if(o.satchel){
@@ -1086,7 +1146,8 @@ function makeFigure(o){
     roll.rotation.z=Math.PI/2; roll.position.set(0,1.26,-0.22); yawG.add(roll); }
   if(o.staff){ const stf=new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.035,1.5,6),M(0x4a3b2a)); stf.position.set(0.32,0.75,0.05); yawG.add(stf); }
   g.traverse(x=>{ if(x.isMesh) x.castShadow=true; });
-  return {g, yawG, body, legL, legR, armL, armR, head};
+  return {g, yawG, body, legL:lL.l, legR:lR.l, armL:aL.a, armR:aR.a, head,
+    kneeL:lL.kn, kneeR:lR.kn, elbL:aL.el, elbR:aR.el};
 }
 const NPC_LOOKS=[
  {jacket:0x35415e,trouser:0x2e3850,hair:0x8a8a92,hat:'wrap',hatC:0x2c2c34,robe:1.15,robeC:0x35415e,staff:true},
@@ -1575,7 +1636,7 @@ function pollPad(){ if(!started) return;
   const b0=gp.buttons[0]&&gp.buttons[0].pressed, b2=gp.buttons[2]&&gp.buttons[2].pressed;
   if(b0&&!padB0){ vy=7.4; } padB0=b0;
   if(b2&&!padB2){ tryTalk(); } padB2=b2; }
-const camS={dir:new THREE.Vector3(0,0,-1), dist:9, pitch:0.34};
+const camS={dir:new THREE.Vector3(0,0,-1), dist:7.2, pitch:0.29};
 let dragging=false,lx=0,ly=0;
 const cv=document.getElementById('gl');
 const canLock=!('ontouchstart' in window) && !!cv.requestPointerLock;
@@ -1833,13 +1894,24 @@ function loop(){
     walkPhase+=dt*cad;
     const sw=Math.sin(walkPhase)*0.52*(isMove?1:0);
     figP.legL.rotation.x=sw; figP.legR.rotation.x=-sw;
-    figP.armL.rotation.x=-sw*0.65; figP.armR.rotation.x=sw*0.65;
+    if(figP.kneeL){ const mv=isMove?1:0;
+      figP.kneeL.rotation.x=-Math.max(0,Math.sin(walkPhase-0.7))*0.8*mv;
+      figP.kneeR.rotation.x=-Math.max(0,Math.sin(walkPhase+Math.PI-0.7))*0.8*mv;
+      figP.elbL.rotation.x=(0.3+Math.max(0,-Math.sin(walkPhase))*0.3)*mv;
+      figP.elbR.rotation.x=(0.3+Math.max(0,Math.sin(walkPhase))*0.3)*mv; }
+    figP.armL.rotation.x=-sw*0.6; figP.armR.rotation.x=sw*0.6;
     figP.body.position.y=Math.abs(Math.cos(walkPhase))*0.04*(isMove?1:0);
     figP.body.rotation.x=0.055*(isMove?1:0);
+    figP.body.rotation.y=Math.sin(walkPhase)*0.075*(isMove?1:0);
     if(!isMove){ walkPhase=0; figP.legL.rotation.x*=0.8; figP.legR.rotation.x*=0.8;
+      if(figP.kneeL){ figP.kneeL.rotation.x*=0.8; figP.kneeR.rotation.x*=0.8;
+        figP.elbL.rotation.x*=0.8; figP.elbR.rotation.x*=0.8; }
       figP.armL.rotation.x*=0.8; figP.armR.rotation.x*=0.8; }
     stepT-=dt; if(stepT<=0&&isMove){ playStep(); stepT=(keys['shift']?0.2:0.28)+Math.random()*0.05; }
   } else { isMoveGlobal=false; stepT=0.15; }
+  /* 待机呼吸与重心变化 */
+  if(!isMoveGlobal){ figP.body.position.y=Math.sin(now*1.9)*0.012;
+    figP.body.rotation.z=Math.sin(now*0.42)*0.02; }
   /* 身法动画（前滚翻C·后滚翻X） */
   if(rollT>=0){ rollT+=dt*2;
     if(rollT>=1){ rollT=-1; figP.yawG.rotation.x=0; figP.yawG.position.set(0,0,0);
@@ -1888,7 +1960,11 @@ function loop(){
       p2.walkPhase+=dt*cad2;
       const sw2=Math.sin(p2.walkPhase)*0.52*(isM2?1:0);
       p2.fig.legL.rotation.x=sw2; p2.fig.legR.rotation.x=-sw2;
-      p2.fig.armL.rotation.x=-sw2*0.65; p2.fig.armR.rotation.x=sw2*0.65;
+      if(p2.fig.kneeL){ p2.fig.kneeL.rotation.x=-Math.max(0,Math.sin(p2.walkPhase-0.7))*0.8*(isM2?1:0);
+        p2.fig.kneeR.rotation.x=-Math.max(0,Math.sin(p2.walkPhase+Math.PI-0.7))*0.8*(isM2?1:0);
+        p2.fig.elbL.rotation.x=0.3*isM2; p2.fig.elbR.rotation.x=0.3*isM2; }
+      p2.fig.armL.rotation.x=-sw2*0.6; p2.fig.armR.rotation.x=sw2*0.6;
+      p2.fig.body.rotation.y=Math.sin(p2.walkPhase)*0.075*(isM2?1:0);
       p2.fig.body.position.y=Math.abs(Math.cos(p2.walkPhase))*0.04*(isM2?1:0);
       if(!isM2){ p2.walkPhase=0; p2.fig.legL.rotation.x*=0.8; p2.fig.legR.rotation.x*=0.8; }
     p2.stepT-=dt; if(p2.stepT<=0&&isM2){ playStep(); p2.stepT=0.36+Math.random()*0.08; }
@@ -1950,7 +2026,17 @@ function loop(){
   else if(!dlgNpc){ const o=poiCur?null:nearPoi();
     if(o){ $('actBtn').style.display='block'; $('actBtn').textContent=tx(document.body.classList.contains('touch')?'poiTap':'poiAct').replace('{n}',o.n[T.lang]); } }
   if(poiCur && planarDist(pGroup.position,P(poiCur.a,poiCur.t,0))>poiCur.r+3) closePoi();
-  NPCS.forEach((n,i)=>{ if(n.fig) n.fig.body.rotation.z=Math.sin(now*1.1+i*2.1)*0.035; });
+  NPCS.forEach((n,i)=>{ const f=n.fig; if(!f) return;
+    f.body.rotation.z=Math.sin(now*1.1+i*2.1)*0.035;
+    f.body.position.y=Math.sin(now*1.7+i*1.3)*0.01;
+    if(f.head){ let want=0;
+      const dN=planarDist(pGroup.position,f.g.position);
+      if(dN<6.5){ const dx=pGroup.position.x-f.g.position.x, dz=pGroup.position.z-f.g.position.z;
+        let a=Math.atan2(dx,dz)-f.yawG.rotation.y; a=((a+Math.PI*3)%(Math.PI*2))-Math.PI;
+        want=Math.max(-0.75,Math.min(0.75,a))*0.8; }
+      f.head.rotation.y+=(want-f.head.rotation.y)*0.06;
+      if(dlgNpc===n) f.head.rotation.x=Math.max(0,Math.sin(now*2.6))*0.08;
+      else f.head.rotation.x*=0.9; } });
   /* 牦牛：沿墙外牧场缓步吃草；第一次走近时给一句提示 */
   if(beastG){
     const bP=beastG.position;
@@ -1961,6 +2047,21 @@ function loop(){
     beastG.children[3].rotation.z=-0.35+Math.sin(now*0.9)*0.25;   /* 低头吃草 */
   }
   worldTick(dt,now);
+  /* 水面着色器驱动 + 漂浮物顺流 */
+  if(window.__waterMat){ const W=window.__waterMat.uniforms;
+    W.uTime.value=now; W.uCam.value.copy(camera.position);
+    W.uNight.value=themeIx===2?1:themeIx===1?0.7:0.35; }
+  if(window.__debris){ const C=window.__riverCtr, nC=C.length;
+    const pa=window.__debris.geometry.attributes.position;
+    window.__drift.forEach((d,i)=>{ d.s+=d.sp*dt; if(d.s>=1) d.s-=1;
+      const fs=d.s*(nC-1), i0=Math.floor(fs), fr2=fs-i0;
+      const p=C[i0].clone().lerp(C[Math.min(nC-1,i0+1)],fr2);
+      const up=p.clone().normalize();
+      const tg=C[Math.min(nC-1,i0+1)].clone().sub(C[i0]).normalize();
+      const sd=new THREE.Vector3().crossVectors(up,tg).normalize();
+      p.addScaledVector(sd,d.o).addScaledVector(up,0.06+Math.sin(now*2+i)*0.03);
+      pa.setXYZ(i,p.x,p.y,p.z); });
+    pa.needsUpdate=true; }
   /* 云影漂移 */
   for(let ci=0;ci<3;ci++){ const cs=window['__cloudShadow'+ci]; if(!cs) continue;
     cs.position.x+=cs.userData.driftX*dt; cs.position.z+=cs.userData.driftZ*dt;
@@ -2054,8 +2155,7 @@ function loop(){
   /* 烽火燃动 */
   if(lit){ beaconFlame.rotation.y+=dt*3; beaconLight.intensity=2.2+Math.sin(now*11)*0.5;
     beaconFlame.scale.setScalar(1+Math.sin(now*9)*0.08); }
-  if(window.__water){ window.__water.material.opacity=0.86+Math.sin(now*1.4)*0.09;
-    window.__waterHL.material.opacity=0.4+Math.sin(now*1.1+2)*0.15; }
+  /* 整河透明度呼吸已删（复核意见） */
   if(window.__clouds) window.__clouds.rotation.y+=dt*0.004;
   /* 位置判定 */
   const tDeg=Math.acos(Math.max(-1,Math.min(1,pP.y/Math.max(1,pP.length()))))/D2R;
@@ -2070,10 +2170,13 @@ function loop(){
   prevSide=sideNow; crossT-=dt;
   if(actx&&master){ const hT=(started?Math.max(0,1-Math.abs(dA)/9):0)*0.03;
     humGain.gain.value+=(hT-humGain.gain.value)*0.04; }
-  if(window.__amb){ const A=window.__amb, z=lastZone||'';
+  if(window.__amb){ const A=window.__amb, zk=zoneHere();
     let tw=0.05,tq=0.03,tw3=0;
-    if(z.startsWith('河湟')){tw=0.08;tq=0.006;tw3=0.02;} else if(z.startsWith('长城')){tw=0.065;tq=0;tw3=0.05;}
-    else if(z.startsWith('现代')){tw=0.028;tq=0.02;tw3=0;} else if(z.startsWith('羌寨')){tw=0.035;tq=0.05;tw3=0;}
+    if(zk==='hehuang'){tw=0.08;tq=0.006;tw3=0.02;} else if(zk==='wall'){tw=0.065;tq=0;tw3=0.05;}
+    else if(zk==='modern'){tw=0.028;tq=0.02;tw3=0;} else if(zk==='village'){tw=0.035;tq=0.05;tw3=0;}
+    /* 水声随离河远近增强 */
+    { const pa=Math.atan2(pP.z,pP.x)/D2R, pt2=Math.acos(Math.max(-1,Math.min(1,pP.y/pP.length())))/D2R;
+      const rd=riverDist(pa,pt2); tq=Math.min(0.09, tq+Math.max(0,1-rd/22)*0.07); }
     if(muted){tw=0;tq=0;tw3=0;}
     A.wind.gain.value+=(tw-A.wind.gain.value)*0.02;
     A.water.gain.value+=(tq-A.water.gain.value)*0.02;
