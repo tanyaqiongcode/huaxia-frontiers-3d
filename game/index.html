@@ -42,6 +42,44 @@
     background:linear-gradient(180deg,var(--zc),color-mix(in srgb,var(--zc) 25%,transparent));transition:background .6s}
   .sceneCard b{display:block;font-size:17px;letter-spacing:.14em;color:color-mix(in srgb,var(--zc) 55%,#e8cf96);font-weight:600;transition:color .6s}
   .sceneCard i{display:block;font-style:normal;font-size:11.5px;color:var(--dim);letter-spacing:.1em;margin-top:6px;line-height:1.7}
+  /* —— 复核P0+P1：追踪器/旁白字幕/地点卡/蓄力环/继续覆盖/行走记录 —— */
+  #objTrack{position:fixed;top:102px;left:18px;z-index:5;max-width:min(330px,62vw);padding:2px 0 2px 12px;border-left:2px solid var(--gold-hi);opacity:.95;pointer-events:none;transition:opacity .3s}
+  #objTxt{font-size:12.5px;letter-spacing:.08em;color:var(--gold-hi);line-height:1.7}
+  @keyframes objflash{0%{border-left-color:#e8cf96}100%{border-left-color:var(--gold-hi)}}
+  #objTrack.flash{animation:objflash .9s ease-out}
+  #sub{position:fixed;left:50%;bottom:14vh;transform:translateX(-50%);z-index:6;width:min(640px,calc(100vw - 32px));text-align:center;opacity:0;transition:opacity .4s;pointer-events:none}
+  #sub.on{opacity:1}
+  #subWho{display:block;font-size:10.5px;letter-spacing:.3em;color:var(--gold-hi);margin-bottom:6px}
+  #subTxt{display:inline;font-size:15px;line-height:1.65;color:#e8e4da;background:rgba(6,8,12,.7);padding:3px 10px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+  #locCard{position:fixed;left:18px;bottom:26vh;z-index:6;padding-left:14px;opacity:0;transition:opacity .5s;pointer-events:none}
+  #locCard::before{content:'';position:absolute;left:0;top:2px;bottom:2px;width:3px;background:var(--gold-hi)}
+  #locCard.show{opacity:1}
+  #locCard b{display:block;font-size:clamp(19px,3vw,30px);letter-spacing:.14em;color:#e8cf96;font-weight:600;clip-path:inset(0 100% 0 0)}
+  #locCard.show b{animation:locin 1.1s steps(28,end) both}
+  @keyframes locin{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 -2% 0 0)}}
+  #locCard i{display:block;margin-top:6px;font-style:normal;font-size:11px;letter-spacing:.12em;color:var(--dim)}
+  #enterFade{position:fixed;inset:0;z-index:40;background:#05070c;opacity:0;pointer-events:none;transition:opacity .9s ease}
+  #enterFade.on{opacity:1;transition:none}
+  body.entering .sceneCard,body.entering #objTrack,body.entering .hint,body.entering #compass{opacity:0!important}
+  #charge{position:fixed;left:50%;bottom:20vh;transform:translateX(-50%);z-index:6;width:56px;height:56px;display:none}
+  #charge.on{display:block}
+  #charge svg{width:56px;height:56px;transform:rotate(-90deg)}
+  #charge .bgc{fill:rgba(5,7,12,.55);stroke:rgba(232,228,218,.25);stroke-width:3}
+  #charge .fgc{fill:none;stroke:var(--gold-hi);stroke-width:3;stroke-dasharray:126;stroke-dashoffset:126;stroke-linecap:round}
+  #charge b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;color:#e8cf96;font-family:inherit}
+  .resumeOv{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(5,7,12,.86);backdrop-filter:blur(8px)}
+  .resumeOv.show{display:flex}
+  .resumeOv .rc{text-align:center;border:1px solid var(--line);border-radius:16px;padding:36px 44px;background:rgba(8,10,16,.8)}
+  .resumeOv b{display:block;font-size:20px;letter-spacing:.3em;color:var(--gold-hi);margin-bottom:18px}
+  .walkRec{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;text-align:left}
+  .walkRec>b{display:block;font-size:11px;letter-spacing:.24em;color:var(--gold-hi);margin-bottom:4px}
+  .walkRec div{display:flex;justify-content:space-between;gap:14px;padding:6px 0;border-top:1px solid rgba(232,228,218,.12);font-size:12.5px}
+  .walkRec dt{color:var(--dim)} .walkRec dd{color:#e8e4da;margin:0}
+  @media (prefers-reduced-motion: reduce){
+    #locCard.show b{animation:none;clip-path:none}
+    #enterFade{transition:none}
+    #objTrack.flash{animation:none}
+  }
 
   /* 右上进度 */
   .hudR{position:fixed;top:18px;right:292px;z-index:5;display:flex;align-items:center;gap:14px;pointer-events:auto;cursor:pointer;
@@ -263,6 +301,10 @@
 <button id="btnJump" data-i18n="btnJump">跳跃</button>
 
 <div class="sceneCard"><b id="zName">河谷 · 岷江上游</b><i id="zSub">沿河谷行走，边缘在脚下移动。</i></div>
+<div id="objTrack"><span id="objTxt"></span></div>
+<div id="locCard"><b id="locName"></b><i id="locSub"></i></div>
+<div id="sub"><span id="subWho"></span><span id="subTxt"></span></div>
+<div id="charge"><svg viewBox="0 0 48 48"><circle class="bgc" cx="24" cy="24" r="20"/><circle class="fgc" id="chargeFg" cx="24" cy="24" r="20"/></svg><b>E</b></div>
 <div class="hudR">
   <div class="ring"><svg width="44" height="44"><circle cx="22" cy="22" r="18" stroke="rgba(201,164,92,.2)" stroke-width="3" fill="none"/><circle id="ringFg" cx="22" cy="22" r="18" stroke="#e8cf96" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="113" stroke-dashoffset="113"/></svg><b id="pct">0%</b></div>
   <div class="cnt" data-i18n-html="hudCnt">史料 <b id="cShard">0</b>/17<br>倾听讲述 <b id="cNpc">0</b>/5</div><span class="more" data-i18n="hudMore">任务 ›</span>
@@ -315,11 +357,14 @@
   <button class="go" id="btnNew" style="display:none;margin-top:14px" data-i18n="gNew">重 新 开 始</button>
 </div></div>
 
+<div id="enterFade"></div>
+<div class="resumeOv" id="resumeOv"><div class="rc"><b data-i18n="rsTitle">已 暂 停</b><button class="go pri" id="resumeGo" data-i18n="rsGo">继 续</button></div></div>
 <div class="veil" id="end"><div class="card">
   <button class="xClose" id="endClose" title="关闭">✕</button>
   <h1 data-i18n="eTitle">行至边缘</h1><div class="sub" data-i18n="eSub">WALKED TO THE MARGIN</div>
   <p data-i18n-html="eBody">你拾起了散落的记忆，也听完了五段讲述。</p>
   <div class="endQs" id="endQs"></div>
+  <div class="walkRec" id="walkRec"></div>
   <div class="acts">
     <button class="go pri" id="btnCard" data-i18n="eCard">生成行走纪念卡</button>
     <button class="go" id="btnCardsEnd" data-i18n="cardsImgEnd">读书卡长图</button>
@@ -457,6 +502,17 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  memoEmpty:{zh:'还没有拾得史料。',en:'No sources found yet.'},
  crossToast:{zh:'你越过了边界。',en:'You crossed the boundary.'},
  beaconGo:{zh:'记忆已齐 · 去东边的烽燧，点燃边界之火',en:'Memories complete — light the beacon eastward'},
+ narWho:{zh:'旁白',en:'Narration'},
+ narOpen:{zh:'边界不在墙上——它在你的脚下移动。',en:'The boundary is not on the wall — it moves beneath your feet.'},
+ narFirst:{zh:'第一件史料入手。书里的话，落到了地上。',en:'The first source is in hand — a line from the book, set down on the ground.'},
+ narStory:{zh:'第一段讲述听见了。声音会留在这里。',en:'The first telling has been heard. The voice stays here.'},
+ rsTitle:{zh:'已 暂 停',en:'Paused'},
+ rsGo:{zh:'继 续',en:'Resume'},
+ wRecT:{zh:'行走记录',en:'Walk record'},
+ wRecTime:{zh:'行走用时',en:'Time walked'},
+ wRecZones:{zh:'走过的场景',en:'Places visited'},
+ wRecStories:{zh:'听过的讲述',en:'Tellings heard'},
+ errFatal:{zh:'启动遇到问题，请刷新重试；若持续出现，请通过阅读版继续阅读。',en:'Something went wrong starting the walk. Please refresh; if it persists, continue with the reading edition.'},
  beaconLit:{zh:'烽火燃起 · 边界在移动中',en:'The beacon burns — the boundary is on the move'},
  qDegrade:{zh:'画质 · 已自动调低',en:'Quality · auto-reduced'},
  ftT:{zh:'快速移动 · FAST TRAVEL',en:'FAST TRAVEL'},
@@ -476,7 +532,8 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  zValleyS:{zh:'沿河谷行走，边缘在脚下移动。',en:'Walk the valley — the boundary moves beneath your feet.'}
 }};
 function tx(k){ const v=T.dict[k]; return v?(v[T.lang]||v.zh):''; }
-function toggleLang(){ T.lang=T.lang==='zh'?'en':'zh'; applyLang(); }
+function toggleLang(){ T.lang=T.lang==='zh'?'en':'zh'; applyLang();
+  if(document.getElementById('end').style.display==='flex') fillWalkRec(); }
 const ZLBL={village:{zh:'羌寨',en:'Qiang village'},hehuang:{zh:'河湟',en:'Hehuang'},wall:{zh:'长城',en:'The Wall'},
  modern:{zh:'现代',en:'Today'},beichuan:{zh:'北川',en:'Beichuan'}};
 const ZLBL_FT={village:{zh:'羌寨',en:'Qiang village'},hehuang:{zh:'河湟遗址',en:'Hehuang sites'},wall:{zh:'长城边缘',en:'The Wall frontier'},
@@ -506,13 +563,14 @@ const PART_N=[
  {zh:'Ⅲ · 华夏族群边缘的形成与扩张',en:'III · Forming and expanding the edge'},
  {zh:'Ⅳ · 华夏边缘的延续与变迁',en:'IV · Continuity and change'}];
 const PART_IX=[0,0,0,0,1,1,2,2,2,3,3,3,3,3,3,3,2];
-function tryBeacon(){ if(lit || prog<1) return;
-  if(planarDist(pGroup.position,P(95,33,0))>6.5) return;
+function doBeacon(){ if(lit) return;
   lit=true; beaconFlame.visible=true;
   beaconLight.intensity=2.4;
   lineMesh.material.color.setHex(0xffb35c); lineMesh.material.opacity=1;
   toast(tx('beaconLit')); playEnd();
-  setTimeout(()=>{ fillEndQs(); releaseLock(); $('end').style.display='flex'; },2600); }
+  setTimeout(()=>{ fillEndQs(); fillWalkRec(); releaseLock(); $('end').style.display='flex'; },2600); }
+function tryBeacon(){ if(lit || prog<1) return;
+  if(planarDist(pGroup.position,P(95,33,0))>6.5) return; doBeacon(); }
 document.getElementById('btnLang').addEventListener('click',toggleLang);
 let p2=null; const P2KEY={};
 function toggleP2(){
@@ -1056,6 +1114,9 @@ let hasUmb=false, hasTorch=false;
 let beastA=88, beastT=35, yakSeen=false;
 
 let stepT=0.2, padYaw=0, padPitch=0, padB0=false, padB2=false, plGain=null, dustT=1, steps=0, walkT0=0;
+let playSec=0, hardPaused=false, charging=false, chargeT=0, lastZoneKey='', lastNs=-1, lastNn=-1;
+const CHARGE_T=1.2, zoneSeen=new Set(), narFlags={shard1:false,story1:false,all17:false};
+const REDUCE_MOTION=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 let rollT=-1, rollDir=0;
 const bursts=[];
 /* ==== 五个场景的地貌、天色与生灵（v48）====
@@ -1484,8 +1545,9 @@ function worldTick(dt,now){
 /* ---- 输入 ---- */
 const keys={};
 addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
+  if(hardPaused) return;
   if(p2 && k.startsWith('arrow')) P2KEY[k]=true;
-  if(k==='e') interact();
+  if(k==='e'){ if(beaconReady()){ if(!charging) startCharge(); } else interact(); }
   if(k==='h') $('keysPanel').classList.toggle('show');
   if(k==='k' && started){ $('album').classList.contains('show')?closeAlbum():openAlbum(); }
   if(k==='escape'){ if($('cardsOut').classList.contains('show')) $('cardsOut').classList.remove('show'); else if($('album').classList.contains('show')) closeAlbum(); }
@@ -1501,7 +1563,7 @@ addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
   if(k==='j'){ const on=document.getElementById('tasks').classList.toggle('show'); if(on) releaseLock(); }
   if(k==='l') toggleLang();
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault(); });
-addEventListener('keyup',e=>{ const k=e.key.toLowerCase(); keys[k]=false; if(p2 && k.startsWith('arrow')) P2KEY[k]=false; });
+addEventListener('keyup',e=>{ const k=e.key.toLowerCase(); keys[k]=false; if(p2 && k.startsWith('arrow')) P2KEY[k]=false; if(k==='e'&&charging) cancelCharge(); });
 function pollPad(){ if(!started) return;
   const gps=navigator.getGamepads?navigator.getGamepads():[]; let gp=null;
   for(const g of gps) if(g&&g.connected){gp=g;break;}
@@ -1547,7 +1609,10 @@ if('ontouchstart' in window){ document.body.classList.add('touch');
     joy.x=dx; joy.f=-dy; stick.style.transform=`translate(calc(-50% + ${dx*30}px), calc(-50% + ${dy*30}px))`; } },{passive:true});
   joyEl.addEventListener('touchend',()=>{ joyId=null; joy.x=0; joy.f=0; stick.style.transform='translate(-50%,-50%)'; },{passive:true});
 }
-document.getElementById('actBtn').addEventListener('click',interact);
+{ const ab=document.getElementById('actBtn');
+  ab.addEventListener('pointerdown',e=>{ if(beaconReady()){ e.preventDefault(); startCharge(); } });
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>ab.addEventListener(ev,()=>{ if(charging) cancelCharge(); }));
+  ab.addEventListener('click',()=>{ if(beaconReady()) return; interact(); }); }
 
 /* ---- 讲述/状态 ---- */
 const $=id=>document.getElementById(id);
@@ -1582,6 +1647,37 @@ function toast(s,ms,prio){ ms=ms||2600; prio=prio||0;
     if(toastQ.length) setTimeout(()=>toast(...toastQ.shift()),450); },ms); }
 
 /* ---- HUD ---- */
+let subTimer=null;
+function saySubRaw(txt){ const el=$('sub'); $('subWho').textContent=tx('narWho'); $('subTxt').textContent=txt;
+  el.classList.add('on'); clearTimeout(subTimer); subTimer=setTimeout(()=>el.classList.remove('on'),4200); }
+function saySub(key){ const d=T.dict[key]; saySubRaw(d?(d[T.lang]||d.zh):key); }
+function showLocCard(instant){ const zk=zoneHere(), z=Z[zk]||Z.village;
+  $('locName').textContent=z.n[T.lang]; $('locSub').textContent=z.s[T.lang];
+  const el=$('locCard'); el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  if(!instant) setTimeout(()=>el.classList.remove('show'),3200); }
+function beaconReady(){ return !lit && prog>=1 && planarDist(pGroup.position,P(95,33,0))<=6.5; }
+function startCharge(){ if(charging||lit) return; charging=true; chargeT=0; $('charge').classList.add('on'); }
+function cancelCharge(){ charging=false; chargeT=0; $('charge').classList.remove('on'); }
+let fatalShown=false;
+function showFatal(){ if(fatalShown) return; fatalShown=true;
+  const d=document.createElement('div');
+  d.style.cssText='position:fixed;inset:0;z-index:99;display:flex;align-items:center;justify-content:center;background:rgba(5,7,12,.93);color:#e8dfc8;font:14px/2 serif;text-align:center;padding:24px';
+  d.textContent=tx('errFatal'); document.body.appendChild(d); }
+window.addEventListener('error',e=>{ if(!e.target||!e.target.tagName){ if(!started) showFatal(); } },true);
+function fillWalkRec(){
+  try{
+  const mm=Math.max(1,Math.floor(playSec/60)), ss=Math.floor(playSec%60);
+  const time=T.lang==='zh'? mm+' 分 '+ss+' 秒' : mm+'m '+ss+'s';
+  const zones=[...zoneSeen].filter(z=>Z[z]);
+  let rows='';
+  Object.keys(ZSH).forEach(z=>{ const tot=ZSH[z].length, got=ZSH[z].filter(i=>shards[i]&&shards[i].userData.got).length;
+    rows+='<div><dt>'+(Z[z]?Z[z].n[T.lang]:z)+'</dt><dd>'+got+' / '+tot+'</dd></div>'; });
+  const nn=NPCS.filter(n=>n.done).length;
+  $('walkRec').innerHTML='<b>'+tx('wRecT')+'</b>'
+   +'<div><dt>'+tx('wRecTime')+'</dt><dd>'+time+'</dd></div>'
+   +'<div><dt>'+tx('wRecZones')+'</dt><dd>'+zones.length+' / 5</dd></div>'
+   +'<div><dt>'+tx('wRecStories')+'</dt><dd>'+nn+' / 5</dd></div>'+rows;
+  }catch(e){} }
 function updHUD(){ const ns=shards.filter(s=>s.userData.got).length, nn=NPCS.filter(n=>n.done).length;
   $('cShard').textContent=ns; $('cNpc').textContent=nn;
   $('tShard').textContent=tx('tShardTpl').replace('{n}',ns); $('tShard').classList.toggle('done',ns===17);
@@ -1591,6 +1687,12 @@ function updHUD(){ const ns=shards.filter(s=>s.userData.got).length, nn=NPCS.fil
   $('ringFg').style.strokeDashoffset=113*(1-p); $('pct').textContent=Math.round(p*100)+'%';
   if(prog!==p){ prog=p; buildLine(); }
   if(ns===17 && nn===5 && !beaconHinted){ beaconHinted=true; toast(tx('beaconGo')); }
+  if(lastNs>=0&&ns>lastNs || lastNn>=0&&nn>lastNn){ const ot=$('objTrack');
+    ot.classList.remove('flash'); void ot.offsetWidth; ot.classList.add('flash'); }
+  lastNs=ns; lastNn=nn;
+  if(ns===1&&!narFlags.shard1){ narFlags.shard1=true; saySub('narFirst'); }
+  if(nn===1&&!narFlags.story1){ narFlags.story1=true; saySub('narStory'); }
+  if(ns===17&&!narFlags.all17){ narFlags.all17=true; saySub('beaconGo'); }
   const nc=ZORDER.filter(cardDone).length;
   $('tCard').textContent=tx('tCardTpl').replace('{n}',nc); $('tCard').classList.toggle('done',nc===5);
   $('tCards').innerHTML=ZORDER.filter(cardDone).map(z=>'<a data-card="'+z+'">'+ZSHORT[z][T.lang]+'</a>').join('');
@@ -1669,7 +1771,7 @@ function interact(){
   if($('rcard').classList.contains('show')){ closeCard(); return; }
   if(poiCur){ closePoi(); return; }
   if(dlgNpc || nearNpc(pGroup.position)){ tryTalk(); return; }
-  if(!lit && prog>=1 && planarDist(pGroup.position,P(95,33,0))<=6.5){ tryBeacon(); return; }
+  if(beaconReady()){ startCharge(); return; }
   const o=nearPoi(); if(o) openPoi(o); }
 
 /* 五区主题色 */
@@ -1686,8 +1788,13 @@ const clock=new THREE.Clock();
   /* 移动输入 */
 function loop(){
   requestAnimationFrame(loop);
+  if(hardPaused) return;
   try{
   const dt=Math.min(0.05,clock.getDelta()), now=clock.elapsedTime;
+  if(started) playSec+=dt;
+  if(charging){ chargeT+=dt; const cp=Math.min(1,chargeT/CHARGE_T);
+    $('chargeFg').style.strokeDashoffset=126*(1-cp);
+    if(cp>=1){ charging=false; chargeT=0; $('charge').classList.remove('on'); doBeacon(); } }
   pollPad();
   let mx=((keys['d']?1:0)-(keys['a']?1:0)) + ((!p2&&keys['arrowright'])?1:0) - ((!p2&&keys['arrowleft'])?1:0) + joy.x;
   let mf=((keys['w']?1:0)-(keys['s']?1:0)) + ((!p2&&keys['arrowup'])?1:0) - ((!p2&&keys['arrowdown'])?1:0) + joy.f;
@@ -1910,7 +2017,11 @@ function loop(){
       $('cA').style.transform='rotate('+(-ag*57.3)+'deg)';
       const t2=g.txt+' · '+Math.round(gd)+' m'; if($('cTxt').textContent!==t2) $('cTxt').textContent=t2;
     } else comp.style.display='none';
-    const gt=g?g.txt:''; if($('tGoal').textContent!==gt) $('tGoal').textContent=gt; }
+    const gt=g?g.txt:''; if($('tGoal').textContent!==gt) $('tGoal').textContent=gt;
+    if(started){ $('objTxt').textContent=gt;
+      const zk=zoneHere();
+      if(zk!==lastZoneKey){ lastZoneKey=zk;
+        if(!zoneSeen.has(zk)){ zoneSeen.add(zk); if(zoneSeen.size>1) saySubRaw(Z[zk].s[T.lang]); } } } }
   drawMinimap(); updMarkers(clock.elapsedTime);
   /* 落地尘土 */
   if(dustT<0.55){ dustT+=dt; const u=Math.min(1,dustT/0.55);
@@ -1983,7 +2094,8 @@ document.getElementById('btnJump').addEventListener('pointerdown',e=>{ e.prevent
   if(jumpOff<=0&&vy===0){ vy=9.8; playJumpSfx(); } });
 /* 切后台暂停音频与语音 */
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){ if(actx) actx.suspend(); if(window.speechSynthesis) speechSynthesis.cancel(); }
+  if(document.hidden){ if(started){ hardPaused=true; const ro=$('resumeOv'); if(ro) ro.classList.add('show'); }
+    if(actx) actx.suspend(); if(window.speechSynthesis) speechSynthesis.cancel(); }
   else if(actx) actx.resume(); });
 loop(); updHUD(); applyLang();
 if(loadGame()){ document.getElementById('btnGo').textContent=tx('gContinue');
@@ -2037,9 +2149,10 @@ function speak(){}
 function saveGame(){ try{ if(!started) return;
   localStorage.setItem('walkSaveV2', JSON.stringify({
     g: shards.map(x=>x.userData.got?1:0), n: NPCS.map(x=>x.done?1:0), c: cardSeen,
-    p: pGroup.position.toArray(), lang: T.lang })); }catch(e){} }
+    p: pGroup.position.toArray(), lang: T.lang, t: Math.round(playSec) })); }catch(e){} }
 function loadGame(){ try{ const raw=localStorage.getItem('walkSaveV2'); if(!raw) return false;
   const d=JSON.parse(raw); if(!d||!d.g) return false;
+  if(d.t) playSec=d.t;
   d.g.forEach((v,i)=>{ if(v&&shards[i]){ shards[i].userData.got=true; shards[i].visible=false; } });
   d.n.forEach((v,i)=>{ if(v&&NPCS[i]) NPCS[i].done=true; });
   if(d.c) cardSeen=d.c; else ZORDER.forEach(z=>{ if(cardDone(z)) cardSeen[z]=1; });   /* 旧存档：已完成的场景不再补弹 */
@@ -2082,7 +2195,7 @@ function makeCard(){
   c.beginPath(); c.moveTo(512,540); c.lineTo(830,540); c.stroke();
   c.beginPath(); c.arc(450,540,62,Math.PI*1.22,Math.PI*1.78); c.stroke();
   const ns=shards.filter(x=>x.userData.got).length, nn=NPCS.filter(x=>x.done).length;
-  const mins=Math.max(1,Math.round((Date.now()-walkT0)/60000));
+  const mins=Math.max(1,Math.round(playSec/60));
   c.fillStyle='#e8dfc8';
   fillMixed(c, EN?'Sources '+ns+' / 17 · Tellings heard '+nn+' / 5':'史料 '+ns+' / 17 · 倾听讲述 '+nn+' / 5', 450, 640, '34px');
   c.fillStyle='#8b8474';
@@ -2198,9 +2311,20 @@ $('btnAlbumEnd').addEventListener('click',openAlbum);
 /* 进度框：点一下打开任务面板（手机上没有 J 键） */
 $('tasksClose').addEventListener('click',()=>$('tasks').classList.remove('show'));
 document.querySelector('.hudR').addEventListener('click',()=>{ const on=$('tasks').classList.toggle('show'); if(on) releaseLock(); });
+document.getElementById('resumeGo').addEventListener('click',()=>{
+  hardPaused=false; $('resumeOv').classList.remove('show');
+  if(actx) actx.resume(); try{ clock.getDelta(); }catch(e){} });
 document.getElementById('btnGo').addEventListener('click',()=>{
-  started=true; walkT0=Date.now(); setInterval(saveGame,4000);
-  document.body.classList.add('playing'); grabLock(); updLockTip(); setTimeout(checkCards,3000);
+  started=true; setInterval(saveGame,4000);
+  zoneSeen.add(zoneHere());
+  { const ef=$('enterFade');
+    if(!REDUCE_MOTION){ ef.classList.add('on'); requestAnimationFrame(()=>requestAnimationFrame(()=>ef.classList.remove('on')));
+      document.body.classList.add('entering');
+      setTimeout(()=>showLocCard(false),500);
+      setTimeout(()=>saySub('narOpen'),1300);
+      setTimeout(()=>document.body.classList.remove('entering'),2400); }
+    else { showLocCard(true); saySub('narOpen'); } }
+  document.body.classList.add('playing'); grabLock(); updLockTip(); setTimeout(()=>{ try{ checkCards(); }catch(e){} },3000);
   document.getElementById('intro').style.display='none';
   document.body.classList.add('cine');
   setTimeout(()=>{ document.body.classList.remove('cine'); },2600);
