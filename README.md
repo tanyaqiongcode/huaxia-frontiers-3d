@@ -65,5 +65,9 @@ blender --background --factory-startup --python blender/game_models.py
 - 互动导读里的碉楼、羌寨平顶石屋、汉代夯土长城与烽燧（夯层夹芦苇，依河西汉塞形制）、河湟齐家文化半地穴房址与彩陶罐、冷杉／白杨／核桃、绵羊／黄牛／马、北川"尔玛人家"碉房（石屋连小碉，供白石，挂羌红）：均以 Blender 脚本建模（`blender/game_models.py`，本项目原创），导出为 `assets/models/*.glb`，由 three.js GLTFLoader（r128，MIT）载入
 - 写实材质来自 [Poly Haven](https://polyhaven.com)（CC0）：aerial_grass_rock（地面）、stone_wall（碉楼石墙）、brown_mud_dry（夯土、黄土）、weathered_planks（木作）、white_plaster_02（北川白墙）、asphalt_02（国道）、pine_bark（树皮），1K 颜色、法线、粗糙度贴图，存于 `assets/tex/`
 - 模型的环境光遮蔽由 Blender Cycles 烘焙进顶点色；树冠为叶片卡，叶片与针叶贴图由程序绘制
+- 人物与装束：Blender 脚本建模（`blender/npc_figure.py`，本项目原创，含骨骼与行走/奔跑/站立动画，共 19 个骨骼人物），服饰参照岷江上游羌族与河湟民族志通例（包头帕、长衫、羊皮褂、绑腿、云云鞋）；人物均为虚构
+- 动物与地景模型：`blender/animals.py` 与 `blender/game_models.py`（本项目原创）
+- 重新生成模型：`blender --background --factory-startup --python blender/npc_figure.py -- all`（变体见脚本内 VARIANTS）
+- 单文件分享版由 `tools/build_single_html.py` 打包（内联 three.js、GLTFLoader、全部模型与贴图）；历史版本按日期存档（如 `华夏边缘_边缘行走_单文件版_20261109_优化前.html`）
 - 信息图：编辑组 · Infographics: the editorial team
 - 时间轴地图：据原书第 99、104、113、127 页插图重绘，© 原作者与出版方 · Timeline maps redrawn from figures in the original book, © the author and publisher
