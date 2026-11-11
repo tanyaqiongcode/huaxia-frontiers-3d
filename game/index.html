@@ -953,6 +953,15 @@ const BUSH_GEO=(()=>{ const pos=[],uv=[],col=[],idx=[]; let n=0;
       sp.position.copy(ce).add(new THREE.Vector3(ox,oy,oz)); const s2=sz*(top?0.62+((k*7)%5)*0.08:0.85); sp.scale.set(s2*1.25,s2*0.8,1);
       clouds.add(sp); } }
   scene.add(clouds); window.__clouds=clouds; }
+/* 远山剪影：可玩区之外的雾中轮廓，解决远景单薄（用局部上向量，避免引用后面的 _yUp 造成 TDZ） */
+{ const mM=new THREE.MeshStandardMaterial({color:0x27303d,roughness:1,flatShading:true});
+  const YUP=new THREE.Vector3(0,1,0);
+  for(let i=0;i<28;i++){ const a=i*12.9+5.5, t=(i%2? 1.1 : 61.2)+(i%3)*0.55;
+    const p=P(a,t,0), h=16+hash(i,3)*26;
+    const m=new THREE.Mesh(new THREE.ConeGeometry(9+hash(i,5)*15,h,5),mM);
+    m.position.copy(p).addScaledVector(p.clone().normalize(),h*0.33);
+    m.quaternion.setFromUnitVectors(YUP,p.clone().normalize());
+    scene.add(m); } }
 
 /* ---- 场景物件 ---- */
 const colliders=[]; // {a,t,r}
@@ -1336,6 +1345,7 @@ function makeFigure(o){
    动作仍由原来的行走/待机代码驱动：把 legL/kneeL/armL… 换成代理对象，每帧把代理的旋转写到对应骨骼上 */
 const _yUp=new THREE.Vector3(0,1,0), _wv=new THREE.Vector3(), _wn=new THREE.Vector3(), _wu=new THREE.Vector3(), _wq=new THREE.Quaternion();
 const RIGS=[], _rq=new THREE.Quaternion(), _rq2=new THREE.Quaternion(), _rv=new THREE.Vector3();
+const LODS=[]; let lodT=0, QUAL_LOW=false;
 /* 人物材质的纹理：按 Blender 里起的质地名（cloth/wool/fleece/trim/hair/leather/skin/eye/lip/metal/rubber）分别处理，全部程序绘制 */
 const FIG_TEX=(()=>{ const mk=(w,h,draw,rx,ry)=>{ const c=document.createElement('canvas'); c.width=w; c.height=h; draw(c.getContext('2d'),w,h);
     const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(rx,ry); t.encoding=THREE.sRGBEncoding; t.anisotropy=8; return t; };
@@ -1392,6 +1402,7 @@ function rigFigure(fig,name,opts){ opts=opts||{}; if(!THREE.GLTFLoader) return; 
   }catch(e){ warn1('rig '+name,e); } }, undefined, e=>warn1('rig load '+name,e)); }
 function syncRigs(){ for(let i=RIGS.length-1;i>=0;i--){ const f=RIGS[i];
     if(!f.yawG.parent){ RIGS.splice(i,1); continue; }
+    if(f.g && !f.g.visible) continue;
     for(const j of f.rig.joints){ _rq.setFromEuler(j.px.rotation);
       j.b.quaternion.copy(j.rest).multiply(_rq2.copy(j.QwI).multiply(_rq).multiply(j.Qw));
       if(j.pos) j.b.position.copy(j.restP).add(_rv.copy(j.px.position).applyQuaternion(j.QpI)); } } }
@@ -1465,9 +1476,12 @@ function walkerFree(v){ const l=v.length(), a=Math.atan2(v.z,v.x)/D2R, t=Math.ac
   BUSH.forEach(b=>{ for(let i=0;i<b[4];i++) if(put(bush,kb,b[0],b[1],b[2],b[3],b[7]*2.2,b[8],b[5],b[6])) kb++; });
   STONE.forEach(b=>{ for(let i=0;i<b[4];i++) if(put(stone,ks,b[0],b[1],b[2],b[3],b[6],0.6,b[5],0x55524a)) ks++; });
   bush.count=kb; stone.count=ks;
-  [bush,stone].forEach(im=>{ im.castShadow=true; im.receiveShadow=true; im.frustumCulled=false; scene.add(im); }); }
+  [bush,stone].forEach(im=>{ im.castShadow=true; im.receiveShadow=true; im.frustumCulled=false; scene.add(im); });
+  window.__lodBush=bush; window.__lodStone=stone; }
 function tickWalkers(dt,now){ const pP=pGroup.position;
   for(const w of WALKERS){ const f=w.fig, dP=w.pos.distanceTo(pP);
+    if(dP>42){ if(f.g.visible) f.g.visible=false; continue; }
+    if(!f.g.visible) f.g.visible=true;
     if(!w.init){ w.init=true;                                          /* 出生点若落在房子、树或河里，就近换一个空地 */
       for(let k=0;k<80&&!walkerFree(w.pos);k++){ const c=P(w.ha+(Math.random()-.5)*2.6*w.ra, w.ht+(Math.random()-.5)*2.6*w.rt, 0); if(walkerFree(c)) w.pos.copy(c); }
       f.g.position.copy(w.pos); f.g.quaternion.setFromUnitVectors(_yUp,_wu.copy(w.pos).normalize()); }
@@ -1649,7 +1663,10 @@ function placeMany(src,list){ /* 同一模型多次摆放：每种材质一个 I
     list.forEach((it,i)=>{ const p=onSurface(P(it.a,it.t,0),-0.05); S.setScalar(it.s||1);
       M.compose(p,frameAt(p,it.yaw||0),S).multiply(part.matrixWorld); im.setMatrixAt(i,M); });
     /* 叶片卡用默认阴影（整张卡投影，交叠后就是树冠的影子）。three r128 里给实例化网格配自定义深度材质会让整张阴影图变黑，所以不用 */
-    im.castShadow=true; im.receiveShadow=true; im.frustumCulled=false; scene.add(im); }); }
+    im.castShadow=true; im.receiveShadow=true; im.frustumCulled=false; scene.add(im);
+    let aC=0,tC=0; list.forEach(it=>{ aC+=it.a; tC+=it.t; }); aC/=list.length; tC/=list.length;
+    const c=P(aC,tC,0); let r=10; list.forEach(it=>{ r=Math.max(r,planarDist(c,P(it.a,it.t,0))); });
+    LODS.push({ob:im,c,r:r+40}); }); }
 function hash(i,k){ return fract(Math.sin(i*127.1+k*311.7)*43758.5453); }
 function freeSpot(a,t,pad){ if(riverDist(a,t)<3.6) return false;
   const p=P(a,t,0);
@@ -1915,7 +1932,8 @@ const grass={mat:null};
       Q.setFromUnitVectors(_yAxis,p.clone().normalize()).multiply(new THREE.Quaternion().setFromAxisAngle(_yAxis,Math.random()*6.28));
       S.setScalar((0.55+Math.random()*0.5)*gs); M4.compose(p,Q,S); im.setMatrixAt(k,M4);
       im.setColorAt(k,C.setHex(c1).lerp(C2.setHex(c2),Math.random())); k++; }
-    im.count=k; im.frustumCulled=false; im.receiveShadow=true; scene.add(im); }); }
+    im.count=k; im.frustumCulled=false; im.receiveShadow=true; scene.add(im);
+    LODS.push({ob:im,c:P(za,zt,0),r:Math.max(ra,rt)*2.44*0.62+14}); }); }
 
 /* ---- 每帧：天色过渡、月亮跟随、星光闪烁、流星、牲畜、鹰、河水、视野 ---- */
 let _skyT=null;
@@ -2437,6 +2455,8 @@ function loop(){
   }
   worldTick(dt,now);
   try{ tickWalkers(dt,now); }catch(e){ warn1('walkers',e); }
+  const umbOn=hasUmb&&(weather==='rain'||weather==='snow')&&rollT<0;
+  if(umbOn){ figP.armR.rotation.set(-0.25,0,-0.06); figP.elbR.rotation.set(-1.45,0,0); }
   try{ syncRigs(); }catch(e){ warn1('rigs',e); }
   /* 水面着色器驱动 + 漂浮物顺流 */
   try{
@@ -2455,6 +2475,8 @@ function loop(){
       pa.setXYZ(i,p.x,p.y,p.z); });
     pa.needsUpdate=true; }
   }catch(e){ warn1('water',e); }
+  lodT-=dt; if(lodT<=0){ lodT=0.35;
+    for(const L of LODS){ if(L.ob) L.ob.visible = planarDist(pGroup.position,L.c) < L.r + 45; } }
   /* 云影漂移 */
   for(let ci=0;ci<3;ci++){ const cs=window['__cloudShadow'+ci]; if(!cs) continue;
     cs.position.x+=cs.userData.driftX*dt; cs.position.z+=cs.userData.driftZ*dt;
@@ -2473,9 +2495,15 @@ function loop(){
     const cano=new THREE.Mesh(new THREE.ConeGeometry(0.66,0.2,10,1,true),new THREE.MeshStandardMaterial({color:0x8a6a3c,roughness:.85,side:THREE.DoubleSide}));
     cano.position.y=0.98; const tip=new THREE.Mesh(new THREE.ConeGeometry(0.02,0.08,5),wood); tip.position.y=1.1;
     um.add(pole,grip,cano,tip); um.traverse(m=>{ if(m.isMesh) m.castShadow=true; }); um.userData={isUmb:true};
-    um.position.set(0.19,1.17,0.31); um.rotation.set(-0.2,0,0.1); figP.yawG.add(um); window.__umbM=um; }
-  if(window.__umbM){ const on=hasUmb&&(weather==='rain'||weather==='snow')&&rollT<0; window.__umbM.visible=on;
-    if(on){ figP.armR.rotation.x=-0.25; figP.elbR.rotation.x=-2.0; } }
+    /* 伞挂右手骨骼：走动起伏时手与伞柄不错开 */
+    const hb=(figP.rig&&figP.rig.joints)?figP.rig.joints.find(j=>j.b.name==='handR'):null;
+    if(hb){ hb.b.add(um); um.position.set(0,-0.02,0.03); um.rotation.set(0,0,0); }
+    else { um.position.set(0.19,1.17,0.31); um.rotation.set(-0.2,0,0.1); figP.yawG.add(um); }
+    window.__umbM=um; window.__umbAnchor=hb?hb.b:figP.yawG; }
+  { const umbOn=hasUmb&&(weather==='rain'||weather==='snow')&&rollT<0;
+    if(window.__umbM){ window.__umbM.visible=umbOn;
+      if(umbOn&&window.__umbAnchor&&window.__umbAnchor!==figP.yawG){
+        window.__umbAnchor.getWorldQuaternion(_wq); window.__umbM.quaternion.copy(_wq.invert()); } } }
   /* 静立转头 */
   if(!isMoveGlobal && now-idleT>2){ headTurn=Math.sin((now-idleT-2)*0.8)*0.4; }
   else { headTurn=0; idleT=now; }
@@ -2632,7 +2660,11 @@ function loop(){
       U.uSat.value+=((wet?M[6]*0.84:M[6])-U.uSat.value)*k; U.uCon.value+=(M[7]-U.uCon.value)*k; } }
   fpsN++; fpsT+=dt; if(fpsT>2){ const f=fpsN/fpsT;
     if(f<42 && sun.castShadow){ sun.castShadow=false; renderer.setPixelRatio(1); gradeResize(); recompileAll();
-      if(window.__waterMat) window.__waterMat.uniforms.uLQ.value=1; toast(tx('qDegrade')); }
+      if(window.__waterMat) window.__waterMat.uniforms.uLQ.value=1;
+      if(GRADE) GRADE.on=false; QUAL_LOW=true;
+      if(window.__lodBush){ window.__lodBush.count=Math.ceil(window.__lodBush.count*0.55);
+        window.__lodStone.count=Math.ceil(window.__lodStone.count*0.6); }
+      toast(tx('qDegrade')); }
     fpsN=0; fpsT=0; }
   renderFrame(); loopErrN=0;
   }catch(e){ loopErrN++; warn1('loop',e); if(__DBG) document.title='LOOP ERR: '+e.message+' @'+(e.stack||'').split('\n')[1];
