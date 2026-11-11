@@ -43,7 +43,7 @@
   .sceneCard b{display:block;font-size:17px;letter-spacing:.14em;color:color-mix(in srgb,var(--zc) 55%,#e8cf96);font-weight:600;transition:color .6s}
   .sceneCard i{display:block;font-style:normal;font-size:11.5px;color:var(--dim);letter-spacing:.1em;margin-top:6px;line-height:1.7}
   /* —— 复核P0+P1：追踪器/旁白字幕/地点卡/蓄力环/继续覆盖/行走记录 —— */
-  #objTrack{position:fixed;top:102px;left:18px;z-index:5;max-width:min(330px,62vw);padding:2px 0 2px 12px;border-left:2px solid var(--gold-hi);opacity:.95;pointer-events:none;transition:opacity .3s}
+  #objTrack{position:fixed;top:128px;left:18px;z-index:5;max-width:min(330px,62vw);padding:2px 0 2px 12px;border-left:2px solid var(--gold-hi);opacity:.95;pointer-events:none;transition:opacity .3s}
   #objTxt{font-size:12.5px;letter-spacing:.08em;color:var(--gold-hi);line-height:1.7}
   @keyframes objflash{0%{border-left-color:#e8cf96}100%{border-left-color:var(--gold-hi)}}
   #objTrack.flash{animation:objflash .9s ease-out}
@@ -80,9 +80,11 @@
   .walkRec>b{display:block;font-size:11px;letter-spacing:.24em;color:var(--gold-hi);margin-bottom:4px}
   .walkRec div{display:flex;justify-content:space-between;gap:14px;padding:6px 0;border-top:1px solid rgba(232,228,218,.12);font-size:12.5px}
   .walkRec dt{color:var(--dim)} .walkRec dd{color:#e8e4da;margin:0}
-  .wxRow{margin:10px 0 2px;display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+  .wxRow{margin:12px 0 4px}
+  .wxRow b{display:block;margin-bottom:6px}
+  #wxBtns{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
   .wxRow b{font-size:11px;letter-spacing:.2em;color:var(--gold-hi);font-weight:600}
-  .wxRow a{font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:4px 11px;cursor:pointer;text-decoration:none}
+  .wxRow a{font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:5px 0;cursor:pointer;text-decoration:none;text-align:center;white-space:nowrap}
   .wxRow a.on{color:var(--gold-hi);border-color:var(--gold-hi);background:rgba(201,164,92,.12)}
   @media (prefers-reduced-motion: reduce){
     #locCard.show b{animation:none;clip-path:none}
@@ -164,7 +166,7 @@
   .rcard .go{margin-top:18px;width:100%;border:1px solid var(--gold);border-radius:99px;color:var(--gold-hi);background:transparent;padding:11px 0;font-family:inherit;font-size:13px;letter-spacing:.3em;cursor:pointer}
   .rcard .go:hover{background:var(--gold);color:#100c04}
   .tasks .goalT{font-size:12px;color:var(--gold-hi);margin-top:8px;line-height:1.7}
-  .tasks .cardList{margin-top:8px;display:flex;flex-wrap:wrap;gap:5px}
+  .tasks .cardList{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
   .tasks .cardList a{font-size:11px;border:1px solid var(--line);border-radius:99px;padding:2px 9px;color:var(--gold-hi);cursor:pointer}
   .endQs{text-align:left;font-size:13px;line-height:1.85;margin:4px 0 16px;color:var(--ink)}
   .endQs b{display:block;color:var(--gold);font-size:11px;letter-spacing:.2em;font-weight:400;margin-bottom:4px}
@@ -197,14 +199,17 @@
   .toast.show{opacity:1}
 
   /* 任务清单 */
-  .tasks .memo{font-size:11.5px;line-height:1.75;color:var(--dim);margin-top:8px;max-height:200px;overflow-y:auto}
-  .tasks{position:fixed;top:74px;right:18px;z-index:5;width:230px;display:none;max-height:calc(100vh - 96px);overflow-y:auto;
+  .tasks .memo{font-size:11.5px;line-height:1.7;color:var(--dim);margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
+  .tasks .memo div{margin:0 0 9px;padding-left:10px;border-left:2px solid rgba(201,164,92,.35)}
+  .tasks .memo div i{display:block;font-style:normal;color:var(--gold-hi);font-size:11px;letter-spacing:.06em}
+  .tasks .memo div span{display:block;opacity:.6;font-size:10.5px;margin-top:1px}
+  .tasks{position:fixed;top:74px;right:18px;z-index:5;width:264px;max-width:calc(100vw - 24px);display:none;max-height:calc(100vh - 96px);overflow-y:auto;overscroll-behavior:contain;
     background:linear-gradient(160deg,var(--glass),rgba(8,10,18,.72));border:1px solid var(--line);border-radius:12px;padding:14px 16px;backdrop-filter:blur(8px)}
   .tasks.show{display:block;z-index:8}
   .tasks .tClose{position:absolute;top:8px;right:8px;width:26px;height:26px;line-height:24px;font-size:13px}
   .tasks b{font-size:12px;color:var(--gold);letter-spacing:.2em}
   .tasks ul{list-style:none;margin-top:10px}
-  .tasks li{font-size:12px;color:var(--dim);line-height:2;padding-left:16px;position:relative}
+  .tasks li{font-size:12px;color:var(--dim);line-height:1.5;padding:3px 0 3px 16px;position:relative}
   .tasks li::before{content:"·";position:absolute;left:0;color:var(--gold)}
   .tasks li.done{color:var(--ink);opacity:.75}
   .tasks li.done::before{content:"✓";color:#7fbf8f}
@@ -233,6 +238,10 @@
   .veil p{font-size:13.5px;color:var(--ink);opacity:.8;line-height:2.1;margin-top:20px;text-align:left}
   .veil .keys{font-size:11.5px;color:var(--dim);letter-spacing:.1em;line-height:2;margin-top:18px}
   .veil .keys kbd{border:1px solid var(--line);border-radius:4px;padding:1px 7px;font-size:10px}
+  .gSel{margin-top:20px;display:flex;gap:8px;align-items:center;justify-content:center;font-size:12px;letter-spacing:.2em;color:var(--dim)}
+  .gSel a{min-width:54px;padding:8px 0;border:1px solid var(--line);border-radius:99px;color:var(--dim);cursor:pointer;text-align:center;letter-spacing:.1em}
+  .gSel a.on{color:var(--gold-hi);border-color:var(--gold-hi);background:rgba(201,164,92,.14)}
+  .gSel + .go{margin-top:16px}
   .veil .go{margin-top:26px;display:inline-block;border:1px solid var(--gold);border-radius:99px;color:var(--gold-hi);
     padding:12px 44px;font-size:14px;letter-spacing:.3em;cursor:pointer;font-family:var(--fserif);background:rgba(201,164,92,.08)}
   .veil .go:hover{background:var(--gold);color:#100c04}
@@ -337,11 +346,11 @@
 </ul>
   <div class="cardList" id="tCards"></div>
   <button class="cardsBtn" id="btnCardsImg" data-i18n="cardsImg">生成读书卡图片</button>
-  <div class="memo" id="tMemo"></div>
   <div class="ftT" data-i18n="ftT">快速移动 · FAST TRAVEL</div>
   <div class="ftG" id="ftG">
     <a data-z="village">羌寨</a><a data-z="hehuang">河湟遗址</a><a data-z="wall">长城边缘</a><a data-z="modern">现代羌寨</a><a data-z="beichuan">北川</a>
   </div>
+  <div class="memo" id="tMemo"></div>
   </div>
 <canvas id="mmap" width="300" height="300"></canvas>
 <div class="dlg" id="dlg"><div class="who" id="dlgWho"></div><div class="txt" id="dlgTxt"></div><div class="more" id="dlgMore" data-i18n="moreCont">E · 继续</div></div>
@@ -366,6 +375,7 @@
   <p data-i18n-html="gIntro">你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十七件史料散落在谷地里——族谱、竹简、甲骨、羌绣、田野笔记……每一件对应书中的一个概念；五段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。<br>也可以按 <b style="color:var(--gold-hi)">G</b> 邀请一位同行者，双人同屏行走。</p>
   <div class="keys" data-i18n-html="gKeys"><kbd>W A S D</kbd> 移动 · 鼠标拖拽 视角 · 滚轮 远近<br><kbd>E</kbd> 对话 · <kbd>T</kbd> 晨昏切换 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务清单</div>
   <p class="note" data-i18n="gNote">本作为《华夏边缘》的阅读辅助：场景与讲述者均为虚构，不代表任何真实人物或群体；书中观点请以原著为准。</p>
+  <div class="gSel" id="gSel"><span data-i18n="gWho">行走者</span><a data-g="m" data-i18n="gM">男</a><a data-g="f" data-i18n="gF">女</a></div>
   <button class="go" id="btnGo" data-i18n="gGo">开 始 行 走</button>
   <button class="go" id="btnNew" style="display:none;margin-top:14px" data-i18n="gNew">重 新 开 始</button>
 </div></div>
@@ -535,6 +545,7 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  wRainHint:{zh:'下雨了——羌寨入口的桩子上挂着一把伞',en:'It is raining — an umbrella hangs by the village gate'},
  wSnow:{zh:'雪落高原',en:'Snow drifts over the plateau'},
  wGust:{zh:'起风了——草一片片伏下去',en:'The wind rises — the grass bows in waves'}, wDust:{zh:'干冷的风卷起黄土',en:'A dry, cold wind lifts the loess'},
+ gWho:{zh:'行走者',en:'Walker'}, gM:{zh:'男',en:'Man'}, gF:{zh:'女',en:'Woman'},
  wxT:{zh:'天气',en:'Weather'}, wxAuto:{zh:'自动',en:'Auto'}, wxSun:{zh:'晴',en:'Sunny'},
  wxRain:{zh:'雨',en:'Rain'}, wxSnow:{zh:'雪',en:'Snow'}, wxWind:{zh:'风',en:'Wind'}, wxDust:{zh:'尘',en:'Dust'},
  wSun2:{zh:'日头正好 · 风吹草低',en:'High sun — wind in the grass'},
@@ -577,7 +588,7 @@ function applyLang(){
 }
 function renderMemo(){ const m=document.getElementById('tMemo'); if(!m) return;
   const got=shards.map((x,i)=>x.userData.got?i:-1).filter(i=>i>=0);
-  m.innerHTML = got.length? got.map(i=>'<div>· 〔'+SOURCES[i].n[T.lang]+'〕'+TOASTS[i][T.lang]+'<span style="opacity:.6"> —— '+PART_N[PART_IX[i]][T.lang]+'</span></div>').join('') : '<div>'+tx('memoEmpty')+'</div>'; }
+  m.innerHTML = got.length? got.map(i=>'<div><i>'+SOURCES[i].n[T.lang]+'</i>'+TOASTS[i][T.lang]+'<span>'+PART_N[PART_IX[i]][T.lang]+'</span></div>').join('') : '<div>'+tx('memoEmpty')+'</div>'; }
 const PART_N=[
  {zh:'Ⅰ · 边缘与内涵',en:'I · Edge and Essence'},
  {zh:'Ⅱ · 华夏生态边界的形成',en:'II · The ecological boundary'},
@@ -595,14 +606,14 @@ function tryBeacon(){ if(lit || prog<1) return;
 document.getElementById('btnLang').addEventListener('click',toggleLang);
 let p2=null; const P2KEY={};
 function toggleP2(){
-  if(p2){ scene.remove(p2.grp); p2=null;
+  if(p2){ scene.remove(p2.grp); p2.fig._rigTok=-1; { const ix=RIGS.indexOf(p2.fig); if(ix>=0) RIGS.splice(ix,1); } p2=null;
     if('speechSynthesis' in window) speechSynthesis.cancel();
     toast(tx('p2Off')); return; }
   const fig2=makeFigure({jacket:0x7a4640,trouser:0x3c3a34,boot:0x241f19,skin:0xd9c6ad,hair:0x14141a});
   const g=new THREE.Group(); g.add(fig2.yawG);
   const base=pGroup.position.clone(); const upB=base.clone().normalize();
   const side=new THREE.Vector3().crossVectors(upB,new THREE.Vector3(0,0,1)).normalize();
-  base.addScaledVector(side,2.2).setLength(R);
+  base.addScaledVector(side,2.2); setOnGround(base);   /* 贴着当地地形，而不是球面基准高度 */
   g.position.copy(base); g.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),base.clone().normalize());
   scene.add(g);
   p2={grp:g, yawG:fig2.yawG, fig:fig2, stepT:0.2, walkPhase:0};
@@ -610,7 +621,7 @@ function toggleP2(){
   toast(tx('p2On')); }
 
 /* ---- 地面（球冠 + 分区顶点色） ---- */
-const riverPts=[[-100,36],[-80,28],[-60,20],[-35,14],[-12,11],[10,9],[35,11],[60,16],[85,24],[105,32]];
+const riverPts=[[-104,30],[-90,21],[-78,17.5],[-60,16],[-35,14],[-12,11],[10,9.4],[35,11],[60,16],[85,24],[105,32]];   /* 河湟一段绕开遗址 */
 /* 河道中线：在 (a,t) 上做 Catmull-Rom 细分；地形下切与水面共用这一条线 */
 const riverPath=(()=>{ const q=riverPts, n=q.length, out=[], N=20;
   for(let i=0;i<n-1;i++){ const p0=q[Math.max(0,i-1)],p1=q[i],p2=q[i+1],p3=q[Math.min(n-1,i+2)];
@@ -645,7 +656,7 @@ function elev(a,t){
   const mountain=(m-0.42)*16*flatMask(a,t);
   const edge=smoothstep(46,58,t)*5*flatMask(a,t);
   const riverFloor=-1.9-1.3*smoothstep(6,1.7,rd);
-  const chan=rd<4?-0.9*smoothstep(5.6,3.6,riverDistM(a,t)):0;   /* 河槽：比两岸低一截 */
+  const chan=rd<4?-0.9*smoothstep(4.8,3.0,riverDistM(a,t)):0;   /* 河槽：比两岸低一截 */
   return (mountain+edge)*(1-valleyW)+riverFloor*valleyW+chan; }
 const P = (aD, tD, h) => { const a=aD*D2R, t=tD*D2R, r=R+elev(aD,tD)+(h||0);
   return new THREE.Vector3(r*Math.sin(t)*Math.cos(a), r*Math.cos(t), r*Math.sin(t)*Math.sin(a)); };
@@ -719,6 +730,8 @@ const gGeo = new THREE.SphereGeometry(R, GWS, GHS, 0, Math.PI*2, 0, 1.12);
   const groundMesh=new THREE.Mesh(gGeo, gm);
   groundMesh.receiveShadow=true; scene.add(groundMesh); }
 
+const _dotTex=(()=>{ const c=document.createElement('canvas'); c.width=c.height=32; const g=c.getContext('2d'), gr=g.createRadialGradient(16,16,1,16,16,15);
+  gr.addColorStop(0,'rgba(255,255,255,1)'); gr.addColorStop(.55,'rgba(255,255,255,.75)'); gr.addColorStop(1,'rgba(255,255,255,0)'); g.fillStyle=gr; g.fillRect(0,0,32,32); return new THREE.CanvasTexture(c); })();   /* 圆形柔边粒子，替代方块点 */
 /* 岷江：贴河床的变宽水面 + 自写水着色器（CatmullRom细分190段，逐点贴当地地形） */
 { const pts=riverPath.map(([a,t])=>{ const aR=a*D2R,tR=t*D2R, rr=R+elev(a,t)+0.5;
     return new THREE.Vector3(rr*Math.sin(tR)*Math.cos(aR), rr*Math.cos(tR), rr*Math.sin(tR)*Math.sin(aR)); });
@@ -728,7 +741,7 @@ const gGeo = new THREE.SphereGeometry(R, GWS, GHS, 0, Math.PI*2, 0, 1.12);
     const tg=nx.clone().sub(pv).normalize();
     const up=p.clone().normalize();
     const sd=new THREE.Vector3().crossVectors(up,tg).normalize();
-    const w=2.15+0.6*Math.sin(i*0.07+1.2), rl=p.length();
+    const w=1.75+0.5*Math.sin(i*0.07+1.2), rl=p.length();
     const pl=p.clone().addScaledVector(sd,w).setLength(rl);
     const pr=p.clone().addScaledVector(sd,-w).setLength(rl);
     vpos.push(pl.x,pl.y,pl.z, pr.x,pr.y,pr.z);
@@ -778,7 +791,7 @@ const gGeo = new THREE.SphereGeometry(R, GWS, GHS, 0, Math.PI*2, 0, 1.12);
   const DN=26, dpos=new Float32Array(DN*3); const drift=[];
   for(let i=0;i<DN;i++) drift.push({s:Math.random(),o:(Math.random()-0.5)*0.7,sp:0.018+Math.random()*0.03});
   const dg=new THREE.BufferGeometry(); dg.setAttribute('position',new THREE.Float32BufferAttribute(dpos,3));
-  const dm=new THREE.PointsMaterial({color:0xdfe8ea,size:0.2,transparent:true,opacity:.6,sizeAttenuation:true,depthWrite:false});
+  const dm=new THREE.PointsMaterial({map:_dotTex,color:0xdfe8ea,size:0.24,transparent:true,opacity:.6,sizeAttenuation:true,depthWrite:false});
   const dr=new THREE.Points(dg,dm); scene.add(dr);
   window.__debris=dr; window.__drift=drift; }
 /* 暴雨粒子 */
@@ -790,18 +803,18 @@ rainGeo.setAttribute('position', new THREE.Float32BufferAttribute(rainArr,3));
 const rainMat=new THREE.PointsMaterial({color:0xb8cce8,size:0.12,sizeAttenuation:true,transparent:true,opacity:0});
 const rainPts=new THREE.Points(rainGeo,rainMat); rainPts.visible=false; scene.add(rainPts);
 /* 雪粒子 */
-const SNOW_N=240;
+const SNOW_N=520;
 const snowGeo=new THREE.BufferGeometry();
 const snowArr=new Float32Array(SNOW_N*3);
 for(let i=0;i<SNOW_N;i++){ snowArr[i*3]=(Math.random()-0.5)*34; snowArr[i*3+1]=Math.random()*20; snowArr[i*3+2]=(Math.random()-0.5)*34; }
 snowGeo.setAttribute('position', new THREE.Float32BufferAttribute(snowArr,3));
-const snowMat=new THREE.PointsMaterial({color:0xffffff,size:0.16,sizeAttenuation:true,transparent:true,opacity:0,depthWrite:false});
+const snowMat=new THREE.PointsMaterial({map:_dotTex,color:0xffffff,size:0.13,sizeAttenuation:true,transparent:true,opacity:0,depthWrite:false});
 const snowPts=new THREE.Points(snowGeo,snowMat); snowPts.visible=false; scene.add(snowPts);
 /* 扬尘：贴地横吹的黄褐色尘粒 */
 const WXD_N=520, wxdGeo=new THREE.BufferGeometry(), wxdArr=new Float32Array(WXD_N*3);
 for(let i=0;i<WXD_N;i++){ wxdArr[i*3]=(Math.random()-0.5)*36; wxdArr[i*3+1]=Math.pow(Math.random(),2)*5; wxdArr[i*3+2]=(Math.random()-0.5)*36; }
 wxdGeo.setAttribute('position', new THREE.Float32BufferAttribute(wxdArr,3));
-const wxdMat=new THREE.PointsMaterial({color:0xb9975f,size:0.075,sizeAttenuation:true,transparent:true,opacity:0,depthWrite:false});
+const wxdMat=new THREE.PointsMaterial({map:_dotTex,color:0xb9975f,size:0.11,sizeAttenuation:true,transparent:true,opacity:0,depthWrite:false});
 const wxdPts=new THREE.Points(wxdGeo,wxdMat); wxdPts.visible=false; wxdPts.frustumCulled=false; scene.add(wxdPts);
 /* 天气色调函数 */
 function weatherTint(c,mode){
@@ -847,7 +860,7 @@ const matStone2=pbr('earth',0.9);
 const matWood=pbr('wood',0.7);
 const matRoof=new THREE.MeshStandardMaterial({color:0x33302a,roughness:.95});
 const matPine=new THREE.MeshStandardMaterial({color:0x2f4436,roughness:.95});
-const camBlockers=[];
+const camBlockers=[], _camV=new THREE.Vector3(), _camG=new THREE.Vector3();
 function mesh(g,m,a,t,h,ry,blk){ const o=new THREE.Mesh(g,m); o.position.copy(P(a,t,h||0));
   const up=o.position.clone().normalize();
   o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),up);
@@ -975,7 +988,7 @@ for(let i=0;i<16;i++){ const a=-160+fract(i*5.3)*320, t=20+fract(i*11.7)*34;
   const ctr=window.__riverCtr||[]; let k=0;
   for(let i=0;i<N&&ctr.length>2;i++){ const j=1+Math.floor(fract(i*0.6180339)*(ctr.length-2));
     const p=ctr[j], up=p.clone().normalize(), tg=ctr[j+1].clone().sub(ctr[j-1]).normalize(), sd=new THREE.Vector3().crossVectors(up,tg).normalize();
-    const side=i%2?1:-1, off=(1.9+fract(i*7.31)*2.6)*side, r=0.06+fract(i*3.77)*fract(i*1.31)*0.26;
+    const side=i%2?1:-1, off=(1.6+fract(i*7.31)*2.4)*side, r=0.06+fract(i*3.77)*fract(i*1.31)*0.26;
     const v=setOnGround(p.clone().addScaledVector(sd,off).addScaledVector(tg,(fract(i*5.1)-.5)*1.2)); v.addScaledVector(up,r*0.25);
     Q.setFromUnitVectors(Y,up).multiply(new THREE.Quaternion().setFromAxisAngle(Y,fract(i*2.9)*6.28));
     S.set(r*(1+fract(i*4.3)*0.6), r*0.55, r); M4.compose(v,Q,S); im.setMatrixAt(k,M4);
@@ -1218,10 +1231,12 @@ function makeFigure(o){
 }
 /* ---- Blender 骨骼人物：加载成功就替换代码人形；加载失败则保留代码人形 ----
    动作仍由原来的行走/待机代码驱动：把 legL/kneeL/armL… 换成代理对象，每帧把代理的旋转写到对应骨骼上 */
+const _yUp=new THREE.Vector3(0,1,0), _wv=new THREE.Vector3(), _wn=new THREE.Vector3(), _wu=new THREE.Vector3(), _wq=new THREE.Quaternion();
 const RIGS=[], _rq=new THREE.Quaternion(), _rq2=new THREE.Quaternion(), _rv=new THREE.Vector3();
 const RIG_MAP={legL:'thighL',legR:'thighR',kneeL:'shinL',kneeR:'shinR',armL:'upArmL',armR:'upArmR',elbL:'foreArmL',elbR:'foreArmR',head:'head',body:'spine'};
-function rigFigure(fig,name,opts){ opts=opts||{}; if(!THREE.GLTFLoader) return;
+function rigFigure(fig,name,opts){ opts=opts||{}; if(!THREE.GLTFLoader) return; const tok=fig._rigTok=(fig._rigTok||0)+1;
   new THREE.GLTFLoader().load((window.__MODEL_DATA&&window.__MODEL_DATA[name])||('../assets/models/'+name+'.glb'), g=>{ try{
+    if(fig._rigTok!==tok) return;   /* 期间又换了模型 */
     const model=g.scene, bones={}; model.updateMatrixWorld(true);
     model.traverse(o=>{ if(o.isBone) bones[o.name]=o;
       if(o.isMesh){ o.castShadow=true; o.frustumCulled=false; o.material.roughness=.9; o.material.metalness=0;
@@ -1233,6 +1248,7 @@ function rigFigure(fig,name,opts){ opts=opts||{}; if(!THREE.GLTFLoader) return;
       joints.push({b,px,rest:b.quaternion.clone(),restP:b.position.clone(),Qw,QwI:Qw.clone().invert(),
         QpI:b.parent.getWorldQuaternion(new THREE.Quaternion()).invert(),pos:k==='body'});
       fig[k]=px; }
+    if(fig.rig){ fig.yawG.remove(fig.rig.model); const ix=RIGS.indexOf(fig); if(ix>=0) RIGS.splice(ix,1); }
     fig.parts.forEach(o=>{ o.visible=false; });
     if(opts.s) model.scale.setScalar(opts.s);
     fig.yawG.add(model); fig.rig={model,joints}; RIGS.push(fig);
@@ -1266,6 +1282,60 @@ NPCS.forEach((n,i)=>{ addCol(n.a,n.t,0.9);
   if(i===1){ const sh=new THREE.Mesh(new THREE.DodecahedronGeometry(0.05,0).scale(1.2,0.35,1),new THREE.MeshStandardMaterial({color:0x9a5a3c,roughness:1})); sh.position.set(-0.1,1.0,0.3); fig.yawG.add(sh); }
   if(i===3){ const ph=new THREE.Mesh(new THREE.BoxGeometry(0.07,0.14,0.012),new THREE.MeshStandardMaterial({color:0x15171c,roughness:.4})); ph.position.set(0.17,1.24,0.27); ph.rotation.x=-0.5; fig.yawG.add(ph); }
   rigFigure(fig,NPC_RIG[i],{s:NPC_SCALE[i]}); });
+/* ---- 路上遇到的人：男女老少，在各自的场景里慢慢走动 ----
+   [模型, 缩放, 中心a, 中心t, 范围a, 范围t, 步速, 驼背] */
+const WALKER_DEFS=[
+ ['fig_granny',0.92, 4,14.6,3,1.0,0.42,0.14], ['fig_man',1, -6,15.2,5,1.3,0.8,0], ['fig_girl',0.68, 7,15.6,4,1.2,1.05,0],
+ ['fig_herder',1, -69,31,4,1.4,0.65,0], ['fig_boy',0.72, -75.5,28.6,3,1.3,1.1,0],
+ ['fig_herder',1, 70,35,4,1.3,0.65,0], ['fig_soldier',1.02, 79,31.6,4,0.7,0.7,0],
+ ['fig_woman',0.95, -133,25.7,5,0.7,0.8,0], ['fig_oldman',0.98, -138,21.4,4,0.7,0.45,0.1], ['fig_boy',0.72, -130,21.5,4,0.7,1.1,0],
+ ['fig_woman',0.95, -102.5,15.2,3,1.2,0.8,0], ['fig_granny',0.92, -107.5,11.2,3,1.0,0.42,0.14], ['fig_girl',0.68, -101.5,11.4,3,1.0,1.05,0]];
+const WALK_LOOK={fig_granny:{jacket:0x2b2f40,trouser:0x22222a,hair:0xb4b4b4,hat:'wrap',hatC:0xe6e0d2,robe:1.0,robeC:0x2b2f40},
+ fig_man:{jacket:0x39445a,trouser:0x2a3044,hair:0x17161a,hat:'wrap',hatC:0xe6e0d2,robe:0.8,robeC:0x39445a},
+ fig_girl:{jacket:0xb5506a,trouser:0x26262c,hair:0x151515,robe:0.9,robeC:0xb5506a}, fig_boy:{jacket:0xb5482f,trouser:0x2c3038,hair:0x141416},
+ fig_herder:{jacket:0x7a6248,trouser:0x3a3128,hair:0x17161a,hat:'brim',hatC:0x4a4038,robe:0.9,robeC:0x7a6248},
+ fig_soldier:{jacket:0x6e3b2e,trouser:0x4b4336,hair:0x17161a,hat:'wrap',hatC:0x8c2f2a},
+ fig_woman:{jacket:0x9a3340,trouser:0x26262c,hair:0x151515,hat:'wrap',hatC:0x23232b,robe:1.0,robeC:0x9a3340,apron:0x23232b},
+ fig_oldman:{jacket:0x3a4250,trouser:0x30333a,hair:0xb4b4b4,hat:'wrap',hatC:0x2c2e36}};
+const WALKERS=WALKER_DEFS.map((d,i)=>{ const fig=makeFigure(WALK_LOOK[d[0]]||{});
+  const pos=P(d[2],d[3],0); fig.g.position.copy(pos); fig.g.quaternion.setFromUnitVectors(_yUp,pos.clone().normalize());
+  fig.yawG.rotation.y=i*1.7; scene.add(fig.g); rigFigure(fig,d[0],{s:d[1]});
+  return {fig,pos,ha:d[2],ht:d[3],ra:d[4],rt:d[5],sp:d[6],stoop:d[7],tgt:null,wait:1+i*0.7,ph:i*1.3}; });
+function walkerFree(v){ const l=v.length(), a=Math.atan2(v.z,v.x)/D2R, t=Math.acos(Math.max(-1,Math.min(1,v.y/l)))/D2R;
+  if(riverDistM(a,t)<5.6) return false;
+  for(const c of colliders){ if(planarDist(v,c.p||(c.p=P(c.a,c.t,0)))<c.r+0.7) return false; }
+  for(const n of NPCS){ if(planarDist(v,n.mesh.position)<1.6) return false; }
+  return true; }
+function tickWalkers(dt,now){ const pP=pGroup.position;
+  for(const w of WALKERS){ const f=w.fig, dP=w.pos.distanceTo(pP);
+    if(!w.init){ w.init=true;                                          /* 出生点若落在房子、树或河里，就近换一个空地 */
+      for(let k=0;k<80&&!walkerFree(w.pos);k++){ const c=P(w.ha+(Math.random()-.5)*2.6*w.ra, w.ht+(Math.random()-.5)*2.6*w.rt, 0); if(walkerFree(c)) w.pos.copy(c); }
+      f.g.position.copy(w.pos); f.g.quaternion.setFromUnitVectors(_yUp,_wu.copy(w.pos).normalize()); }
+    f.g.visible=dP<95; if(dP>70) continue;
+    let moving=false;
+    if(dP<2.3 && w.wait<0.8) w.wait=1.2;                              /* 行走者走近：停一停 */
+    if(w.wait>0) w.wait-=dt;
+    else { if(!w.tgt){ for(let k=0;k<6&&!w.tgt;k++){ const c=P(w.ha+(Math.random()-.5)*2*w.ra, w.ht+(Math.random()-.5)*2*w.rt, 0); if(walkerFree(c)) w.tgt=c; }
+        if(!w.tgt){ w.wait=2; } }
+      if(w.tgt){ const d=_wv.copy(w.tgt).sub(w.pos), dist=d.length();
+        if(dist<0.25){ w.tgt=null; w.wait=2+Math.random()*6; }
+        else { d.multiplyScalar(1/dist); _wn.copy(w.pos).addScaledVector(d,Math.min(dist,w.sp*dt)); setOnGround(_wn);
+          if(!walkerFree(_wn) && walkerFree(w.pos)){ w.tgt=null; w.wait=0.6; }
+          else { w.pos.copy(_wn); moving=true;
+            const up=_wu.copy(w.pos).normalize(); f.g.position.copy(w.pos); f.g.quaternion.setFromUnitVectors(_yUp,up);
+            const dl=d.applyQuaternion(_wq.copy(f.g.quaternion).invert()), ty=Math.atan2(dl.x,dl.z);
+            let df=((ty-f.yawG.rotation.y+Math.PI*3)%(Math.PI*2))-Math.PI; f.yawG.rotation.y+=df*Math.min(1,dt*5); } } } }
+    if(moving){ w.ph+=dt*(4.2+w.sp*4.6); const sn=Math.sin(w.ph), cw=Math.cos(w.ph), A=0.3+w.sp*0.16;
+      f.legL.rotation.x=sn*A; f.legR.rotation.x=-sn*A;
+      f.kneeL.rotation.x=Math.max(0,-cw)*0.7+0.04; f.kneeR.rotation.x=Math.max(0,cw)*0.7+0.04;
+      f.armL.rotation.x=-sn*A*0.6; f.armR.rotation.x=sn*A*0.6; f.elbL.rotation.x=-0.25; f.elbR.rotation.x=-0.25;
+      f.body.position.y=Math.abs(cw)*0.02; f.body.rotation.x=w.stoop+0.04; f.head.rotation.y*=0.9; }
+    else { for(const k of ['legL','legR','kneeL','kneeR','armL','armR']) f[k].rotation.x*=0.85;
+      f.elbL.rotation.x+=(-0.12-f.elbL.rotation.x)*0.1; f.elbR.rotation.x+=(-0.12-f.elbR.rotation.x)*0.1;
+      f.body.position.y=Math.sin(now*1.7+w.ph)*0.008; f.body.rotation.x=w.stoop;
+      let want=0; if(dP<5){ const dv=_wv.copy(pP).sub(w.pos).applyQuaternion(_wq.copy(f.g.quaternion).invert());
+        let a=Math.atan2(dv.x,dv.z)-f.yawG.rotation.y; a=((a+Math.PI*3)%(Math.PI*2))-Math.PI; want=Math.max(-0.8,Math.min(0.8,a)); }
+      f.head.rotation.y+=(want-f.head.rotation.y)*0.07; } } }
 
 /* ---- 玩家 ---- */
 const player={a:0,t:34,yaw:0};
@@ -1273,7 +1343,13 @@ const pGroup=new THREE.Group();
 const figP=makeFigure({jacket:0x46536b,trouser:0x4c463a,boot:0x2a241e,skin:0xd9c6ad,hair:0x1e2026,
   hat:'brim',hatC:0x59513f,scarf:true,satchel:true,packC:0x4a5240});
 pGroup.add(figP.yawG);
-rigFigure(figP,'fig_player');
+/* 行走者可选男女：开场卡上选，记在本机 */
+let walkG='m'; try{ walkG=localStorage.getItem('walkGender')==='f'?'f':'m'; }catch(e){}
+function applyWalker(){ rigFigure(figP, walkG==='f'?'fig_player_f':'fig_player', {s:walkG==='f'?0.95:1});
+  document.querySelectorAll('#gSel a').forEach(a=>a.classList.toggle('on',a.dataset.g===walkG)); }
+applyWalker();
+document.getElementById('gSel').addEventListener('click',e=>{ const a=e.target.closest('a'); if(!a||a.dataset.g===walkG) return;
+  walkG=a.dataset.g; try{ localStorage.setItem('walkGender',walkG); }catch(_){} applyWalker(); });
 pGroup.position.copy(P(player.a,player.t,0)); scene.add(pGroup);
 let walkPhase=0, vy=0, jumpOff=0, lit=false, beaconHinted=false, prevSide='in', crossT=0, fpsN=0, fpsT=0, started=false, actx=null, master=null, muted=false, humGain=null, isMoveGlobal=false, idleT=0, headTurn=0, camPos=new THREE.Vector3(), lastZone='';
 let weather='clear', weatherT=0;
@@ -1542,7 +1618,8 @@ function drawMinimap(){ if(!started || frameN%3) return;
   mg.fillStyle='#ffffff'; mg.beginPath(); mg.moveTo(c,c-13); mg.lineTo(c+9,c+10); mg.lineTo(c,c+5); mg.lineTo(c-9,c+10); mg.closePath(); mg.fill(); }
 
 const animals=[], eagles=[];
-Promise.all(['hangtu_wall','fengsui','hehuang_site','tree_fir','tree_poplar','tree_walnut','sheep','cow','horse','qiang_house','rma_home'].map(loadModel)).then(()=>{
+Promise.all(['hangtu_wall','fengsui','hehuang_site','tree_fir','tree_poplar','tree_walnut','sheep','cow','horse','yak','qiang_house','rma_home'].map(loadModel)).then(()=>{
+  if(_mdl.yak){ beastG.children.forEach(c=>{ c.visible=false; }); const yk=_mdl.yak.clone(true); yk.scale.setScalar(1.05); beastG.add(yk); }
   if(_mdl.hangtu_wall){ _procWall.forEach(m=>scene.remove(m));
     WALL_A.forEach(a=>{ const t=wallT(a), fwd=P(a+1,wallT(a+1),0).sub(P(a-1,wallT(a-1),0));
       placeOne(_mdl.hangtu_wall,a,t,{fwd,s:1.0,h:-0.12}); }); }
@@ -1651,7 +1728,7 @@ const grass={mat:null};
   const M4=new THREE.Matrix4(), Q=new THREE.Quaternion(), S=new THREE.Vector3(), C=new THREE.Color(), C2=new THREE.Color();
   ZG.forEach(([za,zt,ra,rt,n,c1,c2],zi)=>{ const im=new THREE.InstancedMesh(g,m,n); let k=0, tries=0;
     while(k<n && tries<n*4){ tries++; const a=za+(Math.random()-.5)*2*ra, t=zt+(Math.random()-.5)*2*rt;
-      if(t<3||t>58||(riverDist(a,t)<4&&riverDistM(a,t)<5.4)) continue;
+      if(t<3||t>58||(riverDist(a,t)<4&&riverDistM(a,t)<4.7)) continue;
       if(Math.abs(t-23)<1.5 && a>-160 && a<-110) continue;
       const p=onSurface(P(a,t,0),-0.01); let bad=false;
       for(let i=0;i<cp.length;i++){ const d=cp[i].distanceToSquared(p), r=colliders[i].r+0.25; if(d<r*r){ bad=true; break; } }
@@ -1883,7 +1960,7 @@ function updHUD(){ const ns=shards.filter(s=>s.userData.got).length, nn=NPCS.fil
 
 /* ---- 读书卡：每个场景听完讲述、拾齐该处史料，解锁一张（要点 + 讨论题） ---- */
 const ZORDER=['village','hehuang','wall','modern','beichuan'];
-const ZPOS={village:[0,10],hehuang:[-72,26],wall:[75,30],modern:[-135,24],beichuan:[-105,13]};
+const ZPOS={village:[1,12.3],hehuang:[-72,26],wall:[75,30],modern:[-135,24],beichuan:[-105,13]};
 const ZSHORT={village:{zh:'羌寨',en:'the village'},hehuang:{zh:'河湟遗址',en:'Hehuang'},wall:{zh:'长城边缘',en:'the Wall'},modern:{zh:'现代羌寨',en:'the modern village'},beichuan:{zh:'北川',en:'Beichuan'}};
 const ZSH={village:[0,1,2,9,11],hehuang:[3,4,5,10],wall:[6,7,8],modern:[12,13,14],beichuan:[15,16]};
 const ZNPC={village:0,hehuang:1,wall:2,modern:3,beichuan:4};
@@ -2120,8 +2197,12 @@ function loop(){
   [pGroup.position, p2&&p2.grp.position].filter(Boolean).forEach(pp=>{
     const d3=planarDist(target,pp);
     if(d3<3.5){ const need=Math.min(3.5-d3, LW); target.addScaledVector(dirW,need); } });
+  /* 镜头不钻进山坡：沿"人物→镜头"连线取几个点，哪一点低于地面就把镜头抬高 */
+  for(let pass=0;pass<2;pass++) for(const k of [1,0.8,0.6,0.4,0.2]){ _camV.copy(eye).lerp(target,k);
+    const need=setOnGround(_camG.copy(_camV)).length()+(k===1?0.7:0.35)-_camV.length();
+    if(need>0) target.addScaledVector(upF,need/k); }
   if(!camPos.lengthSq()) camPos.copy(target);
-  camPos.lerp(target,0.14+Math.min(0.2,(isMoveGlobal?(keys['shift']?24:9.5):0)*0.007)); camera.position.copy(camPos);
+  camPos.lerp(target,0.14+Math.min(0.2,(isMoveGlobal?(keys['shift']?24:9.5):0)*0.007)); { const gl=setOnGround(_camG.copy(camPos)).length()+0.5; if(camPos.length()<gl) camPos.setLength(gl); } camera.position.copy(camPos);
   camera.up.copy(upF); camera.lookAt(focus.clone().addScaledVector(upF,1.3));
   /* 碎片 */
   /* 粒子爆裂推进 */
@@ -2173,6 +2254,7 @@ function loop(){
     beastG.children[3].rotation.z=-0.35+Math.sin(now*0.9)*0.25;   /* 低头吃草 */
   }
   worldTick(dt,now);
+  try{ tickWalkers(dt,now); }catch(e){ warn1('walkers',e); }
   try{ syncRigs(); }catch(e){ warn1('rigs',e); }
   /* 水面着色器驱动 + 漂浮物顺流 */
   try{
@@ -2428,7 +2510,7 @@ function loadGame(){ try{ const raw=localStorage.getItem('walkSaveV2'); if(!raw)
   d.g.forEach((v,i)=>{ if(v&&shards[i]){ shards[i].userData.got=true; shards[i].visible=false; } });
   d.n.forEach((v,i)=>{ if(v&&NPCS[i]) NPCS[i].done=true; });
   if(d.c) cardSeen=d.c; else ZORDER.forEach(z=>{ if(cardDone(z)) cardSeen[z]=1; });   /* 旧存档：已完成的场景不再补弹 */
-  if(d.p) pGroup.position.copy(new THREE.Vector3(d.p[0],d.p[1],d.p[2])).setLength(R);
+  if(d.p) setOnGround(pGroup.position.copy(new THREE.Vector3(d.p[0],d.p[1],d.p[2])));
   updHUD(); return d.g.some(v=>v) || d.n.some(v=>v); }catch(e){ return false; } }
 document.getElementById('btnNew').addEventListener('click',()=>{ try{localStorage.removeItem('walkSaveV2');}catch(e){} location.reload(); });
 /* 字体规范（canvas 版）：canvas 不支持 unicode-range 劫持，按字符切字体——CJK/全角/中文标点走宋体，西文走 TNR */

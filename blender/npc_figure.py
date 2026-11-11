@@ -31,6 +31,29 @@ VARS = {
  "fig_aunt":    dict(skin=0xd2a583, hair=0x151515, top=0x3b5f8a, legs=0x26262c, shoe=0x7a2d2a,
                      robe=0.26, sash=0xb5382f, apron=0x23232b, hat="wrap", hatC=0xe6e0d2, hatBand=0xb5382f,
                      yunyun=0xd9a441, trim=(0xb5382f, 0xe6e0d2), bun=True, slim=True),
+ # —— 可选的女性行走者，与路上遇到的男女老少 ——
+ "fig_player_f": dict(skin=0xd8ad8c, hair=0x1e1c1c, top=0x6d6a4e, legs=0x47443a, shoe=0x2a241e,
+                     hat="brim", hatC=0x80705a, scarf=0xa33b2e, pack=0x3f3226, belt=0x2e261c, pockets=True,
+                     slim=True, ponytail=True),
+ "fig_man":     dict(skin=0xc99b78, hair=0x17161a, top=0x39445a, legs=0x2a3044, shoe=0x2b2b33,
+                     robe=0.46, vest=0x8a7355, fleece=0xd9cfb8, sash=0x2f5f8a, hat="wrap", hatC=0xe6e0d2,
+                     legwrap=0xd8d2c2, yunyun=0x2f5f8a, trim=(0xd8d2c2,)),
+ "fig_woman":   dict(skin=0xd8ad8c, hair=0x151515, top=0x9a3340, legs=0x26262c, shoe=0x7a2d2a,
+                     robe=0.28, sash=0xd9a441, apron=0x23232b, hat="wrap", hatC=0x23232b, hatBand=0xd9a441,
+                     yunyun=0xd9a441, trim=(0xd9a441, 0x2f5f8a), braids=True, slim=True),
+ "fig_granny":  dict(skin=0xc49873, hair=0xb4b4b4, top=0x2b2f40, legs=0x22222a, shoe=0x2b2b33,
+                     robe=0.24, sash=0x4a3b5a, apron=0x2a3350, hat="wrap", hatC=0xe6e0d2,
+                     yunyun=0x8c2f2a, trim=(0x6a6f86,), bun=True, slim=True),
+ "fig_oldman":  dict(skin=0xc49873, hair=0xb4b4b4, top=0x3a4250, legs=0x30333a, shoe=0x2a241e,
+                     hat="wrap", hatC=0x2c2e36, beard=True, collar=True, belt=0x2e261c),
+ "fig_herder":  dict(skin=0xc08f68, hair=0x17161a, top=0x7a6248, legs=0x3a3128, shoe=0x2a1f17,
+                     robe=0.40, sash=0x8c2f2a, fleece=0xd9cfb8, vest=0x6a5540, hat="brim", hatC=0x4a4038,
+                     legwrap=0x5a4a3a),
+ "fig_boy":     dict(skin=0xd8ad8c, hair=0x141416, top=0xb5482f, legs=0x2c3038, shoe=0xd8d8d8,
+                     zipper=0xe6e0d2, collar=True, child=True),
+ "fig_girl":    dict(skin=0xdab192, hair=0x151515, top=0xb5506a, legs=0x26262c, shoe=0x7a2d2a,
+                     robe=0.34, sash=0xd9a441, apron=0x2f5f8a, yunyun=0xd9a441, trim=(0xe6e0d2,),
+                     braids=True, slim=True, child=True),
 }
 
 def build(VARIANT):
@@ -218,6 +241,14 @@ def build(VARIANT):
     if V.get("beard"):
         ell((0, -0.075, 1.505), (0.050, 0.034, 0.050), HC, HEAD, 8, 5)
         box((0, -0.098, 1.556), (0.058, 0.012, 0.012), HC, HEAD)
+    if V.get("ponytail"):                             # 低马尾
+        ell((0, 0.105, 1.53), (0.034, 0.036, 0.075), HC, HEAD, 8, 5)
+        ell((0, 0.115, 1.42), (0.028, 0.030, 0.085), HC, HEAD, 8, 5)
+    if V.get("braids"):                               # 两条辫子
+        for sx in (-1, 1):
+            ell((0.075*sx, 0.055, 1.50), (0.024, 0.026, 0.07), HC, HEAD, 6, 5)
+            ell((0.082*sx, 0.035, 1.39), (0.020, 0.022, 0.07), HC, HEAD, 6, 5)
+            ell((0.082*sx, 0.030, 1.315), (0.022, 0.022, 0.018), 0xb5382f, HEAD, 6, 3)
     if V.get("bun"):
         ell((0, 0.105, 1.60), (0.05, 0.045, 0.05), HC, HEAD, 8, 5)
     if V.get("hat") == "brim":
@@ -235,6 +266,10 @@ def build(VARIANT):
             rr = 0.1285 if zz < 1.70 else (0.1275 if zz < 1.74 else 0.117)
             tube([(zz+0.005 if not band or zz != 1.688 else zz+0.013, rr, rr+0.008, 0, 0.012), (zz-0.005, rr, rr+0.008, 0, 0.012)], dark, HEAD, 14, caps=(False, False))
 
+    if V.get("child"):                                # 孩子：头相对大一些（整体缩小在游戏里做）
+        for i, d in enumerate(vw):
+            if len(d) == 1 and "head" in d:
+                x, y, z = verts[i]; verts[i] = (x*1.26, y*1.26, 1.47+(z-1.47)*1.26)
     # ── 网格 ──
     me = bpy.data.meshes.new(VARIANT)
     me.from_pydata(verts, [], faces); me.update()
