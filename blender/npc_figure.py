@@ -1,227 +1,286 @@
-# 《边缘行走》人物构建（参数化单角色）：骨骼+蒙皮+民族志服饰+idle/walk/run 三动画 → GLB
-# 用法：blender --background --factory-startup --python npc_figure.py -- <variant>
-import bpy, math, os, sys
+# 《边缘行走》人物构建：放样体块 + 骨骼蒙皮 + 分部位材质 → GLB（无内置动画，动作由游戏按骨骼驱动）
+# 用法：blender --background --factory-startup --python npc_figure.py -- <variant|all>
+# 朝向：Blender 里面朝 -Y（导出后在 three.js 里面朝 +Z）；骨名带 L 的在 x<0 一侧，与游戏里的 legL/armL 一致。
+import bpy, bmesh, math, os, sys
 
-VARIANT = sys.argv[sys.argv.index("--")+1] if "--" in sys.argv else "fig_player"
+ARG = sys.argv[sys.argv.index("--")+1] if "--" in sys.argv else "all"
 OUT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "models"))
 os.makedirs(OUT, exist_ok=True)
-FPS = 24.0
 
-bpy.ops.wm.read_factory_settings(use_empty=True)
+def lin(h):
+    def c(v):
+        v /= 255.0
+        return v/12.92 if v <= 0.04045 else ((v+0.055)/1.055)**2.4
+    return (c((h >> 16) & 255), c((h >> 8) & 255), c(h & 255), 1.0)
 
-# ── 材质（民族志配色） ──
-def mat(name, rgb, rough=0.88):
-    m = bpy.data.materials.new(name); m.use_nodes = True
-    b = m.node_tree.nodes.get("Principled BSDF")
-    b.inputs["Base Color"].default_value = (rgb[0], rgb[1], rgb[2], 1.0)
-    b.inputs["Roughness"].default_value = rough
-    b.inputs["Metallic"].default_value = 0.0
-    return m
-M = {
- "skin":  mat("skin",  (0.78, 0.62, 0.50)),
- "jade":  mat("jade",  (0.20, 0.25, 0.33)),
- "indigo":mat("indigo",(0.22, 0.26, 0.34)),
- "grey":  mat("grey",  (0.40, 0.40, 0.42)),
- "khaki": mat("khaki", (0.45, 0.41, 0.32)),
- "wool":  mat("wool",  (0.45, 0.33, 0.24)),
- "felt":  mat("felt",  (0.18, 0.20, 0.24)),
- "shoe":  mat("shoe",  (0.16, 0.14, 0.13)),
- "dark":  mat("dark",  (0.10, 0.10, 0.12)),
- "red":   mat("red",   (0.64, 0.23, 0.18)),
- "boot":  mat("boot",  (0.17, 0.15, 0.13)),
- "white": mat("white", (0.80, 0.77, 0.70)),
- "hairM": mat("hairM", (0.09, 0.08, 0.09)),
+# 各角色：服饰参照岷江上游羌族常见装束（包头帕、长衫、羊皮褂、腰带、围腰、绑腿、云云鞋），
+# 行走者与考古者按 1990 年代田野工作者，返乡青年为当代装束，戍卒按汉代戍卒（赤帻、短袍、革甲、行縢）。
+VARS = {
+ "fig_player":  dict(skin=0xd2a583, hair=0x1e1c1c, top=0x6d6a4e, legs=0x47443a, shoe=0x2a241e,
+                     hat="brim", hatC=0x80705a, scarf=0xa33b2e, pack=0x3f3226, belt=0x2e261c, pockets=True),
+ "fig_elder":   dict(skin=0xc49873, hair=0xa9a9a9, top=0x2f3a55, legs=0x2a3044, shoe=0x2b2b33,
+                     robe=0.30, vest=0x8a7355, fleece=0xd9cfb8, sash=0x8c2f2a, hat="wrap", hatC=0x22242c,
+                     legwrap=0xd8d2c2, yunyun=0xa33b2e, beard=True, trim=(0xd8d2c2,)),
+ "fig_arch":    dict(skin=0xd2a583, hair=0x26221f, top=0xc8c2b0, legs=0x55585c, shoe=0x3a2e22,
+                     hat="brim", hatC=0x8a7a5f, vest=0x7a7052, belt=0x2e261c, pockets=True),
+ "fig_soldier": dict(skin=0xc99b78, hair=0x17161a, top=0x6e3b2e, legs=0x4b4336, shoe=0x241f19,
+                     robe=0.52, vest=0x4a3b2c, lamellar=True, belt=0x1f1812, hat="wrap", hatC=0x8c2f2a,
+                     legwrap=0x6b6248),
+ "fig_youth":   dict(skin=0xd6ab8a, hair=0x141416, top=0x3f566b, legs=0x2c3038, shoe=0xd8d8d8,
+                     zipper=0xc9c9c9, collar=True),
+ "fig_aunt":    dict(skin=0xd2a583, hair=0x151515, top=0x3b5f8a, legs=0x26262c, shoe=0x7a2d2a,
+                     robe=0.26, sash=0xb5382f, apron=0x23232b, hat="wrap", hatC=0xe6e0d2, hatBand=0xb5382f,
+                     yunyun=0xd9a441, trim=(0xb5382f, 0xe6e0d2), bun=True, slim=True),
 }
-m_grey_hair = mat("greyhair", (0.45, 0.45, 0.47))
 
-# ── 变体配置 ──
-V = {
- "fig_player":  dict(jacket="khaki", trouser="khaki", hairM="hairM", hat="brim", hatM="khaki",
-                     pack=True, scarf=True, yunyun=False),
- "fig_elder":   dict(jacket="jade", trouser="indigo", hairM="hairM", hat="wrap", hatM="felt",
-                     robe=True, robeM="jade", robeLen=1.05, vest=True, yunyun=True, legwrap=True, staff=True),
- "fig_arch":    dict(jacket="khaki", trouser="grey", hairM="hairM", hat="brim", hatM="khaki", pack=True),
- "fig_soldier": dict(jacket="grey", trouser="indigo", hairM="hairM", hat="wrap", hatM="felt",
-                     legwrap=True, yunyun=True),
- "fig_youth":   dict(jacket="indigo", trouser="dark", hairM="hairM", vest=True),
- "fig_aunt":    dict(jacket="indigo", trouser="dark", hairM="hairM", hat="wrap", hatM="white",
-                     apron=True, robe=True, robeM="indigo", robeLen=0.92, yunyun=True),
-}[VARIANT]
+def build(VARIANT):
+    V = VARS[VARIANT]
+    bpy.ops.wm.read_factory_settings(use_empty=True)
+    mats, mat_ix = [], {}
+    def M(hexc, rough=0.9):
+        if hexc not in mat_ix:
+            m = bpy.data.materials.new("c%06x" % hexc); m.use_nodes = True
+            b = m.node_tree.nodes.get("Principled BSDF")
+            b.inputs["Base Color"].default_value = lin(hexc)
+            b.inputs["Roughness"].default_value = rough
+            b.inputs["Metallic"].default_value = 0.0
+            mat_ix[hexc] = len(mats); mats.append(m)
+        return mat_ix[hexc]
 
-def mesh_ob(name, verts, faces, material, groups):
-    me = bpy.data.meshes.new(name)
-    me.from_pydata(verts, [], faces)
-    me.update()
-    ob = bpy.data.objects.new(name, me)
-    bpy.context.collection.objects.link(ob)
-    ob.data.materials.append(material)
-    for gname, idxs in groups.items():
-        vg = ob.vertex_groups.new(name=gname)
-        vg.add(idxs, 1.0, 'REPLACE')
-    return ob
+    verts, faces, fmat, vw = [], [], [], []
+    def addv(p, w):
+        ww = w(*p) if callable(w) else w
+        s = sum(ww.values()) or 1.0
+        verts.append(p); vw.append({k: v/s for k, v in ww.items() if v > 1e-4}); return len(verts)-1
 
-def cyl(rtop, rbot, h, y0, seg=12, xz=1.0):
-    vs, fs = [], []
-    for i in range(seg):
-        a = 2*math.pi*i/seg
-        vs.append((math.sin(a)*rtop*xz, 0, y0+h))
-    for i in range(seg):
-        a = 2*math.pi*i/seg
-        vs.append((math.sin(a)*rbot*xz, 0, y0))
-    fs += [[i, (i+1)%seg, seg+(i+1)%seg, seg+i] for i in range(seg)]
-    fs.append(list(range(seg)))
-    fs.append([seg+seg-1-i for i in range(seg)])
-    return vs, fs
+    def tube(rings, mat, w, seg=12, at=(0.0, 0.0), caps=(True, True), arc=None):
+        """rings: [(z, rx, ry[, dx, dy])]，水平椭圆环自下而上或自上而下均可"""
+        mi = M(mat) if not isinstance(mat, tuple) else M(*mat)
+        n = seg if arc is None else seg+1
+        ids = []
+        for r in rings:
+            z, rx, ry = r[0], r[1], r[2]
+            cx = at[0] + (r[3] if len(r) > 3 else 0.0); cy = at[1] + (r[4] if len(r) > 4 else 0.0)
+            row = []
+            for i in range(n):
+                a = (2*math.pi*i/seg) if arc is None else (arc[0] + (arc[1]-arc[0])*i/seg)
+                row.append(addv((cx+math.cos(a)*rx, cy+math.sin(a)*ry, z), w))
+            ids.append(row)
+        for j in range(len(ids)-1):
+            for i in range(n if arc is None else n-1):
+                i2 = (i+1) % n
+                faces.append([ids[j][i], ids[j][i2], ids[j+1][i2], ids[j+1][i]]); fmat.append(mi)
+        if arc is None:
+            if caps[0]: faces.append(list(ids[0])); fmat.append(mi)
+            if caps[1]: faces.append(list(reversed(ids[-1]))); fmat.append(mi)
 
-def sph(r, x, y, z, seg=10, ring=8, sy=1.0):
-    vs, fs = [], []
-    for j in range(ring+1):
-        ph = math.pi*j/ring
-        for i in range(seg):
-            th = 2*math.pi*i/seg
-            vs.append((x+math.sin(ph)*math.cos(th)*r, z+math.sin(ph)*math.sin(th)*r*0.92, y+math.cos(ph)*r*sy))
-    for j in range(ring):
-        for i in range(seg):
-            a=j*seg+i; b=j*seg+(i+1)%seg; c=(j+1)*seg+(i+1)%seg; d=(j+1)*seg+i
-            if j==0: fs.append([a,b,c])
-            elif j==ring-1: fs.append([a,b,d])
-            else: fs.append([a,b,c,d])
-    return vs, fs
+    def ell(c, r, mat, w, seg=10, rings=7):
+        rs = []
+        for j in range(rings):
+            ph = math.pi*(j+0.5)/rings
+            rs.append((c[2]+r[2]*math.cos(ph), r[0]*math.sin(ph), r[1]*math.sin(ph)))
+        tube(rs, mat, w, seg, at=(c[0], c[1]))
 
-# ── 骨架 ──
-arm_data = bpy.data.armatures.new("Armature")
-arm = bpy.data.objects.new("Armature", arm_data)
-bpy.context.collection.objects.link(arm)
-bpy.context.view_layer.objects.active = arm
-bpy.ops.object.mode_set(mode='EDIT')
-e = arm_data.edit_bones
-def B(name, h, t, parent=None):
-    b = e.new(name); b.head = h; b.tail = t
-    if parent: b.parent = e[parent]
-    return b
-B("root",  (0,0,0),    (0,0,0.06))
-B("hips",  (0,0,0.86), (0,0,0.98), "root")
-B("spine", (0,0,0.98), (0,0,1.18), "hips")
-B("chest", (0,0,1.18), (0,0,1.36), "spine")
-B("neck",  (0,0,1.36), (0,0,1.45), "chest")
-B("head",  (0,0,1.45), (0,0,1.62), "neck")
-for sd, N in ((-1,"L"), (1,"R")):
-    x = 0.175*sd
-    B(f"upArm{N}",   (x,0,1.33), (x,0,1.04), "chest")
-    B(f"foreArm{N}", (x,0,1.04), (x,0,0.76), f"upArm{N}")
-    B(f"hand{N}",    (x,0,0.76), (x,0,0.68), f"foreArm{N}")
-    x2 = 0.095*sd
-    B(f"thigh{N}", (x2,0,0.84), (x2,0,0.44), "hips")
-    B(f"shin{N}",  (x2,0,0.44), (x2,0,0.07), f"thigh{N}")
-    B(f"foot{N}",  (x2,0,0.07), (x2,0.14,0.02), f"shin{N}")
-bpy.ops.object.mode_set(mode='OBJECT')
+    def box(c, s, mat, w):
+        mi = M(mat); x, y, z = c; a, b, d = s[0]/2, s[1]/2, s[2]/2
+        i = [addv((x+sx*a, y+sy*b, z+sz*d), w) for sz in (-1, 1) for sy in (-1, 1) for sx in (-1, 1)]
+        for f in ([0,1,3,2],[4,6,7,5],[0,4,5,1],[2,3,7,6],[0,2,6,4],[1,5,7,3]):
+            faces.append([i[k] for k in f]); fmat.append(mi)
 
-# ── 网格拼装（顶点组→骨名） ──
-vs_all, fs_all, grp = [], [], {}
-def add(verts, faces, gname, mo):
-    base = len(vs_all)
-    vs_all.extend(verts)
-    for f in faces: fs_all.append([i+base for i in f])
-    grp.setdefault(gname, []).extend(range(base, base+len(verts)))
-def part_cyl(rtop, rbot, h, y0, gname, mo, seg=12, xz=1.0):
-    v, f = cyl(rtop, rbot, h, y0, seg, xz); add(v, f, gname, mo)
-def part_sph(r, x, y, z, gname, mo, sy=1.0, seg=10, ring=8):
-    v, f = sph(r, x, y, z, seg, ring, sy); add(v, f, gname, mo)
+    cl = lambda t: max(0.0, min(1.0, t))
+    def w_torso(x, y, z):
+        if z >= 1.20: return {"chest": 1}
+        if z >= 1.04: t = (z-1.04)/0.16; return {"chest": t, "spine": 1-t}
+        if z >= 0.92: return {"spine": 1}
+        if z >= 0.84: t = (z-0.84)/0.08; return {"spine": t, "hips": 1-t}
+        # 下摆：随两条大腿摆动
+        k = cl((0.84-z)/0.30)*0.62; wl = cl(0.5 - x/0.14)
+        return {"hips": 1-k, "thighL": k*wl, "thighR": k*(1-wl)}
+    def w_arm(S):
+        def f(x, y, z):
+            t = cl((z-0.96)/0.12); return {"upArm"+S: t, "foreArm"+S: 1-t}
+        return f
+    def w_leg(S):
+        def f(x, y, z):
+            if z > 0.80: t = cl((z-0.80)/0.07); return {"hips": t*0.6, "thigh"+S: 1-t*0.6}
+            t = cl((z-0.35)/0.11); return {"thigh"+S: t, "shin"+S: 1-t}
+        return f
+    def w_neck(x, y, z):
+        t = cl((z-1.40)/0.10); return {"head": t, "chest": 1-t}
+    HEAD = {"head": 1}
 
-part_cyl(0.168, 0.152, 0.24, 1.12, "chest", M[V["jacket"]], 12, 0.62)
-part_cyl(0.152, 0.15, 0.20, 0.92, "spine", M[V["jacket"]], 12, 0.66)
-part_cyl(0.152, 0.15, 0.10, 0.84, "hips", M[V["trouser"]], 12, 0.66)
-part_cyl(0.05, 0.056, 0.1, 1.40, "neck", M["skin"], 8)
-part_sph(0.118, 0, 1.585, 0, "head", M["skin"], 1.05)
-part_sph(0.02, -0.045, 1.60, 0.093, "head", M["dark"], 1.0, 6, 5)
-part_sph(0.02, 0.045, 1.60, 0.093, "head", M["dark"], 1.0, 6, 5)
-add([(0,1.573,0.114),(-0.015,1.573,0.094),(0.015,1.573,0.094),(0,1.598,0.112)], [[0,1,2],[0,2,3]], "head", M["skin"])
-add([(-0.032,1.626,0.094),(0.032,1.626,0.094)], [[0,1]], "head", M["dark"])
-part_sph(0.126, 0, 1.602, 0, "head", M[V["hairM"]], 0.72, 12, 6)
-if V.get("hat")=="brim":
-    part_cyl(0.118, 0.13, 0.1, 1.655, "head", M[V["hatM"]], 12)
-    part_cyl(0.208, 0.213, 0.02, 1.645, "head", M[V["hatM"]], 14)
-if V.get("hat")=="wrap":
-    part_cyl(0.132, 0.14, 0.135, 1.595, "head", M[V["hatM"]], 12)
-if V.get("scarf"): part_cyl(0.098, 0.098, 0.09, 1.30, "chest", M["red"], 8)
-for sd, N in ((-1,"L"),(1,"R")):
-    x = 0.19*sd
-    part_cyl(0.052, 0.048, 0.3, 1.03, f"upArm{N}", M[V["jacket"]], 8)
-    part_cyl(0.045, 0.042, 0.26, 0.79, f"foreArm{N}", M["skin"], 8)
-    part_sph(0.05, x, 0.71, 0, f"hand{N}", M["skin"], 0.9, 8, 6)
-    x2 = 0.095*sd
-    part_cyl(0.063, 0.056, 0.42, 0.42, f"thigh{N}", M[V["trouser"]], 10)
-    part_cyl(0.052, 0.046, 0.36, 0.08, f"shin{N}", M[V["trouser"]], 10)
-    if V.get("legwrap"): part_cyl(0.058, 0.052, 0.25, 0.10, f"shin{N}", M["felt"], 10)
-    if V.get("yunyun"): part_cyl(0.056, 0.062, 0.09, 0.012, f"foot{N}", M["shoe"], 10, 0.62)
-    else: part_cyl(0.05, 0.057, 0.08, 0.015, f"foot{N}", M["boot"], 10, 0.66)
-if V.get("robe"):
-    L = V["robeLen"]
-    part_cyl(0.175, 0.27, L, 0.98-L, "spine", M[V["robeM"]], 12, 0.88)
-    part_cyl(0.27, 0.28, 0.05, 0.93-L, "spine", M[V["robeM"]], 12, 0.88)
-if V.get("vest"): part_cyl(0.188, 0.178, 0.3, 1.0, "chest", M["wool"], 12, 0.72)
-if V.get("apron"): part_cyl(0.165, 0.19, 0.34, 0.5, "spine", M["red"], 12, 0.6)
-if V.get("pack"): part_cyl(0.14, 0.152, 0.36, 0.92, "chest", M["boot"], 10, 0.72)
+    slim = 0.93 if V.get("slim") else 1.0
+    SK, TOP, LEG = V["skin"], V["top"], V["legs"]
 
-body_ob = mesh_ob(VARIANT, vs_all, fs_all, M["skin"], grp)
-mod = body_ob.modifiers.new("Arm", type='ARMATURE'); mod.object = arm
-body_ob.parent = arm
+    # ── 躯干（上衣 / 长衫） ──
+    hem = V.get("robe")
+    rings = [(1.425, 0.062, 0.058), (1.385, 0.105, 0.078), (1.335, 0.150*slim, 0.094), (1.24, 0.168*slim, 0.108),
+             (1.12, 0.160*slim, 0.106), (0.99, 0.142*slim, 0.097), (0.90, 0.150*slim, 0.103), (0.80, 0.160*slim, 0.110)]
+    if hem:
+        rings += [(0.66, 0.178*slim, 0.124), (0.50, 0.196*slim, 0.138)]
+        if hem < 0.48: rings += [(0.38, 0.208*slim, 0.148), (hem, 0.218*slim, 0.156)]
+    else:
+        rings += [(0.745, 0.158*slim, 0.110)]
+    tube(rings, TOP, w_torso, 14)
+    zb = rings[-1][0]; rb = rings[-1]
+    for k, tc in enumerate(V.get("trim", ())):      # 下摆绣边
+        tube([(zb+0.035+0.03*k, rb[1]*0.985+0.004, rb[2]*0.985+0.004), (zb+0.008+0.03*k, rb[1]+0.004, rb[2]+0.004)], tc, w_torso, 14, caps=(False, False))
+    if V.get("collar"):
+        tube([(1.455, 0.068, 0.066), (1.40, 0.082, 0.074)], TOP, {"chest": 1}, 12, caps=(False, False))
+    if V.get("zipper"):
+        box((0, -0.107, 1.10), (0.012, 0.012, 0.56), V["zipper"], w_torso)
+    if V.get("pockets"):
+        for sx in (-1, 1):
+            box((0.075*sx, -0.112 if V.get("vest") else -0.104, 1.19), (0.07, 0.014, 0.075), V.get("vest", TOP), {"chest": 1})
+            box((0.075*sx, -0.115 if V.get("vest") else -0.107, 1.225), (0.074, 0.012, 0.018), V.get("belt", TOP), {"chest": 1})
+    # 羊皮褂 / 田野马甲 / 革甲
+    if V.get("vest"):
+        vc = V["vest"]
+        tube([(1.375, 0.112, 0.088), (1.33, 0.150*slim, 0.104), (1.22, 0.176*slim, 0.118), (1.05, 0.170*slim, 0.116), (0.84, 0.172*slim, 0.120)],
+             vc, w_torso, 14, caps=(False, False))
+        if V.get("fleece"):                           # 羊皮褂翻毛边
+            fc = V["fleece"]
+            tube([(0.86, 0.176, 0.124), (0.82, 0.178, 0.126)], fc, w_torso, 14, caps=(False, False))
+            tube([(1.39, 0.104, 0.084), (1.35, 0.138, 0.100)], fc, w_torso, 14, caps=(False, False))
+            box((0, -0.121, 1.10), (0.026, 0.012, 0.50), fc, w_torso)
+        if V.get("lamellar"):                         # 甲片横缝
+            for zz in (0.92, 1.01, 1.10, 1.19, 1.28):
+                tube([(zz+0.006, 0.19, 0.124), (zz-0.006, 0.19, 0.124)], 0x2a2018, w_torso, 14, caps=(False, False))
+    if V.get("sash"):
+        tube([(1.025, 0.150*slim+0.012, 0.112), (0.955, 0.150*slim+0.012, 0.112)], V["sash"], w_torso, 14, caps=(False, False))
+        box((-0.09, -0.118, 0.90), (0.04, 0.012, 0.20), V["sash"], w_torso)
+    if V.get("belt"):
+        tube([(0.925, 0.154, 0.108), (0.885, 0.156, 0.109)], V["belt"], w_torso, 14, caps=(False, False))
+        box((0, -0.112, 0.905), (0.036, 0.012, 0.03), 0xb89a5a, w_torso)
+    if V.get("apron"):                                # 围腰：前片 + 绣花带
+        A0, A1 = -math.pi/2-0.95, -math.pi/2+0.95
+        tube([(0.955, 0.158, 0.118), (0.70, 0.186, 0.136), (0.40, 0.208, 0.156)], V["apron"], w_torso, 10, arc=(A0, A1))
+        tube([(0.47, 0.205, 0.154), (0.42, 0.211, 0.158)], 0xb5382f, w_torso, 10, arc=(A0, A1))
+        tube([(0.52, 0.201, 0.151), (0.49, 0.204, 0.153)], 0xd9a441, w_torso, 10, arc=(A0, A1))
+    if V.get("scarf"):
+        tube([(1.455, 0.070, 0.068), (1.40, 0.086, 0.080), (1.37, 0.092, 0.084)], V["scarf"], {"chest": 1}, 12, caps=(False, False))
+        box((0.03, -0.098, 1.30), (0.05, 0.02, 0.14), V["scarf"], {"chest": 1})
+    if V.get("pack"):
+        pc = V["pack"]
+        box((0, 0.165, 1.14), (0.27, 0.13, 0.36), pc, w_torso)
+        box((0, 0.172, 1.325), (0.28, 0.14, 0.05), 0x4a3520, {"chest": 1})
+        tube([(1.0, 0.055, 0.055), (1.0, 0.055, 0.055)], pc, w_torso, 8)  # 占位，避免空材质
+        for sx in (-1, 1):
+            box((0.10*sx, -0.108, 1.20), (0.04, 0.012, 0.30), 0x3a2f22, {"chest": 1})
+            box((0.10*sx, 0.0, 1.372), (0.04, 0.22, 0.012), 0x3a2f22, {"chest": 1})
+        ell((0, 0.165, 1.385), (0.15, 0.055, 0.055), 0x8a7a5f, {"chest": 1}, 8, 5)   # 铺盖卷
 
-# ── 动画（Idle/Walk/Run，循环） ──
-arm.pose.bones["root"].rotation_mode = 'XYZ'
-for pb in arm.pose.bones: pb.rotation_mode = 'XYZ'
-def act(name, nframes, fn):
-    a = bpy.data.actions.new(name)
-    arm.animation_data_create(); arm.animation_data.action = a
-    a.frame_start = 1; a.frame_end = nframes
-    # 末帧复制首帧（u=1）实现无缝循环；Blender5 无 fcurves/CYCLES
-    for f in range(1, nframes+2):
-        u = min(1.0, (f-1)/nframes)
-        r = fn(u)
-        for bn, (rx, ry, rz) in r.items():
-            pb = arm.pose.bones.get(bn)
-            if not pb: continue
-            pb.rotation_euler = (math.radians(rx), math.radians(ry), math.radians(rz))
-            pb.keyframe_insert("rotation_euler", frame=f)
-    return a
-A_IDLE = act("Idle", 72, lambda u: {
-    "spine": (2.2*math.sin(u*6.283), 0, 0),
-    "chest": (1.4*math.sin(u*6.283+0.6), 3.0*math.sin(u*3.142), 0),
-    "head": (0, 5.0*math.sin(u*3.142+1.2), 0),
-    "upArmL": (1.5*math.sin(u*6.283), 0, 3.5),
-    "upArmR": (1.5*math.sin(u*6.283+0.4), 0, -3.5)})
-A_WALK = act("Walk", 32, lambda u: {
-    "thighL": (26*math.sin(u*6.283), 0, 0),
-    "thighR": (-26*math.sin(u*6.283), 0, 0),
-    "shinL": (-30*max(0.0, math.sin(u*6.283-0.9)), 0, 0),
-    "shinR": (-30*max(0.0, math.sin(u*6.283+2.24)), 0, 0),
-    "upArmL": (-16*math.sin(u*6.283), 0, 4),
-    "upArmR": (16*math.sin(u*6.283), 0, -4),
-    "foreArmL": (-16, 0, 0), "foreArmR": (-16, 0, 0),
-    "hips": (0, 4.5*math.sin(u*6.283), 0),
-    "chest": (2.5, -4.5*math.sin(u*6.283), 0),
-    "head": (0, 2*math.sin(u*6.283), 0)})
-A_RUN = act("Run", 20, lambda u: {
-    "thighL": (44*math.sin(u*6.283), 0, 0),
-    "thighR": (-44*math.sin(u*6.283), 0, 0),
-    "shinL": (-55*max(0.0, math.sin(u*6.283-0.8)), 0, 0),
-    "shinR": (-55*max(0.0, math.sin(u*6.283+2.14)), 0, 0),
-    "upArmL": (-30*math.sin(u*6.283), 0, 6),
-    "upArmR": (30*math.sin(u*6.283), 0, -6),
-    "foreArmL": (-55, 0, 0), "foreArmR": (-55, 0, 0),
-    "hips": (0, 7*math.sin(u*6.283), 0),
-    "chest": (7, -7*math.sin(u*6.283), 0)})
+    # ── 手臂 ──
+    for sd, S in ((-1, "L"), (1, "R")):
+        X = 0.192*sd*slim
+        tube([(1.352, 0.026, 0.030), (1.335, 0.046, 0.052), (1.30, 0.053, 0.058), (1.22, 0.053, 0.057), (1.08, 0.047, 0.050), (1.02, 0.045, 0.048),
+              (0.92, 0.043, 0.045), (0.80, 0.040, 0.041)], TOP, w_arm(S), 10, at=(X, 0))
+        for k, tc in enumerate(V.get("trim", ())):   # 袖口绣边
+            tube([(0.835-0.028*k, 0.0425, 0.0435), (0.808-0.028*k, 0.0425, 0.0435)], tc, w_arm(S), 10, at=(X, 0), caps=(False, False))
+        tube([(0.805, 0.030, 0.032), (0.775, 0.028, 0.030)], SK, {"foreArm"+S: 1}, 8, at=(X, 0))
+        ell((X, -0.004, 0.725), (0.026, 0.040, 0.058), SK, {"foreArm"+S: 1}, 8, 6)
+        ell((X-0.022*sd, -0.03, 0.74), (0.012, 0.014, 0.03), SK, {"foreArm"+S: 1}, 6, 4)   # 拇指
+    # ── 腿 ──
+    for sd, S in ((-1, "L"), (1, "R")):
+        X = 0.088*sd
+        tube([(0.86, 0.080, 0.092), (0.70, 0.078, 0.086), (0.52, 0.064, 0.070), (0.41, 0.057, 0.062, 0, -0.004),
+              (0.30, 0.056, 0.060, 0, 0.008), (0.16, 0.046, 0.049), (0.07, 0.042, 0.046)], LEG, w_leg(S), 10, at=(X, 0))
+        if V.get("legwrap"):                          # 绑腿 / 行縢
+            tube([(0.375, 0.060, 0.065), (0.30, 0.061, 0.066, 0, 0.008), (0.17, 0.051, 0.054), (0.085, 0.047, 0.051)],
+                 V["legwrap"], {"shin"+S: 1}, 10, at=(X, 0), caps=(False, False))
+            for zz in (0.33, 0.25, 0.17):
+                tube([(zz+0.006, 0.062, 0.067, 0, 0.006), (zz-0.006, 0.062, 0.067, 0, 0.006)], 0x8a8474, {"shin"+S: 1}, 10, at=(X, 0), caps=(False, False))
+        ell((X, -0.045, 0.046), (0.050, 0.118, 0.047), V["shoe"], {"shin"+S: 1}, 10, 6)
+        if V.get("yunyun"):                           # 云云鞋：翘头 + 绣花鞋面
+            ell((X, -0.150, 0.066), (0.026, 0.030, 0.030), V["yunyun"], {"shin"+S: 1}, 8, 5)
+            ell((X, -0.085, 0.078), (0.036, 0.050, 0.014), V["yunyun"], {"shin"+S: 1}, 8, 4)
+        elif V["shoe"] > 0xa0a0a0:                    # 运动鞋底
+            box((X, -0.045, 0.012), (0.094, 0.232, 0.022), 0x8a8a8a, {"shin"+S: 1})
 
-# 手杖（elder）：细柱挂在 handR 骨上
-if V.get("staff"):
-    svs = [(math.sin(2*math.pi*i/8)*0.022, 0, 0.02 - i*0.1875) for i in range(9)]
-    sfs = [[i, (i+1)%8] for i in range(8)]
-    stick = mesh_ob(VARIANT+"_stick", svs, sfs, M["boot"], {"handR": list(range(9))})
-    stick.parent = arm; stick.parent_type = 'BONE'; stick.parent_bone = 'handR'
+    # ── 颈与头 ──
+    tube([(1.50, 0.044, 0.046), (1.40, 0.050, 0.052)], SK, w_neck, 10)
+    hz = 1.602
+    hr = []
+    for j in range(9):
+        ph = math.pi*(j+0.5)/9; cz = math.cos(ph); sn = math.sin(ph)
+        jaw = 1.0 - 0.20*cl(-cz)**1.5                 # 下巴收窄
+        hr.append((hz+0.124*cz, 0.097*sn*jaw, 0.108*sn*(1.0-0.08*cl(-cz)), 0, 0.012*cl(-cz)))
+    tube(hr, SK, HEAD, 14)
+    for sx in (-1, 1):
+        ell((0.097*sx, 0.012, 1.60), (0.012, 0.020, 0.030), SK, HEAD, 6, 4)             # 耳
+        ell((0.037*sx, -0.094, 1.617), (0.0145, 0.008, 0.0095), 0xf1ece2, HEAD, 8, 4)    # 眼白
+        ell((0.037*sx, -0.099, 1.616), (0.0085, 0.006, 0.0085), 0x1a1614, HEAD, 6, 4)    # 瞳
+        box((0.038*sx, -0.098, 1.640), (0.036, 0.010, 0.007), V["hair"], HEAD)           # 眉
+    ell((0, -0.106, 1.588), (0.0125, 0.020, 0.026), SK, HEAD, 8, 5)                      # 鼻
+    box((0, -0.097, 1.543), (0.040, 0.010, 0.007), 0x8c5a52, HEAD)                       # 嘴
+    HC = V["hair"]
+    ell((0, 0.024, 1.628), (0.103, 0.107, 0.112), HC, HEAD, 14, 7)                       # 头发
+    if V.get("beard"):
+        ell((0, -0.075, 1.505), (0.050, 0.034, 0.050), HC, HEAD, 8, 5)
+        box((0, -0.098, 1.556), (0.058, 0.012, 0.012), HC, HEAD)
+    if V.get("bun"):
+        ell((0, 0.105, 1.60), (0.05, 0.045, 0.05), HC, HEAD, 8, 5)
+    if V.get("hat") == "brim":
+        hc = V["hatC"]
+        tube([(1.69, 0.112, 0.118, 0, 0.012), (1.74, 0.106, 0.112, 0, 0.012), (1.772, 0.088, 0.094, 0, 0.012)], hc, HEAD, 14)
+        tube([(1.700, 0.205, 0.215, 0, 0.012), (1.692, 0.215, 0.225, 0, 0.012), (1.682, 0.205, 0.215, 0, 0.012)], hc, HEAD, 16)
+        tube([(1.712, 0.114, 0.120, 0, 0.012), (1.694, 0.115, 0.121, 0, 0.012)], 0x2e261c, HEAD, 14, caps=(False, False))
+    if V.get("hat") == "wrap":                        # 包头帕：层层缠绕
+        hc = V["hatC"]
+        tube([(1.655, 0.108, 0.116, 0, 0.012), (1.672, 0.121, 0.129, 0, 0.012), (1.705, 0.126, 0.134, 0, 0.012),
+              (1.74, 0.122, 0.130, 0, 0.012), (1.765, 0.104, 0.110, 0, 0.012), (1.772, 0.07, 0.074, 0, 0.012)], hc, HEAD, 14)
+        band = V.get("hatBand", None)
+        for zz in (1.688, 1.722, 1.752):
+            dark = band if (band and zz == 1.688) else (((hc >> 1) & 0x7f7f7f) if hc < 0x808080 else (hc - 0x222222))
+            rr = 0.1285 if zz < 1.70 else (0.1275 if zz < 1.74 else 0.117)
+            tube([(zz+0.005 if not band or zz != 1.688 else zz+0.013, rr, rr+0.008, 0, 0.012), (zz-0.005, rr, rr+0.008, 0, 0.012)], dark, HEAD, 14, caps=(False, False))
 
-# ── 导出 ──
-bpy.context.view_layer.objects.active = arm
-arm.select_set(True); body_ob.select_set(True)
-bpy.ops.export_scene.gltf(filepath=os.path.join(OUT, VARIANT+".glb"), export_format='GLB',
-    export_animations=True, export_skins=True, export_morph=False, export_yup=True)
-print("EXPORTED", VARIANT, "->", os.path.join(OUT, VARIANT+".glb"))
+    # ── 网格 ──
+    me = bpy.data.meshes.new(VARIANT)
+    me.from_pydata(verts, [], faces); me.update()
+    for m in mats: me.materials.append(m)
+    for p, mi in zip(me.polygons, fmat): p.material_index = mi
+    bm = bmesh.new(); bm.from_mesh(me)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(me); bm.free()
+    try: me.shade_smooth()
+    except Exception:
+        for p in me.polygons: p.use_smooth = True
+    ob = bpy.data.objects.new(VARIANT, me); bpy.context.collection.objects.link(ob)
+
+    # ── 骨架 ──
+    ad = bpy.data.armatures.new("Armature"); arm = bpy.data.objects.new("Armature", ad)
+    bpy.context.collection.objects.link(arm); bpy.context.view_layer.objects.active = arm
+    bpy.ops.object.mode_set(mode='EDIT')
+    e = ad.edit_bones
+    def B(name, h, t, parent=None):
+        b = e.new(name); b.head = h; b.tail = t
+        if parent: b.parent = e[parent]
+    B("root", (0, 0, 0), (0, 0, 0.1))
+    B("hips", (0, 0, 0.86), (0, 0, 0.98), "root")
+    B("spine", (0, 0, 0.98), (0, 0, 1.16), "hips")
+    B("chest", (0, 0, 1.16), (0, 0, 1.40), "spine")
+    B("head", (0, 0, 1.50), (0, 0, 1.70), "chest")
+    for sd, S in ((-1, "L"), (1, "R")):
+        x = 0.192*sd*slim
+        B("upArm"+S, (x, 0, 1.33), (x, 0, 1.02), "chest")
+        B("foreArm"+S, (x, 0, 1.02), (x, 0, 0.76), "upArm"+S)
+        x2 = 0.088*sd
+        B("thigh"+S, (x2, 0, 0.82), (x2, 0, 0.40), "hips")
+        B("shin"+S, (x2, 0, 0.40), (x2, 0, 0.06), "thigh"+S)
+    bpy.ops.object.mode_set(mode='OBJECT')
+    names = set()
+    for d in vw: names.update(d.keys())
+    vgs = {n: ob.vertex_groups.new(name=n) for n in names}
+    for i, d in enumerate(vw):
+        for n, w in d.items(): vgs[n].add([i], w, 'REPLACE')
+    mod = ob.modifiers.new("Arm", type='ARMATURE'); mod.object = arm
+    ob.parent = arm
+
+    path = os.path.join(OUT, VARIANT+".glb")
+    bpy.ops.export_scene.gltf(filepath=path, export_format='GLB', export_animations=False,
+                              export_skins=True, export_morph=False, export_yup=True)
+    print("EXPORTED", VARIANT, len(verts), "verts", len(faces), "faces", len(mats), "mats", os.path.getsize(path)//1024, "KB")
+
+for name in (VARS.keys() if ARG == "all" else [ARG]):
+    build(name)
