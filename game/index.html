@@ -804,7 +804,7 @@ const _dotTex=(()=>{ const c=document.createElement('canvas'); c.width=c.height=
 /* 岷江：贴河床的变宽水面 + 自写水着色器（CatmullRom细分190段，逐点贴当地地形） */
 { const pts=riverPath.map(([a,t])=>{ const aR=a*D2R,tR=t*D2R, rr=R+elev(a,t)+0.5;
     return new THREE.Vector3(rr*Math.sin(tR)*Math.cos(aR), rr*Math.cos(tR), rr*Math.sin(tR)*Math.sin(aR)); });
-  const n=pts.length, vpos=[], uvs=[], idx=[];
+  const n=pts.length, vpos=[], ab=[], uvs=[], idx=[];
   for(let i=0;i<n;i++){ const p=pts[i];
     const pv=pts[Math.max(0,i-1)], nx=pts[Math.min(n-1,i+1)];
     const tg=nx.clone().sub(pv).normalize();
@@ -813,17 +813,23 @@ const _dotTex=(()=>{ const c=document.createElement('canvas'); c.width=c.height=
     const w=1.75+0.5*Math.sin(i*0.07+1.2), rl=p.length();
     const pl=p.clone().addScaledVector(sd,w).setLength(rl);
     const pr=p.clone().addScaledVector(sd,-w).setLength(rl);
+    /* 弯道曲率：转弯越急，白浪越浓 */
+    let turn=0;
+    if(i>0&&i<n-1){ const t0=pts[i-1].clone().sub(p).normalize(), t1=nx.clone().sub(p).normalize();
+      const cr=new THREE.Vector3().crossVectors(t0,t1); turn=Math.abs(Math.asin(Math.max(-1,Math.min(1,cr.dot(up)))))*2.6; }
     vpos.push(pl.x,pl.y,pl.z, pr.x,pr.y,pr.z);
+    ab.push(turn,turn);
     uvs.push(0,i*0.19, 1,i*0.19); }
   for(let i=0;i<n-1;i++){ const k=i*2; idx.push(k,k+1,k+2, k+1,k+3,k+2); }
   const wg=new THREE.BufferGeometry();
   wg.setAttribute('position',new THREE.Float32BufferAttribute(vpos,3));
   wg.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));
+  wg.setAttribute('aBend',new THREE.Float32BufferAttribute(ab,1));
   wg.setIndex(idx); wg.computeVertexNormals();
   const wm=new THREE.ShaderMaterial({ transparent:true, depthWrite:false, side:THREE.DoubleSide,
     uniforms:{ uTime:{value:0}, uNight:{value:0.35}, uLQ:{value:0}, uCam:{value:new THREE.Vector3()} },
-    vertexShader:`varying vec2 vUv; varying vec3 vW;
-      void main(){ vUv=uv; vec4 w=modelMatrix*vec4(position,1.0); vW=w.xyz;
+    vertexShader:`attribute float aBend; varying vec2 vUv; varying vec3 vW; varying float vBend;
+      void main(){ vUv=uv; vBend=aBend; vec4 w=modelMatrix*vec4(position,1.0); vW=w.xyz;
         gl_Position=projectionMatrix*viewMatrix*w; }`,
     fragmentShader:`uniform float uTime,uNight,uLQ; uniform vec3 uCam;
       varying vec2 vUv; varying vec3 vW;
@@ -851,6 +857,8 @@ const _dotTex=(()=>{ const c=document.createElement('canvas'); c.width=c.height=
         col=mix(col, vec3(0.08,0.12,0.09), smoothstep(0.5,0.95,cx)*0.3);
         float fe=smoothstep(0.62,0.98,cx+fm*0.3);
         col=mix(col, vec3(0.82,0.87,0.87), fe*0.6);
+        float bendF=smoothstep(0.14,0.55,abs(vBend)+fm*0.22);
+        col=mix(col, vec3(0.85,0.90,0.90), bendF*0.42*(0.35+0.65*min(1.0,cx+0.25)));
         float gl=pow(max(0.0,1.0-abs(vUv.x-0.5-wn*0.05)*3.0),3.0)*(0.35+wn*0.2);
         vec3 sc=mix(vec3(1.0,0.9,0.7), vec3(0.85,0.9,1.0), uNight);
         col+=sc*gl*(0.26-0.16*uNight);
@@ -1080,6 +1088,7 @@ scene.add(beastG); beastG.position.copy(P(88,35,0));
 /* 踏石过河（跳跃挑战） */
 [[1.5,9.2],[4,9.0],[6.5,9.1],[9,9.4]].forEach(([a,t])=>{
   mesh(new THREE.CylinderGeometry(0.75,0.9,0.55,7),matStone,a,t,0.32); });
+/* 踏石涟漪环：主循环内懒构建（onSurface/_gRad 需先初始化） */
 /* 烽燧火（finale，初始隐藏） */
 const beaconFlame=new THREE.Mesh(new THREE.ConeGeometry(0.55,1.6,6),
   new THREE.MeshBasicMaterial({color:0xffa14a,transparent:true,opacity:.92}));
@@ -2570,6 +2579,15 @@ function loop(){
       p.addScaledVector(sd,d.o).addScaledVector(up,0.06+Math.sin(now*2+i)*0.03);
       pa.setXYZ(i,p.x,p.y,p.z); });
     pa.needsUpdate=true; }
+  if(!window.__stoneRips && typeof pGroup!=='undefined'){ const ripM=new THREE.MeshBasicMaterial({color:0xdfe9ea,transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide});
+    const rips=[];
+    [[1.5,9.2],[4,9.0],[6.5,9.1],[9,9.4]].forEach(([a,t],i)=>{ const m=new THREE.Mesh(new THREE.RingGeometry(0.5,0.6,22),ripM.clone());
+      m.position.copy(onSurface(P(a,t,0),0.16));
+      m.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),m.position.clone().normalize());
+      m.userData={ph:i*1.7}; scene.add(m); rips.push(m); });
+    window.__stoneRips=rips; }
+  if(window.__stoneRips) window.__stoneRips.forEach(m=>{ const cyc=(now*0.55+m.userData.ph)%2.6;
+    m.scale.setScalar(0.55+cyc*0.8); m.material.opacity=Math.max(0,(1-cyc/2.6))*0.42; });
   }catch(e){ warn1('water',e); }
   lodT-=dt; if(lodT<=0){ lodT=0.35;
     for(const L of LODS){ if(L.ob) L.ob.visible = planarDist(pGroup.position,L.c) < L.r + 45; } }
@@ -2600,6 +2618,47 @@ function loop(){
     if(window.__umbM){ window.__umbM.visible=umbOn;
       if(umbOn&&window.__umbAnchor&&window.__umbAnchor!==figP.yawG){
         window.__umbAnchor.getWorldQuaternion(_wq); window.__umbM.quaternion.copy(_wq.invert()); } } }
+  /* 雪天呼气白雾 */
+  if(!window.__breath){ const cv=document.createElement('canvas'); cv.width=cv.height=64; const g2=cv.getContext('2d');
+    const gr=g2.createRadialGradient(32,32,4,32,32,30); gr.addColorStop(0,'rgba(240,244,248,.72)'); gr.addColorStop(1,'rgba(240,244,248,0)');
+    g2.fillStyle=gr; g2.fillRect(0,0,64,64);
+    const bt=new THREE.CanvasTexture(cv); const pf=[];
+    for(let i=0;i<5;i++){ const m=new THREE.Sprite(new THREE.SpriteMaterial({map:bt,transparent:true,opacity:0,depthWrite:false}));
+      m.scale.setScalar(0.13); scene.add(m); pf.push({m,cd:i*0.5,age:-1}); }
+    window.__breath=pf; }
+  if(weather==='snow'&&started&&!REDUCE_MOTION){ window.__breath.forEach(p=>{ p.cd-=dt;
+    if(p.cd<=0){ p.cd=2.3; p.age=0;
+      const hp=new THREE.Vector3();
+      if(figP.head&&figP.head.getWorldPosition) figP.head.getWorldPosition(hp);
+      else hp.copy(pGroup.position).addScaledVector(pGroup.position.clone().normalize(),1.55);
+      const fw=new THREE.Vector3(Math.sin(figP.yawG.rotation.y),0,Math.cos(figP.yawG.rotation.y));
+      p.m.position.copy(hp).addScaledVector(fw,0.16).addScaledVector(pGroup.position.clone().normalize(),0.08);
+      p.m.visible=true; }
+    if(p.age>=0){ p.age+=dt; const u2=Math.min(1,p.age/1.4);
+      p.m.position.y+=dt*0.12; p.m.material.opacity=(1-u2)*0.5; p.m.scale.setScalar(0.13+u2*0.22);
+      if(u2>=1){ p.m.visible=false; p.age=-1; } } }); }
+  /* 踏石水花：走过踏石时溅起小水花 */
+  [[1.5,9.2],[4,9.0],[6.5,9.1],[9,9.4]].forEach(([a,t],si2)=>{ if(!isMoveGlobal) return;
+    const sp=P(a,t,0.2); if(planarDist(pGroup.position,sp)<1.0 && (now-((window.__splT&&window.__splT[si2])||-9))>1.4){
+      (window.__splT=window.__splT||[])[si2]=now; burst(sp,0xe8f0f2); } });
+  /* 雨后水洼：河谷雨停后渐现渐干 */
+  { const zk2=zoneHere();
+    if(weather==='rain') window.__pudDone=false;
+    if(window.__mistT>0 && window.__mistT<13 && !window.__pudDone && (zk2==='village'||zk2==='modern')){
+      window.__pudDone=true; window.__puds=window.__puds||[];
+      for(let i=0;i<8;i++){ const ang=Math.random()*6.283, dist=3+Math.random()*10;
+        const base=pGroup.position.clone(), up=base.clone().normalize();
+        const fw=new THREE.Vector3(0,1,0).cross(up).normalize(), sd2=up.clone().cross(fw);
+        const pp=onSurface(base.clone().addScaledVector(fw,Math.cos(ang)*dist).addScaledVector(sd2,Math.sin(ang)*dist),0.03);
+        const m=new THREE.Mesh(new THREE.CircleGeometry(0.25+Math.random()*0.5,14),
+          new THREE.MeshStandardMaterial({color:0x2a3840,roughness:0.12,transparent:true,opacity:0.75,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2}));
+        m.position.copy(pp); m.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),pp.clone().normalize());
+        scene.add(m); window.__puds.push({m,age:0}); } }
+    if(window.__puds) window.__puds.forEach(p=>{ p.age+=dt;
+      if(weather==='rain') p.age=0;
+      p.m.material.opacity=Math.max(0,0.75-p.age*0.02);
+      if(p.m.material.opacity<=0&&p.m.parent){ scene.remove(p.m); p.m.geometry.dispose(); p.m.material.dispose(); p.dead=true; } });
+    if(window.__puds) window.__puds=window.__puds.filter(p=>!p.dead); }
   /* 静立转头 */
   if(!isMoveGlobal && now-idleT>2){ headTurn=Math.sin((now-idleT-2)*0.8)*0.4; }
   else { headTurn=0; idleT=now; }
