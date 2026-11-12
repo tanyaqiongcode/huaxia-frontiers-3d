@@ -785,6 +785,7 @@ const gGeo = new THREE.SphereGeometry(R, GWS, GHS, 0, Math.PI*2, 0, 1.12);
   for(let i=0;i<1600;i++){ tc.fillStyle='rgba(96,104,80,'+(0.05+Math.random()*0.13)+')';
     tc.fillRect(Math.random()*256,Math.random()*256,1.6,1.6); }
   const gm=pbr('ground',1,{vertexColors:true,color:new THREE.Color(1.55,1.55,1.55)});
+  window.__groundMat=gm;
   { const tE=tex('earth_diff',1,true), tS=tex('stone_diff',1,true);
     gm.onBeforeCompile=sh=>{ sh.uniforms.tEarth={value:tE}; sh.uniforms.tStone={value:tS};
       sh.vertexShader='attribute vec2 aMix; varying vec2 vMix;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n  vMix=aMix;');
@@ -1949,6 +1950,42 @@ if(window.__waterHL){ const cv=document.createElement('canvas'); cv.width=128; c
 
 /* 不使用 PMREM 环境图：在 three r128 里它与阴影、实例化网格一起用会让整个画面光照变黑（已实测）。环境光由半球光承担。 */
 
+/* 村寨台田：等高线田垄贴花（岷江上游河谷农业，书里的农耕边缘） */
+{ const fm=pbr('earth',1.2,{color:0x6a7a42,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
+  const vp=[], uv=[], ix=[]; let vo=0;
+  for(let r=0;r<6;r++){ const t0=14.2+r*0.62, pts=[];
+    for(let a=3.5;a<=13.5;a+=0.5){ pts.push(onSurface(P(a+(r%2)*0.3, t0+Math.sin(a*0.5+r)*0.12, 0),0.045)); }
+    const n=pts.length; let ac=0;
+    for(let i=0;i<n;i++){ const p=pts[i], pv=pts[Math.max(0,i-1)], nx=pts[Math.min(n-1,i+1)];
+      const up=p.clone().normalize(), tg=nx.clone().sub(pv).normalize(), sd=new THREE.Vector3().crossVectors(up,tg).normalize();
+      if(i>0) ac+=p.distanceTo(pv);
+      const pl=p.clone().addScaledVector(sd,0.24).setLength(p.length()+0.008), pr=p.clone().addScaledVector(sd,-0.24).setLength(p.length()+0.008);
+      vp.push(pl.x,pl.y,pl.z, pr.x,pr.y,pr.z); uv.push(0,ac/1.2, 1,ac/1.2); }
+    for(let i=0;i<n-1;i++){ const k=i*2+vo; ix.push(k,k+1,k+2, k+1,k+3,k+2); }
+    vo+=n*2; }
+  const fg=new THREE.BufferGeometry();
+  fg.setAttribute('position',new THREE.Float32BufferAttribute(vp,3));
+  fg.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+  fg.setIndex(ix); fg.computeVertexNormals();
+  const field=new THREE.Mesh(fg,fm); field.receiveShadow=true; scene.add(field); }
+/* 国道车辙：两条深色轮迹（柏油路上被车轮碾出的印） */
+{ const rutMat=pbr('asphalt',1,{color:0x3c3c40,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3});
+  [0.45,-0.45].forEach(off=>{
+    const pts=[];
+    for(let a=-159;a<=-111;a+=0.6){ const c=P(a,23,0), n=P(a+0.6,23,0).sub(c).normalize(), up=c.clone().normalize(), side=n.clone().cross(up).normalize();
+      pts.push(onSurface(c.clone().addScaledVector(side,off),0.075)); }
+    const n=pts.length, vp=[], uv=[], ix=[]; let ac=0;
+    for(let i=0;i<n;i++){ const p=pts[i], pv=pts[Math.max(0,i-1)], nx=pts[Math.min(n-1,i+1)];
+      const up=p.clone().normalize(), tg=nx.clone().sub(pv).normalize(), sd=new THREE.Vector3().crossVectors(up,tg).normalize();
+      if(i>0) ac+=p.distanceTo(pv);
+      const pl=p.clone().addScaledVector(sd,0.14).setLength(p.length()+0.006), pr=p.clone().addScaledVector(sd,-0.14).setLength(p.length()+0.006);
+      vp.push(pl.x,pl.y,pl.z, pr.x,pr.y,pr.z); uv.push(0,ac/1.5, 1,ac/1.5); }
+    for(let i=0;i<n-1;i++){ const k=i*2; ix.push(k,k+1,k+2, k+1,k+3,k+2); }
+    const g2=new THREE.BufferGeometry();
+    g2.setAttribute('position',new THREE.Float32BufferAttribute(vp,3));
+    g2.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+    g2.setIndex(ix); g2.computeVertexNormals();
+    const rut=new THREE.Mesh(g2,rutMat); rut.receiveShadow=true; scene.add(rut); }); }
 /* 草：成片的草簇（实例化），叶尖随风摆动；各场景草色不同，避开河道、建筑与国道 */
 const grass={mat:null};
 { const pos=[], col=[];
@@ -1996,8 +2033,19 @@ function worldTick(dt,now){
   const denF=wMode==='rain'?1.7:wMode==='snow'?1.55:wMode==='sunny'?0.72:wMode==='dust'?2.3:wMode==='gust'?0.8:1;
   if(window.__skyMat){ const u=window.__skyMat.uniforms; u.cTop.value.lerp(tg.out[0],k); u.cMid.value.lerp(tg.out[1],k); u.cLow.value.lerp(tg.out[2],k); }
   scene.fog.color.lerp(tg.fog,k); scene.background.copy(scene.fog.color);
-  scene.fog.density+=(tg.den*denF-scene.fog.density)*k;
-  window.__fogBase=tg.den*denF;
+  let mistF=1;
+  if(window.__mistT>0){ window.__mistT-=dt;
+    if((zoneHere()==='village'||zoneHere()==='modern')&&weather!=='rain'){ mistF=2.1;
+      tg.fog.lerp(_t.setHex(0xc9d3da), Math.min(1,window.__mistT/5)*0.45); } }
+  let snowCover=window.__snowCover||0;
+  { const scT=(weather==='snow')?1:0; snowCover+=(scT-snowCover)*Math.min(1,dt*(scT?0.10:0.045)); window.__snowCover=snowCover; }
+  const denT=tg.den*denF*mistF;
+  scene.fog.density+=(denT-scene.fog.density)*k;
+  window.__fogBase=denT;
+  if(window.__groundMat){ const b=1.55;
+    window.__groundMat.color.setRGB(b+0.62*snowCover, b+0.66*snowCover, b+0.9*snowCover); }
+  if(window.__lodBush) window.__lodBush.material.color.setScalar(1.7+0.6*snowCover);
+  if(window.ROCK_MAT) window.ROCK_MAT.color.setScalar(1+0.42*snowCover);
   sun.intensity=THEMES[themeIx].si*(wMode==='sunny'?1.12:wMode==='rain'?0.5:wMode==='snow'?0.85:wMode==='dust'?0.62:1);
   if(window.__clouds){ const cf=wMode==='rain'?0.85:wMode==='snow'?0.8:wMode==='sunny'?0.34:0.5;
     const cc=wMode==='rain'?0x8a8f98:wMode==='snow'?0xdfe4ea:0xffffff;
@@ -2659,6 +2707,8 @@ function loop(){
       if(say) toast(tx(say));
       if(pick==='sunny' && lastWeather!=='sunny') toast(tx('wClear'));
       lastWeather=pick;
+      if(pick==='rain') window.__mistT=0;
+      else if(lastWeather==='rain' && pick!=='rain' && (zk==='village'||zk==='modern')) window.__mistT=14+Math.random()*8;
     } else weatherT=20; }
   else if(wxFix && weather!==wxFix){ weather=wxFix; }
   /* 烽火燃动 */
