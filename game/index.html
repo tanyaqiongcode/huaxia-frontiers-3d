@@ -86,6 +86,14 @@
   .wxRow b{font-size:11px;letter-spacing:.2em;color:var(--gold-hi);font-weight:600}
   .wxRow a{font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:5px 0;cursor:pointer;text-decoration:none;text-align:center;white-space:nowrap}
   .wxRow a.on{color:var(--gold-hi);border-color:var(--gold-hi);background:rgba(201,164,92,.12)}
+  /* 淡彩插图画风：界面题跋化 + 朱印 */
+  html[data-style="dancai"] .sceneCard{border-style:double;border-width:3px 1px 1px;background:linear-gradient(160deg,rgba(250,247,237,.22),rgba(246,238,222,.1))}
+  html[data-style="dancai"] .sceneCard b{letter-spacing:.2em}
+  .sealStamp{position:fixed;right:18px;bottom:14vh;z-index:5;width:36px;height:36px;display:none;pointer-events:none;
+    border:2px solid rgba(166,58,44,.8);border-radius:5px;color:rgba(166,58,44,.85);
+    font:700 21px/32px var(--f-display,serif);text-align:center;background:rgba(166,58,44,.05);
+    transform:rotate(-6deg)}
+  html[data-style="dancai"] .sealStamp{display:block}
   @media (prefers-reduced-motion: reduce){
     #locCard.show b{animation:none;clip-path:none}
     #enterFade{transition:none}
@@ -329,6 +337,7 @@
 <div class="sceneCard"><b id="zName">河谷 · 岷江上游</b><i id="zSub">沿河谷行走，边缘在脚下移动。</i></div>
 <div id="objTrack"><span id="objTxt"></span></div>
 <div id="locCard"><b id="locName"></b><i id="locSub"></i></div>
+<div class="sealStamp">缘</div>
 <div id="sub"><span id="subWho"></span><span id="subTxt"></span></div>
 <div id="charge"><svg viewBox="0 0 48 48"><circle class="bgc" cx="24" cy="24" r="20"/><circle class="fgc" id="chargeFg" cx="24" cy="24" r="20"/></svg><b>E</b></div>
 <div class="hudR">
@@ -341,6 +350,9 @@
 <div class="tasks" id="tasks"><button class="xClose tClose" id="tasksClose" title="关闭">✕</button><b data-i18n="tasksT">行走任务</b><div class="goalT" id="tGoal"></div>
   <div class="wxRow"><b data-i18n="wxT">天气</b><span id="wxBtns">
     <a data-w="auto" class="on" data-i18n="wxAuto">自动</a><a data-w="sunny" data-i18n="wxSun">晴</a><a data-w="rain" data-i18n="wxRain">雨</a><a data-w="snow" data-i18n="wxSnow">雪</a><a data-w="gust" data-i18n="wxWind">风</a><a data-w="dust" data-i18n="wxDust">尘</a>
+  </span></div>
+  <div class="wxRow"><b data-i18n="stT">画风</b><span id="stBtns">
+    <a data-s="real" class="on" data-i18n="stReal">写实</a><a data-s="dancai" data-i18n="stDan">淡彩插图</a>
   </span></div>
   <div class="wxRow"><b data-i18n="gWho">行走者</b><span class="gSel gSelIn" id="gSel2"><a data-g="m" data-i18n="gM">男</a><a data-g="f" data-i18n="gF">女</a></span>
     <span class="oSel oSelIn"><a data-o="0" title="卡其棕 · 水洗灰" style="--c1:#94714f;--c2:#47443a"></a><a data-o="1" title="灰粉" style="--c1:#d8a2a0;--c2:#2f7fd8"></a><a data-o="2" title="亮蓝" style="--c1:#2f73d8;--c2:#f07a2e"></a></span></div><ul>
@@ -460,10 +472,10 @@ try{ /* 带模板缓冲才会分到 24 位深度；默认的 16 位深度会让�
   const RT=renderer.capabilities.isWebGL2? new THREE.WebGLMultisampleRenderTarget(4,4,RTO) : new THREE.WebGLRenderTarget(4,4,RTO);
   RT.texture.encoding=THREE.sRGBEncoding; RT.texture.minFilter=RT.texture.magFilter=THREE.LinearFilter; RT.texture.generateMipmaps=false;
   const mat=new THREE.ShaderMaterial({depthTest:false,depthWrite:false,toneMapped:false,
-    uniforms:{tD:{value:RT.texture},uPx:{value:new THREE.Vector2(1,1)},uCon:{value:0.3},uSat:{value:1.1},uGlow:{value:0.32},uSharp:{value:0.3},uVig:{value:0.16},
+    uniforms:{tD:{value:RT.texture},uPx:{value:new THREE.Vector2(1,1)},uCon:{value:0.3},uSat:{value:1.1},uGlow:{value:0.32},uSharp:{value:0.55},uStyle:{value:0},uEdge:{value:0.9},uSharp2:{value:0.3},uVig:{value:0.16},
       uShadow:{value:new THREE.Vector3(0.95,0.99,1.06)},uHigh:{value:new THREE.Vector3(1.05,1.01,0.95)}},
     vertexShader:'varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }',
-    fragmentShader:`uniform sampler2D tD; uniform vec2 uPx; uniform float uCon,uSat,uGlow,uVig,uSharp; uniform vec3 uShadow,uHigh; varying vec2 vUv;
+    fragmentShader:`uniform sampler2D tD; uniform vec2 uPx; uniform float uCon,uSat,uGlow,uVig,uSharp,uStyle,uEdge; uniform vec3 uShadow,uHigh; varying vec2 vUv;
       void main(){ vec3 c=texture2D(tD,vUv).rgb; vec3 g=vec3(0.0);
         for(int i=0;i<8;i++){ float a=float(i)*0.7854; vec2 d=vec2(cos(a),sin(a));
           g+=max(texture2D(tD,vUv+d*uPx*7.0).rgb-0.74,0.0)+max(texture2D(tD,vUv+d*uPx*16.0).rgb-0.74,0.0)*0.6; }
@@ -474,6 +486,23 @@ try{ /* 带模板缓冲才会分到 24 位深度；默认的 16 位深度会让�
         float l=dot(c,vec3(0.299,0.587,0.114));
         c*=mix(uShadow,uHigh,smoothstep(0.05,0.85,l));
         c=mix(vec3(l),c,uSat);
+        if(uStyle>0.5){
+          float lumC=dot(c,vec3(0.299,0.587,0.114));
+          c=mix(vec3(lumC),c,0.58);
+          c=mix(c, vec3(0.92,0.89,0.82), smoothstep(0.05,0.5,lumC)*0.5);
+          c*=vec3(1.05,1.02,0.95);
+          c=mix(c, vec3(0.70,0.77,0.80), smoothstep(0.60,0.95,lumC)*0.38);
+          float e1=dot(texture2D(tD,vUv+vec2(uPx.x*1.6,0.0)).rgb,vec3(0.299,0.587,0.114));
+          float e2=dot(texture2D(tD,vUv-vec2(uPx.x*1.6,0.0)).rgb,vec3(0.299,0.587,0.114));
+          float e3=dot(texture2D(tD,vUv+vec2(0.0,uPx.y*1.6)).rgb,vec3(0.299,0.587,0.114));
+          float e4=dot(texture2D(tD,vUv-vec2(0.0,uPx.y*1.6)).rgb,vec3(0.299,0.587,0.114));
+          float edge=clamp(length(vec2(e1-e2,e3-e4))*3.0,0.0,1.0)*uEdge;
+          c=mix(c, vec3(0.16,0.14,0.11), edge);
+          float gx=vUv.x/uPx.x, gy=vUv.y/uPx.y;
+          float paper=sin(gx*0.55+sin(gy*0.23)*2.2)*0.5+sin(gy*0.42+sin(gx*0.17)*1.8)*0.5;
+          float fibre=fract(sin((gx+paper*8.0)*1.7+(gy-paper*5.0)*2.3)*43758.5453);
+          c+=(paper*0.016+fibre*0.012)*(1.0-lumC*0.35);
+        }
         vec2 q=vUv-0.5; c*=1.0-uVig*smoothstep(0.25,0.85,dot(q,q)*2.0);
         c+=(fract(sin(dot(vUv*vec2(1271.3,937.7),vec2(12.9898,78.233)))*43758.5453)-0.5)/255.0;
         gl_FragColor=vec4(clamp(c,0.0,1.0),1.0); }`});
@@ -593,7 +622,7 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  gNowF:{zh:'行走者换成了女性',en:'The walker is now a woman'}, gNowM:{zh:'行走者换成了男性',en:'The walker is now a man'},
  gOut:{zh:'装束',en:'Outfit'},
  gWho:{zh:'行走者',en:'Walker'}, gM:{zh:'男',en:'Man'}, gF:{zh:'女',en:'Woman'},
- wxT:{zh:'天气',en:'Weather'}, wxAuto:{zh:'自动',en:'Auto'}, wxSun:{zh:'晴',en:'Sunny'},
+ wxT:{zh:'天气',en:'Weather'}, stT:{zh:'画风',en:'Art style'}, stReal:{zh:'写实',en:'Realistic'}, stDan:{zh:'淡彩插图',en:'Ink-tint'}, wxAuto:{zh:'自动',en:'Auto'}, wxSun:{zh:'晴',en:'Sunny'},
  wxRain:{zh:'雨',en:'Rain'}, wxSnow:{zh:'雪',en:'Snow'}, wxWind:{zh:'风',en:'Wind'}, wxDust:{zh:'尘',en:'Dust'},
  wSun2:{zh:'日头正好 · 风吹草低',en:'High sun — wind in the grass'},
  wClear:{zh:'天放晴了',en:'The sky is clearing'}, wUmb:{zh:'雨伞为你遮挡',en:'Your umbrella shields you'}, wNoUmb:{zh:'没有雨伞——在雨中行走',en:'No umbrella — walking in the rain'},
@@ -963,14 +992,21 @@ const BUSH_GEO=(()=>{ const pos=[],uv=[],col=[],idx=[]; let n=0;
       sp.position.copy(ce).add(new THREE.Vector3(ox,oy,oz)); const s2=sz*(top?0.62+((k*7)%5)*0.08:0.85); sp.scale.set(s2*1.25,s2*0.8,1);
       clouds.add(sp); } }
   scene.add(clouds); window.__clouds=clouds; }
-/* 远山剪影：可玩区之外的雾中轮廓，解决远景单薄（用局部上向量，避免引用后面的 _yUp 造成 TDZ） */
-{ const mM=new THREE.MeshStandardMaterial({color:0x27303d,roughness:1,flatShading:true});
+/* 远山剪影：南可玩区外圈（t≈58–62°）的雾中轮廓，细分噪声锥体 */
+{ const mM=new THREE.MeshStandardMaterial({color:0x27303d,roughness:1});
   const YUP=new THREE.Vector3(0,1,0);
-  for(let i=0;i<28;i++){ const a=i*12.9+5.5, t=(i%2? 1.1 : 61.2)+(i%3)*0.55;
-    const p=P(a,t,0), h=16+hash(i,3)*26;
-    const m=new THREE.Mesh(new THREE.ConeGeometry(9+hash(i,5)*15,h,5),mM);
+  for(let i=0;i<16;i++){ const a=i*22.5+hash(i,1)*10, t=58.6+hash(i,2)*2.6;
+    const p=P(a,t,0), h=18+hash(i,3)*24, rad=10+hash(i,5)*14;
+    const geo=new THREE.ConeGeometry(rad,h,10,3);
+    const pa=geo.attributes.position;
+    for(let vi=0;vi<pa.count;vi++){ const vy=pa.getY(vi), f=1-Math.min(1,Math.abs(vy)/(h*0.5));
+      const nz=(hash(vi*3.1+i,7)-0.5)*rad*0.16*(1-f*0.5);
+      pa.setX(vi,pa.getX(vi)+nz); pa.setZ(vi,pa.getZ(vi)+nz*0.8); }
+    geo.computeVertexNormals();
+    const m=new THREE.Mesh(geo,mM);
     m.position.copy(p).addScaledVector(p.clone().normalize(),h*0.33);
     m.quaternion.setFromUnitVectors(YUP,p.clone().normalize());
+    m.rotation.y=hash(i,9)*6.28;
     scene.add(m); } }
 
 /* ---- 场景物件 ---- */
@@ -1491,7 +1527,7 @@ function walkerFree(v){ const l=v.length(), a=Math.atan2(v.z,v.x)/D2R, t=Math.ac
   window.__lodBush=bush; window.__lodStone=stone; }
 function tickWalkers(dt,now){ const pP=pGroup.position;
   for(const w of WALKERS){ const f=w.fig, dP=w.pos.distanceTo(pP);
-    if(dP>42){ if(f.g.visible) f.g.visible=false; continue; }
+    if(dP>30){ if(f.g.visible) f.g.visible=false; continue; }
     if(!f.g.visible) f.g.visible=true;
     if(!w.init){ w.init=true;                                          /* 出生点若落在房子、树或河里，就近换一个空地 */
       for(let k=0;k<80&&!walkerFree(w.pos);k++){ const c=P(w.ha+(Math.random()-.5)*2.6*w.ra, w.ht+(Math.random()-.5)*2.6*w.rt, 0); if(walkerFree(c)) w.pos.copy(c); }
@@ -2047,14 +2083,14 @@ function worldTick(dt,now){
     if((zoneHere()==='village'||zoneHere()==='modern')&&weather!=='rain'){ mistF=2.1;
       tg.fog.lerp(_t.setHex(0xc9d3da), Math.min(1,window.__mistT/5)*0.45); } }
   let snowCover=window.__snowCover||0;
-  { const scT=(weather==='snow')?1:0; snowCover+=(scT-snowCover)*Math.min(1,dt*(scT?0.10:0.045)); window.__snowCover=snowCover; }
+  { const scT=(weather==='snow')?1:0; snowCover+=(scT-snowCover)*Math.min(1,dt*(scT?0.10:0.08)); window.__snowCover=snowCover; }
   const denT=tg.den*denF*mistF;
   scene.fog.density+=(denT-scene.fog.density)*k;
   window.__fogBase=denT;
   if(window.__groundMat){ const b=1.55;
     window.__groundMat.color.setRGB(b+0.62*snowCover, b+0.66*snowCover, b+0.9*snowCover); }
   if(window.__lodBush) window.__lodBush.material.color.setScalar(1.7+0.6*snowCover);
-  if(window.ROCK_MAT) window.ROCK_MAT.color.setScalar(1+0.42*snowCover);
+  ROCK_MAT.color.setScalar(1+0.42*snowCover);
   sun.intensity=THEMES[themeIx].si*(wMode==='sunny'?1.12:wMode==='rain'?0.5:wMode==='snow'?0.85:wMode==='dust'?0.62:1);
   if(window.__clouds){ const cf=wMode==='rain'?0.85:wMode==='snow'?0.8:wMode==='sunny'?0.34:0.5;
     const cc=wMode==='rain'?0x8a8f98:wMode==='snow'?0xdfe4ea:0xffffff;
@@ -2609,15 +2645,20 @@ function loop(){
     const cano=new THREE.Mesh(new THREE.ConeGeometry(0.66,0.2,10,1,true),new THREE.MeshStandardMaterial({color:0x8a6a3c,roughness:.85,side:THREE.DoubleSide}));
     cano.position.y=0.98; const tip=new THREE.Mesh(new THREE.ConeGeometry(0.02,0.08,5),wood); tip.position.y=1.1;
     um.add(pole,grip,cano,tip); um.traverse(m=>{ if(m.isMesh) m.castShadow=true; }); um.userData={isUmb:true};
-    /* 伞挂右手骨骼：走动起伏时手与伞柄不错开 */
-    const hb=(figP.rig&&figP.rig.joints)?figP.rig.joints.find(j=>j.b.name==='handR'):null;
-    if(hb){ hb.b.add(um); um.position.set(0,-0.02,0.03); um.rotation.set(0,0,0); }
+    /* 伞挂前臂骨末端（骨架无手骨）；伞面朝向用当地上方向（球形星球各处不同） */
+    const fb=(figP.rig&&figP.rig.joints)?figP.rig.joints.find(j=>j.b.name==='foreArmR'):null;
+    if(fb){ fb.b.add(um); um.position.set(0,-0.26,0.02); um.rotation.set(0,0,0); }
     else { um.position.set(0.19,1.17,0.31); um.rotation.set(-0.2,0,0.1); figP.yawG.add(um); }
-    window.__umbM=um; window.__umbAnchor=hb?hb.b:figP.yawG; }
+    window.__umbM=um; window.__umbAnchor=fb?fb.b:figP.yawG; }
   { const umbOn=hasUmb&&(weather==='rain'||weather==='snow')&&rollT<0;
     if(window.__umbM){ window.__umbM.visible=umbOn;
-      if(umbOn&&window.__umbAnchor&&window.__umbAnchor!==figP.yawG){
-        window.__umbAnchor.getWorldQuaternion(_wq); window.__umbM.quaternion.copy(_wq.invert()); } } }
+      if(umbOn&&window.__umbAnchor){
+        window.__umbAnchor.getWorldPosition(_wv);
+        const upL=_wv.clone().normalize();
+        _q2.setFromUnitVectors(new THREE.Vector3(0,1,0),upL);
+        window.__umbAnchor.getWorldQuaternion(_wq);
+        _q2.premultiply(_wq.invert());
+        window.__umbM.quaternion.slerp(_q2,Math.min(1,0.3)); } } }
   /* 雪天呼气白雾 */
   if(!window.__breath){ const cv=document.createElement('canvas'); cv.width=cv.height=64; const g2=cv.getContext('2d');
     const gr=g2.createRadialGradient(32,32,4,32,32,30); gr.addColorStop(0,'rgba(240,244,248,.72)'); gr.addColorStop(1,'rgba(240,244,248,0)');
@@ -2635,7 +2676,8 @@ function loop(){
       p.m.position.copy(hp).addScaledVector(fw,0.16).addScaledVector(pGroup.position.clone().normalize(),0.08);
       p.m.visible=true; }
     if(p.age>=0){ p.age+=dt; const u2=Math.min(1,p.age/1.4);
-      p.m.position.y+=dt*0.12; p.m.material.opacity=(1-u2)*0.5; p.m.scale.setScalar(0.13+u2*0.22);
+      const upB=p.m.position.clone().normalize();
+      p.m.position.addScaledVector(upB,dt*0.12); p.m.material.opacity=(1-u2)*0.5; p.m.scale.setScalar(0.13+u2*0.22);
       if(u2>=1){ p.m.visible=false; p.age=-1; } } }); }
   /* 踏石水花：走过踏石时溅起小水花 */
   [[1.5,9.2],[4,9.0],[6.5,9.1],[9,9.4]].forEach(([a,t],si2)=>{ if(!isMoveGlobal) return;
@@ -2765,11 +2807,13 @@ function loop(){
       const say={rain:'wUmb',snow:'wSnow',gust:'wGust',dust:'wDust'}[pick];
       if(say) toast(tx(say));
       if(pick==='sunny' && lastWeather!=='sunny') toast(tx('wClear'));
+      const wasRain=lastWeather==='rain';
       lastWeather=pick;
       if(pick==='rain') window.__mistT=0;
-      else if(lastWeather==='rain' && pick!=='rain' && (zk==='village'||zk==='modern')) window.__mistT=14+Math.random()*8;
+      else if(wasRain && (zk==='village'||zk==='modern')){ window.__mistT=14+Math.random()*8; }
     } else weatherT=20; }
-  else if(wxFix && weather!==wxFix){ weather=wxFix; }
+  else if(wxFix && weather!==wxFix){ const wasRain2=lastWeather==='rain'; weather=wxFix;
+    if(wasRain2 && weather!=='rain' && (zoneHere()==='village'||zoneHere()==='modern')) window.__mistT=14+Math.random()*8; }
   /* 烽火燃动 */
   if(lit){ beaconFlame.rotation.y+=dt*3; beaconLight.intensity=2.2+Math.sin(now*11)*0.5;
     beaconFlame.scale.setScalar(1+Math.sin(now*9)*0.08); }
@@ -2835,7 +2879,7 @@ document.getElementById('btnJump').addEventListener('pointerdown',e=>{ e.prevent
   if(jumpOff<=0&&vy===0){ vy=9.8; playJumpSfx(); } });
 /* 切后台暂停音频与语音 */
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){ if(started){ hardPaused=true; const ro=$('resumeOv'); if(ro) ro.classList.add('show'); }
+  if(document.hidden){ if(window.__pauseOff) return; if(started){ hardPaused=true; const ro=$('resumeOv'); if(ro) ro.classList.add('show'); }
     if(actx) actx.suspend(); if(window.speechSynthesis) speechSynthesis.cancel(); }
   else if(actx) actx.resume(); });
 loop(); updHUD(); applyLang();
@@ -3058,6 +3102,15 @@ document.querySelector('.hudR').addEventListener('click',()=>{ const on=$('tasks
     wxB.querySelectorAll('a').forEach(x=>x.classList.toggle('on',x===a));
     if(wxFix){ weather=wxFix; weatherT=9999; }
     else { weatherT=8; } }); }
+{ const stB=document.getElementById('stBtns');
+  if(stB){ let hst='real'; try{ hst=localStorage.getItem('hxStyle')||'real'; }catch(e){}
+    const applyStyle=()=>{ if(GRADE) GRADE.mat.uniforms.uStyle.value=(hst==='dancai')?1:0;
+      document.documentElement.dataset.style=hst;
+      stB.querySelectorAll('a').forEach(x=>x.classList.toggle('on',x.dataset.s===hst)); };
+    applyStyle();
+    stB.addEventListener('click',e=>{ const a=e.target.closest('a'); if(!a) return;
+      hst=a.dataset.s; try{ localStorage.setItem('hxStyle',hst); }catch(err){}
+      applyStyle(); }); } }
 document.getElementById('resumeGo').addEventListener('click',()=>{
   hardPaused=false; $('resumeOv').classList.remove('show');
   if(actx) actx.resume(); try{ clock.getDelta(); }catch(e){} });
