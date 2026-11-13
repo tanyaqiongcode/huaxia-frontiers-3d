@@ -94,6 +94,19 @@
     font:700 21px/32px var(--f-display,serif);text-align:center;background:rgba(166,58,44,.05);
     transform:rotate(-6deg)}
   html[data-style="dancai"] .sealStamp{display:block}
+  /* 拍照模式：隐藏全部界面，只留画面与拍照条 */
+  body.photo .sceneCard,body.photo #objTrack,body.photo #sub,body.photo .hint,body.photo #compass,body.photo #mmap,
+  body.photo .zoneTabs,body.photo .posHUD,body.photo #actBtn,body.photo #btnJump,body.photo .langBtn,body.photo #btnSkill,
+  body.photo .xlinks,body.photo .sealStamp,body.photo #charge,body.photo #lockTip,body.photo .hudR,body.photo .mark,
+  body.photo #enterFade,body.photo #tasks,body.photo .resumeOv{display:none!important}
+  body.photo #view{outline:none}
+  .photoBar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:31;display:none;flex-wrap:wrap;justify-content:center;gap:6px;
+    padding:9px 12px;background:rgba(6,8,12,.72);border:1px solid var(--line);border-radius:14px;pointer-events:auto}
+  body.photo .photoBar{display:flex}
+  .photoBar a{font-size:11.5px;letter-spacing:.1em;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:6px 13px;cursor:pointer;text-decoration:none}
+  .photoBar a.on{color:var(--gold-hi);border-color:var(--gold-hi);background:rgba(201,164,92,.14)}
+  .photoBar a.pri{color:#0b0d0f;background:var(--gold-hi);border-color:var(--gold-hi);font-weight:600}
+  .photoBar a.pri:hover{background:#e8cf96}
   @media (prefers-reduced-motion: reduce){
     #locCard.show b{animation:none;clip-path:none}
     #enterFade{transition:none}
@@ -404,6 +417,12 @@
 
 <div id="enterFade"></div>
 <div class="resumeOv" id="resumeOv"><div class="rc"><b data-i18n="rsTitle">已 暂 停</b><button class="go pri" id="resumeGo" data-i18n="rsGo">继 续</button></div></div>
+<div class="photoBar" id="photoBar">
+  <a data-f="0" class="on" data-i18n="phF0">原片</a><a data-f="1" data-i18n="phF1">黑白</a><a data-f="2" data-i18n="phF2">怀旧</a><a data-f="3" data-i18n="phF3">淡彩</a>
+  <a id="phInsc" data-i18n="phIn">题字</a>
+  <a id="phShot" class="pri" data-i18n="phSh">拍照 · 存卡册</a>
+  <a id="phExit" data-i18n="phX">退出</a>
+</div>
 <div class="veil" id="end"><div class="card">
   <button class="xClose" id="endClose" title="关闭">✕</button>
   <h1 data-i18n="eTitle">行至边缘</h1><div class="sub" data-i18n="eSub">WALKED TO THE MARGIN</div>
@@ -528,11 +547,11 @@ const THEMES=[
  {fog:0x8db6d9,bg:0x9ec6e8,sun:0xfff2d0,si:1.55,hemi:0xcfe2f4,name:{zh:'正午',en:'Noon'}},
  {fog:0x1a1210,bg:0x150e0a,sun:0xff9a5c,si:1.0,hemi:0xd6a08a,name:{zh:'暮色',en:'Dusk'}},
  {fog:0x0a0e18,bg:0x080c16,sun:0xb9c8ff,si:.7,hemi:0x8a9cd6,name:{zh:'月夜',en:'Moonlit'}}];
-let themeIx=1;
-function applyTheme(){ const t=THEMES[themeIx];
+let themeIx=1, themeAuto=90;
+function applyTheme(silent){ const t=THEMES[themeIx];
   scene.fog.color.setHex(t.fog); scene.background.setHex(t.bg);
   sun.color.setHex(t.sun); sun.intensity=t.si; hemi.color.setHex(t.hemi);
-  toast(tx('themePre')+t.name[T.lang]); }
+  if(!silent) toast(tx('themePre')+t.name[T.lang]); }
 function fract(x){ return x - Math.floor(x); }
 
 /* ---- 双语 ---- */
@@ -622,7 +641,10 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  gNowF:{zh:'行走者换成了女性',en:'The walker is now a woman'}, gNowM:{zh:'行走者换成了男性',en:'The walker is now a man'},
  gOut:{zh:'装束',en:'Outfit'},
  gWho:{zh:'行走者',en:'Walker'}, gM:{zh:'男',en:'Man'}, gF:{zh:'女',en:'Woman'},
- wxT:{zh:'天气',en:'Weather'}, stT:{zh:'画风',en:'Art style'}, stReal:{zh:'写实',en:'Realistic'}, stDan:{zh:'淡彩插图',en:'Ink-tint'}, wxAuto:{zh:'自动',en:'Auto'}, wxSun:{zh:'晴',en:'Sunny'},
+ wxT:{zh:'天气',en:'Weather'},
+ phF0:{zh:'原片',en:'Raw'}, phF1:{zh:'黑白',en:'Mono'}, phF2:{zh:'怀旧',en:'Sepia'}, phF3:{zh:'淡彩',en:'Tint'},
+ phIn:{zh:'题字',en:'Caption'}, phSh:{zh:'拍照 · 存卡册',en:'Shoot · Save'}, phX:{zh:'退出',en:'Exit'},
+ phSaved:{zh:'照片已存入卡册',en:'Photo saved to the album'}, stT:{zh:'画风',en:'Art style'}, stReal:{zh:'写实',en:'Realistic'}, stDan:{zh:'淡彩插图',en:'Ink-tint'}, wxAuto:{zh:'自动',en:'Auto'}, wxSun:{zh:'晴',en:'Sunny'},
  wxRain:{zh:'雨',en:'Rain'}, wxSnow:{zh:'雪',en:'Snow'}, wxWind:{zh:'风',en:'Wind'}, wxDust:{zh:'尘',en:'Dust'},
  wSun2:{zh:'日头正好 · 风吹草低',en:'High sun — wind in the grass'},
  wClear:{zh:'天放晴了',en:'The sky is clearing'}, wUmb:{zh:'雨伞为你遮挡',en:'Your umbrella shields you'}, wNoUmb:{zh:'没有雨伞——在雨中行走',en:'No umbrella — walking in the rain'},
@@ -1393,6 +1415,36 @@ function makeFigure(o){
 const _yUp=new THREE.Vector3(0,1,0), _wv=new THREE.Vector3(), _wn=new THREE.Vector3(), _wu=new THREE.Vector3(), _wq=new THREE.Quaternion();
 const RIGS=[], _rq=new THREE.Quaternion(), _rq2=new THREE.Quaternion(), _rv=new THREE.Vector3();
 const LODS=[]; let lodT=0, QUAL_LOW=false;
+let photoMode=false, photoInsc=false, photoF=0, photoSaved=null;
+const PHOTO_F=[ {sat:1.1,con:0.3,style:0,vig:0.16},
+  {sat:0,con:0.44,style:0,vig:0.3},
+  {sat:0.5,con:0.36,style:0,vig:0.24,sh:[1.0,0.87,0.68],hi:[1.08,0.97,0.8]},
+  {style:1} ];
+function photoApply(){ const G=GRADE.mat.uniforms, f=PHOTO_F[photoF];
+  G.uSat.value=f.sat; G.uCon.value=f.con; G.uStyle.value=f.style||0; G.uVig.value=f.vig;
+  if(f.sh) G.uShadow.value.set(f.sh[0],f.sh[1],f.sh[2]);
+  if(f.hi) G.uHigh.value.set(f.hi[0],f.hi[1],f.hi[2]); }
+function togglePhoto(){ photoMode=!photoMode;
+  const G=GRADE.mat.uniforms;
+  document.body.classList.toggle('photo',photoMode);
+  if(photoMode){ photoSaved={sat:G.uSat.value,con:G.uCon.value,style:G.uStyle.value,vig:G.uVig.value};
+    photoF=0; photoApply(); releaseLock(); }
+  else { if(photoSaved){ G.uSat.value=photoSaved.sat; G.uCon.value=photoSaved.con;
+      G.uStyle.value=photoSaved.style; G.uVig.value=photoSaved.vig; } grabLock(); } }
+function photoShoot(){ try{
+  renderFrame();
+  const W=1280,H=800, c2=document.createElement('canvas'); c2.width=W; c2.height=H;
+  const g2=c2.getContext('2d'); g2.drawImage(renderer.domElement,0,0,W,H);
+  g2.strokeStyle='rgba(201,164,92,.85)'; g2.lineWidth=2; g2.strokeRect(14,14,W-28,H-28);
+  if(photoInsc){ g2.fillStyle='rgba(201,164,92,.92)'; g2.font='600 22px serif';
+    g2.textAlign='right'; g2.fillText('边缘行走 · 华夏边缘', W-34, H-40);
+    g2.font='13px serif'; g2.fillStyle='rgba(232,228,218,.8)';
+    g2.fillText(new Date().toLocaleDateString(), W-34, H-16); }
+  const out=c2.toDataURL('image/jpeg',0.92);
+  const a=document.createElement('a'); a.href=out; a.download='edge-walk-'+Date.now()+'.jpg';
+  document.body.appendChild(a); a.click(); a.remove();
+  const list=albumGet(); list.push({v:ALB_VER,img:out,t:Date.now()}); albumSet(list);
+  toast(tx('phSaved')); }catch(e){ warn1('photo',e); } }
 /* 人物材质的纹理：按 Blender 里起的质地名（cloth/wool/fleece/trim/hair/leather/skin/eye/lip/metal/rubber）分别处理，全部程序绘制 */
 const FIG_TEX=(()=>{ const mk=(w,h,draw,rx,ry)=>{ const c=document.createElement('canvas'); c.width=w; c.height=h; draw(c.getContext('2d'),w,h);
     const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(rx,ry); t.encoding=THREE.sRGBEncoding; t.anisotropy=8; return t; };
@@ -2098,6 +2150,37 @@ if(window.__waterHL){ const cv=document.createElement('canvas'); cv.width=128; c
   fg.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
   fg.setIndex(ix); fg.computeVertexNormals();
   const field=new THREE.Mesh(fg,fm); field.receiveShadow=true; scene.add(field); }
+/* 节令元素：晒架玉米（村舍旁）、门楣羌红（屋门上方）、夜间篝火（村口空地） */
+{ const woodM=new THREE.MeshStandardMaterial({color:0x4a3826,roughness:.9});
+  const cornM=new THREE.MeshStandardMaterial({color:0xd1a545,roughness:.95});
+  const redM=new THREE.MeshStandardMaterial({color:0xa33b2e,roughness:.85,side:THREE.DoubleSide});
+  const rackAt=(a,t,yaw)=>{ const g=new THREE.Group();
+    [[-0.55,0],[0.55,0]].forEach(([x])=>{ const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.05,1.7,6),woodM);
+      pole.position.set(x,0.85,0); g.add(pole); });
+    for(const y2 of [0.95,1.35]){ const bar=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,1.3,6),woodM);
+      bar.rotation.z=Math.PI/2; bar.position.set(0,y2,0); g.add(bar);
+      for(let i=0;i<5;i++){ const cob=new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.035,0.3,6),cornM);
+        cob.position.set(-0.5+i*0.25,y2,0.08); cob.rotation.x=0.1; cob.rotation.z=(i%2?0.12:-0.12); g.add(cob); } }
+    const pp=onSurface(P(a,t,0),0.02); g.position.copy(pp);
+    g.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),pp.clone().normalize());
+    g.rotation.y+=yaw; g.traverse(x=>{ if(x.isMesh) x.castShadow=true; }); scene.add(g); };
+  rackAt(-4.2,17.4,0.4); rackAt(9.4,16.2,-0.5);
+  const bannerAt=(a,t,yaw)=>{ const b=new THREE.Mesh(new THREE.PlaneGeometry(0.5,0.42),redM);
+    const pp=onSurface(P(a,t,0),0), up=pp.clone().normalize();
+    const fw=new THREE.Vector3(Math.sin(yaw),0,Math.cos(yaw));
+    b.position.copy(pp).addScaledVector(fw,1.42).addScaledVector(up,1.72);
+    b.lookAt(b.position.clone().addScaledVector(fw,1)); b.rotation.z=0.06;
+    b.castShadow=true; scene.add(b); };
+  bannerAt(-15,14,0.4); bannerAt(16,12,-0.8); bannerAt(-98,10,0.4);
+  const fire=new THREE.Group();
+  const fm1=new THREE.Mesh(new THREE.ConeGeometry(0.22,0.62,7),new THREE.MeshBasicMaterial({color:0xff8a3c,transparent:true,opacity:.9,depthWrite:false}));
+  fm1.position.y=0.3; const fm2=new THREE.Mesh(new THREE.ConeGeometry(0.13,0.42,6),new THREE.MeshBasicMaterial({color:0xffd9a0,transparent:true,opacity:.95,depthWrite:false}));
+  fm2.position.y=0.24; fire.add(fm1,fm2); fire.visible=false;
+  for(let i=0;i<6;i++){ const a2=6.283*i/6;
+    const st=new THREE.Mesh(new THREE.SphereGeometry(0.09,6,5),new THREE.MeshStandardMaterial({color:0x55524a,roughness:1}));
+    st.position.set(Math.cos(a2)*0.42,0.05,Math.sin(a2)*0.42); fire.add(st); }
+  const fLight=new THREE.PointLight(0xff8a3c,0,16); fLight.position.set(0,0.7,0); fire.add(fLight);
+  const fp=onSurface(P(5,13.5,0),0.02); fire.position.copy(fp); scene.add(fire); window.__campfire=fire; window.__campLight=fLight; }
 /* 国道车辙：两条深色轮迹（柏油路上被车轮碾出的印） */
 { const rutMat=pbr('asphalt',1,{color:0x3c3c40,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3});
   [0.45,-0.45].forEach(off=>{
@@ -2227,6 +2310,8 @@ const keys={};
 addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
   if(hardPaused) return;
   if(p2 && k.startsWith('arrow')) P2KEY[k]=true;
+  if(k==='p' && started){ togglePhoto(); }
+  if(k==='escape' && photoMode){ togglePhoto(); }
   if(k==='e'){ if(beaconReady()){ if(!charging) startCharge(); } else interact(); }
   if(k==='h') $('keysPanel').classList.toggle('show');
   if(k==='k' && started){ $('album').classList.contains('show')?closeAlbum():openAlbum(); }
@@ -2238,7 +2323,7 @@ addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
   const busy=rollT>=0;
   if((k==='c'||k==='x')&&!busy){ rollT=0; rollDir=(k==='c')?1:-1; playRollSfx(k==='x');
     figP.yawG.rotation.y=Math.atan2(camS.dir.x,camS.dir.z); }
-  if(k==='t'){ themeIx=(themeIx+1)%THEMES.length; applyTheme(); }
+  if(k==='t'){ themeIx=(themeIx+1)%THEMES.length; applyTheme(); themeAuto=90; }
   if(k==='m') toggleSound();
   if(k==='j'){ const on=document.getElementById('tasks').classList.toggle('show'); if(on) releaseLock(); }
   if(k==='l') toggleLang();
@@ -2266,7 +2351,7 @@ function releaseLock(){ if(locked()) try{ document.exitPointerLock(); }catch(e){
 function updLockTip(){ const el=$('lockTip'); if(!canLock||!started){ el.classList.remove('show'); return; }
   el.innerHTML=tx(locked()?'lockOn':'lockOff'); el.classList.add('show'); }
 document.addEventListener('pointerlockchange',updLockTip);
-cv.addEventListener('click',()=>{ if(locked()){ if(dlgNpc) tryTalk(); else if(poiCur) closePoi(); return; } grabLock(); });
+cv.addEventListener('click',()=>{ if(photoMode) return; if(locked()){ if(dlgNpc) tryTalk(); else if(poiCur) closePoi(); return; } grabLock(); });
 addEventListener('mousemove',e=>{ if(!locked()) return;
   const up=pGroup.position.clone().normalize();
   camS.dir.applyAxisAngle(up,-(e.movementX||0)*0.0026);
@@ -2716,6 +2801,15 @@ function loop(){
   }catch(e){ warn1('water',e); }
   lodT-=dt; if(lodT<=0){ lodT=0.35;
     for(const L of LODS){ if(L.ob) L.ob.visible = planarDist(pGroup.position,L.c) < L.r + 45; } }
+  /* 时辰自动流动：约 6 分钟走完晨—午—暮—夜 */
+  if(started){ themeAuto-=dt; if(themeAuto<=0){ themeAuto=90;
+    themeIx=(themeIx+1)%THEMES.length; applyTheme(true); } }
+  /* 篝火：入夜燃起，火苗摇曳 */
+  if(window.__campfire){ const night=themeIx>=2;
+    window.__campfire.visible=night;
+    window.__campLight.intensity=night?(1.2+Math.sin(now*11)*0.25+(themeIx===3?0.5:0)):0;
+    if(night){ const f1=window.__campfire.children[0], f2=window.__campfire.children[1];
+      f1.scale.y=1+Math.sin(now*9)*0.18; f2.scale.y=1+Math.sin(now*12+1)*0.22; } }
   /* 云影漂移 */
   for(let ci=0;ci<3;ci++){ const cs=window['__cloudShadow'+ci]; if(!cs) continue;
     cs.position.x+=cs.userData.driftX*dt; cs.position.z+=cs.userData.driftZ*dt;
@@ -3200,6 +3294,14 @@ document.querySelector('.hudR').addEventListener('click',()=>{ const on=$('tasks
     stB.addEventListener('click',e=>{ const a=e.target.closest('a'); if(!a) return;
       hst=a.dataset.s; try{ localStorage.setItem('hxStyle',hst); }catch(err){}
       applyStyle(); }); } }
+{ const pB=document.getElementById('photoBar');
+  if(pB){ pB.addEventListener('click',e=>{ const a=e.target.closest('a'); if(!a) return;
+    const k2=a.dataset.f!=null?'f':(a.id||'');
+    if(k2==='f'){ photoF=+a.dataset.f; photoApply();
+      pB.querySelectorAll('a[data-f]').forEach(x=>x.classList.toggle('on',+x.dataset.f===photoF)); }
+    else if(a.id==='phInsc'){ photoInsc=!photoInsc; a.classList.toggle('on',photoInsc); }
+    else if(a.id==='phShot'){ photoShoot(); }
+    else if(a.id==='phExit'){ togglePhoto(); } }); } }
 document.getElementById('resumeGo').addEventListener('click',()=>{
   hardPaused=false; $('resumeOv').classList.remove('show');
   if(actx) actx.resume(); try{ clock.getDelta(); }catch(e){} });
