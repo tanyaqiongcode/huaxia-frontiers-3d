@@ -1493,6 +1493,30 @@ const WALK_LOOK={fig_granny:{jacket:0x2b2f40,trouser:0x22222a,hair:0xb4b4b4,hat:
  fig_soldier:{jacket:0x6e3b2e,trouser:0x4b4336,hair:0x17161a,hat:'wrap',hatC:0x8c2f2a},
  fig_woman:{jacket:0x9a3340,trouser:0x26262c,hair:0x151515,hat:'wrap',hatC:0x23232b,robe:1.0,robeC:0x9a3340,apron:0x23232b},
  fig_oldman:{jacket:0x3a4250,trouser:0x30333a,hair:0xb4b4b4,hat:'wrap',hatC:0x2c2e36}};
+/* 路人劳作与对话：名字/台词均取材于原书论点（出处表见 边缘行走_路人对话出处表_20261114.md） */
+const WLABOR={
+ sun:     {n:{zh:'晒太阳的大爷',en:'Villager sunning'},
+   l:{zh:'年轻人出去打工了，话说得不一样了。可过年回来，还是尔玛。',en:'The young ones left for work and talk differently now. But at New Year they come back — still Erma.'},
+   src:'第十三章·认同变迁：当代羌族认同的延续与再生（历史记忆的延续）'},
+ firewood:{n:{zh:'背柴的大哥',en:'Villager carrying firewood'},
+   l:{zh:'柴要背一个上午。走远了，就踩到别人放羊的地界了。',en:'Carrying wood takes a whole morning. Walk too far, and you are on someone else’s grazing ground.'},
+   src:'第二章·资源竞争与边界移动（农牧边界的资源争夺）'},
+ herding: {n:{zh:'放羊的大叔',en:'Shepherd'},
+   l:{zh:'羊认草，草认雨水。我们的地界，是羊一步步走出来的。',en:'Sheep know the grass, and grass knows the rain. Our boundary is walked out by the sheep, step by step.'},
+   src:'第三章·游牧社会的形成（游牧移动与边缘）'},
+ lookout: {n:{zh:'戍边的老兵',en:'Old frontier soldier'},
+   l:{zh:'墙里种地，墙外放牧。这道墙，是两种过日子的办法中间的一条线。',en:'Inside the wall: farming. Outside: herding. This wall is a line drawn between two ways of living.'},
+   src:'第五章·长城边际（华夏边缘的核心意象）'},
+ winnow:  {n:{zh:'晒粮的大姐',en:'Villager winnowing grain'},
+   l:{zh:'谷子晒在房顶上。河坝种地、山上放羊，两头都得顾——这就是我们的日子。',en:'We dry grain on the roof. Farm the valley, herd on the mountain — working both is how we live.'},
+   src:'第一章·人类生态边缘（农牧并存的生活方式）'},
+ emb:     {n:{zh:'做羌绣的阿姐',en:'Woman embroidering'},
+   l:{zh:'这花样是我妈教的，她妈也是这么教的。绣着绣着，就知道自己是尔玛了。',en:'My mother taught me this pattern, and hers taught her. Stitch by stitch, you learn you are Erma.'},
+   src:'第十二章·族群认同的延续（历史记忆与民族认同传承）'},
+ run:     {n:{zh:'追跑的娃娃',en:'Running kid'},
+   l:{zh:'你走我们的桥，就是客！',en:'You crossed our bridge — that makes you a guest!'},
+   src:'序论·边界与 Guest 隐喻（过桥即跨过边界的招待隐喻）'}};
+const WALK_LABOR=['sun','firewood','run','herding','run','lookout','lookout','winnow','sun','run','emb','sun','run'];
 const WALKERS=WALKER_DEFS.map((d,i)=>{ const fig=makeFigure(WALK_LOOK[d[0]]||{});
   const pos=P(d[2],d[3],0); fig.g.position.copy(pos); fig.g.quaternion.setFromUnitVectors(_yUp,pos.clone().normalize());
   fig.yawG.rotation.y=i*1.7; scene.add(fig.g); rigFigure(fig,d[0],{s:d[1]});
@@ -1527,6 +1551,8 @@ function walkerFree(v){ const l=v.length(), a=Math.atan2(v.z,v.x)/D2R, t=Math.ac
   window.__lodBush=bush; window.__lodStone=stone; }
 function tickWalkers(dt,now){ const pP=pGroup.position;
   for(const w of WALKERS){ const f=w.fig, dP=w.pos.distanceTo(pP);
+    if(!w.labor){ w.labor=WALK_LABOR[WALKERS.indexOf(w)]||'sun'; }
+    if(f.rig && !w.prop && w.labor!=='run'){ try{ w.prop=buildLaborProp(w.labor,f); }catch(e){ warn1('prop',e); } }
     if(dP>30){ if(f.g.visible) f.g.visible=false; continue; }
     if(!f.g.visible) f.g.visible=true;
     if(!w.init){ w.init=true;                                          /* 出生点若落在房子、树或河里，就近换一个空地 */
@@ -1556,8 +1582,67 @@ function tickWalkers(dt,now){ const pP=pGroup.position;
       f.body.position.y=Math.sin(now*1.7+w.ph)*0.008; f.body.rotation.x=w.stoop;
       let want=0; if(dP<5){ const dv=_wv.copy(pP).sub(w.pos).applyQuaternion(_wq.copy(f.g.quaternion).invert());
         let a=Math.atan2(dv.x,dv.z)-f.yawG.rotation.y; a=((a+Math.PI*3)%(Math.PI*2))-Math.PI; want=Math.max(-0.8,Math.min(0.8,a)); }
-      f.head.rotation.y+=(want-f.head.rotation.y)*0.07; } } }
+      f.head.rotation.y+=(want-f.head.rotation.y)*0.07; }
+    if(w.wait>0.2 && w.labor && w.labor!=='run'){ if(!w.prop && f.rig) w.prop=buildLaborProp(w.labor,f);
+      applyLabor(w,now,pP); } } }
 
+/* 路人劳作姿态：每种一眼能看出在干什么；头转向走近的玩家（当地上方向语义由 yawG 承载） */
+function applyLabor(w,now,pP){
+  const f=w.fig, labor=w.labor; if(labor==='run') return;
+  let look=0; { const dv=_wv.copy(pP).sub(w.pos).applyQuaternion(_wq.copy(f.g.quaternion).invert());
+    let a=Math.atan2(dv.x,dv.z)-f.yawG.rotation.y; a=((a+Math.PI*3)%(Math.PI*2))-Math.PI; look=Math.max(-0.85,Math.min(0.85,a)); }
+  if(f.head){ f.head.rotation.y+=(look-f.head.rotation.y)*0.08; }
+  if(labor==='sun'){ f.body.rotation.x=w.stoop*0.6; f.body.rotation.z=Math.sin(now*0.5)*0.02;
+    f.armL.rotation.x=0.32; f.armR.rotation.x=0.32; f.elbL.rotation.x=-0.5; f.elbR.rotation.x=-0.5;
+    if(f.head) f.head.rotation.x=0.2; }
+  else if(labor==='firewood'){ f.body.rotation.x=w.stoop+0.16; f.body.rotation.z=0;
+    f.armL.rotation.x=0.5; f.armR.rotation.x=0.5; f.elbL.rotation.x=-0.35; f.elbR.rotation.x=-0.35;
+    if(f.head) f.head.rotation.x=0.26; }
+  else if(labor==='herding'){ f.body.rotation.x=w.stoop;
+    f.armR.rotation.x=-0.9+Math.sin(now*1.6)*0.12; f.elbR.rotation.x=-0.3; f.armL.rotation.x*=0.9;
+    if(f.head){ f.head.rotation.y=look+Math.sin(now*0.6)*0.35; f.head.rotation.x=0.05; } }
+  else if(labor==='winnow'){ f.body.rotation.x=0.06+Math.sin(now*2.2)*0.03; f.body.rotation.z=0;
+    f.armL.rotation.x=-0.85; f.armR.rotation.x=-0.85; f.elbL.rotation.x=-0.4; f.elbR.rotation.x=-0.4;
+    f.kneeL.rotation.x*=0.9; f.kneeR.rotation.x*=0.9; }
+  else if(labor==='emb'){ f.body.rotation.x=0.06;
+    f.armL.rotation.x=-1.05; f.elbL.rotation.x=-1.25;
+    f.armR.rotation.x=-0.7+Math.sin(now*3.1)*0.14; f.elbR.rotation.x=-1.4+Math.sin(now*3.1)*0.12;
+    if(f.head){ f.head.rotation.x=0.3; f.head.rotation.y=look*0.6; } }
+  else if(labor==='lookout'){ f.body.rotation.x=w.stoop*0.7;
+    f.armR.rotation.x=0.12; f.elbR.rotation.x=-0.25; f.armL.rotation.x*=0.9;
+    if(f.head){ f.head.rotation.y=look+Math.sin(now*0.5)*0.3; f.head.rotation.x*=0.9; } } }
+function buildLaborProp(labor,f){
+  const J=f.rig.joints, B=n=>{ const j=J.find(j2=>j2.b.name===n); return j?j.b:null; };
+  const wood=new THREE.MeshStandardMaterial({color:0x4a3826,roughness:.9});
+  const shdw=g=>{ g.traverse(x=>{ if(x.isMesh) x.castShadow=true; }); return g; };
+  if(labor==='firewood'){ const sp=B('spine'); if(!sp) return null;
+    const g=new THREE.Group();
+    for(let i=0;i<5;i++){ const c=new THREE.Mesh(new THREE.CylinderGeometry(0.032,0.038,0.6,6),wood);
+      c.position.set((i%2?0.045:-0.045),0.02,(i<2?0.04:i<4?-0.04:0)); c.rotation.z=(i%2?0.06:-0.06); g.add(c); }
+    const band=new THREE.Mesh(new THREE.TorusGeometry(0.095,0.012,6,12),new THREE.MeshStandardMaterial({color:0x2a241e}));
+    band.rotation.y=Math.PI/2; band.position.y=0.02; g.add(band);
+    g.position.set(0,0.1,-0.22); g.rotation.x=0.2; sp.add(shdw(g)); return g; }
+  if(labor==='herding'){ const fR=B('foreArmR'); if(!fR) return null;
+    const w=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.017,1.05,6),wood);
+    w.position.set(0,-0.46,0.07); w.rotation.x=0.35; fR.add(shdw(w));
+    const tip=new THREE.Mesh(new THREE.CylinderGeometry(0.005,0.013,0.15,5),new THREE.MeshStandardMaterial({color:0x2a241e}));
+    tip.position.y=0.48; w.add(tip); return w; }
+  if(labor==='lookout'){ const fR=B('foreArmR'); if(!fR) return null;
+    const spear=new THREE.Mesh(new THREE.CylinderGeometry(0.016,0.02,2.25,6),wood);
+    spear.position.set(0,0.35,0.06); fR.add(shdw(spear));
+    const tip=new THREE.Mesh(new THREE.ConeGeometry(0.034,0.16,6),new THREE.MeshStandardMaterial({color:0x8a8f98,metalness:.4,roughness:.35}));
+    tip.position.y=1.2; spear.add(tip); return spear; }
+  if(labor==='winnow'){ const fL=B('foreArmL'); if(!fL) return null;
+    const tray=new THREE.Group();
+    const t1=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.22,0.055,10),new THREE.MeshStandardMaterial({color:0xa8926a,roughness:.92}));
+    const gr=new THREE.Mesh(new THREE.CylinderGeometry(0.24,0.19,0.03,10),new THREE.MeshStandardMaterial({color:0xc9a85c,roughness:1}));
+    gr.position.y=0.02; tray.add(t1,gr); tray.rotation.x=0.5; tray.position.set(0,-0.16,0.15); fL.add(shdw(tray)); return tray; }
+  if(labor==='emb'){ const fL=B('foreArmL'); if(!fL) return null;
+    const hoop=new THREE.Group();
+    const tor=new THREE.Mesh(new THREE.TorusGeometry(0.15,0.016,6,16),new THREE.MeshStandardMaterial({color:0xb8955a,roughness:.8}));
+    const cloth=new THREE.Mesh(new THREE.CircleGeometry(0.13,16),new THREE.MeshStandardMaterial({color:0x2a3038,roughness:1,side:THREE.DoubleSide}));
+    cloth.position.z=0.004; hoop.add(tor,cloth); hoop.position.set(0,-0.2,0.13); hoop.rotation.x=0.9; fL.add(shdw(hoop)); return hoop; }
+  return null; }
 /* ---- 玩家 ---- */
 const player={a:0,t:34,yaw:0};
 const pGroup=new THREE.Group();
@@ -2243,8 +2328,8 @@ function toast(s,ms,prio){ ms=ms||2600; prio=prio||0;
 
 /* ---- HUD ---- */
 let subTimer=null;
-function saySubRaw(txt){ const el=$('sub'); $('subWho').textContent=tx('narWho'); $('subTxt').textContent=txt;
-  el.classList.add('on'); clearTimeout(subTimer); subTimer=setTimeout(()=>el.classList.remove('on'),4200); }
+function saySubRaw(txt,who){ const el=$('sub'); $('subWho').textContent=who||tx('narWho'); $('subTxt').textContent=txt;
+  el.classList.add('on'); clearTimeout(subTimer); subTimer=setTimeout(()=>el.classList.remove('on'),4600); }
 function saySub(key){ const d=T.dict[key]; saySubRaw(d?(d[T.lang]||d.zh):key); }
 function showLocCard(instant){ const zk=zoneHere(), z=Z[zk]||Z.village;
   $('locName').textContent=z.n[T.lang]; $('locSub').textContent=z.s[T.lang];
@@ -2368,6 +2453,10 @@ function interact(){
   if($('rcard').classList.contains('show')){ closeCard(); return; }
   if(poiCur){ closePoi(); return; }
   if(dlgNpc || nearNpc(pGroup.position)){ tryTalk(); return; }
+  { let wN=null, wD=2.2; for(const w of WALKERS){ const d=planarDist(pGroup.position,w.pos);
+      if(d<wD){ wD=d; wN=w; } }
+    if(wN && wN.labor && wN.labor!=='run'){ const wb=WLABOR[wN.labor];
+      saySubRaw(wb.l[T.lang], wb.n[T.lang]); return; } }
   if(beaconReady()){ startCharge(); return; }
   const o=nearPoi(); if(o) openPoi(o); }
 
