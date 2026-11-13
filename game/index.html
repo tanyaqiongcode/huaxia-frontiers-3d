@@ -832,7 +832,7 @@ const _dotTex=(()=>{ const c=document.createElement('canvas'); c.width=c.height=
       void main(){ vUv=uv; vBend=aBend; vec4 w=modelMatrix*vec4(position,1.0); vW=w.xyz;
         gl_Position=projectionMatrix*viewMatrix*w; }`,
     fragmentShader:`uniform float uTime,uNight,uLQ; uniform vec3 uCam;
-      varying vec2 vUv; varying vec3 vW;
+      varying vec2 vUv; varying vec3 vW; varying float vBend;
       float h21(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
       float vn(vec2 p){ vec2 i=floor(p),f=fract(p); f=f*f*(3.0-2.0*f);
         return mix(mix(h21(i),h21(i+vec2(1,0)),f.x),mix(h21(i+vec2(0,1)),h21(i+vec2(1,1)),f.x),f.y); }
@@ -1860,9 +1860,9 @@ Promise.all(['hangtu_wall','fengsui','hehuang_site','tree_fir','tree_poplar','tr
       for(let i=0;i<=SEG;i++){ const q=cur.getPoint(i/SEG);
         pts.push(onSurface(P(q.x,q.y,0),0.05)); }
       for(let i=0;i<pts.length;i++){ const p=pts[i];
-        const pv=pts[Math.max(0,i-1)], nx=pts[Math.min(pts.length-1,i+1)];
+        const pPrev=pts[Math.max(0,i-1)], nx=pts[Math.min(pts.length-1,i+1)];
         const up=p.clone().normalize();
-        const tg=nx.clone().sub(pv).normalize();
+        const tg=nx.clone().sub(pPrev).normalize();
         const sd=new THREE.Vector3().crossVectors(up,tg).normalize();
         const w=(1.5+0.45*Math.sin(i*0.35+1))*0.5;
         const pl=p.clone().addScaledVector(sd,w).setLength(p.length()+0.015);
