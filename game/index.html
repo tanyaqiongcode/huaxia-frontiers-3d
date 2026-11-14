@@ -166,6 +166,7 @@
   .dlg.show{display:block}
   .dlg .who{font-size:12px;color:var(--gold);letter-spacing:.2em;margin-bottom:8px}
   .dlg .txt{font-size:15px;line-height:2;color:var(--ink);min-height:30px}
+  body.touch .dlg{cursor:pointer}
   .dlg .more{text-align:right;font-size:10.5px;color:var(--dim);letter-spacing:.2em;margin-top:8px}
 
   /* 小地图 */
@@ -370,7 +371,7 @@
     <a data-t="auto" class="on" data-i18n="todAuto">流转</a><a data-t="0" data-i18n="todDawn">晨光</a><a data-t="1" data-i18n="todNoon">正午</a><a data-t="2" data-i18n="todDusk">暮色</a><a data-t="3" data-i18n="todNight">月夜</a>
   </span></div>
   <div class="wxRow"><b data-i18n="stT">画风</b><span id="stBtns">
-    <a data-s="dancai" class="on" data-i18n="stDan">淡彩插图</a><a data-s="real" data-i18n="stReal">写实</a>
+    <a data-s="real" class="on" data-i18n="stReal">写实</a><a data-s="dancai" data-i18n="stDan">淡彩插图</a>
   </span></div>
   <div class="wxRow"><b data-i18n="gWho">行走者</b><span class="gSel gSelIn" id="gSel2"><a data-g="m" data-i18n="gM">男</a><a data-g="f" data-i18n="gF">女</a></span>
     <span class="oSel oSelIn"><a data-o="0" title="卡其棕 · 水洗灰" style="--c1:#94714f;--c2:#47443a"></a><a data-o="1" title="灰粉" style="--c1:#d8a2a0;--c2:#2f7fd8"></a><a data-o="2" title="亮蓝" style="--c1:#2f73d8;--c2:#f07a2e"></a></span></div><ul>
@@ -511,42 +512,32 @@ try{ /* 带模板缓冲才会分到 24 位深度；默认的 16 位深度会让�
         c*=mix(uShadow,uHigh,smoothstep(0.05,0.85,l));
         c=mix(vec3(l),c,uSat);
         if(uStyle>0.5){
-          /* 江南百景图 / 中国水墨淡彩木版水印渲染：
-             1. 十字加权盒状滤波去除程序微碎石/杂草噪点，避免生硬麻点
-             2. 8方向Sobel梯度提取结构外轮廓（屋檐、城垛、人物体态、山脊线），平滑阈值防噪
-             3. 矿物颜料设色（石绿、赭石、黛青、泥金）替代单纯去饱和，保留色彩温润度
-             4. 熟宣古画暖底留白（以白当黑）与云纹纤维质感 */
-          vec3 s0=texture2D(tD,vUv).rgb;
-          vec3 sL=texture2D(tD,vUv-vec2(uPx.x*1.8,0.0)).rgb;
-          vec3 sR=texture2D(tD,vUv+vec2(uPx.x*1.8,0.0)).rgb;
-          vec3 sU=texture2D(tD,vUv+vec2(0.0,uPx.y*1.8)).rgb;
-          vec3 sD=texture2D(tD,vUv-vec2(0.0,uPx.y*1.8)).rgb;
-          vec3 cBox=(s0*2.0+sL+sR+sU+sD)*0.1667;
-          vec3 sUL=texture2D(tD,vUv+vec2(-uPx.x*1.5,uPx.y*1.5)).rgb;
-          vec3 sUR=texture2D(tD,vUv+vec2( uPx.x*1.5,uPx.y*1.5)).rgb;
-          vec3 sDL=texture2D(tD,vUv+vec2(-uPx.x*1.5,-uPx.y*1.5)).rgb;
-          vec3 sDR=texture2D(tD,vUv+vec2( uPx.x*1.5,-uPx.y*1.5)).rgb;
-          float lUL=dot(sUL,vec3(0.299,0.587,0.114)), lUR=dot(sUR,vec3(0.299,0.587,0.114));
-          float lDL=dot(sDL,vec3(0.299,0.587,0.114)), lDR=dot(sDR,vec3(0.299,0.587,0.114));
-          float lL=dot(sL,vec3(0.299,0.587,0.114)),   lR=dot(sR,vec3(0.299,0.587,0.114));
-          float lU=dot(sU,vec3(0.299,0.587,0.114)),   lD=dot(sD,vec3(0.299,0.587,0.114));
-          float gx=(lUR+2.0*lR+lDR)-(lUL+2.0*lL+lDL);
-          float gy=(lUL+2.0*lU+lUR)-(lDL+2.0*lD+lDR);
-          float edge=smoothstep(0.12,0.36,length(vec2(gx,gy))*1.5)*uEdge;
-          float lum=dot(cBox,vec3(0.299,0.587,0.114));
-          vec3 mineral=cBox;
-          if(mineral.g>mineral.r&&mineral.g>mineral.b){ mineral=mix(mineral,vec3(0.42,0.60,0.38),0.45); }
-          else if(mineral.r>mineral.b){ mineral=mix(mineral,vec3(0.72,0.50,0.34),0.40); }
-          else{ mineral=mix(mineral,vec3(0.32,0.42,0.52),0.42); }
-          c=mix(mineral,vec3(lum),0.22);
-          vec3 paper=vec3(0.95,0.92,0.85);
-          c=mix(c,paper,smoothstep(0.46,0.96,lum)*0.65);
-          c=mix(c,c*paper,0.32);
-          c=mix(c,vec3(0.14,0.12,0.10),edge*0.86);
+          /* 淡彩插图：先把贴图细碎纹理"洗"平（像水彩铺色），再只勾大轮廓（两级模糊的亮度差，碎石、草纹不会被描成黑线），
+             最后按色相平滑地往石绿、赭石、黛青靠，叠一层很淡的熟宣纸底 */
+          vec3 n1=(texture2D(tD,vUv+vec2(uPx.x*2.5,0.0)).rgb+texture2D(tD,vUv-vec2(uPx.x*2.5,0.0)).rgb
+                  +texture2D(tD,vUv+vec2(0.0,uPx.y*2.5)).rgb+texture2D(tD,vUv-vec2(0.0,uPx.y*2.5)).rgb)*0.25;
+          vec3 n2=(texture2D(tD,vUv+uPx*vec2( 6.0, 6.0)).rgb+texture2D(tD,vUv+uPx*vec2(-6.0, 6.0)).rgb
+                  +texture2D(tD,vUv+uPx*vec2( 6.0,-6.0)).rgb+texture2D(tD,vUv+uPx*vec2(-6.0,-6.0)).rgb
+                  +texture2D(tD,vUv+uPx*vec2( 8.5, 0.0)).rgb+texture2D(tD,vUv+uPx*vec2(-8.5, 0.0)).rgb
+                  +texture2D(tD,vUv+uPx*vec2( 0.0, 8.5)).rgb+texture2D(tD,vUv+uPx*vec2( 0.0,-8.5)).rgb)*0.125;
+          vec3 LW=vec3(0.299,0.587,0.114);
+          float l1=dot(mix(c,n1,0.6),LW), l2=dot(n2,LW);
+          float edge=smoothstep(0.035,0.11,l2-l1)*uEdge*0.8;                 /* 只描"比周围暗"的一侧，线条成单线不成双线 */
+          vec3 wash=mix(c,n1,0.55); wash=mix(wash,n2,0.25);
+          float lw=dot(wash,LW);
+          float gW=clamp((wash.g-max(wash.r,wash.b))*7.0,0.0,1.0);
+          float rW=clamp((wash.r-wash.b)*5.0,0.0,1.0)*(1.0-gW);
+          float bW=clamp(1.0-gW-rW,0.0,1.0);
+          vec3 tint=gW*vec3(0.46,0.62,0.44)+rW*vec3(0.76,0.58,0.40)+bW*vec3(0.42,0.52,0.60);
+          vec3 m=mix(wash, tint*(0.42+lw*1.05), 0.38);
+          m=mix(vec3(dot(m,LW)), m, 0.82);
+          vec3 paper=vec3(0.96,0.93,0.86);
+          m=mix(m, paper, smoothstep(0.55,0.98,lw)*0.5);
+          m=mix(m, m*paper, 0.22);
+          m=mix(m, vec3(0.22,0.18,0.15), edge);
           vec2 sc=vUv/uPx;
           float pCloud=sin(sc.x*0.038+sin(sc.y*0.024)*1.6)*0.5+sin(sc.y*0.032+sin(sc.x*0.018)*1.7)*0.5;
-          float pFib=fract(sin(dot(floor(sc*0.35),vec2(12.9898,78.233)))*43758.5453);
-          c+=(pCloud*0.012+(pFib>0.965?0.022:0.0))*(1.0-lum*0.45);
+          c=m+pCloud*0.01*(1.0-lw*0.5);
         }
         vec2 q=vUv-0.5; c*=1.0-uVig*smoothstep(0.25,0.85,dot(q,q)*2.0);
         c+=(fract(sin(dot(vUv*vec2(1271.3,937.7),vec2(12.9898,78.233)))*43758.5453)-0.5)/255.0;
@@ -682,6 +673,7 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  tLine:{zh:'见证边界线移动',en:'See the boundary line move'},
  actTpl:{zh:'按 E · 倾听 {n}',en:'Press E · hear {n}'}, actTap:{zh:'倾听 · {n}',en:'Hear {n}'},
  moreCont:{zh:'E · 继续',en:'E · continue'}, moreBye:{zh:'E · 告辞',en:'E · farewell'},
+ moreContT:{zh:'点按继续',en:'tap to continue'}, moreByeT:{zh:'点按告辞',en:'tap to say farewell'},
  shardPre:{zh:'拾得史料 · ',en:'Source found · '},
  heardSuf:{zh:'的讲述，已听见。',en:' — heard.'},
  themePre:{zh:'氛围 · ',en:'Atmosphere · '},
@@ -1046,11 +1038,11 @@ const BUSH_GEO=(()=>{ const pos=[],uv=[],col=[],idx=[]; let n=0;
 { const mM=new THREE.MeshStandardMaterial({color:0x27303d,roughness:1});
   const YUP=new THREE.Vector3(0,1,0);
   for(let i=0;i<16;i++){ const a=i*22.5+hash(i,1)*10, t=58.6+hash(i,2)*2.6;
-    const p=P(a,t,0), h=18+hash(i,3)*24, rad=10+hash(i,5)*14;
-    const geo=new THREE.ConeGeometry(rad,h,10,3);
+    const p=P(a,t,0), h=9+hash(i,3)*11, rad=22+hash(i,5)*18;   /* 矮而宽的远山，避免金字塔式尖锥 */
+    const geo=new THREE.ConeGeometry(rad,h,16,4);
     const pa=geo.attributes.position;
     for(let vi=0;vi<pa.count;vi++){ const vy=pa.getY(vi), f=1-Math.min(1,Math.abs(vy)/(h*0.5));
-      const nz=(hash(vi*3.1+i,7)-0.5)*rad*0.16*(1-f*0.5);
+      const nz=(hash(vi*3.1+i,7)-0.5)*rad*0.22*(1-f*0.5); if(vy>h*0.3) pa.setY(vi,vy-(vy-h*0.3)*0.45);
       pa.setX(vi,pa.getX(vi)+nz); pa.setZ(vi,pa.getZ(vi)+nz*0.8); }
     geo.computeVertexNormals();
     const m=new THREE.Mesh(geo,mM);
@@ -1474,7 +1466,7 @@ function photoShoot(){ try{
   g2.strokeStyle='rgba(201,164,92,.85)'; g2.lineWidth=2; g2.strokeRect(14,14,W-28,H-28);
   if(photoInsc){ g2.fillStyle='rgba(201,164,92,.92)'; g2.font='600 20px serif';
     g2.textAlign='right';
-    const quoteTxt=(photoInsc===2)?(T.lang==='zh'?'“边界不在墙上，在脚下移动。”':'"The boundary is not on the wall — it moves beneath our feet."'):'边缘行走 · 华夏边缘';
+    const quoteTxt=(photoInsc===2)?(T.lang==='zh'?'“当我们在一张纸上画一个圆形时，事实上是它的边缘让它看起来像个圆形。”':'"When we draw a circle on paper, it is its edge that makes it look like a circle."'):(T.lang==='zh'?'边缘行走 · 华夏边缘':'Walking the Edge · Huaxia Frontiers');
     g2.fillText(quoteTxt, W-34, H-40);
     g2.font='13px serif'; g2.fillStyle='rgba(232,228,218,.8)';
     g2.fillText((photoInsc===2?'—— 王明珂《华夏边缘》 · ':'')+new Date().toLocaleDateString(), W-34, H-16); }
@@ -1591,25 +1583,25 @@ let laborTalkEnabled = false;   /* 复核要求：默认关闭路人对话，保
 const WLABOR={
  sun:     {n:{zh:'晒太阳的大爷',en:'Villager sunning'},
    l:{zh:'年轻人出去打工了，话说得不一样了。可过年回来，还是尔玛。',en:'The young ones left for work and talk differently now. But at New Year they come back — still Erma.'},
-   src:'第四部·第七章·近代华夏边缘再造（当代人口流动与认同延续，2020版第387-420页）'},
+   src:'第四部分 第十四章〈一个华夏边缘的延续与变迁〉，2020 年版第 421–456 页（章级出处，具体页码待核）'},
  firewood:{n:{zh:'背柴的大哥',en:'Villager carrying firewood'},
    l:{zh:'柴要背一个上午。走远了，就踩到别人放羊的地界了。',en:'Carrying wood takes a whole morning. Walk too far, and you are on someone else’s grazing ground.'},
-   src:'第一部·第二章·记忆、历史与族群本质（资源竞争与边界移动，2020版第81-99页）'},
+   src:'结语〈资源竞争、历史记忆与族群认同〉，2020 年版第 457–474 页（章级出处，具体页码待核）'},
  herding: {n:{zh:'放羊的大叔',en:'Shepherd'},
    l:{zh:'羊认草，草认雨水。我们的地界，是羊一步步走出来的。',en:'Sheep know the grass, and grass knows the rain. Our boundary is walked out by the sheep, step by step.'},
-   src:'第二部·第三章·游牧社会的形成（游牧移动与生态边缘，2020版第133-137页）'},
+   src:'第二部分 第四章〈青海河湟地区游牧社会的形成〉，2020 年版第 139–156 页（章级出处，具体页码待核）'},
  lookout: {n:{zh:'戍边的老兵',en:'Old frontier soldier'},
    l:{zh:'墙里种地，墙外放牧。这道墙，是两种过日子的办法中间的一条线。',en:'Inside the wall: farming. Outside: herding. This wall is a line drawn between two ways of living.'},
-   src:'第三部·第五章·华夏族群边缘的形成（长城与农牧资源分界，2020版第221-224页）'},
+   src:'第二部分〈华夏生态边界的形成〉第四至六章，2020 年版第 139–224 页（部分级出处，具体页码待核）'},
  winnow:  {n:{zh:'晒粮的大姐',en:'Villager winnowing grain'},
    l:{zh:'谷子晒在房顶上。河坝种地、山上放羊，两头都得顾——这就是我们的日子。',en:'We dry grain on the roof. Farm the valley, herd on the mountain — working both is how we live.'},
-   src:'第二部·第三章·游牧社会的形成（河谷农耕与山地畜牧共生，2020版第133-137页）'},
+   src:'第四部分 第十四章〈一个华夏边缘的延续与变迁〉，2020 年版第 421–456 页（章级出处，具体页码待核）'},
  emb:     {n:{zh:'做羌绣的阿姐',en:'Woman embroidering'},
    l:{zh:'这花样是我妈教的，她妈也是这么教的。绣着绣着，就知道自己是尔玛了。',en:'My mother taught me this pattern, and hers taught her. Stitch by stitch, you learn you are Erma.'},
-   src:'第一部·第二章·记忆、历史与族群本质（日常生活实践与族群认同传承，2020版第81-99页）'},
+   src:'第一部分 第二章〈记忆、历史与族群本质〉，2020 年版第 81–99 页（章级出处，具体页码待核）'},
  run:     {n:{zh:'追跑的娃娃',en:'Running kid'},
    l:{zh:'过了那道石梁，草就是别家的了。',en:'Cross that stone ridge, and the grass belongs to another family.'},
-   src:'第一部·第一章·界定族群的客观特征论（资源竞争与微观边界感知，2020版第34-58页）'}};
+   src:'代序〈如何观看与了解边疆〉，2020 年版第 1–23 页（章级出处，具体页码待核）'}};
 const WALK_LABOR=['sun','firewood','run','herding','run','lookout','lookout','winnow','sun','run','emb','sun','run'];
 const WALKERS=WALKER_DEFS.map((d,i)=>{ const fig=makeFigure(WALK_LOOK[d[0]]||{});
   const pos=P(d[2],d[3],0); fig.g.position.copy(pos); fig.g.quaternion.setFromUnitVectors(_yUp,pos.clone().normalize());
@@ -2439,7 +2431,8 @@ function showLine(){ const n=dlgNpc;
   clearInterval(typing);
   typing=setInterval(()=>{ $('dlgTxt').textContent=txt.slice(0,++i); if(i>=txt.length) clearInterval(typing); },26);
   speak(txt, T.lang, dlgNpc.pitch||1);
-  $('dlgMore').textContent = (dlgIx<n.lines[T.lang].length-1)?tx('moreCont'):tx('moreBye'); }
+  const tch=document.body.classList.contains('touch');
+  $('dlgMore').textContent = (dlgIx<n.lines[T.lang].length-1)?tx(tch?'moreContT':'moreCont'):tx(tch?'moreByeT':'moreBye'); }
 function advanceDlg(){ const n=dlgNpc;
   if(dlgIx<n.lines[T.lang].length-1){ dlgIx++; showLine(); return; }
   $('dlg').classList.remove('show'); dlgNpc=null;
@@ -2945,7 +2938,7 @@ function loop(){
       if(it.userData.type==='torch'){ hasTorch=true; $('inv').innerHTML+='<span data-i18n="invTorch">'+tx('invTorch')+'</span>'; toast(tx('bTorch')); }
       playCollect(); } });
   document.querySelectorAll('#zoneTabs a').forEach(a=>{ a.onclick=()=>{
-    const zz={'village':[0,10],'hehuang':[-72,26],'wall':[75,30],'modern':[-135,24],'beichuan':[-105,13]};
+    const zz=ZPOS;   /* 与快速移动共用落脚点（羌寨的 [0,10] 正落在河里） */
     const z=zz[a.dataset.z]; if(!z) return;
     pGroup.position.copy(P(z[0],z[1],0)); if(p2) p2.grp.position.copy(P(z[0]+2,z[1]+2,0));
     document.getElementById('tasks').classList.remove('show'); }; });
@@ -2954,13 +2947,6 @@ function loop(){
     const zid=zMap[lastZone];
     document.querySelectorAll('#zoneTabs a').forEach(a=>a.classList.toggle('on',a.dataset.z===zid));
     document.querySelector('.sceneCard').style.setProperty('--zc', ZCOL[zid]||'#c9a45c'); }
-    document.getElementById('zoneTabs').addEventListener('click',e=>{
-    const a=e.target.closest('a'); if(!a) return;
-    const zz={'village':[0,10],'hehuang':[-72,26],'wall':[75,30],'modern':[-135,24],'beichuan':[-105,13]};
-    const z=zz[a.dataset.z]; if(!z) return;
-    pGroup.position.copy(P(z[0],z[1],0)); if(p2) p2.grp.position.copy(P(z[0]+2,z[1]+2,0));
-    document.querySelectorAll('#zoneTabs a').forEach(x=>x.classList.toggle('on',x===a));
-    document.querySelector('.sceneCard').style.setProperty('--zc', ZCOL[a.dataset.z]||'#c9a45c'); });
     /* 下一步指引：罗盘箭头 + 文字；同时画小地图 */
   if(started && (frameN++%6===0)) curGoal=currentGoal();
   { const comp=$('compass'), g=curGoal;
@@ -3096,7 +3082,7 @@ function loop(){
   fpsN++; fpsT+=dt; if(fpsT>2){ const f=fpsN/fpsT;
     if(f<42 && sun.castShadow){ sun.castShadow=false; renderer.setPixelRatio(1); gradeResize(); recompileAll();
       if(window.__waterMat) window.__waterMat.uniforms.uLQ.value=1;
-      if(GRADE) GRADE.on=false; QUAL_LOW=true;
+      if(GRADE && hxStyle!=='dancai') GRADE.on=false; QUAL_LOW=true;
       if(window.__lodBush){ window.__lodBush.count=Math.ceil(window.__lodBush.count*0.55);
         window.__lodStone.count=Math.ceil(window.__lodStone.count*0.6); }
       toast(tx('qDegrade')); }
@@ -3313,6 +3299,15 @@ function renderAlbum(){
 function openAlbum(){ renderAlbum(); $('tasks').classList.remove('show'); $('album').classList.add('show'); releaseLock(); }
 function closeAlbum(){ $('album').classList.remove('show'); }
 $('btnAlbum').addEventListener('click',e=>{ e.preventDefault(); openAlbum(); });
+/* 区域标签点击：只注册一次（原来写在每帧循环里，监听器会越积越多） */
+document.getElementById('zoneTabs').addEventListener('click',e=>{
+    const a=e.target.closest('a'); if(!a) return;
+    const zz=ZPOS;   /* 与快速移动共用落脚点（羌寨的 [0,10] 正落在河里） */
+    const z=zz[a.dataset.z]; if(!z) return;
+    pGroup.position.copy(P(z[0],z[1],0)); if(p2) p2.grp.position.copy(P(z[0]+2,z[1]+2,0));
+    document.querySelectorAll('#zoneTabs a').forEach(x=>x.classList.toggle('on',x===a));
+    document.querySelector('.sceneCard').style.setProperty('--zc', ZCOL[a.dataset.z]||'#c9a45c'); });
+$('dlg').addEventListener('click',()=>{ if(dlgNpc) tryTalk(); });
 const bp=$('btnPhoto'); if(bp) bp.addEventListener('click',e=>{ e.preventDefault(); togglePhoto(); });
 $('albumClose').addEventListener('click',closeAlbum);
 $('album').addEventListener('click',e=>{ if(e.target===$('album')) closeAlbum(); });
@@ -3351,9 +3346,12 @@ document.querySelector('.hudR').addEventListener('click',()=>{ const on=$('tasks
       else { themeAutoFlow=false; themeIx=+t; applyTheme(); }
       updTodUI(); });
   } }
+function styleMaterials(d){ scene.traverse(o=>{ if(!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{
+    if(!m.normalMap||!m.normalScale) return; if(!m.userData.ns0) m.userData.ns0=m.normalScale.clone(); m.normalScale.copy(m.userData.ns0).multiplyScalar(d?0.3:1); }); }); }
+let hxStyle='real';
 { const stB=document.getElementById('stBtns');
-  if(stB){ let hst='dancai'; try{ hst=localStorage.getItem('hxStyle')||'dancai'; }catch(e){}
-    const applyStyle=()=>{ if(GRADE&&GRADE.mat) GRADE.mat.uniforms.uStyle.value=(hst==='dancai')?1:0;
+  if(stB){ let hst='real'; try{ hst=localStorage.getItem('hxStyle')||'real'; }catch(e){}   /* 默认写实；淡彩是否设为默认，待用户与朱老师看过对比图再定 */
+    const applyStyle=()=>{ hxStyle=hst; if(GRADE&&GRADE.mat) GRADE.mat.uniforms.uStyle.value=(hst==='dancai')?1:0; try{ styleMaterials(hst==='dancai'); }catch(e){}
       document.documentElement.dataset.style=hst;
       stB.querySelectorAll('a').forEach(x=>x.classList.toggle('on',x.dataset.s===hst)); };
     applyStyle();
@@ -3375,7 +3373,7 @@ document.querySelector('.hudR').addEventListener('click',()=>{ const on=$('tasks
 document.getElementById('resumeGo').addEventListener('click',()=>{
   hardPaused=false; $('resumeOv').classList.remove('show');
   if(actx) actx.resume(); try{ clock.getDelta(); }catch(e){} });
-document.getElementById('btnGo').addEventListener('click',()=>{
+document.getElementById('btnGo').addEventListener('click',()=>{ try{ styleMaterials(hxStyle==='dancai'); }catch(e){}
   started=true; setInterval(saveGame,4000);
   zoneSeen.add(zoneHere());
   { const ef=$('enterFade');
