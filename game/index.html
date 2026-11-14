@@ -1412,7 +1412,7 @@ function makeFigure(o){
 }
 /* ---- Blender 骨骼人物：加载成功就替换代码人形；加载失败则保留代码人形 ----
    动作仍由原来的行走/待机代码驱动：把 legL/kneeL/armL… 换成代理对象，每帧把代理的旋转写到对应骨骼上 */
-const _yUp=new THREE.Vector3(0,1,0), _wv=new THREE.Vector3(), _wn=new THREE.Vector3(), _wu=new THREE.Vector3(), _wq=new THREE.Quaternion();
+const _yUp=new THREE.Vector3(0,1,0), _wv=new THREE.Vector3(), _wn=new THREE.Vector3(), _wu=new THREE.Vector3(), _wq=new THREE.Quaternion(), _q2=new THREE.Quaternion();
 const RIGS=[], _rq=new THREE.Quaternion(), _rq2=new THREE.Quaternion(), _rv=new THREE.Vector3();
 const LODS=[]; let lodT=0, QUAL_LOW=false;
 let photoMode=false, photoInsc=false, photoF=0, photoSaved=null;
