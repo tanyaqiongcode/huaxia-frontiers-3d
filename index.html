@@ -659,7 +659,7 @@ const SOC = [
  {n:{zh:'小红书',en:'Xiaohongshu (RedNote)'},u:'https://www.xiaohongshu.com/search_result?keyword=%E7%8E%8B%E6%98%8E%E7%8F%82',d:{zh:'王明珂 · 中文笔记',en:'Wang Ming-ke · notes'}},
  {n:{zh:'中研院史语所',en:'IHP, Academia Sinica'},u:'https://www1.ihp.sinica.edu.tw/Fellows/Ming-ke_Wang',d:{zh:'王明珂研究员页面 · 官方',en:'Official fellow page, IHP'}}
 ];
-const T = { lang:'zh', dict:{
+const T = { lang:(function(){try{return new URLSearchParams(location.search).get('lang')||localStorage.getItem('hxLang')||localStorage.getItem('walkLang')||'zh';}catch(e){return 'zh';}})(), dict:{
  prLead:{zh:'当代华语世界最具范式意义的历史人类学经典之一',en:'One of the most paradigm-shifting works of historical anthropology in the Chinese-speaking world'},
  ps1:{zh:'微信读书 · 人在读（2026-11-02 记录）',en:'WeRead readers on record · Nov 2, 2026'},
  ctaMain:{zh:'从岷江上游读起',en:'Begin upstream, on the Min River'},
@@ -760,6 +760,7 @@ function applyLang(){
   document.querySelectorAll('[data-i18n-aria],[data-i18n-alt],[data-i18n-title]').forEach(el=>{
     [['i18nAria','aria-label'],['i18nAlt','alt'],['i18nTitle','title']].forEach(([k,a])=>{ const d=T.dict[el.dataset[k]]; if(d) el.setAttribute(a,tx(d)); }); });
   document.documentElement.lang = T.lang==='zh' ? 'zh-CN' : 'en';
+  try{ localStorage.setItem('hxLang', T.lang); localStorage.setItem('walkLang', T.lang); }catch(e){}
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const v = T.dict[el.dataset.i18n]; if(v) el.innerHTML = tx(v); });
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const v = T.dict[el.dataset.i18nHtml]; if(v) el.innerHTML = tx(v); });
   document.getElementById('cards').innerHTML = CARDS.map((c,i)=>

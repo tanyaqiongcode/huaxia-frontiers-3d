@@ -83,6 +83,7 @@
   .wxRow{margin:12px 0 4px}
   .wxRow b{display:block;margin-bottom:6px}
   #wxBtns{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+  #todBtns{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
   .wxRow b{font-size:11px;letter-spacing:.2em;color:var(--gold-hi);font-weight:600}
   .wxRow a{font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:5px 0;cursor:pointer;text-decoration:none;text-align:center;white-space:nowrap}
   .wxRow a.on{color:var(--gold-hi);border-color:var(--gold-hi);background:rgba(201,164,92,.12)}
@@ -316,6 +317,7 @@
     .hint{display:none}
     .xlinks{top:20px;right:64px}
     #btnJump{display:block}
+    .sealStamp{top:18px;left:16px;bottom:auto;right:auto;width:30px;height:30px;line-height:26px;font-size:16px}
     .zoneTabs{bottom:52px;gap:3px}
     .zoneTabs a{font-size:9px;padding:4px 7px 4px 6px;gap:3px}
     .zoneTabs a .zg{width:9px;height:9px}
@@ -343,7 +345,7 @@
   <a data-z="village" class="on"><svg class="zg" viewBox="0 0 12 12"><path d="M4.2 1.2 L7.8 1.2 L8.6 10.8 L3.4 10.8 Z M5.2 8 h1.6 v2.8"/></svg>羌寨</a><a data-z="hehuang"><svg class="zg" viewBox="0 0 12 12"><path d="M2.2 5.2 A4.6 4.6 0 0 1 9.8 5.2 M3 8.6 h6 M5 5.6 L7 7.4"/></svg>河湟</a><a data-z="wall"><svg class="zg" viewBox="0 0 12 12"><path d="M2 10.5 V4.5 h2 v1.8 h1.7 V4.5 h1.8 v1.8 h1.7 V4.5 h2 v6 Z"/></svg>长城</a><a data-z="modern"><svg class="zg" viewBox="0 0 12 12"><path d="M6 11 V5.4 M3.4 5.4 h5.2 L7.5 2.6 h-3 Z M9.6 11 H2.4"/></svg>现代</a><a data-z="beichuan"><svg class="zg" viewBox="0 0 12 12"><path d="M6 1.4 L10.6 6 L6 10.6 L1.4 6 Z"/><circle cx="6" cy="6" r="1.3"/></svg>北川</a>
 </div>
 <div class="mark" title="Huaxia Frontiers"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="#c9a45c" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="#c9a45c"/></svg></div>
-<div class="xlinks"><a href="#" id="btnAlbum" data-i18n="albumBtn">卡册</a><a href="../" data-i18n="lnkMain">主站</a><a href="../reading/" data-i18n="lnkRead">阅读版</a></div>
+<div class="xlinks"><a href="#" id="btnPhoto" data-i18n="phBtn">拍照</a><a href="#" id="btnAlbum" data-i18n="albumBtn">卡册</a><a href="../" data-i18n="lnkMain">主站</a><a href="../reading/" data-i18n="lnkRead">阅读版</a></div>
 <button class="langBtn" id="btnLang">EN</button>
 <button id="btnJump" data-i18n="btnJump">跳跃</button>
 
@@ -364,8 +366,11 @@
   <div class="wxRow"><b data-i18n="wxT">天气</b><span id="wxBtns">
     <a data-w="auto" class="on" data-i18n="wxAuto">自动</a><a data-w="sunny" data-i18n="wxSun">晴</a><a data-w="rain" data-i18n="wxRain">雨</a><a data-w="snow" data-i18n="wxSnow">雪</a><a data-w="gust" data-i18n="wxWind">风</a><a data-w="dust" data-i18n="wxDust">尘</a>
   </span></div>
+  <div class="wxRow"><b data-i18n="todT">时辰</b><span id="todBtns">
+    <a data-t="auto" class="on" data-i18n="todAuto">流转</a><a data-t="0" data-i18n="todDawn">晨光</a><a data-t="1" data-i18n="todNoon">正午</a><a data-t="2" data-i18n="todDusk">暮色</a><a data-t="3" data-i18n="todNight">月夜</a>
+  </span></div>
   <div class="wxRow"><b data-i18n="stT">画风</b><span id="stBtns">
-    <a data-s="real" class="on" data-i18n="stReal">写实</a><a data-s="dancai" data-i18n="stDan">淡彩插图</a>
+    <a data-s="dancai" class="on" data-i18n="stDan">淡彩插图</a><a data-s="real" data-i18n="stReal">写实</a>
   </span></div>
   <div class="wxRow"><b data-i18n="gWho">行走者</b><span class="gSel gSelIn" id="gSel2"><a data-g="m" data-i18n="gM">男</a><a data-g="f" data-i18n="gF">女</a></span>
     <span class="oSel oSelIn"><a data-o="0" title="卡其棕 · 水洗灰" style="--c1:#94714f;--c2:#47443a"></a><a data-o="1" title="灰粉" style="--c1:#d8a2a0;--c2:#2f7fd8"></a><a data-o="2" title="亮蓝" style="--c1:#2f73d8;--c2:#f07a2e"></a></span></div><ul>
@@ -506,21 +511,42 @@ try{ /* 带模板缓冲才会分到 24 位深度；默认的 16 位深度会让�
         c*=mix(uShadow,uHigh,smoothstep(0.05,0.85,l));
         c=mix(vec3(l),c,uSat);
         if(uStyle>0.5){
-          float lumC=dot(c,vec3(0.299,0.587,0.114));
-          c=mix(vec3(lumC),c,0.58);
-          c=mix(c, vec3(0.92,0.89,0.82), smoothstep(0.05,0.5,lumC)*0.5);
-          c*=vec3(1.05,1.02,0.95);
-          c=mix(c, vec3(0.70,0.77,0.80), smoothstep(0.60,0.95,lumC)*0.38);
-          float e1=dot(texture2D(tD,vUv+vec2(uPx.x*1.6,0.0)).rgb,vec3(0.299,0.587,0.114));
-          float e2=dot(texture2D(tD,vUv-vec2(uPx.x*1.6,0.0)).rgb,vec3(0.299,0.587,0.114));
-          float e3=dot(texture2D(tD,vUv+vec2(0.0,uPx.y*1.6)).rgb,vec3(0.299,0.587,0.114));
-          float e4=dot(texture2D(tD,vUv-vec2(0.0,uPx.y*1.6)).rgb,vec3(0.299,0.587,0.114));
-          float edge=clamp(length(vec2(e1-e2,e3-e4))*3.0,0.0,1.0)*uEdge;
-          c=mix(c, vec3(0.16,0.14,0.11), edge);
-          float gx=vUv.x/uPx.x, gy=vUv.y/uPx.y;
-          float paper=sin(gx*0.55+sin(gy*0.23)*2.2)*0.5+sin(gy*0.42+sin(gx*0.17)*1.8)*0.5;
-          float fibre=fract(sin((gx+paper*8.0)*1.7+(gy-paper*5.0)*2.3)*43758.5453);
-          c+=(paper*0.016+fibre*0.012)*(1.0-lumC*0.35);
+          /* 江南百景图 / 中国水墨淡彩木版水印渲染：
+             1. 十字加权盒状滤波去除程序微碎石/杂草噪点，避免生硬麻点
+             2. 8方向Sobel梯度提取结构外轮廓（屋檐、城垛、人物体态、山脊线），平滑阈值防噪
+             3. 矿物颜料设色（石绿、赭石、黛青、泥金）替代单纯去饱和，保留色彩温润度
+             4. 熟宣古画暖底留白（以白当黑）与云纹纤维质感 */
+          vec3 s0=texture2D(tD,vUv).rgb;
+          vec3 sL=texture2D(tD,vUv-vec2(uPx.x*1.8,0.0)).rgb;
+          vec3 sR=texture2D(tD,vUv+vec2(uPx.x*1.8,0.0)).rgb;
+          vec3 sU=texture2D(tD,vUv+vec2(0.0,uPx.y*1.8)).rgb;
+          vec3 sD=texture2D(tD,vUv-vec2(0.0,uPx.y*1.8)).rgb;
+          vec3 cBox=(s0*2.0+sL+sR+sU+sD)*0.1667;
+          vec3 sUL=texture2D(tD,vUv+vec2(-uPx.x*1.5,uPx.y*1.5)).rgb;
+          vec3 sUR=texture2D(tD,vUv+vec2( uPx.x*1.5,uPx.y*1.5)).rgb;
+          vec3 sDL=texture2D(tD,vUv+vec2(-uPx.x*1.5,-uPx.y*1.5)).rgb;
+          vec3 sDR=texture2D(tD,vUv+vec2( uPx.x*1.5,-uPx.y*1.5)).rgb;
+          float lUL=dot(sUL,vec3(0.299,0.587,0.114)), lUR=dot(sUR,vec3(0.299,0.587,0.114));
+          float lDL=dot(sDL,vec3(0.299,0.587,0.114)), lDR=dot(sDR,vec3(0.299,0.587,0.114));
+          float lL=dot(sL,vec3(0.299,0.587,0.114)),   lR=dot(sR,vec3(0.299,0.587,0.114));
+          float lU=dot(sU,vec3(0.299,0.587,0.114)),   lD=dot(sD,vec3(0.299,0.587,0.114));
+          float gx=(lUR+2.0*lR+lDR)-(lUL+2.0*lL+lDL);
+          float gy=(lUL+2.0*lU+lUR)-(lDL+2.0*lD+lDR);
+          float edge=smoothstep(0.12,0.36,length(vec2(gx,gy))*1.5)*uEdge;
+          float lum=dot(cBox,vec3(0.299,0.587,0.114));
+          vec3 mineral=cBox;
+          if(mineral.g>mineral.r&&mineral.g>mineral.b){ mineral=mix(mineral,vec3(0.42,0.60,0.38),0.45); }
+          else if(mineral.r>mineral.b){ mineral=mix(mineral,vec3(0.72,0.50,0.34),0.40); }
+          else{ mineral=mix(mineral,vec3(0.32,0.42,0.52),0.42); }
+          c=mix(mineral,vec3(lum),0.22);
+          vec3 paper=vec3(0.95,0.92,0.85);
+          c=mix(c,paper,smoothstep(0.46,0.96,lum)*0.65);
+          c=mix(c,c*paper,0.32);
+          c=mix(c,vec3(0.14,0.12,0.10),edge*0.86);
+          vec2 sc=vUv/uPx;
+          float pCloud=sin(sc.x*0.038+sin(sc.y*0.024)*1.6)*0.5+sin(sc.y*0.032+sin(sc.x*0.018)*1.7)*0.5;
+          float pFib=fract(sin(dot(floor(sc*0.35),vec2(12.9898,78.233)))*43758.5453);
+          c+=(pCloud*0.012+(pFib>0.965?0.022:0.0))*(1.0-lum*0.45);
         }
         vec2 q=vUv-0.5; c*=1.0-uVig*smoothstep(0.25,0.85,dot(q,q)*2.0);
         c+=(fract(sin(dot(vUv*vec2(1271.3,937.7),vec2(12.9898,78.233)))*43758.5453)-0.5)/255.0;
@@ -547,7 +573,7 @@ const THEMES=[
  {fog:0x8db6d9,bg:0x9ec6e8,sun:0xfff2d0,si:1.55,hemi:0xcfe2f4,name:{zh:'正午',en:'Noon'}},
  {fog:0x1a1210,bg:0x150e0a,sun:0xff9a5c,si:1.0,hemi:0xd6a08a,name:{zh:'暮色',en:'Dusk'}},
  {fog:0x0a0e18,bg:0x080c16,sun:0xb9c8ff,si:.7,hemi:0x8a9cd6,name:{zh:'月夜',en:'Moonlit'}}];
-let themeIx=1, themeAuto=90;
+let themeIx=1, themeAuto=90, themeAutoFlow=true, _curSO=[58,24];
 function applyTheme(silent){ const t=THEMES[themeIx];
   scene.fog.color.setHex(t.fog); scene.background.setHex(t.bg);
   sun.color.setHex(t.sun); sun.intensity=t.si; hemi.color.setHex(t.hemi);
@@ -555,7 +581,7 @@ function applyTheme(silent){ const t=THEMES[themeIx];
 function fract(x){ return x - Math.floor(x); }
 
 /* ---- 双语 ---- */
-const T={lang: (function(){try{return localStorage.getItem('walkLang')||'zh'}catch(e){return 'zh'}})(), dict:{
+const T={lang: (function(){try{return new URLSearchParams(location.search).get('lang')||localStorage.getItem('hxLang')||localStorage.getItem('walkLang')||'zh'}catch(e){return 'zh'}})(), dict:{
  gTitle:{zh:'边缘行走',en:'Walking the Edge'},
  gSub:{zh:'《华夏边缘：历史记忆与族群认同》· 互动导读',en:'Huaxia Frontiers: Historical Memories and Ethnic Identities · an interactive reading guide'},
  gNote:{zh:'本作为《华夏边缘》的阅读辅助：场景与讲述者均为虚构，不代表任何真实人物或群体；书中观点请以原著为准。',en:'A reading aid for Huaxia Frontiers. Scenes and speakers are fictional and do not represent any real person or community; for the book’s arguments, please read the original.'},
@@ -643,9 +669,11 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  gWho:{zh:'行走者',en:'Walker'}, gM:{zh:'男',en:'Man'}, gF:{zh:'女',en:'Woman'},
  wxT:{zh:'天气',en:'Weather'},
  phF0:{zh:'原片',en:'Raw'}, phF1:{zh:'黑白',en:'Mono'}, phF2:{zh:'怀旧',en:'Sepia'}, phF3:{zh:'淡彩',en:'Tint'},
- phIn:{zh:'题字',en:'Caption'}, phSh:{zh:'拍照 · 存卡册',en:'Shoot · Save'}, phX:{zh:'退出',en:'Exit'},
+ phIn:{zh:'题字',en:'Caption'}, phInscTitle:{zh:'题名',en:'Title'}, phInscQuote:{zh:'金句',en:'Quote'},
+ phBtn:{zh:'拍照',en:'Photo'}, phSh:{zh:'拍照 · 存卡册',en:'Shoot · Save'}, phX:{zh:'退出',en:'Exit'},
  phSaved:{zh:'照片已存入卡册',en:'Photo saved to the album'}, stT:{zh:'画风',en:'Art style'}, stReal:{zh:'写实',en:'Realistic'}, stDan:{zh:'淡彩插图',en:'Ink-tint'}, wxAuto:{zh:'自动',en:'Auto'}, wxSun:{zh:'晴',en:'Sunny'},
  wxRain:{zh:'雨',en:'Rain'}, wxSnow:{zh:'雪',en:'Snow'}, wxWind:{zh:'风',en:'Wind'}, wxDust:{zh:'尘',en:'Dust'},
+ todT:{zh:'时辰',en:'Hour'}, todAuto:{zh:'流转',en:'Flow'}, todDawn:{zh:'晨光',en:'Dawn'}, todNoon:{zh:'正午',en:'Noon'}, todDusk:{zh:'暮色',en:'Dusk'}, todNight:{zh:'月夜',en:'Night'},
  wSun2:{zh:'日头正好 · 风吹草低',en:'High sun — wind in the grass'},
  wClear:{zh:'天放晴了',en:'The sky is clearing'}, wUmb:{zh:'雨伞为你遮挡',en:'Your umbrella shields you'}, wNoUmb:{zh:'没有雨伞——在雨中行走',en:'No umbrella — walking in the rain'},
  bNear:{zh:'墙外是牧场：耕与牧，是两种生计，也是两种边界。',en:'Beyond the wall, pasture: farming and herding — two livelihoods, two kinds of boundary.'},
@@ -675,7 +703,7 @@ function applyLang(){
   document.querySelectorAll('.xClose').forEach(b=>b.title=tx('xClose'));
   document.querySelectorAll('[data-i18n-alt]').forEach(el=>el.alt=tx(el.dataset.i18nAlt));
   document.documentElement.lang = T.lang==='zh'?'zh-CN':'en';
-  try{ localStorage.setItem('walkLang',T.lang); }catch(e){}
+  try{ localStorage.setItem('walkLang',T.lang); localStorage.setItem('hxLang',T.lang); }catch(e){}
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const v=T.dict[el.dataset.i18n]; if(v) el.textContent=v[T.lang]||v.zh; });
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const v=T.dict[el.dataset.i18nHtml]; if(v) el.innerHTML=v[T.lang]||v.zh; });
   const b=document.getElementById('btnLang'); if(b) b.textContent = T.lang==='zh'?'EN':'中文';
@@ -1420,30 +1448,43 @@ const PHOTO_F=[ {sat:1.1,con:0.3,style:0,vig:0.16},
   {sat:0,con:0.44,style:0,vig:0.3},
   {sat:0.5,con:0.36,style:0,vig:0.24,sh:[1.0,0.87,0.68],hi:[1.08,0.97,0.8]},
   {style:1} ];
-function photoApply(){ const G=GRADE.mat.uniforms, f=PHOTO_F[photoF];
-  G.uSat.value=f.sat; G.uCon.value=f.con; G.uStyle.value=f.style||0; G.uVig.value=f.vig;
+function photoApply(){ if(!GRADE||!GRADE.mat) return; const G=GRADE.mat.uniforms, f=PHOTO_F[photoF];
+  if(!f) return;
+  if(f.sat!==undefined) G.uSat.value=f.sat;
+  if(f.con!==undefined) G.uCon.value=f.con;
+  if(f.style!==undefined) G.uStyle.value=f.style;
+  if(f.vig!==undefined) G.uVig.value=f.vig;
   if(f.sh) G.uShadow.value.set(f.sh[0],f.sh[1],f.sh[2]);
   if(f.hi) G.uHigh.value.set(f.hi[0],f.hi[1],f.hi[2]); }
 function togglePhoto(){ photoMode=!photoMode;
-  const G=GRADE.mat.uniforms;
   document.body.classList.toggle('photo',photoMode);
-  if(photoMode){ photoSaved={sat:G.uSat.value,con:G.uCon.value,style:G.uStyle.value,vig:G.uVig.value};
-    photoF=0; photoApply(); releaseLock(); }
-  else { if(photoSaved){ G.uSat.value=photoSaved.sat; G.uCon.value=photoSaved.con;
-      G.uStyle.value=photoSaved.style; G.uVig.value=photoSaved.vig; } grabLock(); } }
+  if(GRADE&&GRADE.mat){
+    const G=GRADE.mat.uniforms;
+    if(photoMode){ photoSaved={sat:G.uSat.value,con:G.uCon.value,style:G.uStyle.value,vig:G.uVig.value};
+      photoF=0; photoApply(); releaseLock(); }
+    else { if(photoSaved){ G.uSat.value=photoSaved.sat; G.uCon.value=photoSaved.con;
+        G.uStyle.value=photoSaved.style; G.uVig.value=photoSaved.vig; } grabLock(); }
+  } else {
+    if(photoMode) releaseLock(); else grabLock();
+  } }
 function photoShoot(){ try{
   renderFrame();
   const W=1280,H=800, c2=document.createElement('canvas'); c2.width=W; c2.height=H;
   const g2=c2.getContext('2d'); g2.drawImage(renderer.domElement,0,0,W,H);
   g2.strokeStyle='rgba(201,164,92,.85)'; g2.lineWidth=2; g2.strokeRect(14,14,W-28,H-28);
-  if(photoInsc){ g2.fillStyle='rgba(201,164,92,.92)'; g2.font='600 22px serif';
-    g2.textAlign='right'; g2.fillText('边缘行走 · 华夏边缘', W-34, H-40);
+  if(photoInsc){ g2.fillStyle='rgba(201,164,92,.92)'; g2.font='600 20px serif';
+    g2.textAlign='right';
+    const quoteTxt=(photoInsc===2)?(T.lang==='zh'?'“边界不在墙上，在脚下移动。”':'"The boundary is not on the wall — it moves beneath our feet."'):'边缘行走 · 华夏边缘';
+    g2.fillText(quoteTxt, W-34, H-40);
     g2.font='13px serif'; g2.fillStyle='rgba(232,228,218,.8)';
-    g2.fillText(new Date().toLocaleDateString(), W-34, H-16); }
+    g2.fillText((photoInsc===2?'—— 王明珂《华夏边缘》 · ':'')+new Date().toLocaleDateString(), W-34, H-16); }
   const out=c2.toDataURL('image/jpeg',0.92);
   const a=document.createElement('a'); a.href=out; a.download='edge-walk-'+Date.now()+'.jpg';
   document.body.appendChild(a); a.click(); a.remove();
-  const list=albumGet(); list.push({v:ALB_VER,img:out,t:Date.now()}); albumSet(list);
+  /* 卡册只存 320x200 缩略图，避免把浏览器 localStorage 撑满溢出 */
+  const cThumb=document.createElement('canvas'); cThumb.width=320; cThumb.height=200;
+  const gt=cThumb.getContext('2d'); gt.drawImage(c2,0,0,320,200);
+  albumAdd(cThumb.toDataURL('image/jpeg',0.72));
   toast(tx('phSaved')); }catch(e){ warn1('photo',e); } }
 /* 人物材质的纹理：按 Blender 里起的质地名（cloth/wool/fleece/trim/hair/leather/skin/eye/lip/metal/rubber）分别处理，全部程序绘制 */
 const FIG_TEX=(()=>{ const mk=(w,h,draw,rx,ry)=>{ const c=document.createElement('canvas'); c.width=w; c.height=h; draw(c.getContext('2d'),w,h);
@@ -1545,29 +1586,30 @@ const WALK_LOOK={fig_granny:{jacket:0x2b2f40,trouser:0x22222a,hair:0xb4b4b4,hat:
  fig_soldier:{jacket:0x6e3b2e,trouser:0x4b4336,hair:0x17161a,hat:'wrap',hatC:0x8c2f2a},
  fig_woman:{jacket:0x9a3340,trouser:0x26262c,hair:0x151515,hat:'wrap',hatC:0x23232b,robe:1.0,robeC:0x9a3340,apron:0x23232b},
  fig_oldman:{jacket:0x3a4250,trouser:0x30333a,hair:0xb4b4b4,hat:'wrap',hatC:0x2c2e36}};
-/* 路人劳作与对话：名字/台词均取材于原书论点（出处表见 边缘行走_路人对话出处表_20261114.md） */
+/* 路人劳作与对话：名字/台词均取材于原书论点（2020年上海人民·世纪文景版《华夏边缘》） */
+let laborTalkEnabled = false;   /* 复核要求：默认关闭路人对话，保留劳作动作；待学术出处终审后开启 */
 const WLABOR={
  sun:     {n:{zh:'晒太阳的大爷',en:'Villager sunning'},
    l:{zh:'年轻人出去打工了，话说得不一样了。可过年回来，还是尔玛。',en:'The young ones left for work and talk differently now. But at New Year they come back — still Erma.'},
-   src:'第十三章·认同变迁：当代羌族认同的延续与再生（历史记忆的延续）'},
+   src:'第四部·第七章·近代华夏边缘再造（当代人口流动与认同延续，2020版第387-420页）'},
  firewood:{n:{zh:'背柴的大哥',en:'Villager carrying firewood'},
    l:{zh:'柴要背一个上午。走远了，就踩到别人放羊的地界了。',en:'Carrying wood takes a whole morning. Walk too far, and you are on someone else’s grazing ground.'},
-   src:'第二章·资源竞争与边界移动（农牧边界的资源争夺）'},
+   src:'第一部·第二章·记忆、历史与族群本质（资源竞争与边界移动，2020版第81-99页）'},
  herding: {n:{zh:'放羊的大叔',en:'Shepherd'},
    l:{zh:'羊认草，草认雨水。我们的地界，是羊一步步走出来的。',en:'Sheep know the grass, and grass knows the rain. Our boundary is walked out by the sheep, step by step.'},
-   src:'第三章·游牧社会的形成（游牧移动与边缘）'},
+   src:'第二部·第三章·游牧社会的形成（游牧移动与生态边缘，2020版第133-137页）'},
  lookout: {n:{zh:'戍边的老兵',en:'Old frontier soldier'},
    l:{zh:'墙里种地，墙外放牧。这道墙，是两种过日子的办法中间的一条线。',en:'Inside the wall: farming. Outside: herding. This wall is a line drawn between two ways of living.'},
-   src:'第五章·长城边际（华夏边缘的核心意象）'},
+   src:'第三部·第五章·华夏族群边缘的形成（长城与农牧资源分界，2020版第221-224页）'},
  winnow:  {n:{zh:'晒粮的大姐',en:'Villager winnowing grain'},
    l:{zh:'谷子晒在房顶上。河坝种地、山上放羊，两头都得顾——这就是我们的日子。',en:'We dry grain on the roof. Farm the valley, herd on the mountain — working both is how we live.'},
-   src:'第一章·人类生态边缘（农牧并存的生活方式）'},
+   src:'第二部·第三章·游牧社会的形成（河谷农耕与山地畜牧共生，2020版第133-137页）'},
  emb:     {n:{zh:'做羌绣的阿姐',en:'Woman embroidering'},
    l:{zh:'这花样是我妈教的，她妈也是这么教的。绣着绣着，就知道自己是尔玛了。',en:'My mother taught me this pattern, and hers taught her. Stitch by stitch, you learn you are Erma.'},
-   src:'第十二章·族群认同的延续（历史记忆与民族认同传承）'},
+   src:'第一部·第二章·记忆、历史与族群本质（日常生活实践与族群认同传承，2020版第81-99页）'},
  run:     {n:{zh:'追跑的娃娃',en:'Running kid'},
-   l:{zh:'你走我们的桥，就是客！',en:'You crossed our bridge — that makes you a guest!'},
-   src:'序论·边界与 Guest 隐喻（过桥即跨过边界的招待隐喻）'}};
+   l:{zh:'过了那道石梁，草就是别家的了。',en:'Cross that stone ridge, and the grass belongs to another family.'},
+   src:'第一部·第一章·界定族群的客观特征论（资源竞争与微观边界感知，2020版第34-58页）'}};
 const WALK_LABOR=['sun','firewood','run','herding','run','lookout','lookout','winnow','sun','run','emb','sun','run'];
 const WALKERS=WALKER_DEFS.map((d,i)=>{ const fig=makeFigure(WALK_LOOK[d[0]]||{});
   const pos=P(d[2],d[3],0); fig.g.position.copy(pos); fig.g.quaternion.setFromUnitVectors(_yUp,pos.clone().normalize());
@@ -2538,7 +2580,7 @@ function interact(){
   if($('rcard').classList.contains('show')){ closeCard(); return; }
   if(poiCur){ closePoi(); return; }
   if(dlgNpc || nearNpc(pGroup.position)){ tryTalk(); return; }
-  { let wN=null, wD=2.2; for(const w of WALKERS){ const d=planarDist(pGroup.position,w.pos);
+  if(laborTalkEnabled){ let wN=null, wD=2.2; for(const w of WALKERS){ const d=planarDist(pGroup.position,w.pos);
       if(d<wD){ wD=d; wN=w; } }
     if(wN && wN.labor && wN.labor!=='run'){ const wb=WLABOR[wN.labor];
       saySubRaw(wb.l[T.lang], wb.n[T.lang]); return; } }
@@ -2801,8 +2843,8 @@ function loop(){
   }catch(e){ warn1('water',e); }
   lodT-=dt; if(lodT<=0){ lodT=0.35;
     for(const L of LODS){ if(L.ob) L.ob.visible = planarDist(pGroup.position,L.c) < L.r + 45; } }
-  /* 时辰自动流动：约 6 分钟走完晨—午—暮—夜 */
-  if(started){ themeAuto-=dt; if(themeAuto<=0){ themeAuto=90;
+  /* 时辰自动流动：约 6 分钟走完晨—午—暮—夜，支持开关与暂停 */
+  if(started && themeAutoFlow){ themeAuto-=dt; if(themeAuto<=0){ themeAuto=90;
     themeIx=(themeIx+1)%THEMES.length; applyTheme(true); } }
   /* 篝火：入夜燃起，火苗摇曳 */
   if(window.__campfire){ const night=themeIx>=2;
@@ -2833,7 +2875,14 @@ function loop(){
     if(fb){ fb.b.add(um); um.position.set(0,-0.26,0.02); um.rotation.set(0,0,0); }
     else { um.position.set(0.19,1.17,0.31); um.rotation.set(-0.2,0,0.1); figP.yawG.add(um); }
     window.__umbM=um; window.__umbAnchor=fb?fb.b:figP.yawG; }
-  { const umbOn=hasUmb&&(weather==='rain'||weather==='snow')&&rollT<0;
+  { /* 人物骨骼异步加载完成后，将伞从 body 重挂到右手前臂骨 */
+    const fbNow=(figP.rig&&figP.rig.joints)?figP.rig.joints.find(j=>j.b.name==='foreArmR'):null;
+    if(window.__umbM && fbNow && window.__umbAnchor!==fbNow.b){
+      fbNow.b.add(window.__umbM);
+      window.__umbM.position.set(0,-0.26,0.02);
+      window.__umbM.rotation.set(0,0,0);
+      window.__umbAnchor=fbNow.b; }
+    const umbOn=hasUmb&&(weather==='rain'||weather==='snow')&&rollT<0;
     if(window.__umbM){ window.__umbM.visible=umbOn;
       if(umbOn&&window.__umbAnchor){
         window.__umbAnchor.getWorldPosition(_wv);
@@ -3032,13 +3081,15 @@ function loop(){
   { /* 太阳高度随时段变：清晨、黄昏压低拉出长影，正午高悬；补光永远在背光一侧 */
     const upS=_sunP.copy(pP).normalize(); _sunT.set(0.35,0,1).cross(upS); if(_sunT.lengthSq()<1e-4) _sunT.set(1,0,0); _sunT.normalize();
     const SO=[[22,56],[58,24],[17,-58],[46,30]][themeIx]||[52,30];
-    sun.position.copy(pP).addScaledVector(upS,SO[0]).addScaledVector(_sunT,SO[1]); sun.target.position.copy(pP); sun.target.updateMatrixWorld();
-    fill.position.copy(pP).addScaledVector(upS,26).addScaledVector(_sunT,-SO[1]*0.9); fill.target.position.copy(pP); fill.target.updateMatrixWorld();
+    const kSO=Math.min(1,dt*2.2);
+    _curSO[0]+=(SO[0]-_curSO[0])*kSO; _curSO[1]+=(SO[1]-_curSO[1])*kSO;
+    sun.position.copy(pP).addScaledVector(upS,_curSO[0]).addScaledVector(_sunT,_curSO[1]); sun.target.position.copy(pP); sun.target.updateMatrixWorld();
+    fill.position.copy(pP).addScaledVector(upS,26).addScaledVector(_sunT,-_curSO[1]*0.9); fill.target.position.copy(pP); fill.target.updateMatrixWorld();
     const wet=weather==='rain'||weather==='snow'||weather==='dust';
     fill.intensity=[0.42,0.5,0.34,0.24][themeIx]*(wet?0.6:1); hemi.intensity=[0.85,1.0,0.62,0.52][themeIx];
     hemi.groundColor.setHex(themeIx<2?0x6a5f48:0x3a3428);
     if(window.__skyMat) window.__skyMat.uniforms.sunDir.value.copy(sun.position).sub(pP).normalize();
-    if(GRADE){ const U=GRADE.mat.uniforms, k=Math.min(1,dt*1.5);
+    if(GRADE && !photoMode){ const U=GRADE.mat.uniforms, k=Math.min(1,dt*1.5);
       const M=[[1.06,1.0,0.93, 0.96,0.99,1.05, 1.1,0.32],[1.04,1.01,0.96, 0.96,0.99,1.05, 1.12,0.22],[1.1,0.99,0.88, 0.94,0.96,1.08, 1.08,0.34],[0.96,1.0,1.08, 0.9,0.96,1.1, 0.92,0.3]][themeIx];
       _sunT.set(M[0],M[1],M[2]); U.uHigh.value.lerp(_sunT,k); _sunT.set(M[3],M[4],M[5]); U.uShadow.value.lerp(_sunT,k);
       U.uSat.value+=((wet?M[6]*0.84:M[6])-U.uSat.value)*k; U.uCon.value+=(M[7]-U.uCon.value)*k; } }
@@ -3062,7 +3113,7 @@ document.getElementById('btnJump').addEventListener('pointerdown',e=>{ e.prevent
   if(jumpOff<=0&&vy===0){ vy=9.8; playJumpSfx(); } });
 /* 切后台暂停音频与语音 */
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){ if(window.__pauseOff) return; if(started){ hardPaused=true; const ro=$('resumeOv'); if(ro) ro.classList.add('show'); }
+  if(document.hidden){ if(started){ hardPaused=true; const ro=$('resumeOv'); if(ro) ro.classList.add('show'); }
     if(actx) actx.suspend(); if(window.speechSynthesis) speechSynthesis.cancel(); }
   else if(actx) actx.resume(); });
 loop(); updHUD(); applyLang();
@@ -3262,6 +3313,7 @@ function renderAlbum(){
 function openAlbum(){ renderAlbum(); $('tasks').classList.remove('show'); $('album').classList.add('show'); releaseLock(); }
 function closeAlbum(){ $('album').classList.remove('show'); }
 $('btnAlbum').addEventListener('click',e=>{ e.preventDefault(); openAlbum(); });
+const bp=$('btnPhoto'); if(bp) bp.addEventListener('click',e=>{ e.preventDefault(); togglePhoto(); });
 $('albumClose').addEventListener('click',closeAlbum);
 $('album').addEventListener('click',e=>{ if(e.target===$('album')) closeAlbum(); });
 $('albRcImg').addEventListener('click',makeCardsImage);
@@ -3285,9 +3337,23 @@ document.querySelector('.hudR').addEventListener('click',()=>{ const on=$('tasks
     wxB.querySelectorAll('a').forEach(x=>x.classList.toggle('on',x===a));
     if(wxFix){ weather=wxFix; weatherT=9999; }
     else { weatherT=8; } }); }
+{ const tdB=document.getElementById('todBtns');
+  if(tdB){
+    const updTodUI=()=>{
+      tdB.querySelectorAll('a').forEach(x=>{
+        if(themeAutoFlow) x.classList.toggle('on', x.dataset.t==='auto');
+        else x.classList.toggle('on', +x.dataset.t===themeIx);
+      });
+    };
+    tdB.addEventListener('click',e=>{ const a=e.target.closest('a'); if(!a) return;
+      const t=a.dataset.t;
+      if(t==='auto'){ themeAutoFlow=true; themeAuto=90; }
+      else { themeAutoFlow=false; themeIx=+t; applyTheme(); }
+      updTodUI(); });
+  } }
 { const stB=document.getElementById('stBtns');
-  if(stB){ let hst='real'; try{ hst=localStorage.getItem('hxStyle')||'real'; }catch(e){}
-    const applyStyle=()=>{ if(GRADE) GRADE.mat.uniforms.uStyle.value=(hst==='dancai')?1:0;
+  if(stB){ let hst='dancai'; try{ hst=localStorage.getItem('hxStyle')||'dancai'; }catch(e){}
+    const applyStyle=()=>{ if(GRADE&&GRADE.mat) GRADE.mat.uniforms.uStyle.value=(hst==='dancai')?1:0;
       document.documentElement.dataset.style=hst;
       stB.querySelectorAll('a').forEach(x=>x.classList.toggle('on',x.dataset.s===hst)); };
     applyStyle();
@@ -3299,7 +3365,11 @@ document.querySelector('.hudR').addEventListener('click',()=>{ const on=$('tasks
     const k2=a.dataset.f!=null?'f':(a.id||'');
     if(k2==='f'){ photoF=+a.dataset.f; photoApply();
       pB.querySelectorAll('a[data-f]').forEach(x=>x.classList.toggle('on',+x.dataset.f===photoF)); }
-    else if(a.id==='phInsc'){ photoInsc=!photoInsc; a.classList.toggle('on',photoInsc); }
+    else if(a.id==='phInsc'){
+      photoInsc=(photoInsc+1)%3;
+      a.classList.toggle('on',photoInsc>0);
+      a.textContent=(photoInsc===2)?(T.lang==='zh'?'引文':'Quote'):(photoInsc===1)?(T.lang==='zh'?'题字':'Title'):(T.lang==='zh'?'无题字':'No text');
+    }
     else if(a.id==='phShot'){ photoShoot(); }
     else if(a.id==='phExit'){ togglePhoto(); } }); } }
 document.getElementById('resumeGo').addEventListener('click',()=>{

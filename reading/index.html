@@ -665,7 +665,7 @@ const SOC = [
  {n:{zh:'小红书',en:'Xiaohongshu (RedNote)'},u:'https://www.xiaohongshu.com/search_result?keyword=%E7%8E%8B%E6%98%8E%E7%8F%82',d:{zh:'王明珂 · 中文笔记',en:'Wang Ming-ke · notes'}},
  {n:{zh:'中研院史语所',en:'IHP, Academia Sinica'},u:'https://www1.ihp.sinica.edu.tw/Fellows/Ming-ke_Wang',d:{zh:'王明珂研究员页面 · 官方',en:'Official fellow page, IHP'}}
 ];
-const T = { lang:'zh', dict:{
+const T = { lang:(function(){try{return new URLSearchParams(location.search).get('lang')||localStorage.getItem('hxLang')||localStorage.getItem('walkLang')||'zh';}catch(e){return 'zh';}})(), dict:{
  villageLabel:{zh:"岷江上游 · 田野笔记",en:"Upper Min River · field notes"},
  villageTitle:{zh:"一条山沟里的三个寨子",en:"Three villages in one valley"},
  villageSource:{zh:"据王明珂《华夏边缘》2020 年版代序〈如何观看与了解边疆〉，第 10–11 页。图示依据书中例子绘制。",en:"After Wang Ming-ke’s preface to the 2020 Chinese edition, pp. 10–11. The drawing illustrates his example."},
@@ -775,6 +775,7 @@ function applyLang(){
   document.querySelectorAll('[data-i18n-aria],[data-i18n-alt],[data-i18n-title]').forEach(el=>{
     [['i18nAria','aria-label'],['i18nAlt','alt'],['i18nTitle','title']].forEach(([k,a])=>{ const d=T.dict[el.dataset[k]]; if(d) el.setAttribute(a,tx(d)); }); });
   document.documentElement.lang = T.lang==='zh' ? 'zh-CN' : 'en';
+  try{ localStorage.setItem('hxLang', T.lang); localStorage.setItem('walkLang', T.lang); }catch(e){}
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const v = T.dict[el.dataset.i18n]; if(v) el.innerHTML = tx(v); });
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const v = T.dict[el.dataset.i18nHtml]; if(v) el.innerHTML = tx(v); });
   document.getElementById('cards').innerHTML = CARDS.map((c,i)=>
