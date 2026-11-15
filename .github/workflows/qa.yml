@@ -1,0 +1,27 @@
+# 自动回归 / Automated QA
+# 推送到 main 或提交 Pull Request 时运行：
+#   1. 检查主站与阅读版是否和共用源码 src/site.src.html 一致
+#   2. 用无头 Chrome 跑 tools/qa_run.mjs（五场景 × 五天气 × 两画风 + 双语检查）
+# GitHub 的 ubuntu 运行器预装了 google-chrome，qa_run.mjs 会按 PATH 找到它；
+# 这里仍显式设置 CHROME，让意图更清楚。
+name: QA
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    env:
+      CHROME: google-chrome
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 检查主站与阅读版和源码一致 / Check generated pages match source
+        run: python3 tools/site_src.py check
+      - name: 无头 Chrome 回归 / Headless Chrome regression
+        run: node tools/qa_run.mjs
