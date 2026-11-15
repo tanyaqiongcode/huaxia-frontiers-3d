@@ -344,18 +344,19 @@
     .actBtn{bottom:196px}
     .lockTip{display:none !important}
   }
+  :focus-visible{outline:2px solid var(--gold-hi);outline-offset:2px}
 </style>
 </head>
 <body>
-<canvas id="gl"></canvas>
+<canvas id="gl" role="img" aria-label="3D 游戏画面"></canvas>
 <div class="vignette"></div><div class="grain"></div>
 <div class="bar" id="barT"></div><div class="bar" id="barB"></div>
-<div id="compass"><span id="cA">▲</span><span id="cTxt"></span></div>
+<div id="compass" aria-hidden="true"><span id="cA">▲</span><span id="cTxt"></span></div>
 <div class="zoneTabs" id="zoneTabs">
   <a data-z="village" class="on"><svg class="zg" viewBox="0 0 12 12"><path d="M4.2 1.2 L7.8 1.2 L8.6 10.8 L3.4 10.8 Z M5.2 8 h1.6 v2.8"/></svg>羌寨</a><a data-z="hehuang"><svg class="zg" viewBox="0 0 12 12"><path d="M2.2 5.2 A4.6 4.6 0 0 1 9.8 5.2 M3 8.6 h6 M5 5.6 L7 7.4"/></svg>河湟</a><a data-z="wall"><svg class="zg" viewBox="0 0 12 12"><path d="M2 10.5 V4.5 h2 v1.8 h1.7 V4.5 h1.8 v1.8 h1.7 V4.5 h2 v6 Z"/></svg>长城</a><a data-z="modern"><svg class="zg" viewBox="0 0 12 12"><path d="M6 11 V5.4 M3.4 5.4 h5.2 L7.5 2.6 h-3 Z M9.6 11 H2.4"/></svg>现代</a><a data-z="beichuan"><svg class="zg" viewBox="0 0 12 12"><path d="M6 1.4 L10.6 6 L6 10.6 L1.4 6 Z"/><circle cx="6" cy="6" r="1.3"/></svg>北川</a>
 </div>
 <div class="mark" title="Huaxia Frontiers"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="#c9a45c" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="#c9a45c"/></svg></div>
-<div class="xlinks"><a href="#" id="btnPhoto" data-i18n="phBtn">拍照</a><a href="#" id="btnAlbum" data-i18n="albumBtn">卡册</a><a href="../" data-i18n="lnkMain">主站</a><a href="../reading/" data-i18n="lnkRead">阅读版</a></div>
+<div class="xlinks"><a href="#" id="btnPhoto" role="button" aria-pressed="false" data-i18n="phBtn">拍照</a><a href="#" id="btnAlbum" data-i18n="albumBtn">卡册</a><a href="../" data-i18n="lnkMain">主站</a><a href="../reading/" data-i18n="lnkRead">阅读版</a></div>
 <button class="langBtn" id="btnLang">EN</button>
 <button id="btnJump" data-i18n="btnJump">跳跃</button>
 
@@ -363,7 +364,7 @@
 <div id="objTrack"><span id="objTxt"></span></div>
 <div id="locCard"><b id="locName"></b><i id="locSub"></i></div>
 <div class="sealStamp">缘</div>
-<div id="sub"><span id="subWho"></span><span id="subTxt"></span></div>
+<div id="sub" aria-live="polite"><span id="subWho"></span><span id="subTxt"></span></div>
 <div id="charge"><svg viewBox="0 0 48 48"><circle class="bgc" cx="24" cy="24" r="20"/><circle class="fgc" id="chargeFg" cx="24" cy="24" r="20"/></svg><b>E</b></div>
 <div class="hudR">
   <div class="ring"><svg width="44" height="44"><circle cx="22" cy="22" r="18" stroke="rgba(201,164,92,.2)" stroke-width="3" fill="none"/><circle id="ringFg" cx="22" cy="22" r="18" stroke="#e8cf96" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="113" stroke-dashoffset="113"/></svg><b id="pct">0%</b></div>
@@ -372,18 +373,18 @@
 <div class="inv" id="inv"></div>
 <div class="posHUD" id="posHUD" data-i18n-html="posHud">你现在：<b id="posTxt">边缘之上</b></div>
 <div class="hint" id="hint" data-i18n-html="hintTxt"><kbd>W A S D</kbd> 移动 · 拖拽 视角 · <kbd>E</kbd> 对话<br><kbd>T</kbd> 晨昏 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务</div>
-<div class="tasks" id="tasks"><button class="xClose tClose" id="tasksClose" title="关闭">✕</button><b data-i18n="tasksT">行走任务</b><div class="goalT" id="tGoal"></div>
+<div class="tasks" id="tasks" role="dialog" aria-label="行走任务"><button class="xClose tClose" id="tasksClose" title="关闭" aria-label="关闭">✕</button><b data-i18n="tasksT">行走任务</b><div class="goalT" id="tGoal"></div>
   <div class="wxRow"><b data-i18n="wxT">天气</b><span id="wxBtns">
-    <a data-w="auto" class="on" data-i18n="wxAuto">自动</a><a data-w="sunny" data-i18n="wxSun">晴</a><a data-w="rain" data-i18n="wxRain">雨</a><a data-w="snow" data-i18n="wxSnow">雪</a><a data-w="gust" data-i18n="wxWind">风</a><a data-w="dust" data-i18n="wxDust">尘</a>
+    <a data-w="auto" class="on" role="button" aria-pressed="true" data-i18n="wxAuto">自动</a><a data-w="sunny" role="button" aria-pressed="false" data-i18n="wxSun">晴</a><a data-w="rain" role="button" aria-pressed="false" data-i18n="wxRain">雨</a><a data-w="snow" role="button" aria-pressed="false" data-i18n="wxSnow">雪</a><a data-w="gust" role="button" aria-pressed="false" data-i18n="wxWind">风</a><a data-w="dust" role="button" aria-pressed="false" data-i18n="wxDust">尘</a>
   </span></div>
   <div class="wxRow"><b data-i18n="todT">时辰</b><span id="todBtns">
-    <a data-t="auto" class="on" data-i18n="todAuto">流转</a><a data-t="0" data-i18n="todDawn">晨光</a><a data-t="1" data-i18n="todNoon">正午</a><a data-t="2" data-i18n="todDusk">暮色</a><a data-t="3" data-i18n="todNight">月夜</a>
+    <a data-t="auto" class="on" role="button" aria-pressed="true" data-i18n="todAuto">流转</a><a data-t="0" role="button" aria-pressed="false" data-i18n="todDawn">晨光</a><a data-t="1" role="button" aria-pressed="false" data-i18n="todNoon">正午</a><a data-t="2" role="button" aria-pressed="false" data-i18n="todDusk">暮色</a><a data-t="3" role="button" aria-pressed="false" data-i18n="todNight">月夜</a>
   </span></div>
   <div class="wxRow"><b data-i18n="stT">画风</b><span id="stBtns">
-    <a data-s="real" class="on" data-i18n="stReal">写实</a><a data-s="dancai" data-i18n="stDan">淡彩插图</a>
+    <a data-s="real" class="on" role="button" aria-pressed="true" data-i18n="stReal">写实</a><a data-s="dancai" role="button" aria-pressed="false" data-i18n="stDan">淡彩插图</a>
   </span></div>
   <div class="wxRow"><b data-i18n="gWho">行走者</b><span class="gSel gSelIn" id="gSel2"><a data-g="m" data-i18n="gM">男</a><a data-g="f" data-i18n="gF">女</a></span>
-    <span class="oSel oSelIn"><a data-o="0" title="卡其棕 · 水洗灰" style="--c1:#94714f;--c2:#47443a"></a><a data-o="1" title="灰粉" style="--c1:#d8a2a0;--c2:#2f7fd8"></a><a data-o="2" title="亮蓝" style="--c1:#2f73d8;--c2:#f07a2e"></a></span></div><ul>
+    <span class="oSel oSelIn"><a data-o="0" title="卡其棕 · 水洗灰" role="button" aria-label="装束：卡其棕 · 水洗灰" style="--c1:#94714f;--c2:#47443a"></a><a data-o="1" title="灰粉" role="button" aria-label="装束：灰粉" style="--c1:#d8a2a0;--c2:#2f7fd8"></a><a data-o="2" title="亮蓝" role="button" aria-label="装束：亮蓝" style="--c1:#2f73d8;--c2:#f07a2e"></a></span></div><ul>
   <li id="tCard">读书卡 0/5</li>
   <li id="tShard">拾得 17 件史料（0/17）</li>
   <li id="tNpc1" data-i18n="tNpc1">倾听 寨老阿爷 的讲述</li>
@@ -401,46 +402,46 @@
   </div>
   <div class="memo" id="tMemo"></div>
   </div>
-<canvas id="mmap" width="300" height="300"></canvas>
-<div class="dlg" id="dlg"><div class="who" id="dlgWho"></div><div class="txt" id="dlgTxt"></div><div class="more" id="dlgMore" data-i18n="moreCont">E · 继续</div></div>
-<div class="toast" id="toast"></div>
+<canvas id="mmap" width="300" height="300" aria-hidden="true"></canvas>
+<div class="dlg" id="dlg" role="dialog" aria-modal="false" aria-live="polite" aria-label="讲述对话"><div class="who" id="dlgWho"></div><div class="txt" id="dlgTxt"></div><div class="more" id="dlgMore" data-i18n="moreCont">E · 继续</div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <button class="actBtn" id="actBtn">按 E · 倾听</button>
-<div class="dlg" id="poi"><div class="who" id="poiWho"></div><div class="txt" id="poiTxt"></div><div class="more" id="poiMore" data-i18n="poiClose">E · 关闭</div></div>
+<div class="dlg" id="poi" role="dialog" aria-modal="false" aria-live="polite" aria-label="史料说明"><div class="who" id="poiWho"></div><div class="txt" id="poiTxt"></div><div class="more" id="poiMore" data-i18n="poiClose">E · 关闭</div></div>
 <div class="keysPanel" id="keysPanel" data-i18n-html="keysAll"></div>
 <div class="lockTip" id="lockTip"></div>
-<div class="cardsOut" id="cardsOut"><div class="row"><a id="cardsDl" download="边缘行走_读书卡.png" data-i18n="cardsDl">下载图片</a><button id="cardsClose" data-i18n="cardsClose">关闭</button></div>
+<div class="cardsOut" id="cardsOut" role="dialog" aria-label="读书卡图片"><div class="row"><a id="cardsDl" download="边缘行走_读书卡.png" data-i18n="cardsDl">下载图片</a><button id="cardsClose" data-i18n="cardsClose">关闭</button></div>
   <div class="tip" data-i18n="cardsTip">手机上长按图片即可保存或转发</div><img id="cardsImg" alt="读书卡" data-i18n-alt="rcAlt"></div>
-<div class="rcard" id="rcard"><div class="in">
+<div class="rcard" id="rcard" role="dialog" aria-modal="false" aria-label="读书卡"><div class="in">
   <div class="k" id="rcK"></div><h3 id="rcT"></h3><div class="pt" id="rcP"></div>
   <div class="h" data-i18n="rcKey">导读要点</div><p id="rcB"></p>
   <div class="h" data-i18n="rcQh">讨论题</div><p class="q" id="rcQ"></p>
   <div class="n" data-i18n="rcNote">要点是导读者的概括，不是原书引文；书中观点请以原著为准。</div>
   <button class="go" id="rcOk" data-i18n="rcOk">收 好 · 继 续 行 走</button>
 </div></div>
-<div class="joy" id="joy"><div class="base"></div><div class="stick" id="stick"></div></div>
+<div class="joy" id="joy" aria-hidden="true"><div class="base"></div><div class="stick" id="stick"></div></div>
 
-<div class="veil" id="intro"><div class="card">
+<div class="veil" id="intro" role="dialog" aria-modal="false" aria-label="边缘行走 · 游戏介绍"><div class="card">
   <h1 data-i18n="gTitle">边缘行走</h1><div class="sub" data-i18n="gSub">《华夏边缘：历史记忆与族群认同》· 互动导读</div>
   <p data-i18n-html="gIntro">你是一名行走者，落在华夏世界的小行星上。河湟的遗址、岷江的羌寨、长城的烽燧——十七件史料散落在谷地里——族谱、竹简、甲骨、羌绣、田野笔记……每一件对应书中的一个概念；五段讲述等着被听见。<br>收集它们，看那条金色的<b style="color:var(--gold-hi)">边界线</b>如何随你的脚步移动。它不在墙上，也不在族谱里——在资源、记忆，与每一次往来之间。<br>也可以按 <b style="color:var(--gold-hi)">G</b> 邀请一位同行者，双人同屏行走。</p>
   <div class="keys" data-i18n-html="gKeys"><kbd>W A S D</kbd> 移动 · 鼠标拖拽 视角 · 滚轮 远近<br><kbd>E</kbd> 对话 · <kbd>T</kbd> 晨昏切换 · <kbd>M</kbd> 声音 · <kbd>J</kbd> 任务清单</div>
   <p class="note" data-i18n="gNote">本作为《华夏边缘》的阅读辅助：场景与讲述者均为虚构，不代表任何真实人物或群体；书中观点请以原著为准。</p>
   <div class="gSel" id="gSel"><span data-i18n="gWho">行走者</span><a data-g="m" data-i18n="gM">男</a><a data-g="f" data-i18n="gF">女</a></div>
-  <div class="oSel" id="oSel"><span data-i18n="gOut">装束</span><a data-o="0" title="卡其棕 · 水洗灰" style="--c1:#94714f;--c2:#47443a"></a><a data-o="1" title="灰粉" style="--c1:#d8a2a0;--c2:#2f7fd8"></a><a data-o="2" title="亮蓝" style="--c1:#2f73d8;--c2:#f07a2e"></a></div>
+  <div class="oSel" id="oSel"><span data-i18n="gOut">装束</span><a data-o="0" title="卡其棕 · 水洗灰" role="button" aria-label="装束：卡其棕 · 水洗灰" style="--c1:#94714f;--c2:#47443a"></a><a data-o="1" title="灰粉" role="button" aria-label="装束：灰粉" style="--c1:#d8a2a0;--c2:#2f7fd8"></a><a data-o="2" title="亮蓝" role="button" aria-label="装束：亮蓝" style="--c1:#2f73d8;--c2:#f07a2e"></a></div>
   <button class="go" id="btnGo" data-i18n="gGo">开 始 行 走</button>
   <button class="go" id="btnNew" style="display:none;margin-top:14px" data-i18n="gNew">重 新 开 始</button>
 </div></div>
 
 <div id="enterFade"></div>
-<div class="resumeOv" id="resumeOv"><div class="rc"><b data-i18n="rsTitle">已 暂 停</b><button class="go pri" id="resumeGo" data-i18n="rsGo">继 续</button></div></div>
+<div class="resumeOv" id="resumeOv" role="dialog" aria-modal="false" aria-label="已暂停"><div class="rc"><b data-i18n="rsTitle">已 暂 停</b><button class="go pri" id="resumeGo" data-i18n="rsGo">继 续</button></div></div>
 <div class="phCap" id="phCap"><b id="phCapMain"></b><i id="phCapSub"></i></div>
 <div class="photoBar" id="photoBar">
-  <a data-f="0" class="on" data-i18n="phF0">原片</a><a data-f="1" data-i18n="phF1">黑白</a><a data-f="2" data-i18n="phF2">怀旧</a><a data-f="3" data-i18n="phF3">淡彩</a>
+  <a data-f="0" class="on" role="button" aria-pressed="true" data-i18n="phF0">原片</a><a data-f="1" role="button" aria-pressed="false" data-i18n="phF1">黑白</a><a data-f="2" role="button" aria-pressed="false" data-i18n="phF2">怀旧</a><a data-f="3" role="button" aria-pressed="false" data-i18n="phF3">淡彩</a>
   <a id="phInsc" data-i18n="phIn">题字</a>
   <a id="phShot" class="pri" data-i18n="phSh">拍照 · 存卡册</a>
   <a id="phExit" data-i18n="phX">退出</a>
 </div>
-<div class="veil" id="end"><div class="card">
-  <button class="xClose" id="endClose" title="关闭">✕</button>
+<div class="veil" id="end" role="dialog" aria-modal="false" aria-label="行至边缘"><div class="card">
+  <button class="xClose" id="endClose" title="关闭" aria-label="关闭">✕</button>
   <h1 data-i18n="eTitle">行至边缘</h1><div class="sub" data-i18n="eSub">WALKED TO THE MARGIN</div>
   <p data-i18n-html="eBody">你拾起了散落的记忆，也听完了五段讲述。</p>
   <div class="endQs" id="endQs"></div>
@@ -455,8 +456,8 @@
     <button class="go" id="btnEndAgain" data-i18n="eGo">重 新 行 走</button>
   </div>
 </div></div>
-<div class="album" id="album"><div class="in">
-  <button class="xClose" id="albumClose" title="关闭">✕</button>
+<div class="album" id="album" role="dialog" aria-modal="false" aria-label="卡册"><div class="in">
+  <button class="xClose" id="albumClose" title="关闭" aria-label="关闭">✕</button>
   <h2 data-i18n="albumT">卡 册</h2>
   <div class="h"><b id="albRcT">读书卡 0/5</b><a id="albRcImg" data-i18n="cardsImg">生成读书卡图片</a></div>
   <div class="rc" id="albRc"></div>
