@@ -33,15 +33,32 @@
 ## 仓库里有什么
 
 ```
-├── index.html               # 沉浸版（单页，样式与交互内联）
-├── reading/index.html       # 阅读版
+├── src/site.src.html        # 沉浸版与阅读版的共用源码（改这里，再生成下面两页）
+├── index.html               # 沉浸版（由 src 生成）
+├── reading/index.html       # 阅读版（由 src 生成）
 ├── game/index.html          # 边缘行走 · 互动导读
 ├── assets/three.min.js      # three.js r128（本地化）
 ├── assets/models/*.glb      # 导读里的碉楼、石屋、长城、烽燧、遗址、树与牲畜（由 blender/game_models.py 生成）
 ├── assets/tex/              # 写实材质
 ├── assets/build.mp4 · render_01..03.png · plates/   # 造物记与图录
+├── tools/qa_run.mjs         # 无头浏览器回归测试与画风对比截图
+├── tools/site_src.py        # 由共用源码生成两页 / 检查是否一致
 └── blender/build_complete.blend
 ```
+
+## 改动与测试
+
+沉浸版和阅读版共用 `src/site.src.html`：两页共用的内容只写一次，只属于某一页的段落用独占一行的 `@@imm`（沉浸版）、`@@read`（阅读版）与 `@@end` 包起来，资源路径写作 `{{R}}assets/…`。
+
+```bash
+python3 tools/site_src.py build          # 由源码生成 index.html 与 reading/index.html
+python3 tools/site_src.py check          # 检查两页与源码一致
+node tools/qa_run.mjs                    # 回归：五场景 × 五天气 × 两画风、两站中英文、拍照与存档（约 2 分钟）
+node tools/qa_run.mjs --only-shots --shots <目录>   # 五场景写实 / 淡彩同机位对比图
+sh tools/install-hooks.sh                # 安装提交前检查（上面两项检查在每次提交前自动运行）
+```
+
+回归测试需要本机的 Google Chrome、python3 和 Node 22 以上，不需要安装 npm 包。
 
 ## 重新搭一遍
 

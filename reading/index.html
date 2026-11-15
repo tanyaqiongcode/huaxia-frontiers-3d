@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>华夏边缘 · Huaxia Frontiers</title>
+<title>华夏边缘 · 阅读版</title>
 <meta name="description" content="王明珂《华夏边缘：历史记忆与族群认同》3D沉浸式主题站——边缘如何造就华夏。Bilingual 中文/English.">
 <meta name="theme-color" content="#06070d">
 <meta property="og:type" content="website">
@@ -411,10 +411,32 @@ main{overflow-x:clip}
   #hero .entries a:hover{border-bottom-color:var(--gold-hi)}
   #hero .entries a.cur{color:var(--ink);border-bottom-color:transparent;cursor:default}
   #hero .entries .sep{color:var(--dim)}
+
+  /* Compact screens: keep atmosphere controls in flow, clear of reading and entry links. */
+  #hero .entries{flex-wrap:wrap;row-gap:12px}
+  #hero .entries a.cur{font-weight:700;border-bottom:2px solid var(--gold-hi)}
+  :focus-visible{outline:3px solid var(--gold-hi);outline-offset:4px}
+  @media(max-width:1024px){
+    #apanel,#apanel:not(.closed){position:relative;inset:auto;margin:80px 24px 0 auto;width:min(232px,calc(100% - 48px));max-height:none;overflow:visible;background:var(--bg2)}
+    #hero{min-height:calc(100svh - 128px);padding-top:40px;padding-bottom:40px}
+  }
+  .skip{position:fixed;top:-80px;left:14px;z-index:99;padding:10px 18px;background:var(--gold);color:#100c04;border-radius:99px}
+  .skip:focus{top:14px}
+
+  input[type=range]:focus-visible{outline:3px solid var(--gold-hi);outline-offset:6px}
+  /* Desktop focus targets and bounded popovers, including 800px windows. */
+  main[id],main section[id],#story,#lscroll{scroll-margin-top:90px}
+  .cmdbar{max-width:calc(100% - 100px)}
+  .navpop{max-height:calc(100dvh - 76px);overflow-y:auto;overscroll-behavior:contain;max-width:calc(100vw - 28px)}
+  html:has(#bookOverlay[open]){overflow:hidden}
+  #bookOverlay .glass{overscroll-behavior:contain}
+  .resumeRead{max-width:calc(100vw - 44px);flex-wrap:wrap}
+  body.ui-hidden .resumeRead{display:none}
 </style>
 </head>
 <body>
-<canvas id="bg"></canvas>
+<a class="skip" href="#main-content" data-i18n="skipTxt">跳到正文</a>
+<canvas id="bg" aria-hidden="true"></canvas>
 <div class="vignette"></div>
 <div class="grain"></div>
 
@@ -431,7 +453,7 @@ main{overflow-x:clip}
 </div>
 <div class="whereNow" id="whereNow" aria-hidden="true"></div>
 <div class="resumeRead" id="resumeRead" role="region" aria-label="继续上次阅读"><span id="resumeTxt"></span><button type="button" id="resumeGo"></button><button type="button" class="x" id="resumeX" aria-label="关闭">×</button></div>
-<div class="navpop" id="navpop" style="display:none">
+<nav class="navpop" id="navpop" aria-label="章节与版本导航" style="display:none">
   <a href="#concepts" data-i18n="nConcepts">概念八章</a>
   <a href="#plates" data-i18n="nPlates">信息图</a>
   <a href="#lscroll" data-i18n="nScroll">边缘长卷</a>
@@ -442,7 +464,7 @@ main{overflow-x:clip}
   <a href="#translation" data-i18n="nTr">译程</a>
   <a href="../" style="color:var(--gold-hi)" data-i18n="lnkImmNav">沉浸体验 ↗</a>
   <a href="../game/" style="color:var(--gold-hi)" data-i18n="lnkGameNav2">边缘行走 · 互动导读 ↗</a>
-</div>
+</nav>
 <button type="button" class="restore" id="btnRestore" title="恢复界面 (H)" data-i18n-title="aRestoreT">◎</button>
 <div class="mark" title="Huaxia Frontiers"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="103 17" stroke-linecap="round" transform="rotate(-58 24 24)"/><circle cx="40.5" cy="9.5" r="2.4" fill="currentColor"/></svg></div>
 
@@ -462,7 +484,7 @@ main{overflow-x:clip}
   </div>
 </div>
 
-<main>
+<main id="main-content" tabindex="-1">
   <section id="hero">
     <h1 class="zh" data-i18n="heroZh">华夏边缘</h1>
     <div class="en" data-i18n="ensub">历史记忆与族群认同</div>
@@ -472,7 +494,7 @@ main{overflow-x:clip}
       <a class="btn" href="#story" data-i18n="ctaMain">从岷江上游读起</a>
       <a class="btn ghost" href="#media" data-i18n="ctaMedia">影像与访谈</a>
     </div>
-    <nav class="entries" aria-label="版本入口" data-i18n-aria="aEntries"><a href="../" data-i18n="enImm">沉浸体验</a><span class="sep">·</span><a href="./" data-i18n="enRead" aria-current="page" class="cur">阅读版</a><span class="sep">·</span><a href="../game/" data-i18n="enGame">互动导读</a></nav>
+    <nav class="entries" aria-label="版本入口" data-i18n-aria="aEntries"><a href="../" data-i18n="enImm">沉浸体验</a><span class="sep" aria-hidden="true">·</span><a href="./" data-i18n="enRead" aria-current="page" class="cur">阅读版</a><span class="sep" aria-hidden="true">·</span><a href="../game/" data-i18n="enGame">互动导读</a></nav>
     <div class="scrollhint" data-i18n="hint">SCROLL · 向下进入边缘</div>
     <button type="button" class="heroBook" aria-haspopup="dialog" aria-controls="bookOverlay"><img src="../assets/book/cover.jpg" alt="华夏边缘 · 世纪文景2020" data-i18n-alt="aCover"><span class="hbCue"><span class="hbPing"></span><span class="hbTxt" data-i18n="hbCue">点击读简介</span></span></button>
   </section>
@@ -525,7 +547,7 @@ main{overflow-x:clip}
       <p class="lead" data-i18n="pLead">两张主题图，把书中的范式之争与认同之变收进一方画面。</p></div>
     <div class="plates">
       <figure class="plate reveal" data-lang="zh"><a href="../assets/plates/huaxia-identity-zh.svg" target="_blank" rel="noopener" aria-label="《华夏边缘》族群认同图解（打开矢量原图）" data-i18n-aria="aPlate"><img src="../assets/plates/huaxia-identity-zh.svg" alt="《华夏边缘》族群认同图解" data-i18n-alt="aPlateImg" loading="lazy"></a><figcaption><b data-i18n="pl1a">图版一</b><span data-i18n="pl1b">何为华夏边缘 · 身份认同如何形成</span></figcaption></figure>
-      <figure class="plate reveal" data-lang="en"><a href="../assets/plates/huaxia-identity-en.svg" target="_blank" rel="noopener" aria-label="Reading identity from the margins (open full vector)"><img src="../assets/plates/huaxia-identity-en.svg" alt="Reading identity from the margins: six illustrations and a valley scene" loading="lazy"></a><figcaption><b>PLATE</b><span>Reading identity from the margins</span></figcaption></figure>
+      <figure class="plate reveal" data-lang="en" lang="en"><a href="../assets/plates/huaxia-identity-en.svg" target="_blank" rel="noopener" aria-label="Reading identity from the margins (open full vector)"><img src="../assets/plates/huaxia-identity-en.svg" alt="Reading identity from the margins: six illustrations and a valley scene" loading="lazy"></a><figcaption><b>PLATE</b><span>Reading identity from the margins</span></figcaption></figure>
     </div>
   </section>
 
@@ -765,6 +787,7 @@ const T = { lang:(function(){try{const ok=v=>(v==='zh'||v==='en')?v:null; return
  sidesign:{zh:'华夏边缘 · 历史记忆与族群认同',en:'HUAXIA FRONTIERS · Historical Memories and Ethnic Identities'},
  metaline:{zh:'田野坐标 北纬31°06′ 东经103°51′ · 岷江上游 · 田野期一九九〇至二〇〇〇年代 · 研究编号 01',en:'FIELD SITE 31°06′N 103°51′E · UPPER MIN RIVER · FIELDWORK 1990s—2000s · STUDY No.01'},
  ensub:{zh:'历史记忆与族群认同',en:'Historical Memories and Ethnic Identities'},
+ skipTxt:{zh:'跳到正文',en:'Skip to content'},
  tagline:{zh:'王明珂《华夏边缘》的双语互动导读：从历史记忆理解族群认同。',en:'A bilingual interactive guide to Wang Ming-ke’s <i><span style="font-style:normal">Huaxia</span> Frontiers</i>: understanding ethnic identity through historical memory.'}, enImm:{zh:'沉浸体验',en:'Immersive'}, enRead:{zh:'阅读版',en:'Reading edition'}, enGame:{zh:'互动导读',en:'Interactive walk'}, aEntries:{zh:'版本入口',en:'Ways in'}, lnkImmNav:{zh:'沉浸体验 ↗',en:'Immersive site ↗'}, lnkGameNav2:{zh:'边缘行走 · 互动导读 ↗',en:'Walking the Edge · interactive ↗'}, heroZh:{zh:'华夏边缘',en:'<i>Huaxia</i> Frontiers'},
  quote:{zh:'“当我们在一张纸上画一个圆形时，<br>事实上是它的<b>边缘</b><br>让它看起来像个圆形。”<br><span style="font-size:12.5px;color:var(--dim)">—— 王明珂</span>',en:'"Draw a circle on a sheet of paper: it is its <b>outline</b><br>that makes it a circle."<br><span style="font-size:12.5px;color:var(--dim)">—— Wang Ming-ke</span>'},
  st1:{zh:'人在读',en:'READING'}, st2:{zh:'豆瓣评分',en:'Douban'}, st3:{zh:'微信读书推荐值',en:'WeRead Score'}, st4:{zh:'豆瓣书评',en:'Reviews'},
@@ -819,6 +842,8 @@ function applyLang(){
   document.querySelectorAll('[data-i18n-aria],[data-i18n-alt],[data-i18n-title]').forEach(el=>{
     [['i18nAria','aria-label'],['i18nAlt','alt'],['i18nTitle','title']].forEach(([k,a])=>{ const d=T.dict[el.dataset[k]]; if(d) el.setAttribute(a,tx(d)); }); });
   document.documentElement.lang = T.lang==='zh' ? 'zh-CN' : 'en';
+  document.title=T.lang==='zh'?'华夏边缘 · 阅读版':'Huaxia Frontiers · Reading edition';
+  document.getElementById('navpop').setAttribute('aria-label',T.lang==='zh'?'章节与版本导航':'Chapters and editions');
   try{ localStorage.setItem('hxLang', T.lang); localStorage.setItem('walkLang', T.lang); }catch(e){}
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const v = T.dict[el.dataset.i18n]; if(v) el.innerHTML = tx(v); });
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const v = T.dict[el.dataset.i18nHtml]; if(v) el.innerHTML = tx(v); });
@@ -837,7 +862,11 @@ function applyLang(){
   document.getElementById('btnLang').innerHTML = (T.lang==='zh' ? 'EN' : '中文') + ' <kbd>L</kbd>';
   const labels={btnSound:['环境声音','Ambient sound'],btnPause:['暂停动画','Pause animation'],btnTheme:['浅色主题','Light theme'],btnHide:['隐藏界面','Hide interface'],btnRestore:['恢复界面','Restore interface'],closeBook:['关闭书籍简介','Close book details'],btnLang:['Switch to English','切换到中文']};
   for(const [id,pair] of Object.entries(labels)){const el=document.getElementById(id); const name=pair[T.lang==='zh'?0:1];el.setAttribute('aria-label',name);el.title=name;}
+  document.getElementById('resumeRead').setAttribute('aria-label',T.lang==='zh'?'继续上次阅读':'Continue previous reading');
+  document.getElementById('resumeX').setAttribute('aria-label',T.lang==='zh'?'关闭':'Close');
+  document.getElementById('btnLang').lang=T.lang==='zh'?'en':'zh-CN';
   io2.observe();
+  document.dispatchEvent(new Event('readinglanguagechange'));
 }
 
 /* ================= 思维导图（中英） ================= */
@@ -1290,18 +1319,37 @@ function togglePause(){ paused = !paused; btnPause.classList.toggle('on', paused
 function toggleTheme(){ theme=theme==='dark'?'light':'dark'; document.documentElement.dataset.theme=theme; sceneActions?.applyTheme(theme); btnTheme.classList.toggle('on', theme==='light'); btnTheme.setAttribute('aria-pressed',String(theme==='light')); }
 function toggleHide(){
   const hidden=document.body.classList.toggle('ui-hidden');
-  document.querySelectorAll('main,.cmdbar,.apanel,#navpop').forEach(el=>el.inert=hidden);
+  document.querySelectorAll('main,.cmdbar,.apanel,#navpop,#resumeRead').forEach(el=>el.inert=hidden);
   document.getElementById('navpop').style.display='none';
   document.getElementById('btnMenu').setAttribute('aria-expanded','false');
   document.getElementById(hidden?'btnRestore':'btnHide').focus({preventScroll:true});
 }
 const hb=document.querySelector('.heroBook'); if(hb) hb.onclick=function(){ if(window.openBookOverlay) openBookOverlay(); };
-function toggleNavPop(){ const n=document.getElementById('navpop'); if(n){const open=n.style.display==='none'; n.style.display=open?'flex':'none';document.getElementById('btnMenu').setAttribute('aria-expanded',String(open));if(open)n.querySelector('a').focus();} }
-document.getElementById('navpop').addEventListener('click', function(e){ if(e.target.tagName==='A'){this.style.display='none';document.getElementById('btnMenu').setAttribute('aria-expanded','false');const heading=document.querySelector(e.target.hash+' h2')||document.querySelector(e.target.hash);if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}} });
+function closeNavPop(restore=false){
+  document.getElementById('navpop').style.display='none';
+  const button=document.getElementById('btnMenu'); button.setAttribute('aria-expanded','false');
+  if(restore)button.focus({preventScroll:true});
+}
+function toggleNavPop(){
+  const nav=document.getElementById('navpop');
+  if(nav.style.display!=='none'){closeNavPop(true);return;}
+  nav.style.display='flex';document.getElementById('btnMenu').setAttribute('aria-expanded','true');
+  nav.querySelector('a').focus({preventScroll:true});
+}
+document.getElementById('navpop').addEventListener('click',function(e){
+  const link=e.target.closest('a'); if(!link)return;
+  // Modified clicks keep the current page and its focus intact.
+  if(e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;
+  const section=link.hash?document.getElementById(link.hash.slice(1)):null;
+  closeNavPop(!section);
+  if(section){const heading=section.querySelector('h2')||section;heading.tabIndex=-1;heading.focus({preventScroll:true});}
+});
+document.addEventListener('focusin',e=>{if(!e.target.closest('#navpop,#btnMenu'))closeNavPop();});
+document.addEventListener('click',e=>{if(!e.target.closest('#navpop,#btnMenu'))closeNavPop(document.getElementById('navpop').contains(document.activeElement));});
 document.getElementById('btnMenu').onclick = toggleNavPop;
 document.getElementById('btnTray').onclick = function(){const open=document.body.classList.toggle('tray-open');this.setAttribute('aria-expanded',String(open));if(open)document.getElementById('btnSound').focus();};
 { const foldAp=()=>{ const ap=document.getElementById('apanel'); if(ap){ap.classList.add('closed');document.getElementById('apHead').setAttribute('aria-expanded','false');} };
-  const mqN=matchMedia('(max-width:759px)'); if(mqN.matches) foldAp(); mqN.addEventListener&&mqN.addEventListener('change',e=>{ if(e.matches) foldAp(); }); }
+  const mqN=matchMedia('(max-width:1024px)'); if(mqN.matches) foldAp(); mqN.addEventListener&&mqN.addEventListener('change',e=>{ if(e.matches) foldAp(); }); }
 { const mqR=matchMedia('(prefers-reduced-motion: reduce)');   /* 系统"减少动态效果"在页面打开后改变，也跟着停 */
   mqR.addEventListener&&mqR.addEventListener('change',e=>{ if(e.matches!==paused) togglePause(); }); }
 /* 三寨子故事：一条山沟与邻近三沟 */
@@ -1354,27 +1402,50 @@ try {
 console.info('Huaxia Frontiers site — v7.2 (2026-11-02) | v21');
 document.documentElement.setAttribute('data-scene','morning');
 
-/* ================= 阅读辅助：当前章节定位 + 记住阅读位置 ================= */
+/* ================= 阅读辅助：章节内相对位置，兼容旧记录 ================= */
 (function(){
-  const secs=[...document.querySelectorAll('main section[id], body > section[id]')].filter(x=>x.id!=='hero');
-  const nameOf=sec=>{ const n=sec.querySelector('.num'); return n?n.textContent.trim():''; };
-  const wn=document.getElementById('whereNow');
-  let cur=null, saveT=0;
-  const pick=()=>{ const mid=innerHeight*0.35; let best=null;
-    for(const sc of secs){ const r=sc.getBoundingClientRect(); if(r.top<=mid && r.bottom>mid){ best=sc; break; } }
-    if(best!==cur){ cur=best; wn.textContent=best?nameOf(best):''; wn.classList.toggle('on',!!(best&&nameOf(best)));
-      document.querySelectorAll('#navpop a').forEach(a=>a.setAttribute('aria-current',String(!!best&&a.getAttribute('href')==='#'+best.id))); }
-    clearTimeout(saveT); saveT=setTimeout(()=>{ try{ if(scrollY>400) localStorage.setItem('hxReadPos',JSON.stringify({y:Math.round(scrollY),id:cur?cur.id:'',t:Date.now()})); }catch(e){} },400); };
-  addEventListener('scroll',pick,{passive:true}); addEventListener('resize',pick); pick();
-  /* 下次打开：提示回到上次读到的地方（直接带锚点打开时不提示） */
-  try{ const sv=JSON.parse(localStorage.getItem('hxReadPos')||'null');
-    if(sv && sv.y>400 && !location.hash && scrollY<200){ const sec=document.getElementById(sv.id), rr=document.getElementById('resumeRead');
-      const fill=()=>{ const nm=sec?nameOf(sec):''; document.getElementById('resumeTxt').textContent=(T.lang==='zh'?'上次读到 ':'You stopped at ')+(nm||''); document.getElementById('resumeGo').textContent=T.lang==='zh'?'继续阅读':'Resume'; };
-      fill(); rr.classList.add('on');
-      document.getElementById('resumeGo').onclick=()=>{ scrollTo({top:sv.y,behavior:paused?'auto':'smooth'}); rr.classList.remove('on'); };
-      document.getElementById('resumeX').onclick=()=>rr.classList.remove('on');
-      document.getElementById('btnLang').addEventListener('click',()=>{ fill(); setTimeout(pick,0); });
-      setTimeout(()=>rr.classList.remove('on'),20000); } }catch(e){}
+  const secs=[...document.querySelectorAll('main section[id]')].filter(x=>x.id!=='hero');
+  const nameOf=sec=>sec?.querySelector('.num')?.textContent.trim()||sec?.querySelector('h2')?.textContent.trim()||'';
+  const wn=document.getElementById('whereNow'), rr=document.getElementById('resumeRead');
+  let cur=null, saveT=0, sv=null;
+  try{sv=JSON.parse(localStorage.getItem('hxReadPos')||'null');}catch(e){}
+  function save(){
+    if(scrollY<=400)return;
+    const r=cur?.getBoundingClientRect();
+    try{localStorage.setItem('hxReadPos',JSON.stringify({y:Math.round(scrollY),id:cur?.id||'',ratio:r?Math.max(0,Math.min(1,(innerHeight*.35-r.top)/Math.max(1,r.height))):null,t:Date.now()}));}catch(e){}
+  }
+  function pick(){
+    const mid=innerHeight*.35;
+    cur=secs.find(sc=>{const r=sc.getBoundingClientRect();return r.top<=mid&&r.bottom>mid;})||null;
+    wn.textContent=nameOf(cur);wn.classList.toggle('on',!!nameOf(cur));
+    document.querySelectorAll('#navpop a').forEach(a=>a.setAttribute('aria-current',String(!!cur&&a.getAttribute('href')==='#'+cur.id)));
+    clearTimeout(saveT);saveT=setTimeout(save,400);
+  }
+  addEventListener('scroll',pick,{passive:true});addEventListener('resize',pick);
+  addEventListener('pagehide',()=>{clearTimeout(saveT);save();});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)save();});
+  pick();
+  if(!sv||!Number.isFinite(sv.y)||sv.y<=400||location.hash||scrollY>=200)return;
+  const sec=secs.find(s=>s.id===sv.id);
+  const fill=()=>{
+    document.getElementById('resumeTxt').textContent=(T.lang==='zh'?'上次读到 ':'You stopped at ')+nameOf(sec);
+    document.getElementById('resumeGo').textContent=T.lang==='zh'?'继续阅读':'Resume';
+  };
+  function dismiss(target){
+    if(rr.contains(document.activeElement)){
+      target=target||document.getElementById('btnMenu');if(target.tagName!=='BUTTON')target.tabIndex=-1;target.focus({preventScroll:true});
+    }
+    rr.classList.remove('on');
+  }
+  fill();rr.classList.add('on');
+  document.getElementById('resumeGo').onclick=()=>{
+    const r=sec?.getBoundingClientRect();
+    const y=r&&Number.isFinite(sv.ratio)?scrollY+r.top+Math.max(0,Math.min(1,sv.ratio))*r.height-innerHeight*.35:sv.y;
+    dismiss(sec||document.getElementById('main-content'));
+    scrollTo({top:Math.max(0,Math.min(y,document.documentElement.scrollHeight-innerHeight)),behavior:paused?'auto':'smooth'});
+  };
+  document.getElementById('resumeX').onclick=()=>dismiss();
+  document.addEventListener('readinglanguagechange',()=>{fill();pick();});
 })();
 </script>
 </body>

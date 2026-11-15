@@ -545,11 +545,12 @@ try{ /* 带模板缓冲才会分到 24 位深度；默认的 16 位深度会让�
           float bW=clamp(1.0-gW-rW,0.0,1.0);
           vec3 tint=gW*vec3(0.47,0.63,0.45)+rW*vec3(0.78,0.60,0.42)+bW*vec3(0.44,0.54,0.62);
           float lm=dot(m,LW);
-          m=mix(m, tint*(0.40+lm*1.05), 0.34);
-          m=mix(vec3(dot(m,LW)), m, 0.85);
+          m=mix(m, tint*(0.40+lm*1.05), 0.28);
+          m=mix(vec3(dot(m,LW)), m, 1.1);          /* 矿物颜料：色更正、更饱和，不发灰 */
+          m=(m-0.5)*1.07+0.5;
           vec3 paper=vec3(0.96,0.93,0.86);
-          m=mix(m, paper, smoothstep(0.58,0.98,lm)*0.45);
-          m=mix(m, m*paper, 0.2);
+          m=mix(m, paper, smoothstep(0.62,0.98,lm)*0.28);
+          m=mix(m, m*paper, 0.12);
           m=mix(m, vec3(0.24,0.20,0.16), edge);
           vec2 sc=vUv/uPx/max(1.0,uK);
           float pCloud=sin(sc.x*0.05+sin(sc.y*0.031)*1.6)*0.5+sin(sc.y*0.043+sin(sc.x*0.024)*1.7)*0.5;
@@ -1111,7 +1112,7 @@ HOUSES.forEach(([a,t])=>{
     o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),o.position.clone().normalize());
     if(ry) o.rotateY(ry); o.scale.setScalar(scale);
     o.traverse(m=>{ if(m.isMesh){ m.castShadow=true; m.receiveShadow=true; camBlockers.push(m); } });
-    scene.add(o); }
+    scene.add(o); try{ addInk(o,0.045); if(src.userData.house) addWhiteStones(o,src); }catch(e){ warn1('ink',e); } }
   function retire(list){ list.forEach(m=>{ scene.remove(m); const i=camBlockers.indexOf(m); if(i>=0) camBlockers.splice(i,1); }); }
   function prep(gltf){ const root=gltf.scene;
     root.traverse(m=>{ if(m.isMesh){ const ms=Array.isArray(m.material)?m.material:[m.material];
@@ -1119,7 +1120,7 @@ HOUSES.forEach(([a,t])=>{
     return root; }
   loader.load('../assets/models/diaolou.glb', g=>{ const src=prep(g);
     TOWERS.forEach(([a,t,h],i)=>place(src,a,t,h/10.45,i*0.7)); retire(_procTowers); }, undefined, ()=>{});
-  loader.load('../assets/models/qiang_house.glb', g=>{ const src=prep(g);
+  loader.load('../assets/models/qiang_house.glb', g=>{ const src=prep(g); src.userData.house=1;
     HOUSES.forEach(([a,t,ry])=>place(src,a,t,0.95,ry)); retire(_procHouses); }, undefined, ()=>{});
 })();
 /* 河湟遗址石圈 + 残墙 */
@@ -1468,9 +1469,10 @@ function photoApply(){ if(!GRADE||!GRADE.mat) return; const G=GRADE.mat.uniforms
   G.uStyle.value = f.style!==undefined ? f.style : B.style;
   G.uShadow.value.copy(f.sh ? _t3a.set(f.sh[0],f.sh[1],f.sh[2]) : B.sh);
   G.uHigh.value.copy(f.hi ? _t3a.set(f.hi[0],f.hi[1],f.hi[2]) : B.hi);
+  styleMaterials(G.uStyle.value>0.5);
   updPhotoCap(); }
 const _t3a=new THREE.Vector3();
-function togglePhoto(){ photoMode=!photoMode;
+function togglePhoto(){ if(!started||modalOpen()) return; clearInput(); photoMode=!photoMode;
   document.body.classList.toggle('photo',photoMode);
   if(GRADE&&GRADE.mat){
     const G=GRADE.mat.uniforms;
@@ -1481,7 +1483,7 @@ function togglePhoto(){ photoMode=!photoMode;
       document.querySelectorAll('#photoBar a[data-f]').forEach(x=>x.classList.toggle('on',+x.dataset.f===0)); }
     else { if(photoSaved){ G.uSat.value=photoSaved.sat; G.uCon.value=photoSaved.con;
         G.uStyle.value=photoSaved.style; G.uVig.value=photoSaved.vig;
-        G.uShadow.value.copy(photoSaved.sh); G.uHigh.value.copy(photoSaved.hi); GRADE.on=photoSaved.on; } grabLock(); }
+        G.uShadow.value.copy(photoSaved.sh); G.uHigh.value.copy(photoSaved.hi); GRADE.on=photoSaved.on; styleMaterials(photoSaved.style>0.5); } grabLock(); }
     updPhotoCap();
   } else {   /* 设备不支持调色后期：只隐藏界面，不提供滤镜按钮 */
     document.querySelectorAll('#photoBar a[data-f]').forEach(x=>x.style.display='none');
@@ -1574,6 +1576,7 @@ function rigFigure(fig,name,opts){ opts=opts||{}; if(!THREE.GLTFLoader) return; 
     fig.parts.forEach(o=>{ o.visible=false; });
     if(opts.s) model.scale.setScalar(opts.s);
     fig.yawG.add(model); fig.rig={model,joints}; RIGS.push(fig);
+    try{ addInk(model,0.011,m=>/^(eye|lip)_/.test(m.material&&m.material.name||'')); }catch(e){ warn1('ink fig',e); }
   }catch(e){ warn1('rig '+name,e); } }, undefined, e=>warn1('rig load '+name,e)); }
 function syncRigs(){ for(let i=RIGS.length-1;i>=0;i--){ const f=RIGS[i];
     if(!f.yawG.parent){ RIGS.splice(i,1); continue; }
@@ -1839,6 +1842,7 @@ function skyTarget(pos){ const {w,sum}=zoneWeights(pos); const base=Math.max(0,1
   return {out,fog,den}; }
 
 /* ---- 月亮、银河、闪烁星、流星 ---- */
+let nightFade=0;
 const sky2=new THREE.Group(); scene.add(sky2);
 const moonTex=new THREE.TextureLoader().load('../assets/book/moon.jpg');
 const moon=new THREE.Mesh(new THREE.SphereGeometry(13,24,16),new THREE.MeshBasicMaterial({map:moonTex,color:0xf2ead8,fog:false}));
@@ -1916,6 +1920,57 @@ function frameAt(pos, yaw, fwd){ /* 球面上某点的朝向：Y 轴朝外；有
     q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(x,up,z));
     if(yaw) q.multiply(new THREE.Quaternion().setFromAxisAngle(_yAxis,yaw)); return q; }
   q.setFromUnitVectors(_yAxis,up); if(yaw) q.multiply(new THREE.Quaternion().setFromAxisAngle(_yAxis,yaw)); return q; }
+/* ---- 淡彩美术：墨线描边、圆润的写意树、羌寨屋顶白石（只在淡彩画风下出现，写实画风完全不变） ---- */
+const DART={on:false, show:[], hide:[], ink:[], inkInst:[]};
+const INK_COL=0x2b241e;
+function inkMat(thick,skin){ const m=new THREE.MeshBasicMaterial({color:INK_COL,side:THREE.BackSide,skinning:!!skin});
+  m.userData.dcArt=1;
+  m.onBeforeCompile=sh=>{ sh.uniforms.uThick={value:thick};
+    sh.vertexShader='uniform float uThick;\n'+sh.vertexShader.replace('#include <begin_vertex>','vec3 transformed = vec3( position ) + normalize( normal + vec3(1e-5) ) * uThick;'); };
+  m.customProgramCacheKey=()=>'ink'+thick+(skin?'s':''); return m; }
+/* 背面外扩法描墨线：复制一层只画背面、沿法线略外扩的深色壳 */
+function addInk(root,thick,skip){ const add=[];
+  root.traverse(m=>{ if(!m.isMesh||m.userData.dcArt) return; if(skip&&skip(m)) return;
+    let o;
+    if(m.isInstancedMesh){ o=new THREE.InstancedMesh(m.geometry,inkMat(thick),m.count); o.instanceMatrix=m.instanceMatrix; o.userData.src=m; DART.inkInst.push(o); }
+    else if(m.isSkinnedMesh){ o=new THREE.SkinnedMesh(m.geometry,inkMat(thick,true)); o.bind(m.skeleton,m.bindMatrix); }
+    else o=new THREE.Mesh(m.geometry,inkMat(thick));
+    o.userData.dcArt=1; o.castShadow=false; o.receiveShadow=false; o.frustumCulled=false; o.visible=DART.on;
+    add.push([m,o]); });
+  add.forEach(([m,o])=>{ if(o.isInstancedMesh) scene.add(o); else { o.position.copy(m.position); o.quaternion.copy(m.quaternion); o.scale.copy(m.scale); m.parent.add(o); } DART.ink.push(o); }); }
+/* 写意树：干净的色块树冠（阔叶团团、针叶层层、杨树修长），与原树同位置同高度，淡彩时替换 */
+function stylTreeGeo(kind,H){ const parts=[], C=new THREE.Color();
+  const put=(g,hex,x,y,z,sx,sy,sz)=>{ g=g.toNonIndexed(); g.scale(sx,sy,sz); g.translate(x,y,z); const n=g.attributes.position.count, col=new Float32Array(n*3);
+    C.setHex(hex).convertSRGBToLinear(); for(let i=0;i<n;i++){ col[i*3]=C.r; col[i*3+1]=C.g; col[i*3+2]=C.b; } g.setAttribute('color',new THREE.BufferAttribute(col,3)); parts.push(g); };
+  const trunk=new THREE.CylinderGeometry(0.06,0.1,1,7);
+  if(kind==='walnut'){ put(trunk,0x6b4b36,0,H*0.22,0,H*0.9,H*0.44,H*0.9);
+    [[0,0.62,0,0.36,0.27,0x4f8060],[-0.17,0.52,0.08,0.24,0.19,0x416f52],[0.18,0.55,-0.06,0.25,0.2,0x66966f],[0.04,0.78,0.05,0.22,0.17,0x77a77c],[0.02,0.5,-0.18,0.22,0.16,0x3a6449]]
+      .forEach(([x,y,z,r,ry,c])=>put(new THREE.IcosahedronGeometry(1,2),c,x*H,y*H,z*H,r*H,ry*H,r*H)); }
+  else if(kind==='fir'){ put(trunk,0x5a4232,0,H*0.12,0,H*0.6,H*0.24,H*0.6);
+    [[0.3,0.3,0.42,0x24433a],[0.5,0.25,0.34,0x2c5045],[0.68,0.19,0.27,0x365c4f],[0.84,0.12,0.18,0x41695a]]
+      .forEach(([y,r,h,c])=>put(new THREE.ConeGeometry(1,1,11),c,0,y*H,0,r*H,h*H,r*H*0.92)); }
+  else { put(trunk,0x7a6248,0,H*0.18,0,H*0.5,H*0.36,H*0.5);
+    put(new THREE.IcosahedronGeometry(1,2),0x6f8a4a,0,H*0.6,0,H*0.13,H*0.36,H*0.13); put(new THREE.IcosahedronGeometry(1,2),0x5f7a3e,0.02*H,H*0.48,0.03*H,H*0.12,H*0.2,H*0.12); }
+  const pos=[],nor=[],col=[]; parts.forEach(g=>{ g.computeVertexNormals(); pos.push(...g.attributes.position.array); nor.push(...g.attributes.normal.array); col.push(...g.attributes.color.array); });
+  const out=new THREE.BufferGeometry(); out.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); out.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3)); out.setAttribute('color',new THREE.Float32BufferAttribute(col,3)); return out; }
+function placeStylTrees(kind,src,list,orig){ const box=new THREE.Box3().setFromObject(src), H=Math.max(1,box.max.y-box.min.y);
+  const mat=new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,metalness:0}); mat.userData.dcArt=1;
+  const im=new THREE.InstancedMesh(stylTreeGeo(kind,H),mat,list.length), M=new THREE.Matrix4(), S=new THREE.Vector3();
+  list.forEach((it,i)=>{ const p=onSurface(P(it.a,it.t,0),-0.05); S.setScalar(it.s||1); M.compose(p,frameAt(p,it.yaw||0),S); im.setMatrixAt(i,M); });
+  im.castShadow=true; im.receiveShadow=true; im.frustumCulled=false; im.userData.dcArt=1; im.userData.styleOff=!DART.on; im.visible=DART.on; scene.add(im);
+  DART.show.push(im); orig.forEach(o=>{ o.userData.styleOff=DART.on; DART.hide.push(o); });
+  let aC=0,tC=0; list.forEach(it=>{ aC+=it.a; tC+=it.t; }); aC/=list.length; tC/=list.length; const c=P(aC,tC,0); let r=10; list.forEach(it=>{ r=Math.max(r,planarDist(c,P(it.a,it.t,0))); });
+  LODS.push({ob:im,c,r:r+40}); addInk(im,0.035); }
+/* 羌寨屋顶白石：屋角各一块（羌族白石习俗），淡彩时显示 */
+function addWhiteStones(o,src){ if(!src.userData.box) src.userData.box=new THREE.Box3().setFromObject(src); const b=src.userData.box;
+  const m=new THREE.MeshStandardMaterial({color:0xf3efe6,roughness:.7,emissive:0x2a2824}); m.userData.dcArt=1; const g=new THREE.DodecahedronGeometry(0.075,1);
+  const grp=new THREE.Group(); grp.userData.dcArt=1; [[b.min.x+0.25,b.min.z+0.25],[b.max.x-0.25,b.min.z+0.25],[b.min.x+0.25,b.max.z-0.25],[b.max.x-0.25,b.max.z-0.25]].forEach(([x,z])=>{
+    const st=new THREE.Mesh(g,m); st.position.set(x,b.max.y+0.04,z); st.scale.set(1,1.3,1); st.castShadow=true; st.userData.dcArt=1; grp.add(st); });
+  grp.visible=DART.on; o.add(grp); DART.show.push(grp); }
+function dcArtApply(d){ DART.on=!!d;
+  DART.show.forEach(o=>{ o.userData.styleOff=!d; o.visible=d; });
+  DART.hide.forEach(o=>{ o.userData.styleOff=d; o.visible=!d; });
+  DART.ink.forEach(o=>{ o.visible=d && (!o.userData.src || o.userData.src.visible); }); }
 function placeOne(src,a,t,opts){ opts=opts||{}; const o=src.clone(true); const p=onSurface(P(a,t,0),opts.h==null?-0.06:opts.h);
   o.position.copy(p); o.quaternion.copy(frameAt(p,opts.yaw||0,opts.fwd)); o.scale.setScalar(opts.s||1);
   if(opts.mat) o.traverse(m=>{ if(m.isMesh){ const k=(m.material.name||'').split('.')[0]; if(opts.mat[k]) m.material=opts.mat[k]; } });
@@ -2098,7 +2153,8 @@ Promise.all(['hangtu_wall','fengsui','hehuang_site','tree_fir','tree_poplar','tr
   if(_mdl.tree_poplar){
     poplar.push(...scatter(700,12,-72,26,11,7,1.6), ...scatter(800,8,75,26.5,16,1.6,1.4));
     for(let a=-156;a<-114;a+=4.2){ [21.2,24.8].forEach((t,k)=>{ if(freeSpot(a+k*2,t,1.2)) poplar.push({a:a+k*2,t,s:0.9+hash(a,k)*0.3,yaw:hash(a,k+5)*6}); }); } }
-  [[_mdl.tree_fir,fir],[_mdl.tree_poplar,poplar],[_mdl.tree_walnut,walnut]].forEach(([m,l])=>{ if(m&&l.length){ placeMany(m,l); l.forEach(it=>addCol(it.a,it.t,0.55)); } });
+  [[_mdl.tree_fir,fir,'fir'],[_mdl.tree_poplar,poplar,'poplar'],[_mdl.tree_walnut,walnut,'walnut']].forEach(([m,l,kind])=>{ if(m&&l.length){ const n0=LODS.length; placeMany(m,l); l.forEach(it=>addCol(it.a,it.t,0.55));
+    try{ placeStylTrees(kind,m,l,LODS.slice(n0).map(L=>L.ob)); }catch(e){ warn1('styltree',e); } } });
   /* 五区小路：泥土路贴花，连接各区中心（穿越河处即踏石渡口） */
   { const ROUTES=[
       [[1,12.3],[-12,15],[-40,22],[-72,26]],
@@ -2350,10 +2406,17 @@ function worldTick(dt,now){
   const east=new THREE.Vector3(0,1,0).cross(up); if(east.lengthSq()<1e-4) east.set(1,0,0); east.normalize();
   const md=east.clone().multiplyScalar(Math.cos(0.03)).addScaledVector(up,Math.sin(0.03)).normalize();
   moon.position.copy(camera.position).addScaledVector(md,380); moon.lookAt(camera.position); moonGlow.position.copy(moon.position);
-  { const dayT=themeIx<2; if(window.__dayT!==dayT){ window.__dayT=dayT; document.body.classList.toggle('day',dayT); } sky2.visible=!dayT; if(window.__stars) window.__stars.visible=!dayT; meteor.line.visible=!dayT;
+  { const dayT=themeIx<2; if(window.__dayT!==dayT){ window.__dayT=dayT; document.body.classList.toggle('day',dayT); } nightFade+=((dayT?0:1)-nightFade)*(1-Math.exp(-dt*0.65));
+    sky2.visible=nightFade>0.001;
+    sky2.traverse(o=>{ const m=o.material; if(!m||o===twinkle||o===moonGlow) return;
+      if(m.userData.nightOpacity===undefined){m.userData.nightOpacity=m.opacity;m.transparent=true;m.depthWrite=false;m.needsUpdate=true;}
+      m.opacity=m.userData.nightOpacity*nightFade; });
+    if(window.__stars){ const m=window.__stars.material; if(m.userData.nightOpacity===undefined)m.userData.nightOpacity=m.opacity;
+      m.opacity=m.userData.nightOpacity*nightFade; window.__stars.visible=nightFade>0.001; }
+    meteor.line.visible=nightFade>0.001;
     if(window.__skyMat) window.__skyMat.uniforms.sunCol.value.setHex(THEMES[themeIx].sun).multiplyScalar(themeIx===1?1.25:themeIx===0?1:themeIx===2?0.8:0.0); }
-  const night=themeIx===3?1:themeIx===2?0.7:themeIx===1?0.3:0.5; moon.material.color.setScalar(0.65+0.35*night); moonGlow.material.opacity=0.6+0.4*night;
-  twinkle.material.opacity=0.45+0.3*Math.sin(now*2.3)*Math.sin(now*0.7+1.3);
+  const night=themeIx===3?1:themeIx===2?0.7:themeIx===1?0.3:0.5; moon.material.color.setScalar(0.65+0.35*night); moonGlow.material.opacity=(0.6+0.4*night)*nightFade;
+  twinkle.material.opacity=(0.45+0.3*Math.sin(now*2.3)*Math.sin(now*0.7+1.3))*nightFade;
   /* 流星 */
   meteor.next-=dt;
   if(meteor.t<0 && meteor.next<=0){ meteor.t=0; meteor.next=7+Math.random()*10;
@@ -2362,7 +2425,7 @@ function worldTick(dt,now){
     meteor.d=side.clone().addScaledVector(up,-0.35).normalize(); }
   if(meteor.t>=0){ meteor.t+=dt; const u=meteor.t/0.9, head=meteor.p0.clone().addScaledVector(meteor.d,u*160), tail=head.clone().addScaledVector(meteor.d,-26);
     const pa=meteor.line.geometry.attributes.position; pa.setXYZ(0,head.x,head.y,head.z); pa.setXYZ(1,tail.x,tail.y,tail.z); pa.needsUpdate=true;
-    meteor.line.material.opacity=Math.sin(Math.min(1,u)*Math.PI)*0.9; if(u>=1){ meteor.t=-1; meteor.line.material.opacity=0; } }
+    meteor.line.material.opacity=Math.sin(Math.min(1,u)*Math.PI)*0.9*nightFade; if(u>=1){ meteor.t=-1; meteor.line.material.opacity=0; } }
   /* 牲畜 */
   animals.forEach(an=>{
     if(an.wait>0){ an.wait-=dt; an.graze=Math.min(1,an.graze+dt*1.5); }
@@ -2394,12 +2457,18 @@ function clearInput(){ for(const k in keys) keys[k]=false; for(const k in P2KEY)
   joy.x=0; joy.f=0; pad.x=0; pad.f=0; padYaw=0; padPitch=0; dragging=false; dragId=null;
   if(charging) cancelCharge(); const st=document.getElementById('stick'); if(st) st.style.transform='translate(-50%,-50%)'; joyId=null; }
 addEventListener('keydown',e=>{ const k=e.key.toLowerCase();
+  const target=e.target;
+  if(target&&(target.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
+  if(target&&target.closest&&target.closest('button,a,[role=button]')&&(k===' '||k==='enter')) return;
   if(hardPaused) return;
   if(modalOpen()){   /* 卡册、读书卡、结尾页打开时：只响应关闭／语言／声音，世界里的操作一律不穿透 */
-    if(k==='escape'){ if($('cardsOut').classList.contains('show')) $('cardsOut').classList.remove('show'); else if($('album').classList.contains('show')) closeAlbum(); }
+    if(k==='escape'){ if($('cardsOut').classList.contains('show')) $('cardsOut').classList.remove('show'); else if($('album').classList.contains('show')) closeAlbum(); else if($('rcard').classList.contains('show')) closeCard(); else if($('end').style.display==='flex') closeEnd(); }
+    else if((k==='e'||k==='enter') && !e.repeat && $('rcard').classList.contains('show')) closeCard();
     else if(k==='k' && $('album').classList.contains('show')) closeAlbum();
     else if(k==='l' && !e.repeat) toggleLang(); else if(k==='m' && !e.repeat) toggleSound();
     return; }
+  if(!started) return;
+  if(photoMode){ if(!e.repeat&&(k==='p'||k==='escape')) togglePhoto(); return; }
   keys[k]=true;
   if(e.repeat){ if(MOVE_K.includes(k)||k===' ') e.preventDefault(); return; }   /* 长按只算一次：不连跳讲述、不反复切换 */
   if(p2 && k.startsWith('arrow')) P2KEY[k]=true;
@@ -2483,8 +2552,10 @@ let dlgNpc=null, dlgIx=0, typing=null;
 function nearNpc(pPos){ let best=null,bd=1e9;
   NPCS.forEach(n=>{ const c=P(n.a,n.t), d=planarDist(pPos,c); if(d<bd){bd=d;best=n;} });
   return bd<4.2 ? best : null; }
-function planarDist(pA,pB){ const up=pA.clone().normalize();
-  const d=pB.clone().sub(pA); d.addScaledVector(up,-d.dot(up)); return d.length(); }
+function planarDist(pA,pB){ const a=pA.length(), b=pB.length();
+  if(!a||!b) return Infinity;
+  const cosine=Math.max(-1,Math.min(1,pA.dot(pB)/(a*b)));
+  return R*Math.acos(cosine); }
 function tryTalk(pPos){
   if(dlgNpc){ advanceDlg(); return; }
   const n=nearNpc(pPos||pGroup.position); if(!n) return;
@@ -2501,6 +2572,7 @@ function advanceDlg(){ const n=dlgNpc;
   if(dlgIx<n.lines[T.lang].length-1){ dlgIx++; showLine(); return; }
   $('dlg').classList.remove('show'); dlgNpc=null;
   if('speechSynthesis' in window) speechSynthesis.cancel();
+  clearInterval(typing);
   if(!n.done){ n.done=true; updHUD(); buildLine(); toast(n.name[T.lang]+tx('heardSuf')); playHear(); saveGame(); } }
 let toastT=null;
 let toastUntil=0, toastPrio=0; const toastQ=[];
@@ -2520,7 +2592,7 @@ function showLocCard(instant){ const zk=zoneHere(), z=Z[zk]||Z.village;
   const el=$('locCard'); el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
   setTimeout(()=>el.classList.remove('show'),instant?3800:3200); }
 function beaconReady(){ return !lit && prog>=1 && planarDist(pGroup.position,P(95,33,0))<=6.5; }
-function startCharge(){ if(charging||lit) return; charging=true; chargeT=0; $('charge').classList.add('on'); }
+function startCharge(){ if(charging||lit||!started||modalOpen()||photoMode) return; charging=true; chargeT=0; $('charge').classList.add('on'); }
 function cancelCharge(){ charging=false; chargeT=0; $('charge').classList.remove('on'); }
 let fatalShown=false, loopErrN=0;
 function warn1(k,e){ warn1.s=warn1.s||{}; if(warn1.s[k]) return; warn1.s[k]=1; try{ console.warn('[walk] '+k, e); }catch(_){} }
@@ -2665,7 +2737,7 @@ function loop(){
   if(charging){ chargeT+=dt; const cp=Math.min(1,chargeT/CHARGE_T);
     $('chargeFg').style.strokeDashoffset=126*(1-cp);
     if(cp>=1){ charging=false; chargeT=0; $('charge').classList.remove('on'); doBeacon(); } }
-  pollPad(); if(modalOpen()){ for(const k of MOVE_K) keys[k]=false; joy.x=0; joy.f=0; }
+  pollPad(); if(modalOpen()||photoMode){ for(const k of MOVE_K) keys[k]=false; joy.x=0; joy.f=0; }
   let mx=((keys['d']?1:0)-(keys['a']?1:0)) + ((!p2&&keys['arrowright'])?1:0) - ((!p2&&keys['arrowleft'])?1:0) + joy.x + pad.x;
   let mf=((keys['w']?1:0)-(keys['s']?1:0)) + ((!p2&&keys['arrowup'])?1:0) - ((!p2&&keys['arrowdown'])?1:0) + joy.f + pad.f;
   mf=Math.max(-1,Math.min(1,mf)); mx=Math.max(-1,Math.min(1,mx));
@@ -2899,7 +2971,8 @@ function loop(){
     m.scale.setScalar(0.55+cyc*0.8); m.material.opacity=Math.max(0,(1-cyc/2.6))*0.42; });
   }catch(e){ warn1('water',e); }
   lodT-=dt; if(lodT<=0){ lodT=0.35;
-    for(const L of LODS){ if(L.ob) L.ob.visible = planarDist(pGroup.position,L.c) < L.r + 45; } }
+    for(const L of LODS){ if(L.ob) L.ob.visible = !L.ob.userData.styleOff && planarDist(pGroup.position,L.c) < L.r + 45; }
+    if(DART.on) DART.inkInst.forEach(o=>{ o.visible=o.userData.src.visible; }); }
   /* 时辰自动流动：约 6 分钟走完晨—午—暮—夜，支持开关与暂停 */
   if(started && themeAutoFlow){ themeAuto-=dt; if(themeAuto<=0){ themeAuto=90;
     themeIx=(themeIx+1)%THEMES.length; applyTheme(true); } }
@@ -3003,7 +3076,8 @@ function loop(){
       playCollect(); } });
   document.querySelectorAll('#zoneTabs a').forEach(a=>{ a.onclick=()=>{
     const zz=ZPOS;   /* 与快速移动共用落脚点（羌寨的 [0,10] 正落在河里） */
-    const z=zz[a.dataset.z]; if(!z) return;
+    const z=zz[a.dataset.z]; if(!z||!started||modalOpen()||photoMode) return;
+    clearInput(); if(dlgNpc){ clearInterval(typing); dlgNpc=null; $('dlg').classList.remove('show'); } closePoi();
     pGroup.position.copy(P(z[0],z[1],0)); if(p2) p2.grp.position.copy(P(z[0]+2,z[1]+2,0));
     document.getElementById('tasks').classList.remove('show'); }; });
     /* 区域标签高亮+单元跳转 */
@@ -3128,7 +3202,8 @@ function loop(){
     A.wind.gain.value+=(tw-A.wind.gain.value)*0.02;
     A.water.gain.value+=(tq-A.water.gain.value)*0.02;
     A.whistle.gain.value+=(tw3-A.whistle.gain.value)*0.02; }
-  if(plGain) plGain.gain.value+=((muted?0:0.045+prog*0.07)-plGain.gain.value)*0.01;
+  if(plGain) plGain.gain.value+=((muted||SND.drone?0:0.045+prog*0.07)-plGain.gain.value)*0.01;   /* 讲述配乐响起时，随机拨弦让开 */
+  try{ soundTick(dt); }catch(e){ warn1('snd',e); }
   { /* 太阳高度随时段变：清晨、黄昏压低拉出长影，正午高悬；补光永远在背光一侧 */
     const upS=_sunP.copy(pP).normalize(); _sunT.set(0.35,0,1).cross(upS); if(_sunT.lengthSq()<1e-4) _sunT.set(1,0,0); _sunT.normalize();
     const SO=[[22,56],[58,24],[17,-58],[46,30]][themeIx]||[52,30];
@@ -3182,6 +3257,89 @@ if(loadGame()){ document.getElementById('btnGo').textContent=tx('gContinue');
   document.getElementById('btnNew').style.display='inline-block'; }
 
 /* ---- 声音（生成式氛围） ---- */
+/* 场景声景 + 讲述配乐：全部用 WebAudio 合成，不加载音频文件。
+   每个场景一组环境声，按所在场景交叉淡入淡出；入夜加虫鸣，下雨加雨声；
+   听讲述、看史料时，淡入一段该场景调式的背景音乐（持续低音 + 竹笛般的旋律），结束后淡出。 */
+const SND={ on:false };
+function initSoundscape(){ if(!actx||SND.on) return; const C=actx; SND.on=true;
+  const noise=window.__stepBuf;
+  const IR=C.createBuffer(2,C.sampleRate*2.6,C.sampleRate);           /* 山谷回响 */
+  for(let c=0;c<2;c++){ const d=IR.getChannelData(c); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.4); }
+  const verb=C.createConvolver(); verb.buffer=IR; const vG=C.createGain(); vG.gain.value=0.55; verb.connect(vG); vG.connect(master);
+  const bus=(lvl)=>{ const g=C.createGain(); g.gain.value=0; g.connect(master); const sd=C.createGain(); sd.gain.value=lvl; g.connect(sd); sd.connect(verb); return g; };
+  const loopNoise=(type,f,q,out)=>{ const s=C.createBufferSource(); s.buffer=noise; s.loop=true; s.playbackRate.value=0.7+Math.random()*0.6;
+    const fl=C.createBiquadFilter(); fl.type=type; fl.frequency.value=f; fl.Q.value=q; s.connect(fl); fl.connect(out); s.start(); return fl; };
+  SND.zone={};                                                          /* 各场景一条总线 */
+  for(const z of ['village','hehuang','wall','modern','beichuan']) SND.zone[z]=bus(0.35);
+  SND.leaves=bus(0.2); loopNoise('highpass',3200,0.5,SND.leaves);       /* 树叶沙沙（羌寨、北川） */
+  SND.rain=bus(0.25); loopNoise('highpass',1800,0.4,SND.rain); loopNoise('bandpass',5200,0.8,SND.rain);
+  SND.night=bus(0.15);
+  SND.music=C.createGain(); SND.music.gain.value=0; SND.music.connect(master); { const sd=C.createGain(); sd.gain.value=0.9; SND.music.connect(sd); sd.connect(verb); }
+  SND.drone=null; SND.melT=0; SND.evT={}; SND.key=-1;
+  /* 小音源 */
+  SND.bird=(out,base)=>{ const t=C.currentTime, n=2+Math.floor(Math.random()*4), f0=base*(0.85+Math.random()*0.3);
+    for(let i=0;i<n;i++){ const t0=t+i*(0.09+Math.random()*0.07), o=C.createOscillator(), g=C.createGain(); o.type='sine';
+      o.frequency.setValueAtTime(f0*(1+Math.random()*0.25),t0); o.frequency.exponentialRampToValueAtTime(f0*(0.7+Math.random()*0.6),t0+0.07);
+      g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(0.05,t0+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.09);
+      o.connect(g); g.connect(out); o.start(t0); o.stop(t0+0.12); } };
+  SND.bell=(out,f,vol,dur)=>{ const t=C.currentTime; [1,2.76,5.4,8.93].forEach((r,i)=>{ const o=C.createOscillator(), g=C.createGain(); o.frequency.value=f*r;
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol/(i+1),t+0.005); g.gain.exponentialRampToValueAtTime(0.0001,t+dur/(i*0.6+1));
+      o.connect(g); g.connect(out); o.start(t); o.stop(t+dur+0.1); }); };
+  SND.hawk=(out)=>{ const t=C.currentTime, o=C.createOscillator(), g=C.createGain(); o.type='sine';
+    o.frequency.setValueAtTime(2300,t); o.frequency.exponentialRampToValueAtTime(1500,t+0.9);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.025,t+0.08); g.gain.exponentialRampToValueAtTime(0.0001,t+1.0);
+    o.connect(g); g.connect(out); o.start(t); o.stop(t+1.1); };
+  SND.horn=(out)=>{ const t=C.currentTime, o=C.createOscillator(), o2=C.createOscillator(), lp=C.createBiquadFilter(), g=C.createGain();   /* 远处号角 */
+    o.type='sawtooth'; o2.type='sawtooth'; o.frequency.value=98; o2.frequency.value=98.6; lp.type='lowpass'; lp.frequency.value=420;
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.03,t+1.2); g.gain.linearRampToValueAtTime(0.022,t+2.6); g.gain.linearRampToValueAtTime(0,t+3.8);
+    o.connect(lp); o2.connect(lp); lp.connect(g); g.connect(out); o.start(t); o2.start(t); o.stop(t+4); o2.stop(t+4); };
+  SND.cricket=(out)=>{ const t=C.currentTime, f=4200+Math.random()*900; for(let i=0;i<3+Math.floor(Math.random()*3);i++){ const t0=t+i*0.06, o=C.createOscillator(), g=C.createGain();
+      o.frequency.value=f; g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(0.012,t0+0.008); g.gain.linearRampToValueAtTime(0,t0+0.035);
+      o.connect(g); g.connect(out); o.start(t0); o.stop(t0+0.05); } };
+  SND.chime=(out)=>{ const P=[0,2,4,7,9], f=880*Math.pow(2,P[Math.floor(Math.random()*5)]/12); SND.bell(out,f,0.02,2.2); };
+  SND.dog=(out)=>{ const t=C.currentTime; for(let i=0;i<2;i++){ const t0=t+i*0.28, s=C.createBufferSource(); s.buffer=noise; const bp=C.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=650; bp.Q.value=4;
+      const g=C.createGain(); g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(0.03,t0+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.16);
+      s.connect(bp); bp.connect(g); g.connect(out); s.start(t0,Math.random()); s.stop(t0+0.2); } };
+}
+/* 各场景讲述配乐的调式：主音（MIDI）与五声音阶 */
+const MUSIC_MODE={ village:{root:62,sc:[0,2,5,7,9]}, hehuang:{root:57,sc:[0,3,5,7,10]}, wall:{root:55,sc:[0,3,5,7,10]}, modern:{root:64,sc:[0,2,4,7,9]}, beichuan:{root:60,sc:[0,2,5,7,9]} };
+function soundTick(dt){ if(!SND.on||!actx) return; const C=actx, t=C.currentTime, zk=zoneHere(), night=themeIx>=2, k=1-Math.exp(-dt/1.5);
+  const glide=(g,v)=>{ g.gain.value+=((muted?0:v)-g.gain.value)*k; };
+  for(const z in SND.zone) glide(SND.zone[z], z===zk?1:0);
+  glide(SND.leaves,(zk==='village'||zk==='beichuan'||zk==='modern')&&weather!=='snow'?0.05:0.01);
+  glide(SND.rain,weather==='rain'?0.09:0);
+  glide(SND.night,night?1:0);
+  /* 零星声音事件：按场景各有节奏 */
+  const ev=(name,min,max,fn)=>{ if(SND.evT[name]===undefined) SND.evT[name]=min+Math.random()*(max-min); SND.evT[name]-=dt; if(SND.evT[name]<=0){ SND.evT[name]=min+Math.random()*(max-min); if(!muted) try{ fn(); }catch(e){} } };
+  const day=!night&&weather!=='rain';
+  if(zk==='village'){ if(day) ev('vb',2.5,6,()=>SND.bird(SND.zone.village,3000)); ev('vbell',14,30,()=>SND.bell(SND.zone.village,620,0.018,2.4)); }   /* 鸟鸣、羊铃 */
+  if(zk==='hehuang'){ ev('hk',18,40,()=>SND.hawk(SND.zone.hehuang)); ev('yak',9,20,()=>SND.bell(SND.zone.hehuang,330,0.03,3.2)); }                       /* 鹰唳、牦牛铃 */
+  if(zk==='wall'){ ev('hn',35,70,()=>SND.horn(SND.zone.wall)); if(day) ev('wb',8,16,()=>SND.bird(SND.zone.wall,2200)); }                                  /* 远处号角、稀疏鸟鸣 */
+  if(zk==='modern'){ ev('ch',6,14,()=>SND.chime(SND.zone.modern)); ev('dg',25,50,()=>SND.dog(SND.zone.modern)); if(day) ev('mb',4,9,()=>SND.bird(SND.zone.modern,3400)); }   /* 檐下风铃、狗吠 */
+  if(zk==='beichuan'){ if(day) ev('bb',2,5,()=>SND.bird(SND.zone.beichuan,3600)); ev('bch',10,22,()=>SND.chime(SND.zone.beichuan)); }
+  if(night&&zk!=='wall'&&weather!=='snow') ev('cr',0.4,1.6,()=>SND.cricket(SND.night));
+  /* 讲述配乐 */
+  const story=!!(dlgNpc||poiCur||($('rcard')&&$('rcard').classList.contains('show')));
+  glide(SND.music, story?0.55:0);
+  const md=MUSIC_MODE[zk]||MUSIC_MODE.village, hz=m=>440*Math.pow(2,(m-69)/12);
+  if(story && SND.key!==md.root){                                       /* 换场景就换调 */
+    if(SND.drone){ const old=SND.drone; old.g.gain.setTargetAtTime(0,t,0.6); setTimeout(()=>old.o.forEach(o=>{ try{o.stop();}catch(e){} }),3000); }
+    const g=C.createGain(); g.gain.value=0; g.gain.setTargetAtTime(0.05,t,1.2); g.connect(SND.music);
+    const lp=C.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=700; lp.connect(g);
+    const o=[md.root-24,md.root-17].map(m=>{ const x=C.createOscillator(); x.type='triangle'; x.frequency.value=hz(m); x.connect(lp); x.start(); return x; });
+    SND.drone={o,g}; SND.key=md.root; }
+  if(story){ SND.melT-=dt; if(SND.melT<=0){                             /* 竹笛：带颤音与气声 */
+      const deg=md.sc[Math.floor(Math.random()*md.sc.length)], oct=Math.random()<0.35?12:0, f=hz(md.root+deg+oct), dur=0.9+Math.random()*1.6;
+      const o=C.createOscillator(), v=C.createOscillator(), vg=C.createGain(), g=C.createGain(); o.type='triangle'; o.frequency.value=f;
+      v.frequency.value=5.2; vg.gain.value=f*0.012; v.connect(vg); vg.connect(o.frequency);
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.045,t+0.18); g.gain.setValueAtTime(0.04,t+dur*0.7); g.gain.linearRampToValueAtTime(0,t+dur);
+      const br=C.createBufferSource(); br.buffer=window.__stepBuf; const bp=C.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=f*2; bp.Q.value=6;
+      const bg=C.createGain(); bg.gain.setValueAtTime(0,t); bg.gain.linearRampToValueAtTime(0.012,t+0.1); bg.gain.linearRampToValueAtTime(0,t+dur);
+      br.connect(bp); bp.connect(bg); bg.connect(SND.music);
+      o.connect(g); g.connect(SND.music); o.start(t); v.start(t); br.start(t,Math.random()); o.stop(t+dur+0.05); v.stop(t+dur+0.05); br.stop(t+dur+0.05);
+      SND.melT=dur+(Math.random()<0.3?1.2:0.15); } }
+  else if(SND.drone && SND.music.gain.value<0.01){ const old=SND.drone; SND.drone=null; SND.key=-1; old.o.forEach(o=>{ try{o.stop();}catch(e){} }); }
+}
 
 function toggleSound(){ if(!actx) return; muted=!muted;
   master.gain.linearRampToValueAtTime(muted?0:0.15,actx.currentTime+0.4);
@@ -3232,16 +3390,18 @@ function saveGame(){ try{ if(!started) return;
     p: pGroup.position.toArray(), lang: T.lang, t: Math.round(playSec),
     lit: lit?1:0, st: steps, zs: [...zoneSeen] })); }catch(e){} }
 function loadGame(){ try{ const raw=localStorage.getItem('walkSaveV2'); if(!raw) return false;
-  const d=JSON.parse(raw); if(!d||!d.g) return false;
+  const d=JSON.parse(raw); if(!d||!Array.isArray(d.g)||!Array.isArray(d.n)) return false;
+  const goodPos=Array.isArray(d.p)&&d.p.length===3&&d.p.every(Number.isFinite)&&Math.hypot(...d.p)>1;
+  d.t=Number.isFinite(d.t)?Math.max(0,d.t):0; d.st=Number.isFinite(d.st)?Math.max(0,Math.floor(d.st)):0;
   if(d.t) playSec=d.t;
   if(d.st) steps=d.st;
-  if(Array.isArray(d.zs)) d.zs.forEach(z=>zoneSeen.add(z));
+  if(Array.isArray(d.zs)) d.zs.filter(z=>ZORDER.includes(z)).forEach(z=>zoneSeen.add(z));
   if(d.lit){ lit=true; beaconFlame.visible=true; beaconLight.intensity=2.4; lineMesh.material.color.setHex(0xffb35c); lineMesh.material.opacity=1; }
   d.g.forEach((v,i)=>{ if(v&&shards[i]){ shards[i].userData.got=true; shards[i].visible=false; } });
   d.n.forEach((v,i)=>{ if(v&&NPCS[i]) NPCS[i].done=true; });
-  if(d.c) cardSeen=d.c; else ZORDER.forEach(z=>{ if(cardDone(z)) cardSeen[z]=1; });   /* 旧存档：已完成的场景不再补弹 */
-  if(d.p) setOnGround(pGroup.position.copy(new THREE.Vector3(d.p[0],d.p[1],d.p[2])));
-  updHUD(); return d.g.some(v=>v) || d.n.some(v=>v); }catch(e){ return false; } }
+  if(d.c&&typeof d.c==='object'&&!Array.isArray(d.c)) cardSeen=Object.fromEntries(ZORDER.filter(z=>d.c[z]&&cardDone(z)).map(z=>[z,1])); else ZORDER.forEach(z=>{ if(cardDone(z)) cardSeen[z]=1; });   /* 旧存档：已完成的场景不再补弹 */
+  if(goodPos) setOnGround(pGroup.position.copy(new THREE.Vector3(d.p[0],d.p[1],d.p[2])));
+  updHUD(); return d.g.some(v=>v) || d.n.some(v=>v) || playSec>0 || lit; }catch(e){ return false; } }
 function newWalk(){ started=false; try{localStorage.removeItem('walkSaveV2');}catch(e){} location.reload(); }
 document.getElementById('btnNew').addEventListener('click',newWalk);
 /* 字体规范（canvas 版）：canvas 不支持 unicode-range 劫持，按字符切字体——CJK/全角/中文标点走宋体，西文走 TNR */
@@ -3369,10 +3529,10 @@ function albumSet(list){ albumMem=null;
 /* 高清原图存进 IndexedDB（容量大），卡册列表里只放缩略图和编号 */
 const HD_DB=(()=>{ let p=null; const db=()=>p||(p=new Promise((ok,no)=>{ try{ const r=indexedDB.open('hxAlbumHD',1);
     r.onupgradeneeded=()=>r.result.createObjectStore('img'); r.onsuccess=()=>ok(r.result); r.onerror=()=>no(r.error); }catch(e){ no(e); } }));
-  const tx2=(mode,fn)=>db().then(d=>new Promise((ok,no)=>{ const t=d.transaction('img',mode), st=t.objectStore('img'); const q=fn(st); t.oncomplete=()=>ok(q&&q.result); t.onerror=()=>no(t.error); }));
+  const tx2=(mode,fn)=>db().then(d=>new Promise((ok,no)=>{ const t=d.transaction('img',mode), st=t.objectStore('img'); const q=fn(st); t.oncomplete=()=>ok(q&&q.result); t.onerror=()=>no(t.error); t.onabort=()=>no(t.error||new Error("Album transaction aborted")); }));
   return { put:(k,v)=>tx2('readwrite',st=>st.put(v,k)), get:k=>tx2('readonly',st=>st.get(k)), del:k=>tx2('readwrite',st=>st.delete(k)) }; })();
-function albumAdd(url,hd){ const list=albumGet(), id=Date.now(), it={t:id,img:url,v:ALB_VER};
-  if(hd){ it.hd=1; HD_DB.put(id,hd).catch(()=>{ it.hd=0; toast(tx('albHdFail'),4000); }); }
+function albumAdd(url,hd){ const list=albumGet(), id=Math.max(Date.now(),...list.map(x=>(Number(x.t)||0)+1)), it={t:id,img:url,v:ALB_VER};
+  if(hd){ it.hd=1; HD_DB.put(id,hd).catch(()=>{ it.hd=0; const current=albumGet(); const saved=current.find(x=>x.t===id); if(saved){saved.hd=0;albumSet(current);} toast(tx('albHdFail'),4000); }); }
   list.push(it); const keep=list.slice(-12); list.slice(0,-12).forEach(x=>{ if(x.hd) HD_DB.del(x.t).catch(()=>{}); }); albumSet(keep); }
 function renderAlbum(){
   const nc=ZORDER.filter(cardDone).length; $('albRcT').textContent=tx('albRcT').replace('{n}',nc);
@@ -3390,7 +3550,8 @@ $('btnAlbum').addEventListener('click',e=>{ e.preventDefault(); openAlbum(); });
 document.getElementById('zoneTabs').addEventListener('click',e=>{
     const a=e.target.closest('a'); if(!a) return;
     const zz=ZPOS;   /* 与快速移动共用落脚点（羌寨的 [0,10] 正落在河里） */
-    const z=zz[a.dataset.z]; if(!z) return;
+    const z=zz[a.dataset.z]; if(!z||!started||modalOpen()||photoMode) return;
+    clearInput(); if(dlgNpc){ clearInterval(typing); dlgNpc=null; $('dlg').classList.remove('show'); } closePoi();
     pGroup.position.copy(P(z[0],z[1],0)); if(p2) p2.grp.position.copy(P(z[0]+2,z[1]+2,0));
     document.querySelectorAll('#zoneTabs a').forEach(x=>x.classList.toggle('on',x===a));
     document.querySelector('.sceneCard').style.setProperty('--zc', ZCOL[a.dataset.z]||'#c9a45c'); });
@@ -3487,7 +3648,7 @@ function washTex(t,cat){ const img=t&&t.image; if(!img||!img.width||img.complete
   nt.flipY=t.flipY; nt.encoding=t.encoding; nt.anisotropy=t.anisotropy||4;
   return _dcCache[key]=nt; }
 let _dcPending=false;
-function styleMaterials(d){ _dcPending=false;
+function styleMaterials(d){ _dcPending=false; try{ if(DART.on!==!!d) dcArtApply(d); }catch(e){ warn1('dart',e); }
   scene.traverse(o=>{ if(!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{
     const U=m.userData, cat=dcCat(m), S=cat?DC_SET[cat]:null;
     if(d){ if(U.dcOn) return;
@@ -3500,7 +3661,7 @@ function styleMaterials(d){ _dcPending=false;
     else if(U.dcOn){ const o0=U.dc0; m.map=o0.map; if(o0.ns&&m.normalScale) m.normalScale.copy(o0.ns);
       if(o0.col&&m.color) m.color.copy(o0.col); if(o0.em&&m.emissive) m.emissive.copy(o0.em); U.dcOn=false; m.needsUpdate=true; } }); }); }
 /* 模型与贴图是陆续加载的：淡彩模式下每两秒补一次新出现的材质 */
-setInterval(()=>{ if(hxStyle==='dancai') try{ styleMaterials(true); }catch(e){} },2000);
+setInterval(()=>{ if(!document.hidden && ((photoMode&&GRADE&&GRADE.mat)?GRADE.mat.uniforms.uStyle.value>0.5:hxStyle==='dancai')) try{ styleMaterials(true); }catch(e){} },2000);
 let hxStyle='real';
 { const stB=document.getElementById('stBtns');
   if(stB){ let hst='real'; try{ hst=localStorage.getItem('hxStyle')||'real'; }catch(e){}   /* 默认写实；淡彩是否设为默认，待用户与朱老师看过对比图再定 */
@@ -3562,6 +3723,7 @@ document.getElementById('btnGo').addEventListener('click',()=>{ try{ styleMateri
     humGain=actx.createGain(); humGain.gain.value=0;
     humOsc1.connect(humGain); humOsc2.connect(humGain); humGain.connect(master);
     humOsc1.start(); humOsc2.start();
+    try{ initSoundscape(); }catch(e){ warn1('snd',e); }
     const PENTA=[0,3,5,7,10];
     setInterval(()=>{ if(muted) return; const t0=actx.currentTime+0.02;
       const m=57+PENTA[Math.floor(Math.random()*5)]+(Math.random()<0.3?12:0);
@@ -3571,6 +3733,12 @@ document.getElementById('btnGo').addEventListener('click',()=>{ try{ styleMateri
       o.connect(gg); gg.connect(plGain); o.start(t0); o.stop(t0+2); },2400);
   }catch(e){}
 });
+
+/* 菜单中的操作链接支持键盘激活；不会将空格传到世界里的跳跃操作。 */
+for(const el of document.querySelectorAll('a:not([href])')){
+  el.setAttribute('role','button'); el.tabIndex=0;
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();if(!e.repeat)el.click();}});
+}
 </script>
 </body>
 </html>
