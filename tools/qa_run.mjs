@@ -6,13 +6,41 @@
      node tools/qa_run.mjs --shots <目录>   另外按固定机位截五个场景的写实 / 淡彩对比图（晴、正午、同分辨率）
    依赖：本机 Google Chrome、python3、Node 22 以上（自带 WebSocket）。不需要安装任何 npm 包。 */
 import { spawn } from 'node:child_process';
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const CHROME = process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+/* Chrome 发现（跨平台）：优先 CHROME 环境变量；否则按平台找常见位置。
+   macOS 保持原来的应用路径；在 Linux（包括 GitHub Actions）上按 PATH 找
+   google-chrome / chromium 等命令；Windows 找标准安装路径。
+   都找不到时报错退出，并提示用 CHROME 环境变量指定可执行文件。 */
+function onPath(name) {
+  const dirs = (process.env.PATH || '').split(process.platform === 'win32' ? ';' : ':').filter(Boolean);
+  return dirs.some(d => existsSync(join(d, name)));
+}
+function findChrome() {
+  if (process.env.CHROME) return process.env.CHROME;
+  if (process.platform === 'darwin') {
+    const mac = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+    return existsSync(mac) ? mac : null;
+  }
+  if (process.platform === 'win32') {
+    const roots = [process.env['ProgramFiles'], process.env['ProgramFiles(x86)'], process.env.LOCALAPPDATA].filter(Boolean);
+    for (const r of roots) { const c = join(r, 'Google\\Chrome\\Application\\chrome.exe'); if (existsSync(c)) return c; }
+    return null;
+  }
+  for (const name of ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser']) {
+    if (onPath(name)) return name;
+  }
+  return null;
+}
+const CHROME = findChrome();
+if (!CHROME) {
+  console.error('找不到 Chrome / Chromium：请先安装 Google Chrome，或用 CHROME 环境变量指定可执行文件，例如：CHROME=google-chrome node tools/qa_run.mjs');
+  process.exit(1);
+}
 const HTTP_PORT = 8790 + Math.floor(Math.random() * 100), CDP_PORT = 9330 + Math.floor(Math.random() * 100);
 const args = process.argv.slice(2);
 const shotsDir = args.includes('--shots') ? resolve(args[args.indexOf('--shots') + 1]) : null;
