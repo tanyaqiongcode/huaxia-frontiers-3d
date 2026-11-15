@@ -581,9 +581,10 @@ const THEMES=[
  {fog:0x1a1210,bg:0x150e0a,sun:0xff9a5c,si:1.0,hemi:0xd6a08a,name:{zh:'暮色',en:'Dusk'}},
  {fog:0x0a0e18,bg:0x080c16,sun:0xb9c8ff,si:.7,hemi:0x8a9cd6,name:{zh:'月夜',en:'Moonlit'}}];
 let themeIx=1, themeAuto=90, themeAutoFlow=true, _curSO=[58,24], updTodUI=()=>{};
+const _todC={sun:new THREE.Color(), hemi:new THREE.Color()}, _todS={};
 function applyTheme(silent){ const t=THEMES[themeIx];
-  scene.fog.color.setHex(t.fog); scene.background.setHex(t.bg);
-  sun.color.setHex(t.sun); sun.intensity=t.si; hemi.color.setHex(t.hemi);
+  _todC.sun.setHex(t.sun); _todC.hemi.setHex(t.hemi);   /* 颜色目标：每帧缓缓过渡过去，不再一下跳变 */
+  if(!started){ scene.fog.color.setHex(t.fog); scene.background.setHex(t.bg); sun.color.setHex(t.sun); sun.intensity=t.si; hemi.color.setHex(t.hemi); }
   if(!silent) toast(tx('themePre')+t.name[T.lang]); }
 function fract(x){ return x - Math.floor(x); }
 
@@ -610,7 +611,7 @@ const T={lang: (function(){try{return new URLSearchParams(location.search).get('
  albRcT:{zh:'读书卡 {n}/5',en:'Reading cards {n}/5'}, albMcT:{zh:'行走纪念卡 {n}',en:'Walk cards {n}'},
  albLock:{zh:'未解锁 · 听完讲述、拾齐史料',en:'Locked — hear the speaker, gather the sources'},
  albMcEmpty:{zh:'还没有纪念卡。点上面的“生成行走纪念卡”，会记下此刻的史料、讲述和步数；生成过的都会留在这里。',en:'No walk cards yet. Press “Make a walk card” above to record your sources, stories and steps so far; every card you make stays here.'},
- albDel:{zh:'删除',en:'delete'}, albDelQ:{zh:'删除这张纪念卡？',en:'Delete this walk card?'},
+ albDel:{zh:'删除',en:'delete'}, albHdFail:{zh:'高清原图没能存进卡册（浏览器存储不足），已下载的文件不受影响',en:'Could not keep the full-size photo in the album (browser storage is full); the downloaded file is fine'}, albDelQ:{zh:'删除这张纪念卡？',en:'Delete this walk card?'},
  albFull:{zh:'浏览器存储已满，这张纪念卡只在本次打开期间保留',en:'Browser storage is full; this card is kept only until you close the page'},
  eCard:{zh:'生成行走纪念卡',en:'Make a walk card'},
  hudCnt:{zh:'史料 <b id="cShard">0</b>/17<br>倾听讲述 <b id="cNpc">0</b>/5',en:'Sources <b id="cShard">0</b>/17<br>Tellings heard <b id="cNpc">0</b>/5'},
@@ -816,8 +817,9 @@ function tex(n,rep,srgb){ const k=n+'@'+rep; if(_texCache[k]) return _texCache[k
   const t=_tl.load(texURL(n)); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(rep,rep);
   if(srgb) t.encoding=THREE.sRGBEncoding; t.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy());
   return _texCache[k]=t; }
-function pbr(key,rep,extra){ return new THREE.MeshStandardMaterial(Object.assign({map:tex(key+'_diff',rep,true),
-  normalMap:tex(key+'_nor',rep), roughnessMap:tex(key+'_rough',rep), roughness:1, metalness:0}, extra||{})); }
+function pbr(key,rep,extra){ const m=new THREE.MeshStandardMaterial(Object.assign({map:tex(key+'_diff',rep,true),
+  normalMap:tex(key+'_nor',rep), roughnessMap:tex(key+'_rough',rep), roughness:1, metalness:0}, extra||{}));
+  m.userData.cat=key; return m; }   /* 记下材质类别：淡彩画风按类别换成各自的淡彩材质 */
 /* 叶片、针叶：程序绘制的透明贴图（卡片边缘透明，看不出方形） */
 function leafTexture(kind){ const c=document.createElement('canvas'); c.width=c.height=512; const g=c.getContext('2d'); g.scale(2,2);
   if(kind==='needle'){ g.strokeStyle='#3b2e22'; g.lineWidth=3; g.beginPath(); g.moveTo(4,128); g.lineTo(250,128); g.stroke();
@@ -834,7 +836,7 @@ function leafTexture(kind){ const c=document.createElement('canvas'); c.width=c.
 const _leafTex={leaf:leafTexture('leaf'), needle:leafTexture('needle')};
 function leafMat(kind){ const m=new THREE.MeshStandardMaterial({map:_leafTex[kind],alphaTest:.42,side:THREE.DoubleSide,roughness:.85,metalness:0,vertexColors:true});
   if(renderer.capabilities.isWebGL2) m.alphaToCoverage=true;   /* 多重采样下叶缘平滑，不再一格一格的锯齿 */
-  m.color.setScalar(kind==='needle'?1.9:1.7); return m; }   /* 叶片贴图本身偏暗，再叠烘焙遮蔽后要提亮 */
+  m.color.setScalar(kind==='needle'?1.9:1.7); m.userData.cat=kind; return m; }   /* 叶片贴图本身偏暗，再叠烘焙遮蔽后要提亮 */
 /* GLB 模型用的材质：多了顶点色（Blender 烘焙的环境光遮蔽） */
 var _GLBM=null;
 function glbMats(){ if(_GLBM) return _GLBM; const vc={vertexColors:true};
@@ -1501,7 +1503,7 @@ function updPhotoCap(){ const el=$('phCap'); if(!el) return; const cap=photoMode
 function photoShoot(){ try{
   renderFrame();
   const sw=renderer.domElement.width, sh=renderer.domElement.height; if(!sw||!sh) return;
-  const sc=Math.min(1,1600/Math.max(sw,sh));
+  const sc=Math.min(1,2560/Math.max(sw,sh));
   const W=Math.round(sw*sc), H=Math.round(sh*sc), c2=document.createElement('canvas'); c2.width=W; c2.height=H;
   const g2=c2.getContext('2d'); g2.drawImage(renderer.domElement,0,0,W,H);
   g2.strokeStyle='rgba(201,164,92,.85)'; g2.lineWidth=2; g2.strokeRect(14,14,W-28,H-28);
@@ -1517,7 +1519,7 @@ function photoShoot(){ try{
   /* 卡册只存 320x200 缩略图，避免把浏览器 localStorage 撑满溢出 */
   const tk=320/Math.max(W,H), cThumb=document.createElement('canvas'); cThumb.width=Math.round(W*tk); cThumb.height=Math.round(H*tk);
   const gt=cThumb.getContext('2d'); gt.drawImage(c2,0,0,cThumb.width,cThumb.height);
-  albumAdd(cThumb.toDataURL('image/jpeg',0.72));
+  albumAdd(cThumb.toDataURL('image/jpeg',0.72), out);   /* 缩略图进列表，高清原图进 IndexedDB */
   toast(tx('phSaved')); }catch(e){ warn1('photo',e); } }
 /* 人物材质的纹理：按 Blender 里起的质地名（cloth/wool/fleece/trim/hair/leather/skin/eye/lip/metal/rubber）分别处理，全部程序绘制 */
 const FIG_TEX=(()=>{ const mk=(w,h,draw,rx,ry)=>{ const c=document.createElement('canvas'); c.width=w; c.height=h; draw(c.getContext('2d'),w,h);
@@ -1624,25 +1626,25 @@ let laborTalkEnabled = false;   /* 复核要求：默认关闭路人对话，保
 const WLABOR={
  sun:     {n:{zh:'晒太阳的大爷',en:'Villager sunning'},
    l:{zh:'年轻人出去打工了，话说得不一样了。可过年回来，还是尔玛。',en:'The young ones left for work and talk differently now. But at New Year they come back — still Erma.'},
-   src:'第四部分 第十四章〈一个华夏边缘的延续与变迁〉，2020 年版第 421–456 页（章级出处，具体页码待核）'},
+   src:'第四部分 第十四章〈一个华夏边缘的延续与变迁〉（2020 年版）'},
  firewood:{n:{zh:'背柴的大哥',en:'Villager carrying firewood'},
    l:{zh:'柴要背一个上午。走远了，就踩到别人放羊的地界了。',en:'Carrying wood takes a whole morning. Walk too far, and you are on someone else’s grazing ground.'},
-   src:'结语〈资源竞争、历史记忆与族群认同〉，2020 年版第 457–474 页（章级出处，具体页码待核）'},
+   src:'结语〈资源竞争、历史记忆与族群认同〉（2020 年版）'},
  herding: {n:{zh:'放羊的大叔',en:'Shepherd'},
    l:{zh:'羊认草，草认雨水。我们的地界，是羊一步步走出来的。',en:'Sheep know the grass, and grass knows the rain. Our boundary is walked out by the sheep, step by step.'},
-   src:'第二部分 第四章〈青海河湟地区游牧社会的形成〉，2020 年版第 139–156 页（章级出处，具体页码待核）'},
+   src:'第二部分 第四章〈青海河湟地区游牧社会的形成〉（2020 年版）'},
  lookout: {n:{zh:'戍边的老兵',en:'Old frontier soldier'},
    l:{zh:'墙里种地，墙外放牧。这道墙，是两种过日子的办法中间的一条线。',en:'Inside the wall: farming. Outside: herding. This wall is a line drawn between two ways of living.'},
-   src:'第二部分〈华夏生态边界的形成〉第四至六章，2020 年版第 139–224 页（部分级出处，具体页码待核）'},
+   src:'第二部分〈华夏生态边界的形成〉第四至六章（2020 年版）'},
  winnow:  {n:{zh:'晒粮的大姐',en:'Villager winnowing grain'},
    l:{zh:'谷子晒在房顶上。河坝种地、山上放羊，两头都得顾——这就是我们的日子。',en:'We dry grain on the roof. Farm the valley, herd on the mountain — working both is how we live.'},
-   src:'第四部分 第十四章〈一个华夏边缘的延续与变迁〉，2020 年版第 421–456 页（章级出处，具体页码待核）'},
+   src:'第四部分 第十四章〈一个华夏边缘的延续与变迁〉（2020 年版）'},
  emb:     {n:{zh:'做羌绣的阿姐',en:'Woman embroidering'},
    l:{zh:'这花样是我妈教的，她妈也是这么教的。绣着绣着，就知道自己是尔玛了。',en:'My mother taught me this pattern, and hers taught her. Stitch by stitch, you learn you are Erma.'},
-   src:'第一部分 第二章〈记忆、历史与族群本质〉，2020 年版第 81–99 页（章级出处，具体页码待核）'},
+   src:'第一部分 第二章〈记忆、历史与族群本质〉（2020 年版）'},
  run:     {n:{zh:'追跑的娃娃',en:'Running kid'},
    l:{zh:'过了那道石梁，草就是别家的了。',en:'Cross that stone ridge, and the grass belongs to another family.'},
-   src:'代序〈如何观看与了解边疆〉，2020 年版第 1–23 页（章级出处，具体页码待核）'}};
+   src:'代序〈如何观看与了解边疆〉（2020 年版）'}};
 const WALK_LABOR=['sun','firewood','run','herding','run','lookout','lookout','winnow','sun','run','emb','sun','run'];
 const WALKERS=WALKER_DEFS.map((d,i)=>{ const fig=makeFigure(WALK_LOOK[d[0]]||{});
   const pos=P(d[2],d[3],0); fig.g.position.copy(pos); fig.g.quaternion.setFromUnitVectors(_yUp,pos.clone().normalize());
@@ -1684,15 +1686,18 @@ function tickWalkers(dt,now){ const pP=pGroup.position;
     if(!f.g.visible) f.g.visible=true;
     if(!w.init){ w.init=true;                                          /* 出生点若落在房子、树或河里，就近换一个空地 */
       for(let k=0;k<80&&!walkerFree(w.pos);k++){ const c=P(w.ha+(Math.random()-.5)*2.6*w.ra, w.ht+(Math.random()-.5)*2.6*w.rt, 0); if(walkerFree(c)) w.pos.copy(c); }
-      f.g.position.copy(w.pos); f.g.quaternion.setFromUnitVectors(_yUp,_wu.copy(w.pos).normalize()); }
+      f.g.position.copy(w.pos); f.g.quaternion.setFromUnitVectors(_yUp,_wu.copy(w.pos).normalize());
+      if(w.labor!=='run') w.wait=4+Math.random()*30; }                   /* 劳作型路人：一开始就在干活 */
+    const isLab=w.labor && w.labor!=='run';
     f.g.visible=dP<95; if(dP>70) continue;
     let moving=false;
     if(dP<2.3 && w.wait<0.8) w.wait=1.2;                              /* 行走者走近：停一停 */
     if(w.wait>0) w.wait-=dt;
-    else { if(!w.tgt){ for(let k=0;k<6&&!w.tgt;k++){ const c=P(w.ha+(Math.random()-.5)*2*w.ra, w.ht+(Math.random()-.5)*2*w.rt, 0); if(walkerFree(c)) w.tgt=c; }
+    else { if(!w.tgt){ const rf=isLab?0.35:1;                        /* 劳作型只在附近挪几步，换个地方接着干 */
+        for(let k=0;k<6&&!w.tgt;k++){ const c=P(w.ha+(Math.random()-.5)*2*w.ra*rf, w.ht+(Math.random()-.5)*2*w.rt*rf, 0); if(walkerFree(c)) w.tgt=c; }
         if(!w.tgt){ w.wait=2; } }
       if(w.tgt){ const d=_wv.copy(w.tgt).sub(w.pos), dist=d.length();
-        if(dist<0.25){ w.tgt=null; w.wait=2+Math.random()*6; }
+        if(dist<0.25){ w.tgt=null; w.wait=isLab?(22+Math.random()*30):(2+Math.random()*6); }
         else { d.multiplyScalar(1/dist); _wn.copy(w.pos).addScaledVector(d,Math.min(dist,w.sp*dt)); setOnGround(_wn);
           if(!walkerFree(_wn) && walkerFree(w.pos)){ w.tgt=null; w.wait=0.6; }
           else { w.pos.copy(_wn); moving=true;
@@ -1710,7 +1715,8 @@ function tickWalkers(dt,now){ const pP=pGroup.position;
       let want=0; if(dP<5){ const dv=_wv.copy(pP).sub(w.pos).applyQuaternion(_wq.copy(f.g.quaternion).invert());
         let a=Math.atan2(dv.x,dv.z)-f.yawG.rotation.y; a=((a+Math.PI*3)%(Math.PI*2))-Math.PI; want=Math.max(-0.8,Math.min(0.8,a)); }
       f.head.rotation.y+=(want-f.head.rotation.y)*0.07; }
-    if(w.wait>0.2 && w.labor && w.labor!=='run'){ if(!w.prop && f.rig) w.prop=buildLaborProp(w.labor,f);
+    if(w.prop && w.prop.isObject3D) w.prop.visible=!(moving && (w.labor==='winnow'||w.labor==='emb'));   /* 走动时收起簸箕、绣绷 */
+    if(w.wait>0.2 && isLab){ if(!w.prop && f.rig) w.prop=buildLaborProp(w.labor,f);
       applyLabor(w,now,pP); } } }
 
 /* 路人劳作姿态：每种一眼能看出在干什么；头转向走近的玩家（当地上方向语义由 yawG 承载） */
@@ -1751,24 +1757,24 @@ function buildLaborProp(labor,f){
     g.position.set(0,0.1,-0.22); g.rotation.x=0.2; sp.add(shdw(g)); return g; }
   if(labor==='herding'){ const fR=B('foreArmR'); if(!fR) return null;
     const w=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.017,1.05,6),wood);
-    w.position.set(0,-0.46,0.07); w.rotation.x=0.35; fR.add(shdw(w));
+    w.rotation.x=Math.PI-0.5; w.position.set(0,0.235-Math.cos(0.5)*0.45,0.03+Math.sin(0.5)*0.45); fR.add(shdw(w));   /* 手握鞭杆下端，鞭梢斜向前上 */
     const tip=new THREE.Mesh(new THREE.CylinderGeometry(0.005,0.013,0.15,5),new THREE.MeshStandardMaterial({color:0x2a241e}));
     tip.position.y=0.48; w.add(tip); return w; }
   if(labor==='lookout'){ const fR=B('foreArmR'); if(!fR) return null;
     const spear=new THREE.Mesh(new THREE.CylinderGeometry(0.016,0.02,2.25,6),wood);
-    spear.position.set(0,0.35,0.06); fR.add(shdw(spear));
+    spear.rotation.x=Math.PI; spear.position.set(0,0.235-0.4,0.04); fR.add(shdw(spear));   /* 枪尖朝上，手握在下三分之一 */
     const tip=new THREE.Mesh(new THREE.ConeGeometry(0.034,0.16,6),new THREE.MeshStandardMaterial({color:0x8a8f98,metalness:.4,roughness:.35}));
     tip.position.y=1.2; spear.add(tip); return spear; }
   if(labor==='winnow'){ const fL=B('foreArmL'); if(!fL) return null;
     const tray=new THREE.Group();
     const t1=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.22,0.055,10),new THREE.MeshStandardMaterial({color:0xa8926a,roughness:.92}));
     const gr=new THREE.Mesh(new THREE.CylinderGeometry(0.24,0.19,0.03,10),new THREE.MeshStandardMaterial({color:0xc9a85c,roughness:1}));
-    gr.position.y=0.02; tray.add(t1,gr); tray.rotation.x=0.5; tray.position.set(0,-0.16,0.15); fL.add(shdw(tray)); return tray; }
+    gr.position.y=0.02; tray.add(t1,gr); tray.rotation.x=0.5; tray.position.set(0,0.26,0.1); fL.add(shdw(tray));   /* 簸箕端在手上 */ return tray; }
   if(labor==='emb'){ const fL=B('foreArmL'); if(!fL) return null;
     const hoop=new THREE.Group();
     const tor=new THREE.Mesh(new THREE.TorusGeometry(0.15,0.016,6,16),new THREE.MeshStandardMaterial({color:0xb8955a,roughness:.8}));
     const cloth=new THREE.Mesh(new THREE.CircleGeometry(0.13,16),new THREE.MeshStandardMaterial({color:0x2a3038,roughness:1,side:THREE.DoubleSide}));
-    cloth.position.z=0.004; hoop.add(tor,cloth); hoop.position.set(0,-0.2,0.13); hoop.rotation.x=0.9; fL.add(shdw(hoop)); return hoop; }
+    cloth.position.z=0.004; hoop.add(tor,cloth); hoop.position.set(0,0.25,0.06); hoop.rotation.x=0.9; fL.add(shdw(hoop));   /* 绣绷拿在左手 */ return hoop; }
   return null; }
 /* ---- 玩家 ---- */
 const player={a:0,t:34,yaw:0};
@@ -2921,16 +2927,16 @@ function loop(){
     const cano=new THREE.Mesh(new THREE.ConeGeometry(0.66,0.2,10,1,true),new THREE.MeshStandardMaterial({color:0x8a6a3c,roughness:.85,side:THREE.DoubleSide}));
     cano.position.y=0.98; const tip=new THREE.Mesh(new THREE.ConeGeometry(0.02,0.08,5),wood); tip.position.y=1.1;
     um.add(pole,grip,cano,tip); um.traverse(m=>{ if(m.isMesh) m.castShadow=true; }); um.userData={isUmb:true};
-    /* 伞挂前臂骨末端（骨架无手骨）；伞面朝向用当地上方向（球形星球各处不同） */
+    /* 伞挂前臂骨的手腕端（骨骼沿 +Y 从肘指向腕；骨架无手骨）；伞面朝向用当地上方向（球形星球各处不同） */
     const fb=(figP.rig&&figP.rig.joints)?figP.rig.joints.find(j=>j.b.name==='foreArmR'):null;
-    if(fb){ fb.b.add(um); um.position.set(0,-0.26,0.02); um.rotation.set(0,0,0); }
+    if(fb){ fb.b.add(um); um.position.set(0,0.235,0.0); um.rotation.set(0,0,0); }
     else { um.position.set(0.19,1.17,0.31); um.rotation.set(-0.2,0,0.1); figP.yawG.add(um); }
     window.__umbM=um; window.__umbAnchor=fb?fb.b:figP.yawG; }
   { /* 人物骨骼异步加载完成后，将伞从 body 重挂到右手前臂骨 */
     const fbNow=(figP.rig&&figP.rig.joints)?figP.rig.joints.find(j=>j.b.name==='foreArmR'):null;
     if(window.__umbM && fbNow && window.__umbAnchor!==fbNow.b){
       fbNow.b.add(window.__umbM);
-      window.__umbM.position.set(0,-0.26,0.02);
+      window.__umbM.position.set(0,0.235,0.0);
       window.__umbM.rotation.set(0,0,0);
       window.__umbAnchor=fbNow.b; }
     const umbOn=hasUmb&&(weather==='rain'||weather==='snow')&&rollT<0;
@@ -3126,7 +3132,7 @@ function loop(){
   { /* 太阳高度随时段变：清晨、黄昏压低拉出长影，正午高悬；补光永远在背光一侧 */
     const upS=_sunP.copy(pP).normalize(); _sunT.set(0.35,0,1).cross(upS); if(_sunT.lengthSq()<1e-4) _sunT.set(1,0,0); _sunT.normalize();
     const SO=[[22,56],[58,24],[17,-58],[46,30]][themeIx]||[52,30];
-    const kSO=Math.min(1,dt*2.2);
+    const kSO=1-Math.exp(-dt/3.5);   /* 太阳约 8–10 秒挪到新位置 */
     _curSO[0]+=(SO[0]-_curSO[0])*kSO; _curSO[1]+=(SO[1]-_curSO[1])*kSO;
     sun.position.copy(pP).addScaledVector(upS,_curSO[0]).addScaledVector(_sunT,_curSO[1]); sun.target.position.copy(pP); sun.target.updateMatrixWorld();
     fill.position.copy(pP).addScaledVector(upS,26).addScaledVector(_sunT,-_curSO[1]*0.9); fill.target.position.copy(pP); fill.target.updateMatrixWorld();
@@ -3134,7 +3140,7 @@ function loop(){
     fill.intensity=[0.42,0.5,0.34,0.24][themeIx]*(wet?0.6:1); hemi.intensity=[0.85,1.0,0.62,0.52][themeIx];
     hemi.groundColor.setHex(themeIx<2?0x6a5f48:0x3a3428);
     if(window.__skyMat) window.__skyMat.uniforms.sunDir.value.copy(sun.position).sub(pP).normalize();
-    if(GRADE && !photoMode){ const U=GRADE.mat.uniforms, k=Math.min(1,dt*1.5);
+    if(GRADE && !photoMode){ const U=GRADE.mat.uniforms, k=1-Math.exp(-dt/3.5);
       const M=[[1.06,1.0,0.93, 0.96,0.99,1.05, 1.1,0.32],[1.04,1.01,0.96, 0.96,0.99,1.05, 1.12,0.22],[1.1,0.99,0.88, 0.94,0.96,1.08, 1.08,0.34],[0.96,1.0,1.08, 0.9,0.96,1.1, 0.92,0.3]][themeIx];
       _sunT.set(M[0],M[1],M[2]); U.uHigh.value.lerp(_sunT,k); _sunT.set(M[3],M[4],M[5]); U.uShadow.value.lerp(_sunT,k);
       U.uSat.value+=((wet?M[6]*0.84:M[6])-U.uSat.value)*k; U.uCon.value+=(M[7]-U.uCon.value)*k; } }
@@ -3146,6 +3152,15 @@ function loop(){
         window.__lodStone.count=Math.ceil(window.__lodStone.count*0.6); }
       toast(tx('qDegrade')); }
     fpsN=0; fpsT=0; }
+  { /* 时辰过渡：上面各处按当前时段直接写入的灯光数值，在这里统一缓动（约 8–10 秒），昼夜连续变化 */
+    const kT=1-Math.exp(-dt/3.5);
+    const sm=(key,obj,prop)=>{ const tg=obj[prop], c=_todS[key]; const v=(c===undefined)?tg:c+(tg-c)*kT; obj[prop]=v; _todS[key]=v; };
+    const smC=(key,col)=>{ let c=_todS[key]; if(!c){ _todS[key]=col.clone(); return; } c.lerp(col,kT); col.copy(c); };
+    sm('sunI',sun,'intensity'); sm('hemiI',hemi,'intensity'); sm('fillI',fill,'intensity');
+    sun.color.lerp(_todC.sun,kT); hemi.color.lerp(_todC.hemi,kT); smC('hemiG',hemi.groundColor);
+    if(window.__skyMat) smC('sunCol',window.__skyMat.uniforms.sunCol.value);
+    if(window.__waterMat) sm('night',window.__waterMat.uniforms.uNight,'value');
+    }
   renderFrame(); loopErrN=0;
   }catch(e){ loopErrN++; warn1('loop',e); if(__DBG) document.title='LOOP ERR: '+e.message+' @'+(e.stack||'').split('\n')[1];
     if(loopErrN>3 && !fatalShown) showFatal(); }
@@ -3351,7 +3366,14 @@ function albumGet(){ if(albumMem) return albumMem; try{
 function albumSet(list){ albumMem=null;
   for(let k=0;k<4;k++){ try{ localStorage.setItem(ALB_KEY,JSON.stringify(list)); return; }catch(e){ if(list.length>1) list=list.slice(1); } }
   albumMem=list; toast(tx('albFull'),4000); }
-function albumAdd(url){ const list=albumGet(); list.push({t:Date.now(),img:url,v:ALB_VER}); albumSet(list.slice(-8)); }
+/* 高清原图存进 IndexedDB（容量大），卡册列表里只放缩略图和编号 */
+const HD_DB=(()=>{ let p=null; const db=()=>p||(p=new Promise((ok,no)=>{ try{ const r=indexedDB.open('hxAlbumHD',1);
+    r.onupgradeneeded=()=>r.result.createObjectStore('img'); r.onsuccess=()=>ok(r.result); r.onerror=()=>no(r.error); }catch(e){ no(e); } }));
+  const tx2=(mode,fn)=>db().then(d=>new Promise((ok,no)=>{ const t=d.transaction('img',mode), st=t.objectStore('img'); const q=fn(st); t.oncomplete=()=>ok(q&&q.result); t.onerror=()=>no(t.error); }));
+  return { put:(k,v)=>tx2('readwrite',st=>st.put(v,k)), get:k=>tx2('readonly',st=>st.get(k)), del:k=>tx2('readwrite',st=>st.delete(k)) }; })();
+function albumAdd(url,hd){ const list=albumGet(), id=Date.now(), it={t:id,img:url,v:ALB_VER};
+  if(hd){ it.hd=1; HD_DB.put(id,hd).catch(()=>{ it.hd=0; toast(tx('albHdFail'),4000); }); }
+  list.push(it); const keep=list.slice(-12); list.slice(0,-12).forEach(x=>{ if(x.hd) HD_DB.del(x.t).catch(()=>{}); }); albumSet(keep); }
 function renderAlbum(){
   const nc=ZORDER.filter(cardDone).length; $('albRcT').textContent=tx('albRcT').replace('{n}',nc);
   $('albRc').innerHTML=ZORDER.map(z=>{ const on=cardDone(z);
@@ -3385,8 +3407,10 @@ $('albRcImg').addEventListener('click',makeCardsImage);
 $('albMcNew').addEventListener('click',()=>makeCard());
 $('albRc').addEventListener('click',e=>{ const d=e.target.closest('div[data-z]'); if(!d||d.classList.contains('lock')) return; closeAlbum(); showCard(d.dataset.z); });
 $('albMc').addEventListener('click',e=>{ const del=e.target.closest('a[data-del]');
-  if(del){ if(!confirm(tx('albDelQ'))) return; const list=albumGet(); list.splice(+del.dataset.del,1); albumSet(list); renderAlbum(); return; }
-  const f=e.target.closest('figure[data-k]'); if(f){ const it=albumGet()[+f.dataset.k]; if(it) openViewer(it.img,tx('fnCard')); } });
+  if(del){ if(!confirm(tx('albDelQ'))) return; const list=albumGet(); const gone=list.splice(+del.dataset.del,1)[0]; if(gone&&gone.hd) HD_DB.del(gone.t).catch(()=>{}); albumSet(list); renderAlbum(); return; }
+  const f=e.target.closest('figure[data-k]'); if(f){ const it=albumGet()[+f.dataset.k]; if(!it) return;
+    if(it.hd) HD_DB.get(it.t).then(u=>openViewer(u||it.img,'edge-walk-'+it.t+'.jpg')).catch(()=>openViewer(it.img,'edge-walk-'+it.t+'.jpg'));
+    else openViewer(it.img,tx('fnCard')); } });
 /* 结尾页：可以关掉回到世界里继续走，也可以重新开始 */
 function closeEnd(){ $('end').style.display='none'; }
 $('endClose').addEventListener('click',closeEnd);
@@ -3419,8 +3443,64 @@ document.querySelector('.hudR').addEventListener('click',()=>{ const on=$('tasks
       else { themeAutoFlow=false; themeIx=+t; applyTheme(); }
       updTodUI(); });
   } }
-function styleMaterials(d){ scene.traverse(o=>{ if(!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{
-    if(!m.normalMap||!m.normalScale) return; if(!m.userData.ns0) m.userData.ns0=m.normalScale.clone(); m.normalScale.copy(m.userData.ns0).multiplyScalar(d?0.3:1); }); }); }
+/* ---- 淡彩材质：建筑（石、木、灰墙、土）、植被（阔叶、针叶、树皮）、衣料（布、毛、绣边、头发）各用一套 ----
+   做法：把原贴图在画布上柔化、按明度分几层色阶（像分层罩染），向各自的矿物颜料色靠拢，再叠极淡的笔触；法线减弱，保留大形体。
+   切回写实时全部还原。 */
+const DC_SET={
+  stone:  {tint:0xb7a483,a:.30,blur:2.2,bands:5,ns:.45,stroke:.07},   /* 石墙：淡赭灰，保留砌石层次 */
+  earth:  {tint:0xc9a56c,a:.30,blur:2.6,bands:5,ns:.3, stroke:.06},   /* 夯土、泥墙、土路：土黄 */
+  ground: {tint:0xb9a571,a:.26,blur:2.8,bands:6,ns:.3, stroke:.05},
+  plaster:{tint:0xf0e7d3,a:.42,blur:2.6,bands:4,ns:.25,stroke:.05},   /* 白灰墙：米白 */
+  wood:   {tint:0x9a5a3a,a:.30,blur:1.6,bands:5,ns:.35,stroke:.07},   /* 木构：赭石，留木纹 */
+  bark:   {tint:0x5c4838,a:.30,blur:1.4,bands:5,ns:.45,stroke:.08},   /* 树皮：赭墨 */
+  asphalt:{tint:0x6b7277,a:.30,blur:3.0,bands:4,ns:.2, stroke:.04},
+  leaf:   {tint:0x76a985,a:.38,blur:0,  bands:4,ns:1,  stroke:0, em:0x16261b},   /* 阔叶：石绿 */
+  needle: {tint:0x4a7d72,a:.36,blur:0,  bands:4,ns:1,  stroke:0, em:0x0f201b},   /* 针叶：花青绿 */
+  cloth:  {tint:0xffffff,a:0, blur:1.4,bands:4,ns:.3, stroke:.09, sat:1.12},   /* 衣料：色块干净、略提饱和，像平涂后罩一层 */
+  wool:   {tint:0xffffff,a:0, blur:1.2,bands:4,ns:.3, stroke:.07, sat:1.08},
+  fleece: {tint:0xffffff,a:0, blur:1.2,bands:4,ns:.3, stroke:.07, sat:1.05},
+  trim:   {tint:0xffffff,a:0, blur:.6, bands:6,ns:.3, stroke:0,   sat:1.15},   /* 羌绣花边：图案保留，只略柔 */
+  hair:   {tint:0x26221e,a:.25,blur:1.6,bands:3,ns:.3, stroke:.05} };
+const _dcCache={};
+function dcCat(m){ const c=m.userData.cat||(m.name||'').split('_')[0]; return DC_SET[c]?c:null; }
+function washTex(t,cat){ const img=t&&t.image; if(!img||!img.width||img.complete===false) return null;
+  const key=t.uuid+'|'+cat; if(_dcCache[key]) return _dcCache[key];
+  const S=DC_SET[cat], N=256, c=document.createElement('canvas'); c.width=c.height=N; const g=c.getContext('2d');
+  if(S.blur>0){ const c3=document.createElement('canvas'); c3.width=c3.height=N*3; const g3=c3.getContext('2d');   /* 先铺 3×3 再柔化，接缝处也连续 */
+    for(let i=0;i<3;i++) for(let j=0;j<3;j++) g3.drawImage(img,i*N,j*N,N,N);
+    g.filter='blur('+S.blur+'px)'; g.drawImage(c3,-N,-N); g.filter='none'; }
+  else g.drawImage(img,0,0,N,N);
+  const id=g.getImageData(0,0,N,N), d=id.data, tc=new THREE.Color(S.tint), tr=tc.r*255, tg=tc.g*255, tb=tc.b*255;
+  for(let i=0;i<d.length;i+=4){ const r=d[i],gg=d[i+1],b=d[i+2], L=0.3*r+0.59*gg+0.11*b+1e-3;
+    const q=Math.round(L/255*S.bands)/S.bands*255, nL=L+(q-L)*0.5, k=nL/L;   /* 明度分层 */
+    let R=r*k, G=gg*k, B=b*k;
+    if(S.a>0){ const l=nL/200; R+=(tr*l-R)*S.a; G+=(tg*l-G)*S.a; B+=(tb*l-B)*S.a; }
+    if(S.sat){ const m=(R+G+B)/3; R=m+(R-m)*S.sat; G=m+(G-m)*S.sat; B=m+(B-m)*S.sat; }
+    d[i]=Math.max(0,Math.min(255,R)); d[i+1]=Math.max(0,Math.min(255,G)); d[i+2]=Math.max(0,Math.min(255,B)); }
+  g.putImageData(id,0,0);
+  if(S.stroke>0){ let sd=7; const rnd=()=>{ sd=(sd*16807)%2147483647; return sd/2147483647; };   /* 极淡的笔触：顺一个方向扫，四边环绕 */
+    g.lineCap='round';
+    for(let i=0;i<46;i++){ const x=rnd()*N, y=rnd()*N, L=24+rnd()*60, w=3+rnd()*7, a=-0.35+rnd()*0.3, dark=rnd()<0.55;
+      g.strokeStyle=dark?'rgba(60,48,36,'+S.stroke+')':'rgba(255,250,238,'+(S.stroke*0.9)+')'; g.lineWidth=w;
+      for(const ox of [-N,0,N]) for(const oy of [-N,0,N]){ g.beginPath(); g.moveTo(x+ox,y+oy); g.lineTo(x+ox+Math.cos(a)*L,y+oy+Math.sin(a)*L); g.stroke(); } } }
+  const nt=new THREE.CanvasTexture(c); nt.wrapS=t.wrapS; nt.wrapT=t.wrapT; nt.repeat.copy(t.repeat); nt.offset.copy(t.offset);
+  nt.flipY=t.flipY; nt.encoding=t.encoding; nt.anisotropy=t.anisotropy||4;
+  return _dcCache[key]=nt; }
+let _dcPending=false;
+function styleMaterials(d){ _dcPending=false;
+  scene.traverse(o=>{ if(!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{
+    const U=m.userData, cat=dcCat(m), S=cat?DC_SET[cat]:null;
+    if(d){ if(U.dcOn) return;
+      if(!U.dc0) U.dc0={map:m.map, ns:m.normalScale?m.normalScale.clone():null, col:m.color?m.color.clone():null, em:m.emissive?m.emissive.clone():null};
+      if(S && m.map){ const w=washTex(m.map,cat); if(!w){ _dcPending=true; return; } m.map=w; }
+      if(m.normalMap&&m.normalScale&&U.dc0.ns) m.normalScale.copy(U.dc0.ns).multiplyScalar(S?S.ns:0.3);
+      if(S&&S.em&&m.emissive) m.emissive.setHex(S.em);   /* 叶丛暗部提亮一点，像淡墨罩染而不是死黑 */
+      if((m.name||'').startsWith('skin_')&&m.color){ m.color.lerp(_t.setHex(0xf2d6bd),0.18); }   /* 肤色略提亮，脸更干净 */
+      U.dcOn=true; m.needsUpdate=true; }
+    else if(U.dcOn){ const o0=U.dc0; m.map=o0.map; if(o0.ns&&m.normalScale) m.normalScale.copy(o0.ns);
+      if(o0.col&&m.color) m.color.copy(o0.col); if(o0.em&&m.emissive) m.emissive.copy(o0.em); U.dcOn=false; m.needsUpdate=true; } }); }); }
+/* 模型与贴图是陆续加载的：淡彩模式下每两秒补一次新出现的材质 */
+setInterval(()=>{ if(hxStyle==='dancai') try{ styleMaterials(true); }catch(e){} },2000);
 let hxStyle='real';
 { const stB=document.getElementById('stBtns');
   if(stB){ let hst='real'; try{ hst=localStorage.getItem('hxStyle')||'real'; }catch(e){}   /* 默认写实；淡彩是否设为默认，待用户与朱老师看过对比图再定 */
