@@ -606,7 +606,7 @@ function closeBookOverlay(){ document.getElementById('bookOverlay').style.displa
 </script>
 </main>
 
-<script>const __DBG=(location.hostname==="127.0.0.1"||location.hostname==="localhost");window.addEventListener("error",e=>{if(__DBG)document.title="ERR:"+e.message+" @"+e.lineno;});</script>
+<script>const __DBG=(location.hostname==="127.0.0.1"||location.hostname==="localhost");window.addEventListener("error",e=>{if(/3D skipped/.test(e.message||"")){e.preventDefault();return;}if(__DBG)document.title="ERR:"+e.message+" @"+e.lineno;});</script>
 <script src="assets/three.min.js"></script>
 <script>
 /* WebGL 预检：不可用（或 ?no3d 测试钩子）→ 标记 no3d 静态回退；内容渲染照常，仅跳过 3D */
@@ -886,7 +886,12 @@ function renderMap(){
   wrap.addEventListener('mouseout', ()=> wrap.querySelectorAll('.hi').forEach(x=>x.classList.remove('hi')));
 })();
 
-/* ================= THREE.JS HERO（动态背景全站回归） ================= */
+</script>
+<script>
+/* ================= THREE.JS HERO（动态背景全站回归） =================
+   单独一个 script：three.js 没加载到或 ?no3d 时在这里停下，正文、导图、命令条照常可用 */
+var theme='dark', paused=false;   /* 命令条也用到，放在 3D 退出之前声明 */
+if(!window.THREE || __NO3D){ document.documentElement.classList.add('no3d'); throw new Error('3D skipped'); }
 const canvas = document.getElementById('bg');
 let renderer;
 try { renderer = new THREE.WebGLRenderer({canvas, antialias:true}); }
@@ -902,7 +907,6 @@ const PAL = {
   light:{ bg:0xece3d2, ring:0x8a6c33, core:0xb9853a, glow:0xb9853a, coreC:[.55,.42,.2], edgeC:[.3,.44,.52],
     band:[[.42,.33,.2],[.55,.44,.26],[.36,.28,.16],[.6,.48,.3]], frag:0x6b5124, dust:0x6b5c3a, key:0xfff1d6 }
 };
-let theme = 'dark';
 const SCENES = {
  morning:{bg:0x0e1119, fog:0x0e1119, fd:.042, key:0xfff1d6, ki:2.6, rim:0x7fa0ff, ri:.5, core:0xffe2a8, ring:0xd8b878,
    st:{zh:'晨光漂流 · 清透大气',en:'Morning drift · clear air'}, bgc:'#0e1119'},
@@ -1041,7 +1045,8 @@ function applyQuality(k){ quality=(k==='auto')?autoQuality():k;
   document.querySelectorAll('#segQ span').forEach(x=>x.classList.toggle('on',x.dataset.v===k));
   try{ localStorage.setItem('hxQuality', k); }catch(e){} }
 try{ applyQuality(localStorage.getItem('hxQuality')||'auto'); }catch(e){ applyQuality('auto'); }
-function applyTheme(t){ theme=t; document.documentElement.setAttribute('data-theme',t); const p=PAL[t];
+function applyTheme(t){ theme=t; document.documentElement.setAttribute('data-theme',t);
+  if(document.documentElement.classList.contains('no3d')) return; const p=PAL[t];
   const s=SCENES[sceneK];
   renderer.setClearColor(s.bg); scene.fog.color.set(s.fog);
   edge.material.color.set(s.ring); core.material.color.set(s.core); glow.material.color.set(s.core);
@@ -1066,7 +1071,7 @@ const bGeo = new THREE.BufferGeometry(); bGeo.setAttribute('position', new THREE
 const bursts = new THREE.Points(bGeo, new THREE.PointsMaterial({color:0xffe2a8,size:.16,transparent:true,opacity:.95,blending:THREE.AdditiveBlending,depthWrite:false}));
 scene.add(bursts);
 let bIdx = 0;
-function burst(clientX, clientY){
+function burst(clientX, clientY){ if(document.documentElement.classList.contains('no3d')) return;
   const ndc = new THREE.Vector2((clientX/innerWidth)*2-1, -(clientY/innerHeight)*2+1);
   raycaster.setFromCamera(ndc, camera);
   const pt = new THREE.Vector3(); raycaster.ray.intersectPlane(planeZ, pt);
@@ -1086,7 +1091,7 @@ addEventListener('pointermove', e=>{
 addEventListener('pointerup', ()=>{ dragging = false; });
 canvas.addEventListener('click', e=>{ burst(e.clientX, e.clientY); });
 
-let mx=0,my=0,scrolly=0,paused=false;
+let mx=0,my=0,scrolly=0;
 addEventListener('scroll', ()=>{ scrolly = scrollY/innerHeight; });
 addEventListener('resize', ()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
 const clock = new THREE.Clock(); let simT = 0;
@@ -1140,6 +1145,8 @@ const look = new THREE.Vector3(0,.4,0);
   renderer.render(scene, camera);
 })();
 
+</script>
+<script>
 /* ================= 命令条 ================= */
 const btnLang=document.getElementById('btnLang'), btnSound=document.getElementById('btnSound'),
       btnPause=document.getElementById('btnPause'), btnTheme=document.getElementById('btnTheme'),
@@ -1256,7 +1263,8 @@ addEventListener('keydown', e=>{
 
 /* ================= 氛围面板（极简：场景×4 + 雾） ================= */
 let sceneK = 'morning';
-function setScene(k){ sceneK = k; const s = SCENES[k];
+function setScene(k){ sceneK = k; const s = (typeof SCENES!=='undefined') && SCENES[k];
+  document.documentElement.setAttribute('data-scene', k); if(!s||document.documentElement.classList.contains('no3d')) return;
   key.color.set(s.key); key.intensity = s.ki;
   rim.color.set(s.rim); rim.intensity = s.ri;
   scene.fog.color.set(s.fog); scene.fog.density = s.fd*(+document.getElementById('fogR').value/50||.5)+.014;
@@ -1264,12 +1272,12 @@ function setScene(k){ sceneK = k; const s = SCENES[k];
   document.documentElement.setAttribute('data-scene', k);
   edge.material.color.set(s.ring); core.material.color.set(s.core); glow.material.color.set(s.core);
 }
-document.querySelectorAll('#segScene span').forEach(s=>{
-  s.onclick = ()=>{ document.querySelectorAll('#segScene span').forEach(x=>x.classList.toggle('on',x===s));
-    setScene(s.dataset.v); };
+document.querySelectorAll('#segScene span[data-v]').forEach(s=>{   /* 只绑定外层按钮：内层文字 span 没有 data-v */
+  s.onclick = ()=>{ document.querySelectorAll('#segScene span[data-v]').forEach(x=>x.classList.toggle('on',x===s));
+    try{ setScene(s.dataset.v); }catch(e){} };
 });
 const fogSlider = document.getElementById('fogR');
-fogSlider.oninput = ()=>{ scene.fog.density = .018+(+fogSlider.value/100)*.05; };
+fogSlider.oninput = ()=>{ try{ scene.fog.density = .018+(+fogSlider.value/100)*.05; }catch(e){} };
 
 /* ================= 边缘长卷（滚轮驱动） ================= */
 (function(){
@@ -1305,7 +1313,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 const io2 = { observe: ()=> document.querySelectorAll('main .card, main .q, main .bpage').forEach(el=>el.classList.add('on')) };
 
 applyLang();
-setScene('morning');
+try{ setScene('morning'); }catch(e){}
 console.info('Huaxia Frontiers site — v37 (2026-11-08) | quality tiers · progressive entry · a11y');
 document.documentElement.setAttribute('data-scene','morning');
 </script>

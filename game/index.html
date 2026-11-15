@@ -84,6 +84,7 @@
   .wxRow b{display:block;margin-bottom:6px}
   #wxBtns{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
   #todBtns{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+  #stBtns{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
   .wxRow b{font-size:11px;letter-spacing:.2em;color:var(--gold-hi);font-weight:600}
   .wxRow a{font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:5px 0;cursor:pointer;text-decoration:none;text-align:center;white-space:nowrap}
   .wxRow a.on{color:var(--gold-hi);border-color:var(--gold-hi);background:rgba(201,164,92,.12)}
@@ -99,11 +100,14 @@
   body.photo .sceneCard,body.photo #objTrack,body.photo #sub,body.photo .hint,body.photo #compass,body.photo #mmap,
   body.photo .zoneTabs,body.photo .posHUD,body.photo #actBtn,body.photo #btnJump,body.photo .langBtn,body.photo #btnSkill,
   body.photo .xlinks,body.photo .sealStamp,body.photo #charge,body.photo #lockTip,body.photo .hudR,body.photo .mark,
-  body.photo #enterFade,body.photo #tasks,body.photo .resumeOv{display:none!important}
+  body.photo #enterFade,body.photo #tasks,body.photo .resumeOv:not(.show),body.photo .joy,body.photo .actBtn{display:none!important}
   body.photo #view{outline:none}
   .photoBar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:31;display:none;flex-wrap:wrap;justify-content:center;gap:6px;
     padding:9px 12px;background:rgba(6,8,12,.72);border:1px solid var(--line);border-radius:14px;pointer-events:auto}
   body.photo .photoBar{display:flex}
+  .phCap{position:fixed;right:28px;bottom:96px;z-index:31;display:none;max-width:min(560px,80vw);text-align:right;pointer-events:none;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+  .phCap b{display:block;font-size:17px;line-height:1.7;color:#eed6a0;font-weight:600;letter-spacing:.06em}
+  .phCap i{display:block;font-style:normal;font-size:12px;color:rgba(236,232,222,.85);margin-top:4px;letter-spacing:.08em}
   .photoBar a{font-size:11.5px;letter-spacing:.1em;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:6px 13px;cursor:pointer;text-decoration:none}
   .photoBar a.on{color:var(--gold-hi);border-color:var(--gold-hi);background:rgba(201,164,92,.14)}
   .photoBar a.pri{color:#0b0d0f;background:var(--gold-hi);border-color:var(--gold-hi);font-weight:600}
@@ -316,7 +320,7 @@
     .langBtn{top:20px;right:12px}
     .mark{top:76px;right:auto;left:12px}
     .hint{display:none}
-    .xlinks{top:20px;right:64px}
+    .xlinks{top:20px;right:70px}
     #btnJump{display:block}
     .sealStamp{top:18px;left:16px;bottom:auto;right:auto;width:30px;height:30px;line-height:26px;font-size:16px}
     .zoneTabs{bottom:52px;gap:3px}
@@ -325,13 +329,18 @@
     .inv{bottom:96px}
     #objTrack{display:none}
     .posHUD{bottom:8px}
-    #mmap{top:128px;right:12px;width:104px;height:104px}
-    .toast{max-width:88vw;top:276px}
+    #mmap{top:150px;right:12px;width:96px;height:96px}
+    .toast{max-width:88vw;top:286px}
     .mark{display:none}
-    .sceneCard{top:66px;left:12px;max-width:calc(100vw - 200px);padding:10px 12px}
+    .sceneCard{top:150px;left:12px;max-width:calc(100vw - 136px);padding:9px 11px}
+    .photoBar{bottom:12px;width:calc(100vw - 20px);max-width:none;padding:7px 6px;gap:4px}
+    .photoBar a{font-size:10.5px;letter-spacing:.04em;padding:5px 8px}
+    .phCap{right:14px;left:14px;bottom:auto;top:64px;max-width:none}
+    .phCap b{font-size:14px;line-height:1.6}
+    .phCap i{font-size:10.5px}
     .sceneCard b{font-size:14px;letter-spacing:.08em}
     .sceneCard i{font-size:10.5px}
-    #compass{bottom:auto;top:244px;font-size:10.5px;white-space:nowrap;letter-spacing:.06em}
+    #compass{bottom:auto;top:258px;font-size:10.5px;white-space:nowrap;letter-spacing:.06em}
     .actBtn{bottom:196px}
     .lockTip{display:none !important}
   }
@@ -423,6 +432,7 @@
 
 <div id="enterFade"></div>
 <div class="resumeOv" id="resumeOv"><div class="rc"><b data-i18n="rsTitle">已 暂 停</b><button class="go pri" id="resumeGo" data-i18n="rsGo">继 续</button></div></div>
+<div class="phCap" id="phCap"><b id="phCapMain"></b><i id="phCapSub"></i></div>
 <div class="photoBar" id="photoBar">
   <a data-f="0" class="on" data-i18n="phF0">原片</a><a data-f="1" data-i18n="phF1">黑白</a><a data-f="2" data-i18n="phF2">怀旧</a><a data-f="3" data-i18n="phF3">淡彩</a>
   <a id="phInsc" data-i18n="phIn">题字</a>
@@ -491,18 +501,24 @@ addEventListener('resize', ()=>{ camera.aspect=innerWidth/innerHeight; camera.up
    建不起来（旧设备）就退回直接渲染 */
 let GRADE=null;
 function gradeResize(){ if(!GRADE) return; const pr=renderer.getPixelRatio(), w=Math.max(2,Math.floor(innerWidth*pr)), h=Math.max(2,Math.floor(innerHeight*pr));
-  GRADE.RT.setSize(w,h); GRADE.mat.uniforms.uPx.value.set(1/w,1/h); }
+  GRADE.RT.setSize(w,h); GRADE.mat.uniforms.uPx.value.set(1/w,1/h); GRADE.mat.uniforms.uK.value=pr; }
 try{ /* 带模板缓冲才会分到 24 位深度；默认的 16 位深度会让头发、眼睑这些贴得很近的面在远处互相闪烁 */
   const RTO={stencilBuffer:true, depthBuffer:true};
   const RT=renderer.capabilities.isWebGL2? new THREE.WebGLMultisampleRenderTarget(4,4,RTO) : new THREE.WebGLRenderTarget(4,4,RTO);
   RT.texture.encoding=THREE.sRGBEncoding; RT.texture.minFilter=RT.texture.magFilter=THREE.LinearFilter; RT.texture.generateMipmaps=false;
   const mat=new THREE.ShaderMaterial({depthTest:false,depthWrite:false,toneMapped:false,
-    uniforms:{tD:{value:RT.texture},uPx:{value:new THREE.Vector2(1,1)},uCon:{value:0.3},uSat:{value:1.1},uGlow:{value:0.32},uSharp:{value:0.55},uStyle:{value:0},uEdge:{value:0.9},uSharp2:{value:0.3},uVig:{value:0.16},
+    uniforms:{tD:{value:RT.texture},uPx:{value:new THREE.Vector2(1,1)},uCon:{value:0.3},uSat:{value:1.1},uGlow:{value:0.32},uSharp:{value:0.55},uStyle:{value:0},uEdge:{value:0.9},uSharp2:{value:0.3},uK:{value:1},uVig:{value:0.16},
       uShadow:{value:new THREE.Vector3(0.95,0.99,1.06)},uHigh:{value:new THREE.Vector3(1.05,1.01,0.95)}},
     vertexShader:'varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }',
-    fragmentShader:`uniform sampler2D tD; uniform vec2 uPx; uniform float uCon,uSat,uGlow,uVig,uSharp,uStyle,uEdge; uniform vec3 uShadow,uHigh; varying vec2 vUv;
+    fragmentShader:`uniform sampler2D tD; uniform vec2 uPx; uniform float uCon,uSat,uGlow,uVig,uSharp,uStyle,uEdge,uK; uniform vec3 uShadow,uHigh; varying vec2 vUv;
+      const vec3 LW=vec3(0.299,0.587,0.114);
+      /* 淡彩用：取一个象限 3×3 的平均色与亮度方差（Kuwahara 滤波的一块） */
+      vec3 kq(vec2 dir, out float v){ vec3 s=vec3(0.0); float a=0.0, b=0.0;
+        for(int i=0;i<3;i++){ for(int j=0;j<3;j++){ vec3 t=texture2D(tD, vUv+vec2(float(i)*dir.x,float(j)*dir.y)*uPx*uK*1.5).rgb;
+          float l=dot(t,LW); s+=t; a+=l; b+=l*l; } }
+        a/=9.0; v=b/9.0-a*a; return s/9.0; }
       void main(){ vec3 c=texture2D(tD,vUv).rgb; vec3 g=vec3(0.0);
-        for(int i=0;i<8;i++){ float a=float(i)*0.7854; vec2 d=vec2(cos(a),sin(a));
+        if(uStyle<0.5) for(int i=0;i<8;i++){ float a=float(i)*0.7854; vec2 d=vec2(cos(a),sin(a));
           g+=max(texture2D(tD,vUv+d*uPx*7.0).rgb-0.74,0.0)+max(texture2D(tD,vUv+d*uPx*16.0).rgb-0.74,0.0)*0.6; }
         c+=g*(uGlow/12.8);
         vec3 nb=(texture2D(tD,vUv+vec2(uPx.x,0.0)).rgb+texture2D(tD,vUv-vec2(uPx.x,0.0)).rgb+texture2D(tD,vUv+vec2(0.0,uPx.y)).rgb+texture2D(tD,vUv-vec2(0.0,uPx.y)).rgb)*0.25;
@@ -512,32 +528,32 @@ try{ /* 带模板缓冲才会分到 24 位深度；默认的 16 位深度会让�
         c*=mix(uShadow,uHigh,smoothstep(0.05,0.85,l));
         c=mix(vec3(l),c,uSat);
         if(uStyle>0.5){
-          /* 淡彩插图：先把贴图细碎纹理"洗"平（像水彩铺色），再只勾大轮廓（两级模糊的亮度差，碎石、草纹不会被描成黑线），
-             最后按色相平滑地往石绿、赭石、黛青靠，叠一层很淡的熟宣纸底 */
-          vec3 n1=(texture2D(tD,vUv+vec2(uPx.x*2.5,0.0)).rgb+texture2D(tD,vUv-vec2(uPx.x*2.5,0.0)).rgb
-                  +texture2D(tD,vUv+vec2(0.0,uPx.y*2.5)).rgb+texture2D(tD,vUv-vec2(0.0,uPx.y*2.5)).rgb)*0.25;
-          vec3 n2=(texture2D(tD,vUv+uPx*vec2( 6.0, 6.0)).rgb+texture2D(tD,vUv+uPx*vec2(-6.0, 6.0)).rgb
-                  +texture2D(tD,vUv+uPx*vec2( 6.0,-6.0)).rgb+texture2D(tD,vUv+uPx*vec2(-6.0,-6.0)).rgb
-                  +texture2D(tD,vUv+uPx*vec2( 8.5, 0.0)).rgb+texture2D(tD,vUv+uPx*vec2(-8.5, 0.0)).rgb
-                  +texture2D(tD,vUv+uPx*vec2( 0.0, 8.5)).rgb+texture2D(tD,vUv+uPx*vec2( 0.0,-8.5)).rgb)*0.125;
-          vec3 LW=vec3(0.299,0.587,0.114);
-          float l1=dot(mix(c,n1,0.6),LW), l2=dot(n2,LW);
-          float edge=smoothstep(0.035,0.11,l2-l1)*uEdge*0.8;                 /* 只描"比周围暗"的一侧，线条成单线不成双线 */
-          vec3 wash=mix(c,n1,0.55); wash=mix(wash,n2,0.25);
-          float lw=dot(wash,LW);
-          float gW=clamp((wash.g-max(wash.r,wash.b))*7.0,0.0,1.0);
-          float rW=clamp((wash.r-wash.b)*5.0,0.0,1.0)*(1.0-gW);
+          /* 淡彩插图（江南百景图式）：
+             1. Kuwahara 滤波：四个象限里取亮度最均匀的一块的平均色——贴图碎纹被抹平成色块，物体边界仍然清楚，人脸不再被碎线盖住
+             2. 用象限平均色之间的差做"大轮廓"勾线，只勾物体边界，不勾地面碎石和五官
+             3. 亮度轻微分层、按色相平滑靠向石绿／赭石／黛青，叠熟宣纸底 */
+          float v0,v1,v2,v3;
+          vec3 q0=kq(vec2( 1.0, 1.0),v0), q1=kq(vec2(-1.0, 1.0),v1), q2=kq(vec2(-1.0,-1.0),v2), q3=kq(vec2( 1.0,-1.0),v3);
+          vec3 fill=q0; float vm=v0;
+          if(v1<vm){ vm=v1; fill=q1; } if(v2<vm){ vm=v2; fill=q2; } if(v3<vm){ vm=v3; fill=q3; }
+          float gx=dot((q0+q3)-(q1+q2),LW)*0.5, gy=dot((q0+q1)-(q2+q3),LW)*0.5;
+          float lw=dot(fill,LW);
+          float edge=smoothstep(0.07,0.17,length(vec2(gx,gy)))*uEdge*0.7*(1.0-smoothstep(0.62,0.9,lw)*0.6);
+          float lq=floor(lw*7.0+0.5)/7.0; vec3 m=fill*mix(1.0,(lq+0.02)/(lw+0.02),0.35);
+          float gW=clamp((m.g-max(m.r,m.b))*7.0,0.0,1.0);
+          float rW=clamp((m.r-m.b)*5.0,0.0,1.0)*(1.0-gW);
           float bW=clamp(1.0-gW-rW,0.0,1.0);
-          vec3 tint=gW*vec3(0.46,0.62,0.44)+rW*vec3(0.76,0.58,0.40)+bW*vec3(0.42,0.52,0.60);
-          vec3 m=mix(wash, tint*(0.42+lw*1.05), 0.38);
-          m=mix(vec3(dot(m,LW)), m, 0.82);
+          vec3 tint=gW*vec3(0.47,0.63,0.45)+rW*vec3(0.78,0.60,0.42)+bW*vec3(0.44,0.54,0.62);
+          float lm=dot(m,LW);
+          m=mix(m, tint*(0.40+lm*1.05), 0.34);
+          m=mix(vec3(dot(m,LW)), m, 0.85);
           vec3 paper=vec3(0.96,0.93,0.86);
-          m=mix(m, paper, smoothstep(0.55,0.98,lw)*0.5);
-          m=mix(m, m*paper, 0.22);
-          m=mix(m, vec3(0.22,0.18,0.15), edge);
-          vec2 sc=vUv/uPx;
-          float pCloud=sin(sc.x*0.038+sin(sc.y*0.024)*1.6)*0.5+sin(sc.y*0.032+sin(sc.x*0.018)*1.7)*0.5;
-          c=m+pCloud*0.01*(1.0-lw*0.5);
+          m=mix(m, paper, smoothstep(0.58,0.98,lm)*0.45);
+          m=mix(m, m*paper, 0.2);
+          m=mix(m, vec3(0.24,0.20,0.16), edge);
+          vec2 sc=vUv/uPx/max(1.0,uK);
+          float pCloud=sin(sc.x*0.05+sin(sc.y*0.031)*1.6)*0.5+sin(sc.y*0.043+sin(sc.x*0.024)*1.7)*0.5;
+          c=m+pCloud*0.008*(1.0-lm*0.5);
         }
         vec2 q=vUv-0.5; c*=1.0-uVig*smoothstep(0.25,0.85,dot(q,q)*2.0);
         c+=(fract(sin(dot(vUv*vec2(1271.3,937.7),vec2(12.9898,78.233)))*43758.5453)-0.5)/255.0;
@@ -564,7 +580,7 @@ const THEMES=[
  {fog:0x8db6d9,bg:0x9ec6e8,sun:0xfff2d0,si:1.55,hemi:0xcfe2f4,name:{zh:'正午',en:'Noon'}},
  {fog:0x1a1210,bg:0x150e0a,sun:0xff9a5c,si:1.0,hemi:0xd6a08a,name:{zh:'暮色',en:'Dusk'}},
  {fog:0x0a0e18,bg:0x080c16,sun:0xb9c8ff,si:.7,hemi:0x8a9cd6,name:{zh:'月夜',en:'Moonlit'}}];
-let themeIx=1, themeAuto=90, themeAutoFlow=true, _curSO=[58,24];
+let themeIx=1, themeAuto=90, themeAutoFlow=true, _curSO=[58,24], updTodUI=()=>{};
 function applyTheme(silent){ const t=THEMES[themeIx];
   scene.fog.color.setHex(t.fog); scene.background.setHex(t.bg);
   sun.color.setHex(t.sun); sun.intensity=t.si; hemi.color.setHex(t.hemi);
@@ -648,6 +664,7 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  wRecStories:{zh:'听过的讲述',en:'Tellings heard'},
  errFatal:{zh:'启动遇到问题，请刷新重试；若持续出现，请通过阅读版继续阅读。',en:'Something went wrong starting the walk. Please refresh; if it persists, continue with the reading edition.'},
  beaconLit:{zh:'烽火燃起 · 边界在移动中',en:'The beacon burns — the boundary is on the move'},
+ todPaused:{zh:'换到下一时辰 · 自动流转已暂停（设置里可恢复）',en:'Next time of day · auto cycle paused (resume in Settings)'},
  qDegrade:{zh:'画质 · 已自动调低',en:'Quality · auto-reduced'},
  ftT:{zh:'快速移动 · FAST TRAVEL',en:'FAST TRAVEL'},
  invUmb:{zh:'雨伞',en:'Umbrella'}, invTorch:{zh:'火把',en:'Torch'},
@@ -660,7 +677,7 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  gWho:{zh:'行走者',en:'Walker'}, gM:{zh:'男',en:'Man'}, gF:{zh:'女',en:'Woman'},
  wxT:{zh:'天气',en:'Weather'},
  phF0:{zh:'原片',en:'Raw'}, phF1:{zh:'黑白',en:'Mono'}, phF2:{zh:'怀旧',en:'Sepia'}, phF3:{zh:'淡彩',en:'Tint'},
- phIn:{zh:'题字',en:'Caption'}, phInscTitle:{zh:'题名',en:'Title'}, phInscQuote:{zh:'金句',en:'Quote'},
+ phIn:{zh:'题字：无',en:'Caption: off'}, phInscTitle:{zh:'题名',en:'Title'}, phInscQuote:{zh:'金句',en:'Quote'},
  phBtn:{zh:'拍照',en:'Photo'}, phSh:{zh:'拍照 · 存卡册',en:'Shoot · Save'}, phX:{zh:'退出',en:'Exit'},
  phSaved:{zh:'照片已存入卡册',en:'Photo saved to the album'}, stT:{zh:'画风',en:'Art style'}, stReal:{zh:'写实',en:'Realistic'}, stDan:{zh:'淡彩插图',en:'Ink-tint'}, wxAuto:{zh:'自动',en:'Auto'}, wxSun:{zh:'晴',en:'Sunny'},
  wxRain:{zh:'雨',en:'Rain'}, wxSnow:{zh:'雪',en:'Snow'}, wxWind:{zh:'风',en:'Wind'}, wxDust:{zh:'尘',en:'Dust'},
@@ -682,7 +699,7 @@ en:'<kbd>W A S D</kbd> move · mouse look · <kbd>Esc</kbd> exit look · <kbd>E<
  zValleyS:{zh:'沿河谷行走，边缘在脚下移动。',en:'Walk the valley — the boundary moves beneath your feet.'}
 }};
 function tx(k){ const v=T.dict[k]; return v?(v[T.lang]||v.zh):''; }
-function toggleLang(){ T.lang=T.lang==='zh'?'en':'zh'; applyLang();
+function toggleLang(){ T.lang=T.lang==='zh'?'en':'zh'; applyLang(); try{ layoutTop(); updPhotoCap(); }catch(e){}
   if(document.getElementById('end').style.display==='flex') fillWalkRec(); }
 const ZLBL={village:{zh:'羌寨',en:'Qiang village'},hehuang:{zh:'河湟',en:'Hehuang'},wall:{zh:'长城',en:'The Wall'},
  modern:{zh:'现代',en:'Today'},beichuan:{zh:'北川',en:'Beichuan'}};
@@ -717,7 +734,7 @@ function doBeacon(){ if(lit) return;
   lit=true; beaconFlame.visible=true;
   beaconLight.intensity=2.4;
   lineMesh.material.color.setHex(0xffb35c); lineMesh.material.opacity=1;
-  toast(tx('beaconLit')); playEnd();
+  toast(tx('beaconLit')); playEnd(); saveGame();
   setTimeout(()=>{ fillEndQs(); fillWalkRec(); releaseLock(); $('end').style.display='flex'; },2600); }
 function tryBeacon(){ if(lit || prog<1) return;
   if(planarDist(pGroup.position,P(95,33,0))>6.5) return; doBeacon(); }
@@ -1435,47 +1452,71 @@ function makeFigure(o){
 const _yUp=new THREE.Vector3(0,1,0), _wv=new THREE.Vector3(), _wn=new THREE.Vector3(), _wu=new THREE.Vector3(), _wq=new THREE.Quaternion(), _q2=new THREE.Quaternion();
 const RIGS=[], _rq=new THREE.Quaternion(), _rq2=new THREE.Quaternion(), _rv=new THREE.Vector3();
 const LODS=[]; let lodT=0, QUAL_LOW=false;
-let photoMode=false, photoInsc=false, photoF=0, photoSaved=null;
-const PHOTO_F=[ {sat:1.1,con:0.3,style:0,vig:0.16},
+let photoMode=false, photoInsc=0, photoF=0, photoSaved=null;
+const PHOTO_F=[ {},   /* 原片：保持当前画风与调色 */
   {sat:0,con:0.44,style:0,vig:0.3},
   {sat:0.5,con:0.36,style:0,vig:0.24,sh:[1.0,0.87,0.68],hi:[1.08,0.97,0.8]},
-  {style:1} ];
-function photoApply(){ if(!GRADE||!GRADE.mat) return; const G=GRADE.mat.uniforms, f=PHOTO_F[photoF];
-  if(!f) return;
-  if(f.sat!==undefined) G.uSat.value=f.sat;
-  if(f.con!==undefined) G.uCon.value=f.con;
-  if(f.style!==undefined) G.uStyle.value=f.style;
-  if(f.vig!==undefined) G.uVig.value=f.vig;
-  if(f.sh) G.uShadow.value.set(f.sh[0],f.sh[1],f.sh[2]);
-  if(f.hi) G.uHigh.value.set(f.hi[0],f.hi[1],f.hi[2]); }
+  {style:1,sat:1.1,con:0.3,vig:0.16} ];
+function photoApply(){ if(!GRADE||!GRADE.mat) return; const G=GRADE.mat.uniforms, f=PHOTO_F[photoF], B=photoSaved;
+  if(!f||!B) return;
+  /* 每个滤镜都把全部参数写一遍，未指定的取进入拍照前的值——避免"黑白→淡彩"仍是黑白、"怀旧→原片"仍偏暖 */
+  G.uSat.value = f.sat!==undefined ? f.sat : B.sat;
+  G.uCon.value = f.con!==undefined ? f.con : B.con;
+  G.uVig.value = f.vig!==undefined ? f.vig : B.vig;
+  G.uStyle.value = f.style!==undefined ? f.style : B.style;
+  G.uShadow.value.copy(f.sh ? _t3a.set(f.sh[0],f.sh[1],f.sh[2]) : B.sh);
+  G.uHigh.value.copy(f.hi ? _t3a.set(f.hi[0],f.hi[1],f.hi[2]) : B.hi);
+  updPhotoCap(); }
+const _t3a=new THREE.Vector3();
 function togglePhoto(){ photoMode=!photoMode;
   document.body.classList.toggle('photo',photoMode);
   if(GRADE&&GRADE.mat){
     const G=GRADE.mat.uniforms;
-    if(photoMode){ photoSaved={sat:G.uSat.value,con:G.uCon.value,style:G.uStyle.value,vig:G.uVig.value};
-      photoF=0; photoApply(); releaseLock(); }
+    if(photoMode){ photoSaved={sat:G.uSat.value,con:G.uCon.value,style:G.uStyle.value,vig:G.uVig.value,
+        sh:G.uShadow.value.clone(),hi:G.uHigh.value.clone(),on:GRADE.on};
+      GRADE.on=true;   /* 降画质后调色被关掉时，拍照期间临时打开，滤镜才有效 */
+      photoF=0; photoApply(); releaseLock();
+      document.querySelectorAll('#photoBar a[data-f]').forEach(x=>x.classList.toggle('on',+x.dataset.f===0)); }
     else { if(photoSaved){ G.uSat.value=photoSaved.sat; G.uCon.value=photoSaved.con;
-        G.uStyle.value=photoSaved.style; G.uVig.value=photoSaved.vig; } grabLock(); }
-  } else {
+        G.uStyle.value=photoSaved.style; G.uVig.value=photoSaved.vig;
+        G.uShadow.value.copy(photoSaved.sh); G.uHigh.value.copy(photoSaved.hi); GRADE.on=photoSaved.on; } grabLock(); }
+    updPhotoCap();
+  } else {   /* 设备不支持调色后期：只隐藏界面，不提供滤镜按钮 */
+    document.querySelectorAll('#photoBar a[data-f]').forEach(x=>x.style.display='none');
     if(photoMode) releaseLock(); else grabLock();
+    updPhotoCap();
   } }
+function photoCapText(){ if(!photoInsc) return null;
+  const d=new Date().toLocaleDateString(T.lang==='zh'?'zh-CN':'en-GB');
+  if(photoInsc===2) return { main: T.lang==='zh'?'“当我们在一张纸上画一个圆形时，事实上是它的边缘让它看起来像个圆形。”':'“When we draw a circle on paper, it is its edge that makes it look like a circle.”',
+    sub: (T.lang==='zh'?'—— 王明珂《华夏边缘》 · ':'— Wang Ming-ke, Huaxia Frontiers (site translation) · ')+d };
+  const z=Z[zoneHere()]||Z.village;
+  return { main: (T.lang==='zh'?'边缘行走 · ':'Walking the Edge · ')+z.n[T.lang], sub: d }; }
+function photoWrap(g,txt,font,maxW){ g.font=font; const out=[]; let cur='';
+  const parts=T.lang==='zh'?[...txt]:txt.split(' ');
+  for(const p of parts){ const t=cur?(T.lang==='zh'?cur+p:cur+' '+p):p; if(g.measureText(t).width>maxW&&cur){ out.push(cur); cur=p; } else cur=t; }
+  if(cur) out.push(cur); return out; }
+function updPhotoCap(){ const el=$('phCap'); if(!el) return; const cap=photoMode?photoCapText():null;
+  el.style.display=cap?'block':'none'; if(cap){ $('phCapMain').textContent=cap.main; $('phCapSub').textContent=cap.sub; } }
 function photoShoot(){ try{
   renderFrame();
-  const W=1280,H=800, c2=document.createElement('canvas'); c2.width=W; c2.height=H;
+  const sw=renderer.domElement.width, sh=renderer.domElement.height; if(!sw||!sh) return;
+  const sc=Math.min(1,1600/Math.max(sw,sh));
+  const W=Math.round(sw*sc), H=Math.round(sh*sc), c2=document.createElement('canvas'); c2.width=W; c2.height=H;
   const g2=c2.getContext('2d'); g2.drawImage(renderer.domElement,0,0,W,H);
   g2.strokeStyle='rgba(201,164,92,.85)'; g2.lineWidth=2; g2.strokeRect(14,14,W-28,H-28);
-  if(photoInsc){ g2.fillStyle='rgba(201,164,92,.92)'; g2.font='600 20px serif';
-    g2.textAlign='right';
-    const quoteTxt=(photoInsc===2)?(T.lang==='zh'?'“当我们在一张纸上画一个圆形时，事实上是它的边缘让它看起来像个圆形。”':'"When we draw a circle on paper, it is its edge that makes it look like a circle."'):(T.lang==='zh'?'边缘行走 · 华夏边缘':'Walking the Edge · Huaxia Frontiers');
-    g2.fillText(quoteTxt, W-34, H-40);
-    g2.font='13px serif'; g2.fillStyle='rgba(232,228,218,.8)';
-    g2.fillText((photoInsc===2?'—— 王明珂《华夏边缘》 · ':'')+new Date().toLocaleDateString(), W-34, H-16); }
+  const cap=photoCapText();
+  if(cap){ g2.textAlign='right'; g2.shadowColor='rgba(0,0,0,.55)'; g2.shadowBlur=6;
+    const lines=photoWrap(g2,cap.main,'600 22px "Noto Serif SC",serif',W-120);
+    g2.font='600 22px "Noto Serif SC",serif'; g2.fillStyle='rgba(238,214,160,.96)';
+    lines.forEach((ln,i)=>g2.fillText(ln, W-40, H-46-(lines.length-1-i)*32));
+    g2.font='14px "Noto Serif SC",serif'; g2.fillStyle='rgba(236,232,222,.88)'; g2.fillText(cap.sub, W-40, H-22); g2.shadowBlur=0; }
   const out=c2.toDataURL('image/jpeg',0.92);
   const a=document.createElement('a'); a.href=out; a.download='edge-walk-'+Date.now()+'.jpg';
   document.body.appendChild(a); a.click(); a.remove();
   /* 卡册只存 320x200 缩略图，避免把浏览器 localStorage 撑满溢出 */
-  const cThumb=document.createElement('canvas'); cThumb.width=320; cThumb.height=200;
-  const gt=cThumb.getContext('2d'); gt.drawImage(c2,0,0,320,200);
+  const tk=320/Math.max(W,H), cThumb=document.createElement('canvas'); cThumb.width=Math.round(W*tk); cThumb.height=Math.round(H*tk);
+  const gt=cThumb.getContext('2d'); gt.drawImage(c2,0,0,cThumb.width,cThumb.height);
   albumAdd(cThumb.toDataURL('image/jpeg',0.72));
   toast(tx('phSaved')); }catch(e){ warn1('photo',e); } }
 /* 人物材质的纹理：按 Blender 里起的质地名（cloth/wool/fleece/trim/hair/leather/skin/eye/lip/metal/rubber）分别处理，全部程序绘制 */
@@ -2341,8 +2382,20 @@ function worldTick(dt,now){
 
 /* ---- 输入 ---- */
 const keys={};
-addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
+const MOVE_K=['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'];
+function modalOpen(){ return $('album').classList.contains('show')||$('cardsOut').classList.contains('show')||$('rcard').classList.contains('show')||$('end').style.display==='flex'; }
+function clearInput(){ for(const k in keys) keys[k]=false; for(const k in P2KEY) P2KEY[k]=false;
+  joy.x=0; joy.f=0; pad.x=0; pad.f=0; padYaw=0; padPitch=0; dragging=false; dragId=null;
+  if(charging) cancelCharge(); const st=document.getElementById('stick'); if(st) st.style.transform='translate(-50%,-50%)'; joyId=null; }
+addEventListener('keydown',e=>{ const k=e.key.toLowerCase();
   if(hardPaused) return;
+  if(modalOpen()){   /* 卡册、读书卡、结尾页打开时：只响应关闭／语言／声音，世界里的操作一律不穿透 */
+    if(k==='escape'){ if($('cardsOut').classList.contains('show')) $('cardsOut').classList.remove('show'); else if($('album').classList.contains('show')) closeAlbum(); }
+    else if(k==='k' && $('album').classList.contains('show')) closeAlbum();
+    else if(k==='l' && !e.repeat) toggleLang(); else if(k==='m' && !e.repeat) toggleSound();
+    return; }
+  keys[k]=true;
+  if(e.repeat){ if(MOVE_K.includes(k)||k===' ') e.preventDefault(); return; }   /* 长按只算一次：不连跳讲述、不反复切换 */
   if(p2 && k.startsWith('arrow')) P2KEY[k]=true;
   if(k==='p' && started){ togglePhoto(); }
   if(k==='escape' && photoMode){ togglePhoto(); }
@@ -2357,25 +2410,29 @@ addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); keys[k]=true;
   const busy=rollT>=0;
   if((k==='c'||k==='x')&&!busy){ rollT=0; rollDir=(k==='c')?1:-1; playRollSfx(k==='x');
     figP.yawG.rotation.y=Math.atan2(camS.dir.x,camS.dir.z); }
-  if(k==='t'){ themeIx=(themeIx+1)%THEMES.length; applyTheme(); themeAuto=90; }
+  if(k==='t'){ themeAutoFlow=false; themeIx=(themeIx+1)%THEMES.length; applyTheme(); updTodUI(); toast(tx('todPaused')); }
   if(k==='m') toggleSound();
   if(k==='j'){ const on=document.getElementById('tasks').classList.toggle('show'); if(on) releaseLock(); }
   if(k==='l') toggleLang();
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault(); });
 addEventListener('keyup',e=>{ const k=e.key.toLowerCase(); keys[k]=false; if(p2 && k.startsWith('arrow')) P2KEY[k]=false; if(k==='e'&&charging) cancelCharge(); });
-function pollPad(){ if(!started) return;
+const pad={x:0,f:0};
+function pollPad(){ pad.x=0; pad.f=0; padYaw=0; padPitch=0;
+  if(!started||hardPaused) return;
   const gps=navigator.getGamepads?navigator.getGamepads():[]; let gp=null;
   for(const g of gps) if(g&&g.connected){gp=g;break;}
-  if(!gp) return;
+  if(!gp){ if(padB2&&charging) cancelCharge(); padB0=padB2=false; return; }
   const dz=v=>Math.abs(v)<0.15?0:v;
-  joy.x=Math.max(-1,Math.min(1,joy.x+dz(gp.axes[0]||0)));
-  joy.f=Math.max(-1,Math.min(1,joy.f-dz(gp.axes[1]||0)));
+  const b0=!!(gp.buttons[0]&&gp.buttons[0].pressed), b2=!!(gp.buttons[2]&&gp.buttons[2].pressed);
+  if(modalOpen()||photoMode){ if(charging) cancelCharge(); padB0=b0; padB2=b2; return; }
+  pad.x=dz(gp.axes[0]||0); pad.f=-dz(gp.axes[1]||0);
   padYaw=-dz(gp.axes[2]||0)*0.05; padPitch=dz(gp.axes[3]||0)*0.035;
-  const b0=gp.buttons[0]&&gp.buttons[0].pressed, b2=gp.buttons[2]&&gp.buttons[2].pressed;
-  if(b0&&!padB0){ vy=7.4; } padB0=b0;
-  if(b2&&!padB2){ tryTalk(); } padB2=b2; }
+  if(b0&&!padB0&&jumpOff<=0&&vy===0){ vy=9.8; playJumpSfx(); } padB0=b0;
+  if(b2&&!padB2){ if(beaconReady()){ if(!charging) startCharge(); } else interact(); }   /* 与 E 键同一入口：查看、听讲、读书卡、按住点火 */
+  if(!b2&&padB2&&charging) cancelCharge();
+  padB2=b2; }
 const camS={dir:new THREE.Vector3(0,0,-1), dist:6.0, pitch:0.25};
-let dragging=false,lx=0,ly=0;
+let dragging=false,dragId=null,lx=0,ly=0;
 const cv=document.getElementById('gl');
 const canLock=!('ontouchstart' in window) && !!cv.requestPointerLock;
 function locked(){ return document.pointerLockElement===cv; }
@@ -2390,23 +2447,24 @@ addEventListener('mousemove',e=>{ if(!locked()) return;
   const up=pGroup.position.clone().normalize();
   camS.dir.applyAxisAngle(up,-(e.movementX||0)*0.0026);
   camS.pitch=Math.max(0.06,Math.min(0.95,camS.pitch+(e.movementY||0)*0.0022)); });
-cv.addEventListener('pointerdown',e=>{ if(locked()) return; dragging=true; lx=e.clientX; ly=e.clientY; });
-addEventListener('pointermove',e=>{ if(!dragging) return;
+cv.addEventListener('pointerdown',e=>{ if(locked()||dragging) return; dragging=true; dragId=e.pointerId; lx=e.clientX; ly=e.clientY; });
+addEventListener('pointermove',e=>{ if(!dragging||e.pointerId!==dragId) return;
   const dx=e.clientX-lx, dy=e.clientY-ly; lx=e.clientX; ly=e.clientY;
   const up=pGroup.position.clone().normalize();
   camS.dir.applyAxisAngle(up,-dx*0.005);
   camS.pitch=Math.max(0.06,Math.min(0.95,camS.pitch+dy*0.004)); });
-addEventListener('pointerup',()=>dragging=false);
+['pointerup','pointercancel'].forEach(ev=>addEventListener(ev,e=>{ if(e.pointerId===dragId){ dragging=false; dragId=null; } }));
 addEventListener('wheel',e=>{ camS.dist=Math.max(5,Math.min(15,camS.dist+e.deltaY*0.008)); },{passive:true});
 /* 摇杆（触屏） */
 const joy={x:0,f:0}; let joyId=null,jx0=0,jy0=0;
 if('ontouchstart' in window){ document.body.classList.add('touch');
   const joyEl=document.getElementById('joy'), stick=document.getElementById('stick');
-  joyEl.addEventListener('touchstart',e=>{ const t=e.changedTouches[0]; joyId=t.identifier; jx0=t.clientX; jy0=t.clientY; },{passive:true});
+  joyEl.addEventListener('touchstart',e=>{ if(joyId!==null) return; const t=e.changedTouches[0]; joyId=t.identifier; jx0=t.clientX; jy0=t.clientY; },{passive:true});
   joyEl.addEventListener('touchmove',e=>{ for(const t of e.changedTouches){ if(t.identifier!==joyId) continue;
     let dx=t.clientX-jx0, dy=t.clientY-jy0; const L=Math.hypot(dx,dy)||1; const c=Math.min(1,L/44); dx=dx/L*c; dy=dy/L*c;
     joy.x=dx; joy.f=-dy; stick.style.transform=`translate(calc(-50% + ${dx*30}px), calc(-50% + ${dy*30}px))`; } },{passive:true});
-  joyEl.addEventListener('touchend',()=>{ joyId=null; joy.x=0; joy.f=0; stick.style.transform='translate(-50%,-50%)'; },{passive:true});
+  const joyEnd=e=>{ if(![...e.changedTouches].some(t=>t.identifier===joyId)) return; joyId=null; joy.x=0; joy.f=0; stick.style.transform='translate(-50%,-50%)'; };
+  joyEl.addEventListener('touchend',joyEnd,{passive:true}); joyEl.addEventListener('touchcancel',joyEnd,{passive:true});
 }
 { const ab=document.getElementById('actBtn');
   ab.addEventListener('pointerdown',e=>{ if(beaconReady()){ e.preventDefault(); startCharge(); } });
@@ -2437,7 +2495,7 @@ function advanceDlg(){ const n=dlgNpc;
   if(dlgIx<n.lines[T.lang].length-1){ dlgIx++; showLine(); return; }
   $('dlg').classList.remove('show'); dlgNpc=null;
   if('speechSynthesis' in window) speechSynthesis.cancel();
-  if(!n.done){ n.done=true; updHUD(); buildLine(); toast(n.name[T.lang]+tx('heardSuf')); playHear(); } }
+  if(!n.done){ n.done=true; updHUD(); buildLine(); toast(n.name[T.lang]+tx('heardSuf')); playHear(); saveGame(); } }
 let toastT=null;
 let toastUntil=0, toastPrio=0; const toastQ=[];
 function toast(s,ms,prio){ ms=ms||2600; prio=prio||0;
@@ -2601,9 +2659,9 @@ function loop(){
   if(charging){ chargeT+=dt; const cp=Math.min(1,chargeT/CHARGE_T);
     $('chargeFg').style.strokeDashoffset=126*(1-cp);
     if(cp>=1){ charging=false; chargeT=0; $('charge').classList.remove('on'); doBeacon(); } }
-  pollPad();
-  let mx=((keys['d']?1:0)-(keys['a']?1:0)) + ((!p2&&keys['arrowright'])?1:0) - ((!p2&&keys['arrowleft'])?1:0) + joy.x;
-  let mf=((keys['w']?1:0)-(keys['s']?1:0)) + ((!p2&&keys['arrowup'])?1:0) - ((!p2&&keys['arrowdown'])?1:0) + joy.f;
+  pollPad(); if(modalOpen()){ for(const k of MOVE_K) keys[k]=false; joy.x=0; joy.f=0; }
+  let mx=((keys['d']?1:0)-(keys['a']?1:0)) + ((!p2&&keys['arrowright'])?1:0) - ((!p2&&keys['arrowleft'])?1:0) + joy.x + pad.x;
+  let mf=((keys['w']?1:0)-(keys['s']?1:0)) + ((!p2&&keys['arrowup'])?1:0) - ((!p2&&keys['arrowdown'])?1:0) + joy.f + pad.f;
   mf=Math.max(-1,Math.min(1,mf)); mx=Math.max(-1,Math.min(1,mx));
   const pP=pGroup.position, up=pP.clone().normalize();
   /* 相机方向切于球面 */
@@ -2769,7 +2827,7 @@ function loop(){
     const d3P = pP.distanceTo(s.position) < 3.0;
     const d3P2 = p2 && p2.grp.position.distanceTo(s.position) < 3.0;
     const nearP = d3P || d3P2;
-    if(nearP){ s.userData.got=true; s.visible=false;
+    if(nearP){ s.userData.got=true; s.visible=false; setTimeout(saveGame,0);
       { const msg=tx('shardPre')+SOURCES[shards.indexOf(s)].n[T.lang]+' · '+TOASTS[shards.indexOf(s)][T.lang]+' —— '+PART_N[PART_IX[shards.indexOf(s)]][T.lang];
         toast(msg,Math.min(12000,Math.max(6500,msg.length*(T.lang==='zh'?170:60))),2); } playCollect(); burst(s.position,s.userData.col); updHUD(); } });
   /* NPC */
@@ -3030,8 +3088,9 @@ function loop(){
       if(pick==='rain') window.__mistT=0;
       else if(wasRain && (zk==='village'||zk==='modern')){ window.__mistT=14+Math.random()*8; }
     } else weatherT=20; }
-  else if(wxFix && weather!==wxFix){ const wasRain2=lastWeather==='rain'; weather=wxFix;
-    if(wasRain2 && weather!=='rain' && (zoneHere()==='village'||zoneHere()==='modern')) window.__mistT=14+Math.random()*8; }
+  else if(wxFix && weather!==wxFix){ const wasRain2=weather==='rain'; weather=wxFix; lastWeather=wxFix;
+    if(wxFix==='rain') window.__mistT=0;
+    else if(wasRain2 && (zoneHere()==='village'||zoneHere()==='modern')) window.__mistT=14+Math.random()*8; }
   /* 烽火燃动 */
   if(lit){ beaconFlame.rotation.y+=dt*3; beaconLight.intensity=2.2+Math.sin(now*11)*0.5;
     beaconFlame.scale.setScalar(1+Math.sin(now*9)*0.08); }
@@ -3099,10 +3158,11 @@ document.getElementById('btnJump').addEventListener('pointerdown',e=>{ e.prevent
   if(jumpOff<=0&&vy===0){ vy=9.8; playJumpSfx(); } });
 /* 切后台暂停音频与语音 */
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){ if(started){ hardPaused=true; const ro=$('resumeOv'); if(ro) ro.classList.add('show'); }
+  if(document.hidden){ clearInput(); saveGame(); if(started){ hardPaused=true; const ro=$('resumeOv'); if(ro) ro.classList.add('show'); }
     if(actx) actx.suspend(); if(window.speechSynthesis) speechSynthesis.cancel(); }
   else if(actx) actx.resume(); });
-loop(); updHUD(); applyLang();
+addEventListener('blur',clearInput); addEventListener('pagehide',saveGame);
+loop(); updHUD(); applyLang(); try{ layoutTop(); }catch(e){}
 if(loadGame()){ document.getElementById('btnGo').textContent=tx('gContinue');
   document.getElementById('btnNew').style.display='inline-block'; }
 
@@ -3154,16 +3214,21 @@ function speak(){}
 function saveGame(){ try{ if(!started) return;
   localStorage.setItem('walkSaveV2', JSON.stringify({
     g: shards.map(x=>x.userData.got?1:0), n: NPCS.map(x=>x.done?1:0), c: cardSeen,
-    p: pGroup.position.toArray(), lang: T.lang, t: Math.round(playSec) })); }catch(e){} }
+    p: pGroup.position.toArray(), lang: T.lang, t: Math.round(playSec),
+    lit: lit?1:0, st: steps, zs: [...zoneSeen] })); }catch(e){} }
 function loadGame(){ try{ const raw=localStorage.getItem('walkSaveV2'); if(!raw) return false;
   const d=JSON.parse(raw); if(!d||!d.g) return false;
   if(d.t) playSec=d.t;
+  if(d.st) steps=d.st;
+  if(Array.isArray(d.zs)) d.zs.forEach(z=>zoneSeen.add(z));
+  if(d.lit){ lit=true; beaconFlame.visible=true; beaconLight.intensity=2.4; lineMesh.material.color.setHex(0xffb35c); lineMesh.material.opacity=1; }
   d.g.forEach((v,i)=>{ if(v&&shards[i]){ shards[i].userData.got=true; shards[i].visible=false; } });
   d.n.forEach((v,i)=>{ if(v&&NPCS[i]) NPCS[i].done=true; });
   if(d.c) cardSeen=d.c; else ZORDER.forEach(z=>{ if(cardDone(z)) cardSeen[z]=1; });   /* 旧存档：已完成的场景不再补弹 */
   if(d.p) setOnGround(pGroup.position.copy(new THREE.Vector3(d.p[0],d.p[1],d.p[2])));
   updHUD(); return d.g.some(v=>v) || d.n.some(v=>v); }catch(e){ return false; } }
-document.getElementById('btnNew').addEventListener('click',()=>{ try{localStorage.removeItem('walkSaveV2');}catch(e){} location.reload(); });
+function newWalk(){ started=false; try{localStorage.removeItem('walkSaveV2');}catch(e){} location.reload(); }
+document.getElementById('btnNew').addEventListener('click',newWalk);
 /* 字体规范（canvas 版）：canvas 不支持 unicode-range 劫持，按字符切字体——CJK/全角/中文标点走宋体，西文走 TNR */
 function _isCjk(ch){ return /[\u2E80-\u9FFF\uF900-\uFAFF\uFF01-\uFF60\u3000-\u303F\u2018-\u201D\u2014\u2026\u00B7]/.test(ch); }
 function fillMixed(c, str, x, y, font){
@@ -3308,6 +3373,11 @@ document.getElementById('zoneTabs').addEventListener('click',e=>{
     document.querySelectorAll('#zoneTabs a').forEach(x=>x.classList.toggle('on',x===a));
     document.querySelector('.sceneCard').style.setProperty('--zc', ZCOL[a.dataset.z]||'#c9a45c'); });
 $('dlg').addEventListener('click',()=>{ if(dlgNpc) tryTalk(); });
+/* 顶部按钮条变宽（多了"拍照"，英文更长）时，进度框自动让开 */
+function layoutTop(){ const hr=document.querySelector('.hudR'), xl=document.querySelector('.xlinks'); if(!hr||!xl) return;
+  if(innerWidth<=760){ hr.style.right=''; return; }
+  const r=xl.getBoundingClientRect(); hr.style.right=Math.round(innerWidth-r.left+12)+'px'; }
+addEventListener('resize',layoutTop); setTimeout(layoutTop,0); setInterval(layoutTop,1500);   /* 字体加载、语言切换后宽度会变 */
 const bp=$('btnPhoto'); if(bp) bp.addEventListener('click',e=>{ e.preventDefault(); togglePhoto(); });
 $('albumClose').addEventListener('click',closeAlbum);
 $('album').addEventListener('click',e=>{ if(e.target===$('album')) closeAlbum(); });
@@ -3321,7 +3391,7 @@ $('albMc').addEventListener('click',e=>{ const del=e.target.closest('a[data-del]
 function closeEnd(){ $('end').style.display='none'; }
 $('endClose').addEventListener('click',closeEnd);
 $('btnEndBack').addEventListener('click',closeEnd);
-$('btnEndAgain').addEventListener('click',()=>location.reload());
+$('btnEndAgain').addEventListener('click',newWalk);
 $('btnAlbumEnd').addEventListener('click',openAlbum);
 /* 进度框：点一下打开任务面板（手机上没有 J 键） */
 $('tasksClose').addEventListener('click',()=>$('tasks').classList.remove('show'));
@@ -3330,16 +3400,19 @@ document.querySelector('.hudR').addEventListener('click',()=>{ const on=$('tasks
   if(wxB) wxB.addEventListener('click',e=>{ const a=e.target.closest('a'); if(!a) return;
     const w=a.dataset.w; wxFix=(w==='auto')?null:w;
     wxB.querySelectorAll('a').forEach(x=>x.classList.toggle('on',x===a));
-    if(wxFix){ weather=wxFix; weatherT=9999; }
+    if(wxFix){ weatherT=9999; }   /* 由主循环切换，以便记录旧天气、触发雨后雾 */
     else { weatherT=8; } }); }
 { const tdB=document.getElementById('todBtns');
   if(tdB){
-    const updTodUI=()=>{
+    updTodUI=()=>{
       tdB.querySelectorAll('a').forEach(x=>{
         if(themeAutoFlow) x.classList.toggle('on', x.dataset.t==='auto');
-        else x.classList.toggle('on', +x.dataset.t===themeIx);
+        else x.classList.toggle('on', x.dataset.t!=='auto' && +x.dataset.t===themeIx);
       });
+      try{ localStorage.setItem('hxTod', themeAutoFlow?'auto':String(themeIx)); }catch(e){}
     };
+    try{ const sv=localStorage.getItem('hxTod'); if(sv&&sv!=='auto'&&THEMES[+sv]){ themeAutoFlow=false; themeIx=+sv; applyTheme(); } }catch(e){}
+    updTodUI();
     tdB.addEventListener('click',e=>{ const a=e.target.closest('a'); if(!a) return;
       const t=a.dataset.t;
       if(t==='auto'){ themeAutoFlow=true; themeAuto=90; }
@@ -3351,7 +3424,7 @@ function styleMaterials(d){ scene.traverse(o=>{ if(!o.material) return; (Array.i
 let hxStyle='real';
 { const stB=document.getElementById('stBtns');
   if(stB){ let hst='real'; try{ hst=localStorage.getItem('hxStyle')||'real'; }catch(e){}   /* 默认写实；淡彩是否设为默认，待用户与朱老师看过对比图再定 */
-    const applyStyle=()=>{ hxStyle=hst; if(GRADE&&GRADE.mat) GRADE.mat.uniforms.uStyle.value=(hst==='dancai')?1:0; try{ styleMaterials(hst==='dancai'); }catch(e){}
+    const applyStyle=()=>{ hxStyle=hst; if(GRADE&&GRADE.mat){ GRADE.mat.uniforms.uStyle.value=(hst==='dancai')?1:0; if(hst==='dancai') GRADE.on=true; else if(QUAL_LOW) GRADE.on=false; } try{ styleMaterials(hst==='dancai'); }catch(e){}
       document.documentElement.dataset.style=hst;
       stB.querySelectorAll('a').forEach(x=>x.classList.toggle('on',x.dataset.s===hst)); };
     applyStyle();
@@ -3364,9 +3437,10 @@ let hxStyle='real';
     if(k2==='f'){ photoF=+a.dataset.f; photoApply();
       pB.querySelectorAll('a[data-f]').forEach(x=>x.classList.toggle('on',+x.dataset.f===photoF)); }
     else if(a.id==='phInsc'){
-      photoInsc=(photoInsc+1)%3;
+      photoInsc=(+photoInsc+1)%3;
       a.classList.toggle('on',photoInsc>0);
-      a.textContent=(photoInsc===2)?(T.lang==='zh'?'引文':'Quote'):(photoInsc===1)?(T.lang==='zh'?'题字':'Title'):(T.lang==='zh'?'无题字':'No text');
+      a.textContent=(photoInsc===2)?(T.lang==='zh'?'题字：引文':'Caption: quote'):(photoInsc===1)?(T.lang==='zh'?'题字：地名':'Caption: place'):(T.lang==='zh'?'题字：无':'Caption: off');
+      updPhotoCap();
     }
     else if(a.id==='phShot'){ photoShoot(); }
     else if(a.id==='phExit'){ togglePhoto(); } }); } }

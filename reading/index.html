@@ -158,6 +158,7 @@
     #tooltray{display:none;position:fixed;top:54px;right:12px;flex-direction:column;gap:8px;z-index:9;padding:12px;border-radius:14px;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border:1px solid var(--line)}
     body.tray-open #tooltray{display:flex}
     .apanel{right:10px;bottom:10px;width:210px}
+    .apanel:not(.closed){left:10px;width:auto;max-height:58vh;overflow:auto;background:rgba(10,12,18,.94)}
     .scrollhint{display:none}
     .sMeta{white-space:normal;width:88vw;text-align:center;line-height:2}
   }
@@ -193,7 +194,7 @@
   .plate[data-lang="en"]{display:none}
   html[lang="en"] .plate[data-lang="en"]{display:block}
   html[lang="en"] .plate[data-lang="zh"]{display:none}
-  .plates{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:40px}
+  .plates{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-top:40px}
   .plate{overflow:hidden;border-radius:12px;border:1px solid var(--line);transition:.4s}
   .plate:hover{transform:translateY(-5px);border-color:var(--gold)}
   .plate img{width:100%;display:block;height:auto;max-height:none;aspect-ratio:auto;object-fit:contain}
@@ -365,6 +366,10 @@
     .valley{max-height:260px}
     .vOuter{opacity:1;transition:none}
     .time-nodes article{padding:20px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    html{scroll-behavior:auto!important}
   }
   button{font:inherit;color:inherit;background:none;border:0}
   :focus-visible{outline:3px solid var(--gold-hi);outline-offset:4px}
@@ -665,7 +670,7 @@ const SOC = [
  {n:{zh:'小红书',en:'Xiaohongshu (RedNote)'},u:'https://www.xiaohongshu.com/search_result?keyword=%E7%8E%8B%E6%98%8E%E7%8F%82',d:{zh:'王明珂 · 中文笔记',en:'Wang Ming-ke · notes'}},
  {n:{zh:'中研院史语所',en:'IHP, Academia Sinica'},u:'https://www1.ihp.sinica.edu.tw/Fellows/Ming-ke_Wang',d:{zh:'王明珂研究员页面 · 官方',en:'Official fellow page, IHP'}}
 ];
-const T = { lang:(function(){try{return new URLSearchParams(location.search).get('lang')||localStorage.getItem('hxLang')||localStorage.getItem('walkLang')||'zh';}catch(e){return 'zh';}})(), dict:{
+const T = { lang:(function(){try{const ok=v=>(v==='zh'||v==='en')?v:null; return ok(new URLSearchParams(location.search).get('lang'))||ok(localStorage.getItem('hxLang'))||ok(localStorage.getItem('walkLang'))||'zh';}catch(e){return 'zh';}})(), dict:{
  villageLabel:{zh:"岷江上游 · 田野笔记",en:"Upper Min River · field notes"},
  villageTitle:{zh:"一条山沟里的三个寨子",en:"Three villages in one valley"},
  villageSource:{zh:"据王明珂《华夏边缘》2020 年版代序〈如何观看与了解边疆〉，第 10–11 页。图示依据书中例子绘制。",en:"After Wang Ming-ke’s preface to the 2020 Chinese edition, pp. 10–11. The drawing illustrates his example."},
@@ -867,13 +872,15 @@ function renderMap(){
   walk(MAP.r, 0);
   const H = y + 40;
   const label = n => L==='zh' ? n.zh : n.en;
+  /* 按框宽估算能放下的字数；放不下时加省略号，完整文字在悬停提示和读屏标签里 */
+  const fitLabel = (t, px) => { let u=0, out=''; for(const ch of t){ const cw=/[\u2E80-\uFFFF]/.test(ch)?13:7; if(u+cw>px){ return out.replace(/\s+$/,'')+'…'; } u+=cw; out+=ch; } return out; };
   let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="mapgrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5b7fd9"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs>`;
   edges.forEach(e=>{ const mx=(e.x1+e.x2)/2;
     s += `<path class="edge" data-f="${e.fy}" data-t="${e.ty}" data-x2="${e.x2}" d="M${e.x1},${e.fy} C${mx},${e.fy} ${mx},${e.ty} ${e.x2},${e.ty}"/>`; });
   nodes.forEach(nd=>{
     const w = NODEW[Math.min(nd.depth,3)], h = 30;
     const cls = nd.depth===0?'root':(nd.depth<=1?'mid':'');
-    s += `<g class="node ${cls}" ${nd.n.ch ? `role="button" tabindex="0" aria-label="${label(nd.n)}" aria-expanded="${!!mapExp[nd.n.zh]}"` : ''} data-key="${nd.n.zh}"><rect x="${nd.x}" y="${nd.y-h/2}" width="${w}" height="${h}" rx="9"/><text x="${nd.x+14}" y="${nd.y+4.5}">${label(nd.n).slice(0,32)}</text>`;
+    s += `<g class="node ${cls}" ${nd.n.ch ? `role="button" tabindex="0" aria-expanded="${!!mapExp[nd.n.zh]}"` : 'role="img"'} aria-label="${label(nd.n)}" data-key="${nd.n.zh}"><title>${label(nd.n)}</title><rect x="${nd.x}" y="${nd.y-h/2}" width="${w}" height="${h}" rx="9"/><text x="${nd.x+14}" y="${nd.y+4.5}">${fitLabel(label(nd.n), w-(nd.n.ch?44:24))}</text>`;
     if(nd.n.ch){
       const open = mapExp[nd.n.zh];
       s += `<g class="plus" transform="translate(${nd.x+w-20},${nd.y})"><circle r="8.5" class="pc"/><text y="3.5" class="pt">${open?'−':'+'+nd.n.ch.length}</text></g>`;
@@ -1172,7 +1179,8 @@ return {applyTheme, burst, rotate(direction){edge.rotation.z+=direction*.14;drag
 const btnLang=document.getElementById('btnLang'), btnSound=document.getElementById('btnSound'),
       btnPause=document.getElementById('btnPause'), btnTheme=document.getElementById('btnTheme'),
       btnHide=document.getElementById('btnHide');
-function toggleLang(){ T.lang = T.lang==='zh'?'en':'zh'; applyLang(); }
+function toggleLang(){ T.lang = T.lang==='zh'?'en':'zh'; applyLang();
+  try{ const u=new URL(location.href); if(u.searchParams.has('lang')){ u.searchParams.delete('lang'); history.replaceState(null,'',u.pathname+u.search+u.hash); } }catch(e){} }
 btnLang.onclick = toggleLang;
 /* 生成式环境配乐：Am9→Fmaj7→Cmaj9→G6 和声循环 + 混响 + 风 */
 let audio = null;
@@ -1246,7 +1254,10 @@ function toggleNavPop(){ const n=document.getElementById('navpop'); if(n){const 
 document.getElementById('navpop').addEventListener('click', function(e){ if(e.target.tagName==='A'){this.style.display='none';document.getElementById('btnMenu').setAttribute('aria-expanded','false');const heading=document.querySelector(e.target.hash+' h2')||document.querySelector(e.target.hash);if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}} });
 document.getElementById('btnMenu').onclick = toggleNavPop;
 document.getElementById('btnTray').onclick = function(){const open=document.body.classList.toggle('tray-open');this.setAttribute('aria-expanded',String(open));if(open)document.getElementById('btnSound').focus();};
-if(innerWidth<760){ const ap=document.getElementById('apanel'); if(ap){ap.classList.add('closed');document.getElementById('apHead').setAttribute('aria-expanded','false');} }
+{ const foldAp=()=>{ const ap=document.getElementById('apanel'); if(ap){ap.classList.add('closed');document.getElementById('apHead').setAttribute('aria-expanded','false');} };
+  const mqN=matchMedia('(max-width:759px)'); if(mqN.matches) foldAp(); mqN.addEventListener&&mqN.addEventListener('change',e=>{ if(e.matches) foldAp(); }); }
+{ const mqR=matchMedia('(prefers-reduced-motion: reduce)');   /* 系统"减少动态效果"在页面打开后改变，也跟着停 */
+  mqR.addEventListener&&mqR.addEventListener('change',e=>{ if(e.matches!==paused) togglePause(); }); }
 /* 三寨子故事：一条山沟与邻近三沟 */
 (function(){
   const sec=document.getElementById('story');
