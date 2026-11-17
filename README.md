@@ -1,6 +1,14 @@
 # 华夏边缘 · Huaxia Frontiers
 
+[![QA](https://github.com/tanyaqiongcode/huaxia-frontiers-3d/actions/workflows/qa.yml/badge.svg)](https://github.com/tanyaqiongcode/huaxia-frontiers-3d/actions/workflows/qa.yml)
+[![Site](https://img.shields.io/badge/site-GitHub%20Pages-c9a45c)](https://tanyaqiongcode.github.io/huaxia-frontiers-3d/)
+[![Code licence: MIT](https://img.shields.io/badge/code-MIT-blue)](LICENSE)
+
 为王明珂《华夏边缘：历史记忆与族群认同》而建的一座 3D 主题站。
+
+*A bilingual (Chinese / English) web companion to Wang Ming-ke's* Huaxia Frontiers: Historical Memories and Ethnic Identities. *It has three parts: an immersive 3D site, a reading edition, and* Walking the Edge, *a small 3D walk through five fictional field sites where the reader collects sources, hears five short stories and earns reading cards. Scenes and speakers are fictional; the book is the authority on its arguments.*
+
+![首页 · The immersive site](docs/home.webp)
 
 > "当我们在一张纸上画一个圆形时，事实上是它的'边缘'让它看起来像个圆形。"
 
@@ -11,7 +19,7 @@
 ## 三种进入方式 · Three ways in
 
 - **沉浸版 · Immersive edition**——青铜之环、发光的内核与漂浮的记忆碎片，在动态的星野里读完全书的骨架：https://tanyaqiongcode.github.io/huaxia-frontiers-3d/
-- **阅读版 · Reading edition**——去掉一切动效，只留文字与图，适合安静地读，也照顾读屏与弱网：https://tanyaqiongcode.github.io/huaxia-frontiers-3d/reading/
+- **阅读版 · Reading edition**——同样的内容，换成适合安静阅读的版式：标出当前所在章节，可以回到上次读到的位置，导图显示完整标题，全程可用键盘操作；动态背景可以暂停，也会跟随系统的"减少动态效果"设置：https://tanyaqiongcode.github.io/huaxia-frontiers-3d/reading/
 - **边缘行走 · Interactive reading guide**——走过岷江河谷、河湟遗址、长城、国道边的羌寨与北川，听五段讲述，拾起十七件史料，每一处换得一张读书卡。场景与讲述者均为虚构，书中观点以原著为准：https://tanyaqiongcode.github.io/huaxia-frontiers-3d/game/
 
 ## 站里有什么
@@ -22,7 +30,13 @@
 | 概念八章 | 从"什么是中国人"一路走到"边缘研究法"，以自然志卡片的样子排开 |
 | 图录 | 四张主题图 |
 | 3D 造物记 | 一段从空白场景开始、一块一块搭起来的延时影像，附渲染图与可下载的 Blender 文件 |
-| 推荐语 · 作者与版本 · 影像 · 首译 | 梁文道、罗新、刘苏里、岱峻的推荐；1997 到 2020 年的版本流变；经核验的讲座影像；首译项目正在进行，这部书正走向汉语之外的读者 |
+| 推荐语 · 作者与版本 · 影像 · 首译 | 梁文道、罗新、刘苏里、岱峻的推荐；1997 到 2020 年的版本流变；精选讲座与解读（播放量为 2026 年 11 月初的记录，不会自动更新）；首译项目正在进行，这部书正走向汉语之外的读者 |
+
+## 两种画风 · Two art styles
+
+互动导读可以在"写实"与"淡彩插图"之间切换。下图是羌寨同一机位、晴天正午的对比（左写实，右淡彩）；五个场景的完整对比见 [docs/compare-five.webp](docs/compare-five.webp)。
+
+![羌寨：写实与淡彩对比](docs/compare-village.webp)
 
 ## 怎么看
 
@@ -40,9 +54,13 @@
 ├── assets/three.min.js      # three.js r128（本地化）
 ├── assets/models/*.glb      # 导读里的碉楼、石屋、长城、烽燧、遗址、树与牲畜（由 blender/game_models.py 生成）
 ├── assets/tex/              # 写实材质
-├── assets/build.mp4 · render_01..03.png · plates/   # 造物记与图录
+├── assets/build.mp4 · render_01..03.webp · plates/  # 造物记与图录
+├── docs/                    # README 用的截图与画风对比图
 ├── tools/qa_run.mjs         # 无头浏览器回归测试与画风对比截图
 ├── tools/site_src.py        # 由共用源码生成两页 / 检查是否一致
+├── tools/build_single_html.py  # 打包互动导读的单文件分享版
+├── .github/workflows/qa.yml # 推送与 Pull Request 时自动跑上面的检查
+├── LICENSE · NOTICE.md      # 代码许可（MIT）与内容、第三方素材说明
 └── blender/build_complete.blend
 ```
 
@@ -60,6 +78,12 @@ sh tools/install-hooks.sh                # 安装提交前检查（上面两项�
 
 回归测试需要本机的 Google Chrome、python3 和 Node 22 以上，不需要安装 npm 包。
 
+本地预览：在仓库根目录运行 `python3 -m http.server 8000`，再打开 http://localhost:8000/ 。
+
+**已测试的浏览器**：桌面版 Chrome（自动回归在 GitHub Actions 的 Ubuntu 上运行，提交前也在本机 macOS 上运行）。Safari、Firefox 与手机浏览器尚未系统测试。
+
+**反馈**：发现错误或有建议，欢迎在 [Issues](https://github.com/tanyaqiongcode/huaxia-frontiers-3d/issues) 留言。
+
 ## 重新搭一遍
 
 首页的 3D 场景：用 Blender 直接打开 `blender/build_complete.blend`。
@@ -72,9 +96,11 @@ blender --background --factory-startup --python blender/game_models.py
 
 ## 版权
 
+代码采用 [MIT 许可证](LICENSE)；原书文字与插图、重绘地图和第三方素材不在此列，详见 [NOTICE.md](NOTICE.md)。
+
 本站用于图书介绍与学术推广。推荐语的版权归原作者；Blender 文件、渲染图、延时影像与主题图为本项目原创。
 
-首页时间轴里的四幅地图（`assets/book/svg/fig-104.svg`、`transparent/fig-099.svg`、`fig-113.svg`、`fig-127.svg`）依据原书第 104、99、113、127 页的插图重绘，并非本项目原创；版权归原书作者与出版方，仅用于图书介绍。
+首页时间轴里的四幅地图（`assets/book/svg/fig-104.svg`、`transparent/fig-099.svg`、`fig-113.svg`、`fig-127.svg`）依据原书（2020 年中文版）插图重绘，并非本项目原创；版权归原书作者与出版方，仅用于图书介绍。
 
 ## 致谢 · Credits
 
@@ -85,6 +111,6 @@ blender --background --factory-startup --python blender/game_models.py
 - 人物与装束：Blender 脚本建模（`blender/npc_figure.py`，本项目原创，共 19 个骨骼人物（动作由游戏代码逐帧驱动，GLB 不含内嵌动画）），服饰参照岷江上游羌族与河湟民族志通例（包头帕、长衫、羊皮褂、绑腿、云云鞋）；人物均为虚构
 - 动物与地景模型：`blender/animals.py` 与 `blender/game_models.py`（本项目原创）
 - 重新生成模型：`blender --background --factory-startup --python blender/npc_figure.py -- all`（变体见脚本内 VARS）
-- 单文件分享版由 `tools/build_single_html.py` 打包（内联 three.js、GLTFLoader、全部模型与贴图）；历史版本按日期存档（如 `华夏边缘_边缘行走_单文件版_20261109_优化前.html`）
+- 单文件分享版由 `tools/build_single_html.py` 打包（内联 three.js、GLTFLoader、全部模型与贴图）；可在 [Releases](https://github.com/tanyaqiongcode/huaxia-frontiers-3d/releases) 下载，下载后直接用浏览器打开，不需要网络
 - 信息图：编辑组 · Infographics: the editorial team
-- 时间轴地图：据原书第 99、104、113、127 页插图重绘，© 原作者与出版方 · Timeline maps redrawn from figures in the original book, © the author and publisher
+- 时间轴地图：据原书（2020 年中文版）插图重绘，© 原作者与出版方 · Timeline maps redrawn from figures in the original book (2020 Chinese edition), © the author and publisher
